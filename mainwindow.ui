@@ -262,7 +262,7 @@
   <action name="actionNew">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/new.png</normaloff>:/qtgameengine/icons/actions/new.png</iconset>
+     <normaloff>:/qtgameengine/icons/new.png</normaloff>:/qtgameengine/icons/new.png</iconset>
    </property>
    <property name="text">
     <string>&amp;New</string>
@@ -271,7 +271,7 @@
   <action name="actionOpen">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/open.png</normaloff>:/qtgameengine/icons/actions/open.png</iconset>
+     <normaloff>:/qtgameengine/icons/open.png</normaloff>:/qtgameengine/icons/open.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Open</string>
@@ -280,7 +280,7 @@
   <action name="actionSave">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/save.png</normaloff>:/qtgameengine/icons/actions/save.png</iconset>
+     <normaloff>:/qtgameengine/icons/save.png</normaloff>:/qtgameengine/icons/save.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Save</string>
@@ -289,7 +289,7 @@
   <action name="actionSaveAs">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/save-as.png</normaloff>:/qtgameengine/icons/actions/save-as.png</iconset>
+     <normaloff>:/qtgameengine/icons/save-as.png</normaloff>:/qtgameengine/icons/save-as.png</iconset>
    </property>
    <property name="text">
     <string>Save &amp;As...</string>
@@ -298,7 +298,7 @@
   <action name="actionCreateExecutable">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/create-executable.png</normaloff>:/qtgameengine/icons/actions/create-executable.png</iconset>
+     <normaloff>:/qtgameengine/icons/create-executable.png</normaloff>:/qtgameengine/icons/create-executable.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Create Executable...</string>
@@ -307,7 +307,7 @@
   <action name="actionPublishGame">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/publish-game.png</normaloff>:/qtgameengine/icons/actions/publish-game.png</iconset>
+     <normaloff>:/qtgameengine/icons/publish-game.png</normaloff>:/qtgameengine/icons/publish-game.png</iconset>
    </property>
    <property name="text">
     <string>P&amp;ublish your Game...</string>
@@ -316,7 +316,7 @@
   <action name="actionImportResources">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/import-resources.png</normaloff>:/qtgameengine/icons/actions/import-resources.png</iconset>
+     <normaloff>:/qtgameengine/icons/import-resources.png</normaloff>:/qtgameengine/icons/import-resources.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Import Resources...</string>
@@ -325,7 +325,7 @@
   <action name="actionExportResources">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/export-resources.png</normaloff>:/qtgameengine/icons/actions/export-resources.png</iconset>
+     <normaloff>:/qtgameengine/icons/export-resources.png</normaloff>:/qtgameengine/icons/export-resources.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Export Resources...</string>
@@ -345,7 +345,7 @@
   <action name="actionPreferences">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/preferences.png</normaloff>:/qtgameengine/icons/actions/preferences.png</iconset>
+     <normaloff>:/qtgameengine/icons/preferences.png</normaloff>:/qtgameengine/icons/preferences.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Preferences...</string>
@@ -357,7 +357,7 @@
   <action name="actionExit">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/exit.png</normaloff>:/qtgameengine/icons/actions/exit.png</iconset>
+     <normaloff>:/qtgameengine/icons/exit.png</normaloff>:/qtgameengine/icons/exit.png</iconset>
    </property>
    <property name="text">
     <string>E&amp;xit</string>
@@ -377,7 +377,7 @@
   <action name="actionCreate">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/create.png</normaloff>:/qtgameengine/icons/actions/create.png</iconset>
+     <normaloff>:/qtgameengine/icons/create.png</normaloff>:/qtgameengine/icons/create.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Create</string>
@@ -386,7 +386,7 @@
   <action name="actionDuplicate">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/duplicate.png</normaloff>:/qtgameengine/icons/actions/duplicate.png</iconset>
+     <normaloff>:/qtgameengine/icons/duplicate.png</normaloff>:/qtgameengine/icons/duplicate.png</iconset>
    </property>
    <property name="text">
     <string>D&amp;uplicate</string>
@@ -398,7 +398,7 @@
   <action name="actionCreateGroup">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/create-group.png</normaloff>:/qtgameengine/icons/actions/create-group.png</iconset>
+     <normaloff>:/qtgameengine/icons/create-group.png</normaloff>:/qtgameengine/icons/create-group.png</iconset>
    </property>
    <property name="text">
     <string>Cr&amp;eate Group</string>
@@ -412,7 +412,7 @@
   <action name="actionDelete">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/delete.png</normaloff>:/qtgameengine/icons/actions/delete.png</iconset>
+     <normaloff>:/qtgameengine/icons/delete.png</normaloff>:/qtgameengine/icons/delete.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Delete</string>
@@ -421,7 +421,7 @@
   <action name="actionRename">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/rename.png</normaloff>:/qtgameengine/icons/actions/rename.png</iconset>
+     <normaloff>:/qtgameengine/icons/rename.png</normaloff>:/qtgameengine/icons/rename.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Rename</string>
@@ -430,7 +430,7 @@
   <action name="actionProperties">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/properties.png</normaloff>:/qtgameengine/icons/actions/properties.png</iconset>
+     <normaloff>:/qtgameengine/icons/properties.png</normaloff>:/qtgameengine/icons/properties.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Properties</string>
@@ -442,7 +442,7 @@
   <action name="actionFindResource">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/find.png</normaloff>:/qtgameengine/icons/actions/find.png</iconset>
+     <normaloff>:/qtgameengine/icons/find.png</normaloff>:/qtgameengine/icons/find.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Find Resource</string>
@@ -466,7 +466,7 @@
   <action name="actionCreateSprite">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/sprite.png</normaloff>:/qtgameengine/icons/actions/sprite.png</iconset>
+     <normaloff>:/qtgameengine/icons/sprite.png</normaloff>:/qtgameengine/icons/sprite.png</iconset>
    </property>
    <property name="text">
     <string>Create &amp;Sprite</string>
@@ -478,7 +478,7 @@
   <action name="actionCreateSound">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/sound.png</normaloff>:/qtgameengine/icons/actions/sound.png</iconset>
+     <normaloff>:/qtgameengine/icons/sound.png</normaloff>:/qtgameengine/icons/sound.png</iconset>
    </property>
    <property name="text">
     <string>Create So&amp;und</string>
@@ -490,7 +490,7 @@
   <action name="actionCreateBackground">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/background.png</normaloff>:/qtgameengine/icons/actions/background.png</iconset>
+     <normaloff>:/qtgameengine/icons/background.png</normaloff>:/qtgameengine/icons/background.png</iconset>
    </property>
    <property name="text">
     <string>Create &amp;Background</string>
@@ -502,7 +502,7 @@
   <action name="actionCreatePath">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/path.png</normaloff>:/qtgameengine/icons/actions/path.png</iconset>
+     <normaloff>:/qtgameengine/icons/path.png</normaloff>:/qtgameengine/icons/path.png</iconset>
    </property>
    <property name="text">
     <string>Create &amp;Path</string>
@@ -514,7 +514,7 @@
   <action name="actionCreateScript">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/script.png</normaloff>:/qtgameengine/icons/actions/script.png</iconset>
+     <normaloff>:/qtgameengine/icons/script.png</normaloff>:/qtgameengine/icons/script.png</iconset>
    </property>
    <property name="text">
     <string>Create S&amp;cript</string>
@@ -526,7 +526,7 @@
   <action name="actionCreateFont">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/font.png</normaloff>:/qtgameengine/icons/actions/font.png</iconset>
+     <normaloff>:/qtgameengine/icons/font.png</normaloff>:/qtgameengine/icons/font.png</iconset>
    </property>
    <property name="text">
     <string>Create &amp;Font</string>
@@ -538,7 +538,7 @@
   <action name="actionCreateTimeLine">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/timeline.png</normaloff>:/qtgameengine/icons/actions/timeline.png</iconset>
+     <normaloff>:/qtgameengine/icons/timeline.png</normaloff>:/qtgameengine/icons/timeline.png</iconset>
    </property>
    <property name="text">
     <string>Create &amp;Time Line</string>
@@ -550,7 +550,7 @@
   <action name="actionCreateObject">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/object.png</normaloff>:/qtgameengine/icons/actions/object.png</iconset>
+     <normaloff>:/qtgameengine/icons/object.png</normaloff>:/qtgameengine/icons/object.png</iconset>
    </property>
    <property name="text">
     <string>Create &amp;Object</string>
@@ -562,7 +562,7 @@
   <action name="actionCreateRoom">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/room.png</normaloff>:/qtgameengine/icons/actions/room.png</iconset>
+     <normaloff>:/qtgameengine/icons/room.png</normaloff>:/qtgameengine/icons/room.png</iconset>
    </property>
    <property name="text">
     <string>Create &amp;Room</string>
@@ -574,7 +574,7 @@
   <action name="actionGameInformation">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/game-information.png</normaloff>:/qtgameengine/icons/actions/game-information.png</iconset>
+     <normaloff>:/qtgameengine/icons/game-information.png</normaloff>:/qtgameengine/icons/game-information.png</iconset>
    </property>
    <property name="text">
     <string>Change Game &amp;Information</string>
@@ -586,7 +586,7 @@
   <action name="actionGlobalGameSettings">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/global-game-settings.png</normaloff>:/qtgameengine/icons/actions/global-game-settings.png</iconset>
+     <normaloff>:/qtgameengine/icons/global-game-settings.png</normaloff>:/qtgameengine/icons/global-game-settings.png</iconset>
    </property>
    <property name="text">
     <string>Change &amp;Global Game Settings</string>
@@ -598,7 +598,7 @@
   <action name="actionExtensionPackages">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/extension-packages.png</normaloff>:/qtgameengine/icons/actions/extension-packages.png</iconset>
+     <normaloff>:/qtgameengine/icons/extension-packages.png</normaloff>:/qtgameengine/icons/extension-packages.png</iconset>
    </property>
    <property name="text">
     <string>Select &amp;Extension Packages</string>
@@ -634,7 +634,7 @@
   <action name="actionRunNormally">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/run.png</normaloff>:/qtgameengine/icons/actions/run.png</iconset>
+     <normaloff>:/qtgameengine/icons/run.png</normaloff>:/qtgameengine/icons/run.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Run normally</string>
@@ -646,7 +646,7 @@
   <action name="actionRunInDebugMode">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/debug.png</normaloff>:/qtgameengine/icons/actions/debug.png</iconset>
+     <normaloff>:/qtgameengine/icons/debug.png</normaloff>:/qtgameengine/icons/debug.png</iconset>
    </property>
    <property name="text">
     <string>Run in &amp;Debug mode</string>
@@ -663,7 +663,7 @@
   <action name="actionContents">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/help.png</normaloff>:/qtgameengine/icons/actions/help.png</iconset>
+     <normaloff>:/qtgameengine/icons/help.png</normaloff>:/qtgameengine/icons/help.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Contents</string>
@@ -773,7 +773,7 @@
   <action name="actionTile">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/tile.png</normaloff>:/qtgameengine/icons/actions/tile.png</iconset>
+     <normaloff>:/qtgameengine/icons/tile.png</normaloff>:/qtgameengine/icons/tile.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Tile</string>
@@ -782,7 +782,7 @@
   <action name="actionCascade">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/cascade.png</normaloff>:/qtgameengine/icons/actions/cascade.png</iconset>
+     <normaloff>:/qtgameengine/icons/cascade.png</normaloff>:/qtgameengine/icons/cascade.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Cascade</string>

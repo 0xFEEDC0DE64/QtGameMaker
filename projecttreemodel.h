@@ -25,7 +25,8 @@ public:
         Font,
     };
 
-    explicit ProjectTreeModel(ProjectContainer *project, QObject *parent = nullptr);
+    explicit ProjectTreeModel(QObject *parent = nullptr);
+    explicit ProjectTreeModel(ProjectContainer &project, QObject *parent = nullptr);
 
     QModelIndex index(int row, int column, const QModelIndex &parent) const override;
     QModelIndex parent(const QModelIndex &child) const override;
@@ -73,6 +74,9 @@ public:
 
     Font *getFont(const QModelIndex &index);
     const Font *getFont(const QModelIndex &index) const;
+
+signals:
+    void errorOccured(const QString &message);
 
 private:
     ProjectContainer *m_project{};

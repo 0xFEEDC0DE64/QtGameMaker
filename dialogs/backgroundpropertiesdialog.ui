@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../resources.qrc">
-    <normaloff>:/qtgameengine/icons/dialogs/background-file.png</normaloff>:/qtgameengine/icons/dialogs/background-file.png</iconset>
+    <normaloff>:/qtgameengine/icons/background-file.png</normaloff>:/qtgameengine/icons/background-file.png</iconset>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
    <item>
@@ -51,7 +51,7 @@
        </property>
        <property name="icon">
         <iconset resource="../resources.qrc">
-         <normaloff>:/qtgameengine/icons/actions/open.png</normaloff>:/qtgameengine/icons/actions/open.png</iconset>
+         <normaloff>:/qtgameengine/icons/open.png</normaloff>:/qtgameengine/icons/open.png</iconset>
        </property>
       </widget>
      </item>
@@ -62,7 +62,7 @@
        </property>
        <property name="icon">
         <iconset resource="../resources.qrc">
-         <normaloff>:/qtgameengine/icons/actions/save.png</normaloff>:/qtgameengine/icons/actions/save.png</iconset>
+         <normaloff>:/qtgameengine/icons/save.png</normaloff>:/qtgameengine/icons/save.png</iconset>
        </property>
       </widget>
      </item>
@@ -73,7 +73,7 @@
        </property>
        <property name="icon">
         <iconset resource="../resources.qrc">
-         <normaloff>:/qtgameengine/icons/buttons/edit.png</normaloff>:/qtgameengine/icons/buttons/edit.png</iconset>
+         <normaloff>:/qtgameengine/icons/edit.png</normaloff>:/qtgameengine/icons/edit.png</iconset>
        </property>
       </widget>
      </item>
@@ -127,7 +127,7 @@
          </property>
          <property name="icon">
           <iconset resource="../resources.qrc">
-           <normaloff>:/qtgameengine/icons/buttons/ok.png</normaloff>:/qtgameengine/icons/buttons/ok.png</iconset>
+           <normaloff>:/qtgameengine/icons/ok.png</normaloff>:/qtgameengine/icons/ok.png</iconset>
          </property>
         </widget>
        </item>

@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QFileDialog>
+#include <QInputDialog>
 
 #include "projecttreemodel.h"
 #include "dialogs/spritepropertiesdialog.h"
@@ -17,11 +18,12 @@
 #include "dialogs/gameinformationdialog.h"
 #include "dialogs/globalgamesettingsdialog.h"
 #include "dialogs/extensionpackagesdialog.h"
+#include "dialogs/objectinformationdialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow{parent},
     m_ui{std::make_unique<Ui::MainWindow>()},
-    m_projectTreeModel{std::make_unique<ProjectTreeModel>(&m_project, this)}
+    m_projectTreeModel{std::make_unique<ProjectTreeModel>(m_project, this)}
 {
     m_ui->setupUi(this);
 
@@ -74,6 +76,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_ui->actionDelete, &QAction::triggered, this, &MainWindow::delete_);
     connect(m_ui->actionRename, &QAction::triggered, this, &MainWindow::rename);
     connect(m_ui->actionProperties, &QAction::triggered, this, &MainWindow::showProperties);
+    connect(m_ui->actionFindResource, &QAction::triggered, this, &MainWindow::findResource);
+    connect(m_ui->actionShowObjectInformation, &QAction::triggered, this, &MainWindow::showObjectInformation);
     connect(m_ui->actionCreateSprite, &QAction::triggered, this, &MainWindow::createSprite);
     connect(m_ui->actionCreateSound, &QAction::triggered, this, &MainWindow::createSound);
     connect(m_ui->actionCreateBackground, &QAction::triggered, this, &MainWindow::createBackground);
@@ -87,6 +91,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_ui->actionAboutQt, &QAction::triggered, qApp, &QApplication::aboutQt);
 
     m_ui->treeView->setModel(m_projectTreeModel.get());
+
+    connect(m_projectTreeModel.get(), &ProjectTreeModel::errorOccured,
+            this, &MainWindow::modelErrorOccured);
 
     connect(m_ui->treeView, &QTreeView::customContextMenuRequested,
             this, &MainWindow::contextMenuRequested);
@@ -189,7 +196,7 @@ void MainWindow::doubleClicked(const QModelIndex &index)
         if (!sprite)
             break;
 
-        if (const auto iter = m_spritePropertiesDialogs.find(sprite); iter != std::cend(m_spritePropertiesDialogs))
+        if (const auto iter = m_spritePropertiesWindows.find(sprite); iter != std::cend(m_spritePropertiesWindows))
         {
             m_ui->mdiArea->setActiveSubWindow(iter->second);
         }
@@ -210,7 +217,7 @@ void MainWindow::doubleClicked(const QModelIndex &index)
             });
             connect(dialog, &QWidget::windowTitleChanged, action, &QAction::setText);
             connect(dialog, &QDialog::finished,
-                    this, [&spritePropertiesDialogs=m_spritePropertiesDialogs,subwindow](){
+                    this, [&spritePropertiesDialogs=m_spritePropertiesWindows,subwindow](){
                         for (auto iter = std::begin(spritePropertiesDialogs); iter != std::end(spritePropertiesDialogs); )
                         {
                             if (iter->second == subwindow)
@@ -223,7 +230,7 @@ void MainWindow::doubleClicked(const QModelIndex &index)
                     subwindow, &QObject::deleteLater);
             connect(dialog, &QDialog::finished,
                     action, &QObject::deleteLater);
-            m_spritePropertiesDialogs[sprite] = subwindow;
+            m_spritePropertiesWindows[sprite] = subwindow;
             dialog->show();
         }
         break;
@@ -234,7 +241,7 @@ void MainWindow::doubleClicked(const QModelIndex &index)
         if (!sound)
             break;
 
-        if (const auto iter = m_soundPropertiesDialogs.find(sound); iter != std::cend(m_soundPropertiesDialogs))
+        if (const auto iter = m_soundPropertiesWindows.find(sound); iter != std::cend(m_soundPropertiesWindows))
         {
             m_ui->mdiArea->setActiveSubWindow(iter->second);
         }
@@ -255,7 +262,7 @@ void MainWindow::doubleClicked(const QModelIndex &index)
                     });
             connect(dialog, &QWidget::windowTitleChanged, action, &QAction::setText);
             connect(dialog, &QDialog::finished,
-                    this, [&soundPropertiesDialogs=m_soundPropertiesDialogs,subwindow](){
+                    this, [&soundPropertiesDialogs=m_soundPropertiesWindows,subwindow](){
                         for (auto iter = std::begin(soundPropertiesDialogs); iter != std::end(soundPropertiesDialogs); )
                         {
                             if (iter->second == subwindow)
@@ -268,7 +275,7 @@ void MainWindow::doubleClicked(const QModelIndex &index)
                     subwindow, &QObject::deleteLater);
             connect(dialog, &QDialog::finished,
                     action, &QObject::deleteLater);
-            m_soundPropertiesDialogs[sound] = subwindow;
+            m_soundPropertiesWindows[sound] = subwindow;
             dialog->show();
         }
         break;
@@ -279,7 +286,7 @@ void MainWindow::doubleClicked(const QModelIndex &index)
         if (!background)
             break;
 
-        if (const auto iter = m_backgroundPropertiesDialogs.find(background); iter != std::cend(m_backgroundPropertiesDialogs))
+        if (const auto iter = m_backgroundPropertiesWindows.find(background); iter != std::cend(m_backgroundPropertiesWindows))
         {
             m_ui->mdiArea->setActiveSubWindow(iter->second);
         }
@@ -300,7 +307,7 @@ void MainWindow::doubleClicked(const QModelIndex &index)
                     });
             connect(dialog, &QWidget::windowTitleChanged, action, &QAction::setText);
             connect(dialog, &QDialog::finished,
-                    this, [&backgroundPropertiesDialogs=m_backgroundPropertiesDialogs,subwindow](){
+                    this, [&backgroundPropertiesDialogs=m_backgroundPropertiesWindows,subwindow](){
                         for (auto iter = std::begin(backgroundPropertiesDialogs); iter != std::end(backgroundPropertiesDialogs); )
                         {
                             if (iter->second == subwindow)
@@ -313,7 +320,7 @@ void MainWindow::doubleClicked(const QModelIndex &index)
                     subwindow, &QObject::deleteLater);
             connect(dialog, &QDialog::finished,
                     action, &QObject::deleteLater);
-            m_backgroundPropertiesDialogs[background] = subwindow;
+            m_backgroundPropertiesWindows[background] = subwindow;
             dialog->show();
         }
         break;
@@ -324,7 +331,7 @@ void MainWindow::doubleClicked(const QModelIndex &index)
         if (!path)
             break;
 
-        if (const auto iter = m_pathPropertiesDialogs.find(path); iter != std::cend(m_pathPropertiesDialogs))
+        if (const auto iter = m_pathPropertiesWindows.find(path); iter != std::cend(m_pathPropertiesWindows))
         {
             m_ui->mdiArea->setActiveSubWindow(iter->second);
         }
@@ -345,7 +352,7 @@ void MainWindow::doubleClicked(const QModelIndex &index)
                     });
             connect(dialog, &QWidget::windowTitleChanged, action, &QAction::setText);
             connect(dialog, &QDialog::finished,
-                    this, [&pathPropertiesDialogs=m_pathPropertiesDialogs,subwindow](){
+                    this, [&pathPropertiesDialogs=m_pathPropertiesWindows,subwindow](){
                         for (auto iter = std::begin(pathPropertiesDialogs); iter != std::end(pathPropertiesDialogs); )
                         {
                             if (iter->second == subwindow)
@@ -358,7 +365,7 @@ void MainWindow::doubleClicked(const QModelIndex &index)
                     subwindow, &QObject::deleteLater);
             connect(dialog, &QDialog::finished,
                     action, &QObject::deleteLater);
-            m_pathPropertiesDialogs[path] = subwindow;
+            m_pathPropertiesWindows[path] = subwindow;
             dialog->show();
         }
         break;
@@ -369,7 +376,7 @@ void MainWindow::doubleClicked(const QModelIndex &index)
         if (!script)
             break;
 
-        if (const auto iter = m_scriptPropertiesDialogs.find(script); iter != std::cend(m_scriptPropertiesDialogs))
+        if (const auto iter = m_scriptPropertiesWindows.find(script); iter != std::cend(m_scriptPropertiesWindows))
         {
             m_ui->mdiArea->setActiveSubWindow(iter->second);
         }
@@ -390,7 +397,7 @@ void MainWindow::doubleClicked(const QModelIndex &index)
                     });
             connect(dialog, &QWidget::windowTitleChanged, action, &QAction::setText);
             connect(dialog, &QDialog::finished,
-                    this, [&scriptPropertiesDialogs=m_scriptPropertiesDialogs,subwindow](){
+                    this, [&scriptPropertiesDialogs=m_scriptPropertiesWindows,subwindow](){
                         for (auto iter = std::begin(scriptPropertiesDialogs); iter != std::end(scriptPropertiesDialogs); )
                         {
                             if (iter->second == subwindow)
@@ -403,7 +410,7 @@ void MainWindow::doubleClicked(const QModelIndex &index)
                     subwindow, &QObject::deleteLater);
             connect(dialog, &QDialog::finished,
                     action, &QObject::deleteLater);
-            m_scriptPropertiesDialogs[script] = subwindow;
+            m_scriptPropertiesWindows[script] = subwindow;
             dialog->show();
         }
         break;
@@ -414,7 +421,7 @@ void MainWindow::doubleClicked(const QModelIndex &index)
         if (!font)
             break;
 
-        if (const auto iter = m_fontPropertiesDialogs.find(font); iter != std::cend(m_fontPropertiesDialogs))
+        if (const auto iter = m_fontPropertiesWindows.find(font); iter != std::cend(m_fontPropertiesWindows))
         {
             m_ui->mdiArea->setActiveSubWindow(iter->second);
         }
@@ -435,7 +442,7 @@ void MainWindow::doubleClicked(const QModelIndex &index)
                     });
             connect(dialog, &QWidget::windowTitleChanged, action, &QAction::setText);
             connect(dialog, &QDialog::finished,
-                    this, [&fontPropertiesDialogs=m_fontPropertiesDialogs,subwindow](){
+                    this, [&fontPropertiesDialogs=m_fontPropertiesWindows,subwindow](){
                         for (auto iter = std::begin(fontPropertiesDialogs); iter != std::end(fontPropertiesDialogs); )
                         {
                             if (iter->second == subwindow)
@@ -448,7 +455,7 @@ void MainWindow::doubleClicked(const QModelIndex &index)
                     subwindow, &QObject::deleteLater);
             connect(dialog, &QDialog::finished,
                     action, &QObject::deleteLater);
-            m_fontPropertiesDialogs[font] = subwindow;
+            m_fontPropertiesWindows[font] = subwindow;
             dialog->show();
         }
         break;
@@ -540,6 +547,11 @@ void MainWindow::selectionChanged(const QModelIndex &index)
         m_ui->actionRename->setEnabled(false);
         m_ui->actionProperties->setEnabled(false);
     }
+}
+
+void MainWindow::modelErrorOccured(const QString &message)
+{
+    QMessageBox::warning(this, tr("Error occured!"), tr("Error occured!") + "\n\n" + message);
 }
 
 void MainWindow::newFile()
@@ -795,6 +807,49 @@ void MainWindow::showProperties()
     doubleClicked(index);
 }
 
+void MainWindow::findResource()
+{
+    bool ok;
+    const auto filter = QInputDialog::getText(this, tr("Finding a resource"), tr("Resource name:"), QLineEdit::Normal, {}, &ok);
+    if (!ok)
+        return;
+
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void MainWindow::showObjectInformation()
+{
+    if (m_objectInformationWindow)
+        m_ui->mdiArea->setActiveSubWindow(m_objectInformationWindow);
+    else
+    {
+        auto dialog = new ObjectInformationDialog;
+        auto subwindow = m_ui->mdiArea->addSubWindow(dialog);
+        auto action = m_ui->menuWindow->addAction(dialog->windowTitle());
+        action->setCheckable(true);
+        connect(action, &QAction::triggered,
+                m_ui->mdiArea, [mdiArea=m_ui->mdiArea,subwindow,action](){
+                    mdiArea->setActiveSubWindow(subwindow);
+                    action->setChecked(subwindow->windowState().testFlag(Qt::WindowActive));
+                });
+        connect(subwindow, &QMdiSubWindow::windowStateChanged,
+                action, [action](Qt::WindowStates oldState, Qt::WindowStates newState){
+                    action->setChecked(newState.testFlag(Qt::WindowActive));
+                });
+        connect(dialog, &QWidget::windowTitleChanged, action, &QAction::setText);
+        connect(dialog, &QDialog::finished,
+                this, [&objectInformationWindow=m_objectInformationWindow](){
+                    objectInformationWindow = nullptr;
+                });
+        connect(dialog, &QDialog::finished,
+                subwindow, &QObject::deleteLater);
+        connect(dialog, &QDialog::finished,
+                action, &QObject::deleteLater);
+        m_objectInformationWindow = subwindow;
+        dialog->show();
+    }
+}
+
 void MainWindow::createSprite()
 {
     if (!m_projectTreeModel->insertRows(m_project.sprites.size(), 1, m_projectTreeModel->spritesRoot()))
@@ -868,10 +923,10 @@ void MainWindow::rowsAboutToBeRemoved(const QModelIndex &parent, int first, int 
         {
             if (const auto sprite = m_projectTreeModel->getSprite(m_projectTreeModel->index(row, 0, parent)))
             {
-                if (const auto iter = m_spritePropertiesDialogs.find(sprite); iter != std::end(m_spritePropertiesDialogs))
+                if (const auto iter = m_spritePropertiesWindows.find(sprite); iter != std::end(m_spritePropertiesWindows))
                 {
                     delete iter->second;
-                    m_spritePropertiesDialogs.erase(iter);
+                    m_spritePropertiesWindows.erase(iter);
                 }
             }
         }
@@ -882,10 +937,10 @@ void MainWindow::rowsAboutToBeRemoved(const QModelIndex &parent, int first, int 
         {
             if (const auto sound = m_projectTreeModel->getSound(m_projectTreeModel->index(row, 0, parent)))
             {
-                if (const auto iter = m_soundPropertiesDialogs.find(sound); iter != std::end(m_soundPropertiesDialogs))
+                if (const auto iter = m_soundPropertiesWindows.find(sound); iter != std::end(m_soundPropertiesWindows))
                 {
                     delete iter->second;
-                    m_soundPropertiesDialogs.erase(iter);
+                    m_soundPropertiesWindows.erase(iter);
                 }
             }
         }
@@ -896,10 +951,10 @@ void MainWindow::rowsAboutToBeRemoved(const QModelIndex &parent, int first, int 
         {
             if (const auto background = m_projectTreeModel->getBackground(m_projectTreeModel->index(row, 0, parent)))
             {
-                if (const auto iter = m_backgroundPropertiesDialogs.find(background); iter != std::end(m_backgroundPropertiesDialogs))
+                if (const auto iter = m_backgroundPropertiesWindows.find(background); iter != std::end(m_backgroundPropertiesWindows))
                 {
                     delete iter->second;
-                    m_backgroundPropertiesDialogs.erase(iter);
+                    m_backgroundPropertiesWindows.erase(iter);
                 }
             }
         }
@@ -910,10 +965,10 @@ void MainWindow::rowsAboutToBeRemoved(const QModelIndex &parent, int first, int 
         {
             if (const auto path = m_projectTreeModel->getPath(m_projectTreeModel->index(row, 0, parent)))
             {
-                if (const auto iter = m_pathPropertiesDialogs.find(path); iter != std::end(m_pathPropertiesDialogs))
+                if (const auto iter = m_pathPropertiesWindows.find(path); iter != std::end(m_pathPropertiesWindows))
                 {
                     delete iter->second;
-                    m_pathPropertiesDialogs.erase(iter);
+                    m_pathPropertiesWindows.erase(iter);
                 }
             }
         }
@@ -924,10 +979,10 @@ void MainWindow::rowsAboutToBeRemoved(const QModelIndex &parent, int first, int 
         {
             if (const auto script = m_projectTreeModel->getScript(m_projectTreeModel->index(row, 0, parent)))
             {
-                if (const auto iter = m_scriptPropertiesDialogs.find(script); iter != std::end(m_scriptPropertiesDialogs))
+                if (const auto iter = m_scriptPropertiesWindows.find(script); iter != std::end(m_scriptPropertiesWindows))
                 {
                     delete iter->second;
-                    m_scriptPropertiesDialogs.erase(iter);
+                    m_scriptPropertiesWindows.erase(iter);
                 }
             }
         }
@@ -938,10 +993,10 @@ void MainWindow::rowsAboutToBeRemoved(const QModelIndex &parent, int first, int 
         {
             if (const auto font = m_projectTreeModel->getFont(m_projectTreeModel->index(row, 0, parent)))
             {
-                if (const auto iter = m_fontPropertiesDialogs.find(font); iter != std::end(m_fontPropertiesDialogs))
+                if (const auto iter = m_fontPropertiesWindows.find(font); iter != std::end(m_fontPropertiesWindows))
                 {
                     delete iter->second;
-                    m_fontPropertiesDialogs.erase(iter);
+                    m_fontPropertiesWindows.erase(iter);
                 }
             }
         }
@@ -950,24 +1005,24 @@ void MainWindow::rowsAboutToBeRemoved(const QModelIndex &parent, int first, int 
 
 void MainWindow::modelAboutToBeReset()
 {
-    for (const auto &pair : m_spritePropertiesDialogs)
+    for (const auto &pair : m_spritePropertiesWindows)
         delete pair.second;
-    m_spritePropertiesDialogs.clear();
-    for (const auto &pair : m_soundPropertiesDialogs)
+    m_spritePropertiesWindows.clear();
+    for (const auto &pair : m_soundPropertiesWindows)
         delete pair.second;
-    m_soundPropertiesDialogs.clear();
-    for (const auto &pair : m_backgroundPropertiesDialogs)
+    m_soundPropertiesWindows.clear();
+    for (const auto &pair : m_backgroundPropertiesWindows)
         delete pair.second;
-    m_backgroundPropertiesDialogs.clear();
-    for (const auto &pair : m_pathPropertiesDialogs)
+    m_backgroundPropertiesWindows.clear();
+    for (const auto &pair : m_pathPropertiesWindows)
         delete pair.second;
-    m_pathPropertiesDialogs.clear();
-    for (const auto &pair : m_scriptPropertiesDialogs)
+    m_pathPropertiesWindows.clear();
+    for (const auto &pair : m_scriptPropertiesWindows)
         delete pair.second;
-    m_scriptPropertiesDialogs.clear();
-    for (const auto &pair : m_fontPropertiesDialogs)
+    m_scriptPropertiesWindows.clear();
+    for (const auto &pair : m_fontPropertiesWindows)
         delete pair.second;
-    m_fontPropertiesDialogs.clear();
+    m_fontPropertiesWindows.clear();
 }
 
 void MainWindow::updateTitle()

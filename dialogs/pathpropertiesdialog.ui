@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../resources.qrc">
-    <normaloff>:/qtgameengine/icons/dialogs/path-file.png</normaloff>:/qtgameengine/icons/dialogs/path-file.png</iconset>
+    <normaloff>:/qtgameengine/icons/path-file.png</normaloff>:/qtgameengine/icons/path-file.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
    <property name="spacing">
@@ -76,6 +76,8 @@
         <addaction name="actionUndo"/>
         <addaction name="separator"/>
         <addaction name="actionClear"/>
+        <addaction name="actionReverse"/>
+        <addaction name="actionShift"/>
        </widget>
       </item>
      </layout>
@@ -105,7 +107,7 @@
        <item>
         <widget class="QListView" name="listView">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+          <sizepolicy hsizetype="Ignored" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -275,7 +277,7 @@
   <action name="actionOk">
    <property name="icon">
     <iconset resource="../resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/ok.png</normaloff>:/qtgameengine/icons/actions/ok.png</iconset>
+     <normaloff>:/qtgameengine/icons/ok.png</normaloff>:/qtgameengine/icons/ok.png</iconset>
    </property>
    <property name="text">
     <string>OK</string>
@@ -287,7 +289,7 @@
   <action name="actionUndo">
    <property name="icon">
     <iconset resource="../resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/undo.png</normaloff>:/qtgameengine/icons/actions/undo.png</iconset>
+     <normaloff>:/qtgameengine/icons/undo.png</normaloff>:/qtgameengine/icons/undo.png</iconset>
    </property>
    <property name="text">
     <string>Undo</string>
@@ -299,13 +301,37 @@
   <action name="actionClear">
    <property name="icon">
     <iconset resource="../resources.qrc">
-     <normaloff>:/qtgameengine/icons/actions/new.png</normaloff>:/qtgameengine/icons/actions/new.png</iconset>
+     <normaloff>:/qtgameengine/icons/new.png</normaloff>:/qtgameengine/icons/new.png</iconset>
    </property>
    <property name="text">
     <string>Clear</string>
    </property>
    <property name="toolTip">
     <string>Clear the path</string>
+   </property>
+  </action>
+  <action name="actionReverse">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/rotate.png</normaloff>:/qtgameengine/icons/rotate.png</iconset>
+   </property>
+   <property name="text">
+    <string>Reverse</string>
+   </property>
+   <property name="toolTip">
+    <string>Reverse the path</string>
+   </property>
+  </action>
+  <action name="actionShift">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/move.png</normaloff>:/qtgameengine/icons/move.png</iconset>
+   </property>
+   <property name="text">
+    <string>Shift</string>
+   </property>
+   <property name="toolTip">
+    <string>Shift the path</string>
    </property>
   </action>
  </widget>

@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../resources.qrc">
-    <normaloff>:/qtgameengine/icons/dialogs/sound-file.png</normaloff>:/qtgameengine/icons/dialogs/sound-file.png</iconset>
+    <normaloff>:/qtgameengine/icons/sound-file.png</normaloff>:/qtgameengine/icons/sound-file.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
    <item>
@@ -44,7 +44,7 @@
        </property>
        <property name="icon">
         <iconset resource="../resources.qrc">
-         <normaloff>:/qtgameengine/icons/actions/open.png</normaloff>:/qtgameengine/icons/actions/open.png</iconset>
+         <normaloff>:/qtgameengine/icons/open.png</normaloff>:/qtgameengine/icons/open.png</iconset>
        </property>
       </widget>
      </item>
@@ -58,7 +58,7 @@
        </property>
        <property name="icon">
         <iconset resource="../resources.qrc">
-         <normaloff>:/qtgameengine/icons/actions/run.png</normaloff>:/qtgameengine/icons/actions/run.png</iconset>
+         <normaloff>:/qtgameengine/icons/run.png</normaloff>:/qtgameengine/icons/run.png</iconset>
        </property>
       </widget>
      </item>
@@ -72,7 +72,7 @@
        </property>
        <property name="icon">
         <iconset resource="../resources.qrc">
-         <normaloff>:/qtgameengine/icons/actions/exit.png</normaloff>:/qtgameengine/icons/actions/exit.png</iconset>
+         <normaloff>:/qtgameengine/icons/exit.png</normaloff>:/qtgameengine/icons/exit.png</iconset>
        </property>
       </widget>
      </item>
@@ -85,7 +85,7 @@
      </property>
      <property name="icon">
       <iconset resource="../resources.qrc">
-       <normaloff>:/qtgameengine/icons/actions/save.png</normaloff>:/qtgameengine/icons/actions/save.png</iconset>
+       <normaloff>:/qtgameengine/icons/save.png</normaloff>:/qtgameengine/icons/save.png</iconset>
      </property>
     </widget>
    </item>
@@ -268,7 +268,7 @@
        </property>
        <property name="icon">
         <iconset resource="../resources.qrc">
-         <normaloff>:/qtgameengine/icons/actions/sound.png</normaloff>:/qtgameengine/icons/actions/sound.png</iconset>
+         <normaloff>:/qtgameengine/icons/sound.png</normaloff>:/qtgameengine/icons/sound.png</iconset>
        </property>
       </widget>
      </item>
@@ -309,7 +309,7 @@
        </property>
        <property name="icon">
         <iconset resource="../resources.qrc">
-         <normaloff>:/qtgameengine/icons/buttons/ok.png</normaloff>:/qtgameengine/icons/buttons/ok.png</iconset>
+         <normaloff>:/qtgameengine/icons/ok.png</normaloff>:/qtgameengine/icons/ok.png</iconset>
        </property>
       </widget>
      </item>

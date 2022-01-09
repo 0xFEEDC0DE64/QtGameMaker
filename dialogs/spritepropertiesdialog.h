@@ -4,6 +4,7 @@
 #include <QString>
 
 #include <memory>
+#include <optional>
 
 namespace Ui { class SpritePropertiesDialog; }
 struct Sprite;
@@ -28,9 +29,13 @@ private slots:
     void changed();
 
 private:
+    void updateTitle();
+
     const std::unique_ptr<Ui::SpritePropertiesDialog> m_ui;
 
     Sprite &m_sprite;
 
     bool m_unsavedChanges{};
+
+    std::optional<std::vector<QPixmap>> m_newPixmaps;
 };

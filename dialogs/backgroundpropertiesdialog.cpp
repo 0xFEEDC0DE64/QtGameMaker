@@ -6,6 +6,7 @@
 #include <QMessageBox>
 
 #include "projectcontainer.h"
+#include "imageeditordialog.h"
 
 BackgroundPropertiesDialog::BackgroundPropertiesDialog(Background &background, QWidget *parent) :
     QDialog{parent},
@@ -91,7 +92,7 @@ void BackgroundPropertiesDialog::saveBackground()
 
 void BackgroundPropertiesDialog::editBackground()
 {
-
+    ImageEditorDialog{this}.exec();
 }
 
 void BackgroundPropertiesDialog::changed()

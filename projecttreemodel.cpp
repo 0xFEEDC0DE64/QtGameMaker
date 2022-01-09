@@ -4,6 +4,7 @@
 #include <QPixmap>
 
 #include <utility>
+#include <algorithm>
 
 #include "futurecpp.h"
 #include "projectcontainer.h"
@@ -24,9 +25,14 @@ enum {
     NumberOfRows
 };
 
-ProjectTreeModel::ProjectTreeModel(ProjectContainer *project, QObject *parent) :
+ProjectTreeModel::ProjectTreeModel(QObject *parent) :
+    QAbstractItemModel{parent}
+{
+}
+
+ProjectTreeModel::ProjectTreeModel(ProjectContainer &project, QObject *parent) :
     QAbstractItemModel{parent},
-    m_project{project}
+    m_project{&project}
 {
 }
 
@@ -206,10 +212,10 @@ QVariant ProjectTreeModel::data(const QModelIndex &index, int role) const
             case RowFonts:
             case RowTimeLines:
             case RowObjects:
-            case RowRooms:              return QPixmap{":/qtgameengine/icons/tree/folder.png"}.scaled(16, 16);
-            case RowGameInformation:    return QPixmap{":/qtgameengine/icons/tree/game-information.png"}.scaled(16, 16);
-            case RowGlobalGameSettings: return QPixmap{":/qtgameengine/icons/tree/global-game-settings.png"}.scaled(16, 16);
-            case RowExtensionPackages:  return QPixmap{":/qtgameengine/icons/tree/extension-packages.png"}.scaled(16, 16);
+            case RowRooms:              return QPixmap{":/qtgameengine/icons/folder.png"}.scaled(16, 16);
+            case RowGameInformation:    return QPixmap{":/qtgameengine/icons/game-information-file.png"}.scaled(16, 16);
+            case RowGlobalGameSettings: return QPixmap{":/qtgameengine/icons/global-game-settings-file.png"}.scaled(16, 16);
+            case RowExtensionPackages:  return QPixmap{":/qtgameengine/icons/extension-packages-file.png"}.scaled(16, 16);
             default:
                 qWarning() << "unexpected root row" << index.row();
                 return {};
@@ -240,12 +246,13 @@ QVariant ProjectTreeModel::data(const QModelIndex &index, int role) const
         case Qt::EditRole:
             return iter->name;
         case Qt::DecorationRole:
-            if (iter->pixmaps.empty())
+            if (iter->pixmaps.empty() || iter->pixmaps.front().isNull())
             {
-                qWarning() << "sprite has no pixmaps";
-                return {};
+                QPixmap pixmap{16, 16};
+                pixmap.fill(Qt::white);
+                return pixmap;
             }
-            return iter->pixmaps.front().scaled(16, 16, Qt::KeepAspectRatio);
+            return iter->pixmaps.front().scaled(16, 16, Qt::IgnoreAspectRatio /*KeepAspectRatio*/);
 
         default:
             return {};
@@ -276,9 +283,9 @@ QVariant ProjectTreeModel::data(const QModelIndex &index, int role) const
             switch (iter->type)
             {
             case Sound::Type::Sound:
-                return QPixmap{":/qtgameengine/icons/tree/sound-file.png"}.scaled(16, 16);
+                return QPixmap{":/qtgameengine/icons/sound-file.png"}.scaled(16, 16);
             case Sound::Type::Music:
-                return QPixmap{":/qtgameengine/icons/tree/music-file.png"}.scaled(16, 16);
+                return QPixmap{":/qtgameengine/icons/music-file.png"}.scaled(16, 16);
             default:
                 qWarning() << "unexpected sound type" << std::to_underlying(iter->type);
                 return {};
@@ -310,6 +317,12 @@ QVariant ProjectTreeModel::data(const QModelIndex &index, int role) const
         case Qt::EditRole:
             return iter->name;
         case Qt::DecorationRole:
+            if (iter->pixmap.isNull())
+            {
+                QPixmap pixmap{16, 16};
+                pixmap.fill(Qt::white);
+                return pixmap;
+            }
             return iter->pixmap.scaled(16, 16, Qt::KeepAspectRatio);
         default:
             return {};
@@ -337,7 +350,7 @@ QVariant ProjectTreeModel::data(const QModelIndex &index, int role) const
         case Qt::EditRole:
             return iter->name;
         case Qt::DecorationRole:
-            return QPixmap{":/qtgameengine/icons/tree/path-file.png"}.scaled(16, 16);
+            return QPixmap{":/qtgameengine/icons/path-file.png"}.scaled(16, 16);
         default:
             return {};
         }
@@ -364,7 +377,7 @@ QVariant ProjectTreeModel::data(const QModelIndex &index, int role) const
         case Qt::EditRole:
             return iter->name;
         case Qt::DecorationRole:
-            return QPixmap{":/qtgameengine/icons/tree/script-file.png"}.scaled(16, 16);
+            return QPixmap{":/qtgameengine/icons/script-file.png"}.scaled(16, 16);
         default:
             return {};
         }
@@ -391,7 +404,7 @@ QVariant ProjectTreeModel::data(const QModelIndex &index, int role) const
         case Qt::EditRole:
             return iter->name;
         case Qt::DecorationRole:
-            return QPixmap{":/qtgameengine/icons/tree/font-file.png"}.scaled(16, 16);
+            return QPixmap{":/qtgameengine/icons/font-file.png"}.scaled(16, 16);
         default:
             return {};
         }
@@ -442,8 +455,18 @@ bool ProjectTreeModel::setData(const QModelIndex &index, const QVariant &value, 
         {
         case Qt::DisplayRole:
         case Qt::EditRole:
-            iter->name = value.toString();
-            emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+            if (auto name = value.toString(); name != iter->name)
+            {
+                if (std::any_of(std::cbegin(m_project->sprites), std::cend(m_project->sprites),
+                                [&name](const auto &entry){ return entry.name == name; }))
+                {
+                    qWarning() << "duplicate name" << name;
+                    emit errorOccured(tr("A Sprite with the name \"%0\" is already existing").arg(name));
+                    return false;
+                }
+                iter->name = std::move(name);
+                emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+            }
             return true;
         default:
             qWarning() << "unexpected role" << role;
@@ -468,8 +491,18 @@ bool ProjectTreeModel::setData(const QModelIndex &index, const QVariant &value, 
         {
         case Qt::DisplayRole:
         case Qt::EditRole:
-            iter->name = value.toString();
-            emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+            if (auto name = value.toString(); name != iter->name)
+            {
+                if (std::any_of(std::cbegin(m_project->sprites), std::cend(m_project->sprites),
+                                [&name](const auto &entry){ return entry.name == name; }))
+                {
+                    qWarning() << "duplicate name" << name;
+                    emit errorOccured(tr("A Sound with the name \"%0\" is already existing").arg(name));
+                    return false;
+                }
+                iter->name = std::move(name);
+                emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+            }
             return true;
         default:
             qWarning() << "unexpected role" << role;
@@ -494,8 +527,18 @@ bool ProjectTreeModel::setData(const QModelIndex &index, const QVariant &value, 
         {
         case Qt::DisplayRole:
         case Qt::EditRole:
-            iter->name = value.toString();
-            emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+            if (auto name = value.toString(); name != iter->name)
+            {
+                if (std::any_of(std::cbegin(m_project->sprites), std::cend(m_project->sprites),
+                                [&name](const auto &entry){ return entry.name == name; }))
+                {
+                    qWarning() << "duplicate name" << name;
+                    emit errorOccured(tr("A Background with the name \"%0\" is already existing").arg(name));
+                    return false;
+                }
+                iter->name = std::move(name);
+                emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+            }
             return true;
         default:
             qWarning() << "unexpected role" << role;
@@ -520,8 +563,18 @@ bool ProjectTreeModel::setData(const QModelIndex &index, const QVariant &value, 
         {
         case Qt::DisplayRole:
         case Qt::EditRole:
-            iter->name = value.toString();
-            emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+            if (auto name = value.toString(); name != iter->name)
+            {
+                if (std::any_of(std::cbegin(m_project->sprites), std::cend(m_project->sprites),
+                                [&name](const auto &entry){ return entry.name == name; }))
+                {
+                    qWarning() << "duplicate name" << name;
+                    emit errorOccured(tr("A Path with the name \"%0\" is already existing").arg(name));
+                    return false;
+                }
+                iter->name = std::move(name);
+                emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+            }
             return true;
         default:
             qWarning() << "unexpected role" << role;
@@ -546,8 +599,18 @@ bool ProjectTreeModel::setData(const QModelIndex &index, const QVariant &value, 
         {
         case Qt::DisplayRole:
         case Qt::EditRole:
-            iter->name = value.toString();
-            emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+            if (auto name = value.toString(); name != iter->name)
+            {
+                if (std::any_of(std::cbegin(m_project->sprites), std::cend(m_project->sprites),
+                                [&name](const auto &entry){ return entry.name == name; }))
+                {
+                    qWarning() << "duplicate name" << name;
+                    emit errorOccured(tr("A Script with the name \"%0\" is already existing").arg(name));
+                    return false;
+                }
+                iter->name = std::move(name);
+                emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+            }
             return true;
         default:
             qWarning() << "unexpected role" << role;
@@ -572,8 +635,18 @@ bool ProjectTreeModel::setData(const QModelIndex &index, const QVariant &value, 
         {
         case Qt::DisplayRole:
         case Qt::EditRole:
-            iter->name = value.toString();
-            emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+            if (auto name = value.toString(); name != iter->name)
+            {
+                if (std::any_of(std::cbegin(m_project->sprites), std::cend(m_project->sprites),
+                                [&name](const auto &entry){ return entry.name == name; }))
+                {
+                    qWarning() << "duplicate name" << name;
+                    emit errorOccured(tr("A Font with the name \"%0\" is already existing").arg(name));
+                    return false;
+                }
+                iter->name = std::move(name);
+                emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+            }
             return true;
         default:
             qWarning() << "unexpected role" << role;

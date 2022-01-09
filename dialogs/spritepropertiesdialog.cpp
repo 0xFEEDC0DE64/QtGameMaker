@@ -58,6 +58,8 @@ void SpritePropertiesDialog::accept()
         return;
     }
 
+    if (m_newPixmaps)
+        m_sprite.pixmaps = *m_newPixmaps;
     m_sprite.origin.x = m_ui->spinBoxOriginX->value();
     m_sprite.origin.y = m_ui->spinBoxOriginY->value();
     m_sprite.preciseCollisionChecking = m_ui->checkBoxPreciseCollisionChecking->isChecked();
@@ -98,12 +100,44 @@ void SpritePropertiesDialog::reject()
 
 void SpritePropertiesDialog::loadSprite()
 {
-    QFileDialog::getOpenFileName(this, tr("Open a Sprite Image..."));
+    const auto path = QFileDialog::getOpenFileName(this, tr("Open a Sprite Image..."), {}, tr("BMP Files (*.bmp), PNG Files (*png)"));
+    if (path.isEmpty())
+        return;
+
+    QPixmap pixmap;
+    if (!pixmap.load(path))
+    {
+        QMessageBox::warning(this, tr("Could not load sprite!"), tr("Could not load sprite!"));
+        return;
+    }
+
+    m_ui->labelPreview->setPixmap(pixmap);
+
+    m_newPixmaps = std::vector<QPixmap>{ std::move(pixmap) };
+    m_unsavedChanges = true;
+
+    updateTitle();
 }
 
 void SpritePropertiesDialog::saveSprite()
 {
-    QFileDialog::getSaveFileName(this, tr("Save a Sprite Image..."), m_sprite.name + ".png", tr("PNG Files (*.png)"));
+    const auto &pixmaps = m_newPixmaps ? *m_newPixmaps : m_sprite.pixmaps;
+
+    if (pixmaps.empty())
+    {
+        QMessageBox::warning(this, tr("No sprites available to save!"), tr("No sprites available to save!"));
+        return;
+    }
+
+    const auto path = QFileDialog::getSaveFileName(this, tr("Save a Sprite Image..."), m_sprite.name + ".png", tr("PNG Files (*.png)"));
+    if (path.isEmpty())
+        return;
+
+    if (!pixmaps.front().save(path))
+    {
+        QMessageBox::warning(this, tr("Could not save sprite!"), tr("Could not save sprite!"));
+        return;
+    }
 }
 
 void SpritePropertiesDialog::editSprite()
@@ -127,7 +161,15 @@ void SpritePropertiesDialog::changed()
 {
     if (!m_unsavedChanges)
     {
-        setWindowTitle(tr("Sprite Properties: %0*").arg(m_sprite.name));
         m_unsavedChanges = true;
+        updateTitle();
     }
+}
+
+void SpritePropertiesDialog::updateTitle()
+{
+    setWindowTitle(tr("Sprite Properties: %0%1")
+                       .arg(m_sprite.name)
+                       .arg(m_unsavedChanges ? tr("*") : QString{})
+                   );
 }

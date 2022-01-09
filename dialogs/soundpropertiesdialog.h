@@ -5,6 +5,7 @@
 #include <QSoundEffect>
 
 #include <memory>
+#include <optional>
 
 namespace Ui { class SoundPropertiesDialog; }
 struct Sound;
@@ -22,9 +23,9 @@ public:
 
 private slots:
     void loadSound();
+    void saveSound();
     void playSound();
     void stopSound();
-    void saveSound();
     void editSound();
 
     void changed();
@@ -35,6 +36,8 @@ private:
     Sound &m_sound;
 
     bool m_unsavedChanges{};
+
+    std::optional<QString> m_newPath;
 
     QSoundEffect m_soundEffect;
 };

@@ -26,6 +26,7 @@ private slots:
     void contextMenuRequested(const QPoint &pos);
     void doubleClicked(const QModelIndex &index);
     void selectionChanged(const QModelIndex &index);
+    void modelErrorOccured(const QString &message);
 
     void newFile();
     void openFile();
@@ -43,6 +44,8 @@ private slots:
     void delete_();
     void rename();
     void showProperties();
+    void findResource();
+    void showObjectInformation();
     void createSprite();
     void createSound();
     void createBackground();
@@ -70,10 +73,12 @@ private:
 
     const std::unique_ptr<ProjectTreeModel> m_projectTreeModel;
 
-    std::map<Sprite*, QMdiSubWindow*> m_spritePropertiesDialogs;
-    std::map<Sound*, QMdiSubWindow*> m_soundPropertiesDialogs;
-    std::map<Background*, QMdiSubWindow*> m_backgroundPropertiesDialogs;
-    std::map<Path*, QMdiSubWindow*> m_pathPropertiesDialogs;
-    std::map<Script*, QMdiSubWindow*> m_scriptPropertiesDialogs;
-    std::map<Font*, QMdiSubWindow*> m_fontPropertiesDialogs;
+    std::map<Sprite*, QMdiSubWindow*> m_spritePropertiesWindows;
+    std::map<Sound*, QMdiSubWindow*> m_soundPropertiesWindows;
+    std::map<Background*, QMdiSubWindow*> m_backgroundPropertiesWindows;
+    std::map<Path*, QMdiSubWindow*> m_pathPropertiesWindows;
+    std::map<Script*, QMdiSubWindow*> m_scriptPropertiesWindows;
+    std::map<Font*, QMdiSubWindow*> m_fontPropertiesWindows;
+
+    QMdiSubWindow *m_objectInformationWindow{};
 };

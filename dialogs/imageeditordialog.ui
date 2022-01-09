@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ImageEditorDialog</class>
+ <widget class="QDialog" name="ImageEditorDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>572</width>
+    <height>454</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Image Editor</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1,0">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QMenuBar" name="menuBar">
+     <widget class="QMenu" name="menu_File">
+      <property name="title">
+       <string>&amp;File</string>
+      </property>
+      <addaction name="actionNew"/>
+      <addaction name="separator"/>
+      <addaction name="actionSaveAsPngFile"/>
+      <addaction name="separator"/>
+      <addaction name="actionPreviousImage"/>
+      <addaction name="actionNextImage"/>
+      <addaction name="separator"/>
+      <addaction name="actionCloseSavingChanges"/>
+     </widget>
+     <widget class="QMenu" name="menu_Edit">
+      <property name="title">
+       <string>&amp;Edit</string>
+      </property>
+      <addaction name="actionUndo"/>
+      <addaction name="actionRedo"/>
+      <addaction name="separator"/>
+      <addaction name="actionEraseToLeftColor"/>
+      <addaction name="separator"/>
+      <addaction name="actionDelete"/>
+      <addaction name="actionCut"/>
+      <addaction name="actionCopy"/>
+      <addaction name="actionPaste"/>
+      <addaction name="actionPasteFromFile"/>
+      <addaction name="separator"/>
+      <addaction name="actionSelectAll"/>
+     </widget>
+     <widget class="QMenu" name="menu_View">
+      <property name="title">
+       <string>&amp;View</string>
+      </property>
+     </widget>
+     <widget class="QMenu" name="menu_Transform">
+      <property name="title">
+       <string>&amp;Transform</string>
+      </property>
+     </widget>
+     <widget class="QMenu" name="menu_Image">
+      <property name="title">
+       <string>&amp;Image</string>
+      </property>
+     </widget>
+     <addaction name="menu_File"/>
+     <addaction name="menu_Edit"/>
+     <addaction name="menu_View"/>
+     <addaction name="menu_Transform"/>
+     <addaction name="menu_Image"/>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="frame">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QToolBar" name="toolBar">
+        <property name="movable">
+         <bool>false</bool>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+        <addaction name="actionCloseSavingChanges"/>
+        <addaction name="actionPreviousImage"/>
+        <addaction name="actionNextImage"/>
+        <addaction name="separator"/>
+        <addaction name="actionNew"/>
+        <addaction name="actionLoad"/>
+        <addaction name="actionSaveAsPngFile"/>
+        <addaction name="separator"/>
+        <addaction name="actionUndo"/>
+        <addaction name="actionRedo"/>
+        <addaction name="separator"/>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGraphicsView" name="graphicsView"/>
+   </item>
+   <item>
+    <widget class="QStatusBar" name="statusBar"/>
+   </item>
+  </layout>
+  <action name="actionNew">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/new.png</normaloff>:/qtgameengine/icons/new.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;New...</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a new, empty image</string>
+   </property>
+  </action>
+  <action name="actionSaveAsPngFile">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/save.png</normaloff>:/qtgameengine/icons/save.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Save as PNG file...</string>
+   </property>
+   <property name="toolTip">
+    <string>Save the image as a PNG file</string>
+   </property>
+  </action>
+  <action name="actionPreviousImage">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/arrow-left.png</normaloff>:/qtgameengine/icons/arrow-left.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Previous image...</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit the previous subimage of the sprite</string>
+   </property>
+  </action>
+  <action name="actionNextImage">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/arrow-right.png</normaloff>:/qtgameengine/icons/arrow-right.png</iconset>
+   </property>
+   <property name="text">
+    <string>N&amp;ext image...</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit the next subimage of the sprite</string>
+   </property>
+  </action>
+  <action name="actionCloseSavingChanges">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/ok.png</normaloff>:/qtgameengine/icons/ok.png</iconset>
+   </property>
+   <property name="text">
+    <string>Close Saving Changes</string>
+   </property>
+   <property name="toolTip">
+    <string>Close the image editor, saving the changes made</string>
+   </property>
+  </action>
+  <action name="actionLoad">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/open.png</normaloff>:/qtgameengine/icons/open.png</iconset>
+   </property>
+   <property name="text">
+    <string>Load</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/undo.png</normaloff>:/qtgameengine/icons/undo.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Undo</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/redo.png</normaloff>:/qtgameengine/icons/redo.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Redo</string>
+   </property>
+  </action>
+  <action name="actionEraseToLeftColor">
+   <property name="text">
+    <string>&amp;Erase to left color</string>
+   </property>
+  </action>
+  <action name="actionDelete">
+   <property name="text">
+    <string>&amp;Delete</string>
+   </property>
+  </action>
+  <action name="actionCut">
+   <property name="text">
+    <string>Cu&amp;t</string>
+   </property>
+  </action>
+  <action name="actionCopy">
+   <property name="text">
+    <string>&amp;Copy</string>
+   </property>
+  </action>
+  <action name="actionPaste">
+   <property name="text">
+    <string>&amp;Paste</string>
+   </property>
+  </action>
+  <action name="actionPasteFromFile">
+   <property name="text">
+    <string>Paste from F&amp;ile</string>
+   </property>
+  </action>
+  <action name="actionSelectAll">
+   <property name="text">
+    <string>Select &amp;All</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

@@ -2,6 +2,7 @@
 #include "ui_soundpropertiesdialog.h"
 
 #include <QFileDialog>
+#include <QFile>
 #include <QDebug>
 #include <QMessageBox>
 #include <QFileInfo>
@@ -18,7 +19,11 @@ SoundPropertiesDialog::SoundPropertiesDialog(Sound &sound, QWidget *parent) :
     setWindowTitle(tr("Sound Properties: %0").arg(m_sound.name));
 
     m_ui->lineEditName->setText(m_sound.name);
-    m_ui->labelFilename->setText(tr("Filename: %0").arg(QFileInfo{m_sound.path}.fileName()));
+    if (!m_sound.path.isEmpty())
+    {
+        m_ui->labelFilename->setText(tr("Filename: %0").arg(QFileInfo{m_sound.path}.fileName()));
+        m_soundEffect.setSource(QUrl::fromLocalFile(m_sound.path));
+    }
     m_ui->radioButtonNormal->setChecked(m_sound.type == Sound::Type::Sound);
     m_ui->radioButtonMusic->setChecked(m_sound.type == Sound::Type::Music);
     m_ui->checkBoxChorus->setChecked(m_sound.effects.chorus);
@@ -79,6 +84,9 @@ void SoundPropertiesDialog::accept()
         return;
     }
 
+    if (m_newPath)
+        m_sound.path = *m_newPath;
+
     if (m_ui->radioButtonNormal->isChecked())
         m_sound.type = Sound::Type::Sound;
     else if (m_ui->radioButtonMusic->isChecked())
@@ -132,24 +140,50 @@ void SoundPropertiesDialog::reject()
 
 void SoundPropertiesDialog::loadSound()
 {
-    QFileDialog::getOpenFileName(this, tr("Open a Sound File..."));
+    const auto path = QFileDialog::getOpenFileName(this, tr("Open a Sound File..."));
+    if (path.isEmpty())
+        return;
+
+    if (QFile file{path}; !file.open(QIODevice::ReadOnly))
+    {
+        QMessageBox::warning(this, tr("Could not load Sound!"), tr("Could not load Sound!") + "\n\n" + file.errorString());
+        return;
+    }
+
+    m_newPath = path;
+    changed();
+    m_ui->labelFilename->setText(tr("Filename: %0").arg(QFileInfo{path}.fileName()));
+    m_soundEffect.setSource(QUrl::fromLocalFile(path));
+}
+
+void SoundPropertiesDialog::saveSound()
+{
+    const auto &path = m_newPath ? *m_newPath : m_sound.path;
+    if (path.isEmpty())
+    {
+        QMessageBox::warning(this, tr("Could not save Sound!"), tr("Could not save Sound!") + "\n\n" + tr("No sound has been selected yet."));
+        return;
+    }
+
+    const auto savePath = QFileDialog::getSaveFileName(this, tr("Save a Sound File..."), m_sound.name + ".wav", tr("WAV Files (*.wav)"));
+    if (savePath.isEmpty())
+        return;
+
+    if (!QFile::copy(path, savePath))
+    {
+        QMessageBox::warning(this, tr("Could not save Sound!"), tr("Could not save Sound!"));
+        return;
+    }
 }
 
 void SoundPropertiesDialog::playSound()
 {
-    m_soundEffect.setSource(QUrl::fromLocalFile(m_sound.path));
-    m_soundEffect.stop();
     m_soundEffect.play();
 }
 
 void SoundPropertiesDialog::stopSound()
 {
     m_soundEffect.stop();
-}
-
-void SoundPropertiesDialog::saveSound()
-{
-    QFileDialog::getSaveFileName(this, tr("Save a Sound File..."), m_sound.name + ".wav", tr("WAV Files (*.wav)"));
 }
 
 void SoundPropertiesDialog::editSound()
