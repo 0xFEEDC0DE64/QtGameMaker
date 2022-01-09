@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>EditSpriteDialog</class>
+ <widget class="QDialog" name="EditSpriteDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>491</width>
+    <height>500</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Sprite Editor</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1,0">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QMenuBar" name="menuBar">
+     <widget class="QMenu" name="menuFile">
+      <property name="title">
+       <string>&amp;File</string>
+      </property>
+      <addaction name="actionNew"/>
+      <addaction name="actionCreateFromFile"/>
+      <addaction name="actionAddFromFile"/>
+      <addaction name="separator"/>
+      <addaction name="actionSaveAsPngFile"/>
+      <addaction name="separator"/>
+      <addaction name="actionCreateFromStrip"/>
+      <addaction name="actionAddFromStrip"/>
+      <addaction name="separator"/>
+      <addaction name="actionCloseSavingChanges"/>
+     </widget>
+     <widget class="QMenu" name="menuEdit">
+      <property name="title">
+       <string>&amp;Edit</string>
+      </property>
+     </widget>
+     <widget class="QMenu" name="menuTransform">
+      <property name="title">
+       <string>&amp;Transform</string>
+      </property>
+     </widget>
+     <widget class="QMenu" name="menuImages">
+      <property name="title">
+       <string>&amp;Images</string>
+      </property>
+     </widget>
+     <widget class="QMenu" name="menuAnimation">
+      <property name="title">
+       <string>&amp;Animation</string>
+      </property>
+     </widget>
+     <addaction name="menuFile"/>
+     <addaction name="menuEdit"/>
+     <addaction name="menuTransform"/>
+     <addaction name="menuImages"/>
+     <addaction name="menuAnimation"/>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="frame">
+     <property name="frameShape">
+      <enum>QFrame::Panel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QToolBar" name="toolBar">
+        <property name="movable">
+         <bool>false</bool>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+        <property name="floatable">
+         <bool>false</bool>
+        </property>
+        <addaction name="actionCloseSavingChanges"/>
+        <addaction name="separator"/>
+        <addaction name="actionNew"/>
+        <addaction name="actionCreateFromFile"/>
+        <addaction name="actionAddFromFile"/>
+        <addaction name="actionSaveAsPngFile"/>
+        <addaction name="separator"/>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="widget" native="true"/>
+   </item>
+   <item>
+    <widget class="QStatusBar" name="statusBar"/>
+   </item>
+  </layout>
+  <action name="actionNew">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/actions/new.png</normaloff>:/qtgameengine/icons/actions/new.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;New...</string>
+   </property>
+  </action>
+  <action name="actionCreateFromFile">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/actions/open.png</normaloff>:/qtgameengine/icons/actions/open.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Create from file...</string>
+   </property>
+  </action>
+  <action name="actionAddFromFile">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/actions/create-group.png</normaloff>:/qtgameengine/icons/actions/create-group.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Add from file...</string>
+   </property>
+  </action>
+  <action name="actionSaveAsPngFile">
+   <property name="text">
+    <string>&amp;Save as PNG File...</string>
+   </property>
+  </action>
+  <action name="actionCreateFromStrip">
+   <property name="text">
+    <string>Create from Strip...</string>
+   </property>
+  </action>
+  <action name="actionAddFromStrip">
+   <property name="text">
+    <string>Add from Stri&amp;p...</string>
+   </property>
+  </action>
+  <action name="actionCloseSavingChanges">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/actions/ok.png</normaloff>:/qtgameengine/icons/actions/ok.png</iconset>
+   </property>
+   <property name="text">
+    <string>Close Saving Changes</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>actionCloseSavingChanges</sender>
+   <signal>triggered()</signal>
+   <receiver>EditSpriteDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>245</x>
+     <y>249</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
