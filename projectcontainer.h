@@ -43,6 +43,7 @@ struct Background
 {
     QString name;
     QPixmap pixmap;
+    bool tileset{};
 };
 
 struct Path

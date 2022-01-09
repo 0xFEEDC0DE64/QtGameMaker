@@ -73,6 +73,7 @@ QDataStream &operator<<(QDataStream &ds, const Background &background)
 {
     ds << background.name;
     ds << background.pixmap;
+    ds << background.tileset;
     return ds;
 }
 
@@ -80,6 +81,7 @@ QDataStream &operator>>(QDataStream &ds, Background &background)
 {
     ds >> background.name;
     ds >> background.pixmap;
+    ds >> background.tileset;
     return ds;
 }
 

@@ -4,28 +4,37 @@
 #include <QFileDialog>
 #include <QDebug>
 #include <QMessageBox>
+#include <QSignalBlocker>
 
 #include "projectcontainer.h"
+#include "projecttreemodel.h"
 #include "editspritedialog.h"
 
-SpritePropertiesDialog::SpritePropertiesDialog(Sprite &sprite, QWidget *parent) :
+SpritePropertiesDialog::SpritePropertiesDialog(Sprite &sprite, ProjectTreeModel &projectModel, QWidget *parent) :
     QDialog{parent},
     m_ui{std::make_unique<Ui::SpritePropertiesDialog>()},
-    m_sprite{sprite}
+    m_sprite{sprite},
+    m_projectModel{projectModel}
 {
     m_ui->setupUi(this);
 
-    setWindowTitle(tr("Sprite Properties: %0").arg(m_sprite.name));
+    updateTitle();
+
+    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Ok))
+        button->setIcon(QIcon{":/qtgameengine/icons/ok.png"});
+    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Cancel))
+        button->setIcon(QIcon{":/qtgameengine/icons/delete.png"});
 
     m_ui->lineEditName->setText(m_sprite.name);
-    m_ui->labelWidth->setText(tr("Width: %0").arg(m_sprite.pixmaps.empty() ? tr("n/a") : QString::number(m_sprite.pixmaps.front().width())));
-    m_ui->labelHeight->setText(tr("Height: %0").arg(m_sprite.pixmaps.empty() ? tr("n/a") : QString::number(m_sprite.pixmaps.front().height())));
-    m_ui->labelSubimages->setText(tr("Number of subimages: %0").arg(m_sprite.pixmaps.size()));
+    updateSpriteInfo();
     m_ui->spinBoxOriginX->setValue(m_sprite.origin.x);
     m_ui->spinBoxOriginY->setValue(m_sprite.origin.y);
     m_ui->checkBoxPreciseCollisionChecking->setChecked(m_sprite.preciseCollisionChecking);
     m_ui->checkBoxSeparateCollisionMasks->setChecked(m_sprite.separateCollisionMasks);
     m_ui->labelPreview->setPixmap(m_sprite.pixmaps.empty() ? QPixmap{} : m_sprite.pixmaps.front());
+
+    connect(&m_projectModel, &ProjectTreeModel::spriteNameChanged,
+            this, &SpritePropertiesDialog::spriteNameChanged);
 
     connect(m_ui->pushButtonLoad, &QAbstractButton::pressed,
             this, &SpritePropertiesDialog::loadSprite);
@@ -54,12 +63,15 @@ void SpritePropertiesDialog::accept()
 {
     if (m_sprite.name != m_ui->lineEditName->text())
     {
-        QMessageBox::critical(this, tr("Not implemented"), tr("Changing the name is not yet implemented!"));
-        return;
+        if (!m_projectModel.renameSprite(m_sprite, m_ui->lineEditName->text()))
+        {
+            QMessageBox::critical(this, tr("Renaming Sprite failed!"), tr("Renaming Sprite failed!"));
+            return;
+        }
     }
 
     if (m_newPixmaps)
-        m_sprite.pixmaps = *m_newPixmaps;
+        m_sprite.pixmaps = std::move(*m_newPixmaps);
     m_sprite.origin.x = m_ui->spinBoxOriginX->value();
     m_sprite.origin.y = m_ui->spinBoxOriginY->value();
     m_sprite.preciseCollisionChecking = m_ui->checkBoxPreciseCollisionChecking->isChecked();
@@ -117,13 +129,14 @@ void SpritePropertiesDialog::loadSprite()
     m_unsavedChanges = true;
 
     updateTitle();
+    updateSpriteInfo();
 }
 
 void SpritePropertiesDialog::saveSprite()
 {
     const auto &pixmaps = m_newPixmaps ? *m_newPixmaps : m_sprite.pixmaps;
 
-    if (pixmaps.empty())
+    if (pixmaps.empty() || pixmaps.front().isNull())
     {
         QMessageBox::warning(this, tr("No sprites available to save!"), tr("No sprites available to save!"));
         return;
@@ -135,7 +148,7 @@ void SpritePropertiesDialog::saveSprite()
 
     if (!pixmaps.front().save(path))
     {
-        QMessageBox::warning(this, tr("Could not save sprite!"), tr("Could not save sprite!"));
+        QMessageBox::warning(this, tr("Could not save Sprite!"), tr("Could not save Sprite!"));
         return;
     }
 }
@@ -147,14 +160,15 @@ void SpritePropertiesDialog::editSprite()
 
 void SpritePropertiesDialog::centerOrigin()
 {
-    if (m_sprite.pixmaps.empty())
+    const auto &pixmaps = m_newPixmaps ? *m_newPixmaps : m_sprite.pixmaps;
+    if (pixmaps.empty() || pixmaps.front().isNull())
     {
         qDebug() << "unexpected empty pixmaps";
         return;
     }
 
-    m_ui->spinBoxOriginX->setValue(m_sprite.pixmaps.front().width() / 2);
-    m_ui->spinBoxOriginY->setValue(m_sprite.pixmaps.front().height() / 2);
+    m_ui->spinBoxOriginX->setValue(pixmaps.front().width() / 2);
+    m_ui->spinBoxOriginY->setValue(pixmaps.front().height() / 2);
 }
 
 void SpritePropertiesDialog::changed()
@@ -166,10 +180,31 @@ void SpritePropertiesDialog::changed()
     }
 }
 
+void SpritePropertiesDialog::spriteNameChanged(const Sprite &sprite)
+{
+    if (&sprite != &m_sprite)
+        return;
+
+    {
+        QSignalBlocker blocker{m_ui->lineEditName};
+        m_ui->lineEditName->setText(sprite.name);
+    }
+
+    updateTitle();
+}
+
 void SpritePropertiesDialog::updateTitle()
 {
     setWindowTitle(tr("Sprite Properties: %0%1")
                        .arg(m_sprite.name)
                        .arg(m_unsavedChanges ? tr("*") : QString{})
                    );
+}
+
+void SpritePropertiesDialog::updateSpriteInfo()
+{
+    const auto &pixmaps = m_newPixmaps ? *m_newPixmaps : m_sprite.pixmaps;
+    m_ui->labelWidth->setText(tr("Width: %0").arg(pixmaps.empty() ? tr("n/a") : QString::number(pixmaps.front().width())));
+    m_ui->labelHeight->setText(tr("Height: %0").arg(pixmaps.empty() ? tr("n/a") : QString::number(pixmaps.front().height())));
+    m_ui->labelSubimages->setText(tr("Number of subimages: %0").arg(pixmaps.size()));
 }

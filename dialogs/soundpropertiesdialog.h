@@ -9,13 +9,14 @@
 
 namespace Ui { class SoundPropertiesDialog; }
 struct Sound;
+class ProjectTreeModel;
 
 class SoundPropertiesDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit SoundPropertiesDialog(Sound &sound, QWidget *parent = nullptr);
+    explicit SoundPropertiesDialog(Sound &sound, ProjectTreeModel &projectModel, QWidget *parent = nullptr);
     ~SoundPropertiesDialog();
 
     void accept() override;
@@ -30,10 +31,15 @@ private slots:
 
     void changed();
 
+    void soundNameChanged(const Sound &sound);
+
 private:
+    void updateTitle();
+
     const std::unique_ptr<Ui::SoundPropertiesDialog> m_ui;
 
     Sound &m_sound;
+    ProjectTreeModel &m_projectModel;
 
     bool m_unsavedChanges{};
 

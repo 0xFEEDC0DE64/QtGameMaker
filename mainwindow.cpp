@@ -202,7 +202,7 @@ void MainWindow::doubleClicked(const QModelIndex &index)
         }
         else
         {
-            auto dialog = new SpritePropertiesDialog{*sprite};
+            auto dialog = new SpritePropertiesDialog{*sprite, *m_projectTreeModel};
             auto subwindow = m_ui->mdiArea->addSubWindow(dialog);
             auto action = m_ui->menuWindow->addAction(dialog->windowTitle());
             action->setCheckable(true);
@@ -247,7 +247,7 @@ void MainWindow::doubleClicked(const QModelIndex &index)
         }
         else
         {
-            auto dialog = new SoundPropertiesDialog{*sound};
+            auto dialog = new SoundPropertiesDialog{*sound, *m_projectTreeModel};
             auto subwindow = m_ui->mdiArea->addSubWindow(dialog);
             auto action = m_ui->menuWindow->addAction(dialog->windowTitle());
             action->setCheckable(true);
@@ -292,7 +292,7 @@ void MainWindow::doubleClicked(const QModelIndex &index)
         }
         else
         {
-            auto dialog = new BackgroundPropertiesDialog{*background};
+            auto dialog = new BackgroundPropertiesDialog{*background, *m_projectTreeModel};
             auto subwindow = m_ui->mdiArea->addSubWindow(dialog);
             auto action = m_ui->menuWindow->addAction(dialog->windowTitle());
             action->setCheckable(true);
@@ -337,7 +337,7 @@ void MainWindow::doubleClicked(const QModelIndex &index)
         }
         else
         {
-            auto dialog = new PathPropertiesDialog{*path};
+            auto dialog = new PathPropertiesDialog{*path, *m_projectTreeModel};
             auto subwindow = m_ui->mdiArea->addSubWindow(dialog);
             auto action = m_ui->menuWindow->addAction(dialog->windowTitle());
             action->setCheckable(true);
@@ -382,7 +382,7 @@ void MainWindow::doubleClicked(const QModelIndex &index)
         }
         else
         {
-            auto dialog = new ScriptPropertiesDialog{*script};
+            auto dialog = new ScriptPropertiesDialog{*script, *m_projectTreeModel};
             auto subwindow = m_ui->mdiArea->addSubWindow(dialog);
             auto action = m_ui->menuWindow->addAction(dialog->windowTitle());
             action->setCheckable(true);
@@ -427,7 +427,7 @@ void MainWindow::doubleClicked(const QModelIndex &index)
         }
         else
         {
-            auto dialog = new FontPropertiesDialog{*font};
+            auto dialog = new FontPropertiesDialog{*font, *m_projectTreeModel};
             auto subwindow = m_ui->mdiArea->addSubWindow(dialog);
             auto action = m_ui->menuWindow->addAction(dialog->windowTitle());
             action->setCheckable(true);

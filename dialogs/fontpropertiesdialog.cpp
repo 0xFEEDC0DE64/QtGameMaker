@@ -5,15 +5,22 @@
 #include <QMessageBox>
 
 #include "projectcontainer.h"
+#include "projecttreemodel.h"
 
-FontPropertiesDialog::FontPropertiesDialog(Font &font, QWidget *parent) :
+FontPropertiesDialog::FontPropertiesDialog(Font &font, ProjectTreeModel &projectModel, QWidget *parent) :
     QDialog{parent},
     m_ui{std::make_unique<Ui::FontPropertiesDialog>()},
-    m_font{font}
+    m_font{font},
+    m_projectModel{projectModel}
 {
     m_ui->setupUi(this);
 
-    setWindowTitle(tr("Font Properties: %0").arg(m_font.name));
+    updateTitle();
+
+    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Ok))
+        button->setIcon(QIcon{":/qtgameengine/icons/ok.png"});
+    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Cancel))
+        button->setIcon(QIcon{":/qtgameengine/icons/delete.png"});
 
     m_ui->lineEditName->setText(m_font.name);
     m_ui->fontComboBox->setCurrentFont(m_font.font);
@@ -24,6 +31,9 @@ FontPropertiesDialog::FontPropertiesDialog(Font &font, QWidget *parent) :
     m_ui->spinBoxCharRangeTo->setValue(m_font.range.to);
 
     m_ui->labelPreview->setFont(currentFont());
+
+    connect(&m_projectModel, &ProjectTreeModel::fontNameChanged,
+            this, &FontPropertiesDialog::fontNameChanged);
 
     connect(m_ui->pushButtonNormal, &QAbstractButton::pressed,
             this, &FontPropertiesDialog::normalRange);
@@ -56,8 +66,11 @@ void FontPropertiesDialog::accept()
 {
     if (m_font.name != m_ui->lineEditName->text())
     {
-        QMessageBox::critical(this, tr("Not implemented"), tr("Changing the name is not yet implemented!"));
-        return;
+        if (!m_projectModel.renameFont(m_font, m_ui->lineEditName->text()))
+        {
+            QMessageBox::critical(this, tr("Renaming Font failed!"), tr("Renaming Font failed!"));
+            return;
+        }
     }
 
     m_font.font = currentFont();
@@ -128,9 +141,30 @@ void FontPropertiesDialog::changed()
     m_ui->labelPreview->setFont(currentFont());
     if (!m_unsavedChanges)
     {
-        setWindowTitle(tr("Font Properties: %0*").arg(m_font.name));
         m_unsavedChanges = true;
+        updateTitle();
     }
+}
+
+void FontPropertiesDialog::fontNameChanged(const Font &font)
+{
+    if (&font != &m_font)
+        return;
+
+    {
+        QSignalBlocker blocker{m_ui->lineEditName};
+        m_ui->lineEditName->setText(font.name);
+    }
+
+    updateTitle();
+}
+
+void FontPropertiesDialog::updateTitle()
+{
+    setWindowTitle(tr("Font Properties: %0%1")
+                       .arg(m_font.name)
+                       .arg(m_unsavedChanges ? tr("*") : QString{})
+                   );
 }
 
 QFont FontPropertiesDialog::currentFont() const

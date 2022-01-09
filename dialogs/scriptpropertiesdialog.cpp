@@ -9,18 +9,20 @@
 #include <QMessageBox>
 
 #include "projectcontainer.h"
+#include "projecttreemodel.h"
 #include "jshighlighter.h"
 
-ScriptPropertiesDialog::ScriptPropertiesDialog(Script &script, QWidget *parent) :
+ScriptPropertiesDialog::ScriptPropertiesDialog(Script &script, ProjectTreeModel &projectModel, QWidget *parent) :
     QDialog{parent},
     m_ui{std::make_unique<Ui::ScriptPropertiesDialog>()},
     m_script{script},
+    m_projectModel{projectModel},
     m_lineEditName{new QLineEdit{this}},
     m_labelPosition{new QLabel{this}}
 {
     m_ui->setupUi(this);
 
-    setWindowTitle(tr("Script Properties: %0").arg(m_script.name));
+    updateTitle();
 
     {
         auto label = new QLabel{tr("Name:"), this};
@@ -48,6 +50,9 @@ ScriptPropertiesDialog::ScriptPropertiesDialog(Script &script, QWidget *parent) 
 
     updatePosition();
 
+    connect(&m_projectModel, &ProjectTreeModel::scriptNameChanged,
+            this, &ScriptPropertiesDialog::scriptNameChanged);
+
     connect(m_ui->actionLoad, &QAction::triggered,
             this, &ScriptPropertiesDialog::load);
     connect(m_ui->actionSave, &QAction::triggered,
@@ -71,8 +76,11 @@ void ScriptPropertiesDialog::accept()
 {
     if (m_script.name != m_lineEditName->text())
     {
-        QMessageBox::critical(this, tr("Not implemented"), tr("Changing the name is not yet implemented!"));
-        return;
+        if (!m_projectModel.renameScript(m_script, m_lineEditName->text()))
+        {
+            QMessageBox::critical(this, tr("Renaming Script failed!"), tr("Renaming Script failed!"));
+            return;
+        }
     }
 
     m_script.script = m_ui->codeEdit->toPlainText();
@@ -114,8 +122,8 @@ void ScriptPropertiesDialog::changed()
 {
     if (!m_unsavedChanges)
     {
-        setWindowTitle(tr("Script Properties: %0*").arg(m_script.name));
         m_unsavedChanges = true;
+        updateTitle();
     }
 }
 
@@ -155,4 +163,25 @@ void ScriptPropertiesDialog::updatePosition()
     }
 
     m_labelPosition->setText(tr("%0/%1: %2").arg(lines).arg(m_ui->codeEdit->blockCount()).arg(position));
+}
+
+void ScriptPropertiesDialog::scriptNameChanged(const Script &script)
+{
+    if (&script != &m_script)
+        return;
+
+    {
+        QSignalBlocker blocker{m_lineEditName};
+        m_lineEditName->setText(script.name);
+    }
+
+    updateTitle();
+}
+
+void ScriptPropertiesDialog::updateTitle()
+{
+    setWindowTitle(tr("Script Properties: %0%1")
+                       .arg(m_script.name)
+                       .arg(m_unsavedChanges ? tr("*") : QString{})
+                   );
 }

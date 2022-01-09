@@ -6,21 +6,31 @@
 #include <QMessageBox>
 
 #include "projectcontainer.h"
+#include "projecttreemodel.h"
 #include "imageeditordialog.h"
 
-BackgroundPropertiesDialog::BackgroundPropertiesDialog(Background &background, QWidget *parent) :
+BackgroundPropertiesDialog::BackgroundPropertiesDialog(Background &background, ProjectTreeModel &projectModel, QWidget *parent) :
     QDialog{parent},
     m_ui{std::make_unique<Ui::BackgroundPropertiesDialog>()},
-    m_background{background}
+    m_background{background},
+    m_projectModel{projectModel}
 {
     m_ui->setupUi(this);
 
-    setWindowTitle(tr("Background Properties: %0").arg(m_background.name));
+    updateTitle();
+
+    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Ok))
+        button->setIcon(QIcon{":/qtgameengine/icons/ok.png"});
+    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Cancel))
+        button->setIcon(QIcon{":/qtgameengine/icons/delete.png"});
 
     m_ui->lineEditName->setText(m_background.name);
-    m_ui->labelWidth->setText(tr("Width: %0").arg(m_background.pixmap.width()));
-    m_ui->labelHeight->setText(tr("Height: %0").arg(m_background.pixmap.height()));
+    updateSpriteInfo();
+    m_ui->checkBoxTileset->setChecked(m_background.tileset);
     m_ui->labelPreview->setPixmap(m_background.pixmap);
+
+    connect(&m_projectModel, &ProjectTreeModel::backgroundNameChanged,
+            this, &BackgroundPropertiesDialog::backgroundNameChanged);
 
     connect(m_ui->pushButtonLoad, &QAbstractButton::pressed,
             this, &BackgroundPropertiesDialog::loadBackground);
@@ -41,11 +51,16 @@ void BackgroundPropertiesDialog::accept()
 {
     if (m_background.name != m_ui->lineEditName->text())
     {
-        QMessageBox::critical(this, tr("Not implemented"), tr("Changing the name is not yet implemented!"));
-        return;
+        if (!m_projectModel.renameBackground(m_background, m_ui->lineEditName->text()))
+        {
+            QMessageBox::critical(this, tr("Renaming Background failed!"), tr("Renaming Background failed!"));
+            return;
+        }
     }
 
-    // TODO
+    if (m_newPixmap)
+        m_background.pixmap = std::move(*m_newPixmap);
+    m_background.tileset = m_ui->checkBoxTileset->isChecked();
 
     QDialog::accept();
 }
@@ -82,12 +97,45 @@ void BackgroundPropertiesDialog::reject()
 
 void BackgroundPropertiesDialog::loadBackground()
 {
-    QFileDialog::getOpenFileName(this, tr("Open a Background Image..."));
+    const auto path = QFileDialog::getOpenFileName(this, tr("Open a Background Image..."), {}, tr("BMP Files (*.bmp), PNG Files (*png)"));
+    if (path.isEmpty())
+        return;
+
+    QPixmap pixmap;
+    if (!pixmap.load(path))
+    {
+        QMessageBox::warning(this, tr("Could not load sprite!"), tr("Could not load sprite!"));
+        return;
+    }
+
+    m_ui->labelPreview->setPixmap(pixmap);
+
+    m_newPixmap = std::move(pixmap);
+    m_unsavedChanges = true;
+
+    updateTitle();
+    updateSpriteInfo();
 }
 
 void BackgroundPropertiesDialog::saveBackground()
 {
-    QFileDialog::getSaveFileName(this, tr("Save a Background Image..."), m_background.name + ".png", tr("PNG Files (*.png)"));
+    const auto &pixmap = m_newPixmap ? *m_newPixmap : m_background.pixmap;
+
+    if (pixmap.isNull())
+    {
+        QMessageBox::warning(this, tr("No background available to save!"), tr("No background available to save!"));
+        return;
+    }
+
+    const auto path = QFileDialog::getSaveFileName(this, tr("Save a Background Image..."), m_background.name + ".png", tr("PNG Files (*.png)"));
+    if (path.isEmpty())
+        return;
+
+    if (!pixmap.save(path))
+    {
+        QMessageBox::warning(this, tr("Could not save Background!"), tr("Could not save Background!"));
+        return;
+    }
 }
 
 void BackgroundPropertiesDialog::editBackground()
@@ -99,7 +147,35 @@ void BackgroundPropertiesDialog::changed()
 {
     if (!m_unsavedChanges)
     {
-        setWindowTitle(tr("Background Properties: %0*").arg(m_background.name));
         m_unsavedChanges = true;
+        updateTitle();
     }
+}
+
+void BackgroundPropertiesDialog::backgroundNameChanged(const Background &background)
+{
+    if (&background != &m_background)
+        return;
+
+    {
+        QSignalBlocker blocker{m_ui->lineEditName};
+        m_ui->lineEditName->setText(background.name);
+    }
+
+    updateTitle();
+}
+
+void BackgroundPropertiesDialog::updateTitle()
+{
+    setWindowTitle(tr("Background Properties: %0%1")
+                       .arg(m_background.name)
+                       .arg(m_unsavedChanges ? tr("*") : QString{})
+                   );
+}
+
+void BackgroundPropertiesDialog::updateSpriteInfo()
+{
+    const auto &pixmap = m_newPixmap ? *m_newPixmap : m_background.pixmap;
+    m_ui->labelWidth->setText(tr("Width: %0").arg(pixmap.width()));
+    m_ui->labelHeight->setText(tr("Height: %0").arg(pixmap.height()));
 }

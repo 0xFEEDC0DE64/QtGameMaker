@@ -8,15 +8,22 @@
 #include <QFileInfo>
 
 #include "projectcontainer.h"
+#include "projecttreemodel.h"
 
-SoundPropertiesDialog::SoundPropertiesDialog(Sound &sound, QWidget *parent) :
+SoundPropertiesDialog::SoundPropertiesDialog(Sound &sound, ProjectTreeModel &projectModel, QWidget *parent) :
     QDialog{parent},
     m_ui{std::make_unique<Ui::SoundPropertiesDialog>()},
-    m_sound{sound}
+    m_sound{sound},
+    m_projectModel{projectModel}
 {
     m_ui->setupUi(this);
 
-    setWindowTitle(tr("Sound Properties: %0").arg(m_sound.name));
+    updateTitle();
+
+    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Ok))
+        button->setIcon(QIcon{":/qtgameengine/icons/ok.png"});
+    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Cancel))
+        button->setIcon(QIcon{":/qtgameengine/icons/delete.png"});
 
     m_ui->lineEditName->setText(m_sound.name);
     if (!m_sound.path.isEmpty())
@@ -34,6 +41,9 @@ SoundPropertiesDialog::SoundPropertiesDialog(Sound &sound, QWidget *parent) :
     m_ui->horizontalSliderVolume->setValue(m_sound.volume);
     m_ui->horizontalSliderPan->setValue(m_sound.pan);
     m_ui->checkBoxPreload->setChecked(m_sound.preload);
+
+    connect(&m_projectModel, &ProjectTreeModel::soundNameChanged,
+            this, &SoundPropertiesDialog::soundNameChanged);
 
     connect(m_ui->pushButtonLoad, &QAbstractButton::pressed,
             this, &SoundPropertiesDialog::loadSound);
@@ -80,12 +90,15 @@ void SoundPropertiesDialog::accept()
 {
     if (m_sound.name != m_ui->lineEditName->text())
     {
-        QMessageBox::critical(this, tr("Not implemented"), tr("Changing the name is not yet implemented!"));
-        return;
+        if (!m_projectModel.renameSound(m_sound, m_ui->lineEditName->text()))
+        {
+            QMessageBox::critical(this, tr("Renaming Sound failed!"), tr("Renaming Sound failed!"));
+            return;
+        }
     }
 
     if (m_newPath)
-        m_sound.path = *m_newPath;
+        m_sound.path = std::move(*m_newPath);
 
     if (m_ui->radioButtonNormal->isChecked())
         m_sound.type = Sound::Type::Sound;
@@ -195,7 +208,28 @@ void SoundPropertiesDialog::changed()
 {
     if (!m_unsavedChanges)
     {
-        setWindowTitle(tr("Sound Properties: %0*").arg(m_sound.name));
         m_unsavedChanges = true;
+        updateTitle();
     }
+}
+
+void SoundPropertiesDialog::soundNameChanged(const Sound &sound)
+{
+    if (&sound != &m_sound)
+        return;
+
+    {
+        QSignalBlocker blocker{m_ui->lineEditName};
+        m_ui->lineEditName->setText(sound.name);
+    }
+
+    updateTitle();
+}
+
+void SoundPropertiesDialog::updateTitle()
+{
+    setWindowTitle(tr("Sound Properties: %0%1")
+                       .arg(m_sound.name)
+                       .arg(m_unsavedChanges ? tr("*") : QString{})
+                   );
 }

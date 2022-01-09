@@ -75,8 +75,22 @@ public:
     Font *getFont(const QModelIndex &index);
     const Font *getFont(const QModelIndex &index) const;
 
+    bool renameSprite(const Sprite &sprite, const QString &newName);
+    bool renameSound(const Sound &sound, const QString &newName);
+    bool renameBackground(const Background &background, const QString &newName);
+    bool renamePath(const Path &path, const QString &newName);
+    bool renameScript(const Script &script, const QString &newName);
+    bool renameFont(const Font &font, const QString &newName);
+
 signals:
     void errorOccured(const QString &message);
+
+    void spriteNameChanged(const Sprite &sprite);
+    void soundNameChanged(const Sound &sound);
+    void backgroundNameChanged(const Background &background);
+    void pathNameChanged(const Path &path);
+    void scriptNameChanged(const Script &script);
+    void fontNameChanged(const Font &font);
 
 private:
     ProjectContainer *m_project{};

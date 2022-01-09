@@ -465,6 +465,7 @@ bool ProjectTreeModel::setData(const QModelIndex &index, const QVariant &value, 
                     return false;
                 }
                 iter->name = std::move(name);
+                emit spriteNameChanged(*iter);
                 emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
             }
             return true;
@@ -501,6 +502,7 @@ bool ProjectTreeModel::setData(const QModelIndex &index, const QVariant &value, 
                     return false;
                 }
                 iter->name = std::move(name);
+                emit soundNameChanged(*iter);
                 emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
             }
             return true;
@@ -537,6 +539,7 @@ bool ProjectTreeModel::setData(const QModelIndex &index, const QVariant &value, 
                     return false;
                 }
                 iter->name = std::move(name);
+                emit backgroundNameChanged(*iter);
                 emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
             }
             return true;
@@ -573,6 +576,7 @@ bool ProjectTreeModel::setData(const QModelIndex &index, const QVariant &value, 
                     return false;
                 }
                 iter->name = std::move(name);
+                emit pathNameChanged(*iter);
                 emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
             }
             return true;
@@ -609,6 +613,7 @@ bool ProjectTreeModel::setData(const QModelIndex &index, const QVariant &value, 
                     return false;
                 }
                 iter->name = std::move(name);
+                emit scriptNameChanged(*iter);
                 emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
             }
             return true;
@@ -645,6 +650,7 @@ bool ProjectTreeModel::setData(const QModelIndex &index, const QVariant &value, 
                     return false;
                 }
                 iter->name = std::move(name);
+                emit fontNameChanged(*iter);
                 emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
             }
             return true;
@@ -1457,4 +1463,178 @@ const Font *ProjectTreeModel::getFont(const QModelIndex &index) const
     }
 
     return &*std::next(std::cbegin(m_project->fonts), index.row());
+}
+
+bool ProjectTreeModel::renameSprite(const Sprite &sprite, const QString &newName)
+{
+    const auto iter = std::find_if(std::begin(m_project->sprites), std::end(m_project->sprites),
+                                   [&sprite](const auto &entry){ return &entry == &sprite; });
+    if (iter == std::cend(m_project->sprites))
+    {
+        qWarning() << "sprite not from this project!";
+        return false;
+    }
+
+    if (iter->name == newName)
+        return true;
+
+    if (std::any_of(std::cbegin(m_project->sprites), std::cend(m_project->sprites),
+                    [&newName](const auto &entry){ return entry.name == newName; }))
+    {
+        qWarning() << "duplicate sprite name" << newName;
+        return false;
+    }
+
+    iter->name = newName;
+
+    emit spriteNameChanged(*iter);
+    const auto index = this->index(std::distance(std::begin(m_project->sprites), iter), 0, spritesRoot());
+    emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+
+    return true;
+}
+
+bool ProjectTreeModel::renameSound(const Sound &sound, const QString &newName)
+{
+    const auto iter = std::find_if(std::begin(m_project->sounds), std::end(m_project->sounds),
+                                   [&sound](const auto &entry){ return &entry == &sound; });
+    if (iter == std::cend(m_project->sounds))
+    {
+        qWarning() << "sound not from this project!";
+        return false;
+    }
+
+    if (iter->name == newName)
+        return true;
+
+    if (std::any_of(std::cbegin(m_project->sounds), std::cend(m_project->sounds),
+                    [&newName](const auto &entry){ return entry.name == newName; }))
+    {
+        qWarning() << "duplicate sound name" << newName;
+        return false;
+    }
+
+    iter->name = newName;
+
+    emit soundNameChanged(*iter);
+    const auto index = this->index(std::distance(std::begin(m_project->sounds), iter), 0, soundsRoot());
+    emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+
+    return true;
+}
+
+bool ProjectTreeModel::renameBackground(const Background &background, const QString &newName)
+{
+    const auto iter = std::find_if(std::begin(m_project->backgrounds), std::end(m_project->backgrounds),
+                                   [&background](const auto &entry){ return &entry == &background; });
+    if (iter == std::cend(m_project->backgrounds))
+    {
+        qWarning() << "background not from this project!";
+        return false;
+    }
+
+    if (iter->name == newName)
+        return true;
+
+    if (std::any_of(std::cbegin(m_project->backgrounds), std::cend(m_project->backgrounds),
+                    [&newName](const auto &entry){ return entry.name == newName; }))
+    {
+        qWarning() << "duplicate background name" << newName;
+        return false;
+    }
+
+    iter->name = newName;
+
+    emit backgroundNameChanged(*iter);
+    const auto index = this->index(std::distance(std::begin(m_project->backgrounds), iter), 0, backgroundsRoot());
+    emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+
+    return true;
+}
+
+bool ProjectTreeModel::renamePath(const Path &path, const QString &newName)
+{
+    const auto iter = std::find_if(std::begin(m_project->paths), std::end(m_project->paths),
+                                   [&path](const auto &entry){ return &entry == &path; });
+    if (iter == std::cend(m_project->paths))
+    {
+        qWarning() << "path not from this project!";
+        return false;
+    }
+
+    if (iter->name == newName)
+        return true;
+
+    if (std::any_of(std::cbegin(m_project->paths), std::cend(m_project->paths),
+                    [&newName](const auto &entry){ return entry.name == newName; }))
+    {
+        qWarning() << "duplicate path name" << newName;
+        return false;
+    }
+
+    iter->name = newName;
+
+    emit pathNameChanged(*iter);
+    const auto index = this->index(std::distance(std::begin(m_project->paths), iter), 0, pathsRoot());
+    emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+
+    return true;
+}
+
+bool ProjectTreeModel::renameScript(const Script &script, const QString &newName)
+{
+    const auto iter = std::find_if(std::begin(m_project->scripts), std::end(m_project->scripts),
+                                   [&script](const auto &entry){ return &entry == &script; });
+    if (iter == std::cend(m_project->scripts))
+    {
+        qWarning() << "script not from this project!";
+        return false;
+    }
+
+    if (iter->name == newName)
+        return true;
+
+    if (std::any_of(std::cbegin(m_project->scripts), std::cend(m_project->scripts),
+                    [&newName](const auto &entry){ return entry.name == newName; }))
+    {
+        qWarning() << "duplicate script name" << newName;
+        return false;
+    }
+
+    iter->name = newName;
+
+    emit scriptNameChanged(*iter);
+    const auto index = this->index(std::distance(std::begin(m_project->scripts), iter), 0, scriptsRoot());
+    emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+
+    return true;
+}
+
+bool ProjectTreeModel::renameFont(const Font &font, const QString &newName)
+{
+    const auto iter = std::find_if(std::begin(m_project->fonts), std::end(m_project->fonts),
+                                   [&font](const auto &entry){ return &entry == &font; });
+    if (iter == std::cend(m_project->fonts))
+    {
+        qWarning() << "font not from this project!";
+        return false;
+    }
+
+    if (iter->name == newName)
+        return true;
+
+    if (std::any_of(std::cbegin(m_project->fonts), std::cend(m_project->fonts),
+                    [&newName](const auto &entry){ return entry.name == newName; }))
+    {
+        qWarning() << "duplicate font name" << newName;
+        return false;
+    }
+
+    iter->name = newName;
+
+    emit fontNameChanged(*iter);
+    const auto index = this->index(std::distance(std::begin(m_project->fonts), iter), 0, fontsRoot());
+    emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+
+    return true;
 }
