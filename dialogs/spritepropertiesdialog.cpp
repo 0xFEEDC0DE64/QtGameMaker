@@ -63,7 +63,7 @@ void SpritePropertiesDialog::accept()
 {
     if (m_sprite.name != m_ui->lineEditName->text())
     {
-        if (!m_projectModel.renameSprite(m_sprite, m_ui->lineEditName->text()))
+        if (!m_projectModel.rename<Sprite>(m_sprite, m_ui->lineEditName->text()))
         {
             QMessageBox::critical(this, tr("Renaming Sprite failed!"), tr("Renaming Sprite failed!"));
             return;

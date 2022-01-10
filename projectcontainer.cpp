@@ -1,14 +1,82 @@
 #include "projectcontainer.h"
 
+template<> std::list<Sprite> &ProjectContainer::containerFor() { return sprites; }
+template<> const std::list<Sprite> &ProjectContainer::containerFor() const { return sprites; }
+template<> std::list<Sound> &ProjectContainer::containerFor() { return sounds; }
+template<> const std::list<Sound> &ProjectContainer::containerFor() const { return sounds; }
+template<> std::list<Background> &ProjectContainer::containerFor() { return backgrounds; }
+template<> const std::list<Background> &ProjectContainer::containerFor() const { return backgrounds; }
+template<> std::list<Path> &ProjectContainer::containerFor() { return paths; }
+template<> const std::list<Path> &ProjectContainer::containerFor() const { return paths; }
+template<> std::list<Script> &ProjectContainer::containerFor() { return scripts; }
+template<> const std::list<Script> &ProjectContainer::containerFor() const { return scripts; }
+template<> std::list<Font> &ProjectContainer::containerFor() { return fonts; }
+template<> const std::list<Font> &ProjectContainer::containerFor() const { return fonts; }
+template<> std::list<TimeLine> &ProjectContainer::containerFor() { return timeLines; }
+template<> const std::list<TimeLine> &ProjectContainer::containerFor() const { return timeLines; }
+template<> std::list<Object> &ProjectContainer::containerFor() { return objects; }
+template<> const std::list<Object> &ProjectContainer::containerFor() const { return objects; }
+template<> std::list<Room> &ProjectContainer::containerFor() { return rooms; }
+template<> const std::list<Room> &ProjectContainer::containerFor() const { return rooms; }
+
+template<typename T>
+QDataStream &operator<<(QDataStream &ds, const std::list<T> &list)
+{
+    {
+        int entries = list.size();
+        ds << entries;
+    }
+    for (const auto &entry : list)
+        ds << entry;
+    return ds;
+}
+
+template<typename T>
+QDataStream &operator>>(QDataStream &ds, std::list<T> &list)
+{
+    int entries;
+    ds >> entries;
+
+    for (int i = 0; i < entries; i++)
+    {
+        T entry;
+        ds >> entry;
+        list.emplace_back(std::move(entry));
+    }
+    return ds;
+}
+
+template<typename T>
+QDataStream &operator<<(QDataStream &ds, const std::vector<T> &list)
+{
+    {
+        int entries = list.size();
+        ds << entries;
+    }
+    for (const auto &entry : list)
+        ds << entry;
+    return ds;
+}
+
+template<typename T>
+QDataStream &operator>>(QDataStream &ds, std::vector<T> &list)
+{
+    int entries;
+    ds >> entries;
+
+    for (int i = 0; i < entries; i++)
+    {
+        T entry;
+        ds >> entry;
+        list.emplace_back(std::move(entry));
+    }
+    return ds;
+}
+
 QDataStream &operator<<(QDataStream &ds, const Sprite &sprite)
 {
     ds << sprite.name;
-    {
-        int pixmaps = sprite.pixmaps.size();
-        ds << pixmaps;
-    }
-    for (const auto &pixmap : sprite.pixmaps)
-        ds << pixmap;
+    ds << sprite.pixmaps;
     ds << sprite.origin.x;
     ds << sprite.origin.y;
     ds << sprite.preciseCollisionChecking;
@@ -19,17 +87,7 @@ QDataStream &operator<<(QDataStream &ds, const Sprite &sprite)
 QDataStream &operator>>(QDataStream &ds, Sprite &sprite)
 {
     ds >> sprite.name;
-    {
-        int pixmaps;
-        ds >> pixmaps;
-
-        for (int i = 0; i < pixmaps; i++)
-        {
-            QPixmap pixmap;
-            ds >> pixmap;
-            sprite.pixmaps.emplace_back(std::move(pixmap));
-        }
-    }
+    ds >> sprite.pixmaps;
     ds >> sprite.origin.x;
     ds >> sprite.origin.y;
     ds >> sprite.preciseCollisionChecking;
@@ -125,115 +183,67 @@ QDataStream &operator>>(QDataStream &ds, Font &font)
     return ds;
 }
 
+QDataStream &operator<<(QDataStream &ds, const TimeLine &timeLine)
+{
+    ds << timeLine.name;
+    return ds;
+}
+
+QDataStream &operator>>(QDataStream &ds, TimeLine &timeLine)
+{
+    ds >> timeLine.name;
+    return ds;
+}
+
+QDataStream &operator<<(QDataStream &ds, const Object &object)
+{
+    ds << object.name;
+    return ds;
+}
+
+QDataStream &operator>>(QDataStream &ds, Object &object)
+{
+    ds >> object.name;
+    return ds;
+}
+
+QDataStream &operator<<(QDataStream &ds, const Room &room)
+{
+    ds << room.name;
+    return ds;
+}
+
+QDataStream &operator>>(QDataStream &ds, Room &room)
+{
+    ds >> room.name;
+    return ds;
+}
+
 QDataStream &operator<<(QDataStream &ds, const ProjectContainer &project)
 {
-    {
-        int sprites = project.sprites.size();
-        ds << sprites;
-        for (const auto &sprite : project.sprites)
-            ds << sprite;
-    }
-    {
-        int sounds = project.sounds.size();
-        ds << sounds;
-        for (const auto &sound : project.sounds)
-            ds << sound;
-    }
-    {
-        int backgrounds = project.backgrounds.size();
-        ds << backgrounds;
-        for (const auto &background : project.backgrounds)
-            ds << background;
-    }
-    {
-        int paths = project.paths.size();
-        ds << paths;
-        for (const auto &path : project.paths)
-            ds << path;
-    }
-    {
-        int scripts = project.scripts.size();
-        ds << scripts;
-        for (const auto &script : project.scripts)
-            ds << script;
-    }
-    {
-        int fonts = project.fonts.size();
-        ds << fonts;
-        for (const auto &font : project.fonts)
-            ds << font;
-    }
+    ds << project.sprites;
+    ds << project.sounds;
+    ds << project.backgrounds;
+    ds << project.paths;
+    ds << project.scripts;
+    ds << project.fonts;
+    ds << project.timeLines;
+    ds << project.objects;
+    ds << project.rooms;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, ProjectContainer &project)
 {
-    {
-        int sprites;
-        ds >> sprites;
-
-        for (int i = 0; i < sprites; i++)
-        {
-            Sprite sprite;
-            ds >> sprite;
-            project.sprites.emplace_back(std::move(sprite));
-        }
-    }
-    {
-        int sounds;
-        ds >> sounds;
-
-        for (int i = 0; i < sounds; i++)
-        {
-            Sound sound;
-            ds >> sound;
-            project.sounds.emplace_back(std::move(sound));
-        }
-    }
-    {
-        int backgrounds;
-        ds >> backgrounds;
-
-        for (int i = 0; i < backgrounds; i++)
-        {
-            Background background;
-            ds >> background;
-            project.backgrounds.emplace_back(std::move(background));
-        }
-    }
-    {
-        int paths;
-        ds >> paths;
-
-        for (int i = 0; i < paths; i++)
-        {
-            Path path;
-            ds >> path;
-            project.paths.emplace_back(std::move(path));
-        }
-    }
-    {
-        int scripts;
-        ds >> scripts;
-
-        for (int i = 0; i < scripts; i++)
-        {
-            Script script;
-            ds >> script;
-            project.scripts.emplace_back(std::move(script));
-        }
-    }
-    {
-        int fonts;
-        ds >> fonts;
-
-        for (int i = 0; i < fonts; i++)
-        {
-            Font font;
-            ds >> font;
-            project.fonts.emplace_back(std::move(font));
-        }
-    }
+    ds >> project.sprites;
+    ds >> project.sounds;
+    ds >> project.backgrounds;
+    ds >> project.paths;
+    ds >> project.scripts;
+    ds >> project.fonts;
+    ds >> project.timeLines;
+    ds >> project.objects;
+    ds >> project.rooms;
     return ds;
 }
 

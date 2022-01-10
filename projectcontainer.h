@@ -24,7 +24,7 @@ struct Sound
 {
     QString name;
     enum class Type { Sound, Music };
-    Type type;
+    Type type{Type::Sound};
     QString path;
     struct {
         bool chorus{};
@@ -67,14 +67,35 @@ struct Font
     } range;
 };
 
+struct TimeLine
+{
+    QString name;
+};
+
+struct Object
+{
+    QString name;
+};
+
+struct Room
+{
+    QString name;
+};
+
 struct ProjectContainer
 {
     std::list<Sprite> sprites;
-    std::list<Sound> sounds;    
+    std::list<Sound> sounds;
     std::list<Background> backgrounds;
     std::list<Path> paths;
     std::list<Script> scripts;
     std::list<Font> fonts;
+    std::list<TimeLine> timeLines;
+    std::list<Object> objects;
+    std::list<Room> rooms;
+
+    template<typename T> std::list<T> &containerFor();
+    template<typename T> const std::list<T> &containerFor() const;
 };
 
 QDataStream &operator<<(QDataStream &ds, const Sprite &sprite);
@@ -89,5 +110,11 @@ QDataStream &operator<<(QDataStream &ds, const Script &script);
 QDataStream &operator>>(QDataStream &ds, Script &script);
 QDataStream &operator<<(QDataStream &ds, const Font &font);
 QDataStream &operator>>(QDataStream &ds, Font &font);
+QDataStream &operator<<(QDataStream &ds, const TimeLine &timeLine);
+QDataStream &operator>>(QDataStream &ds, TimeLine &timeLine);
+QDataStream &operator<<(QDataStream &ds, const Object &object);
+QDataStream &operator>>(QDataStream &ds, Object &object);
+QDataStream &operator<<(QDataStream &ds, const Room &room);
+QDataStream &operator>>(QDataStream &ds, Room &room);
 QDataStream &operator<<(QDataStream &ds, const ProjectContainer &project);
 QDataStream &operator>>(QDataStream &ds, ProjectContainer &project);

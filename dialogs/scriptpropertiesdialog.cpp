@@ -76,7 +76,7 @@ void ScriptPropertiesDialog::accept()
 {
     if (m_script.name != m_lineEditName->text())
     {
-        if (!m_projectModel.renameScript(m_script, m_lineEditName->text()))
+        if (!m_projectModel.rename<Script>(m_script, m_lineEditName->text()))
         {
             QMessageBox::critical(this, tr("Renaming Script failed!"), tr("Renaming Script failed!"));
             return;

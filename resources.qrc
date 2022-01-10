@@ -63,5 +63,7 @@
         <file>icons/timeline.png</file>
         <file>icons/undo.png</file>
         <file>icons/object-file.png</file>
+        <file>icons/room-file.png</file>
+        <file>icons/timeline-file.png</file>
     </qresource>
 </RCC>

@@ -55,7 +55,7 @@ void PathPropertiesDialog::accept()
 {
     if (m_path.name != m_ui->lineEditName->text())
     {
-        if (!m_projectModel.renamePath(m_path, m_ui->lineEditName->text()))
+        if (!m_projectModel.rename<Path>(m_path, m_ui->lineEditName->text()))
         {
             QMessageBox::critical(this, tr("Renaming Path failed!"), tr("Renaming Path failed!"));
             return;

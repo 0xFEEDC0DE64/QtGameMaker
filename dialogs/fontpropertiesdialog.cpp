@@ -66,7 +66,7 @@ void FontPropertiesDialog::accept()
 {
     if (m_font.name != m_ui->lineEditName->text())
     {
-        if (!m_projectModel.renameFont(m_font, m_ui->lineEditName->text()))
+        if (!m_projectModel.rename<Font>(m_font, m_ui->lineEditName->text()))
         {
             QMessageBox::critical(this, tr("Renaming Font failed!"), tr("Renaming Font failed!"));
             return;

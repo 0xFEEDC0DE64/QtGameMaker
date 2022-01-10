@@ -90,7 +90,7 @@ void SoundPropertiesDialog::accept()
 {
     if (m_sound.name != m_ui->lineEditName->text())
     {
-        if (!m_projectModel.renameSound(m_sound, m_ui->lineEditName->text()))
+        if (!m_projectModel.rename<Sound>(m_sound, m_ui->lineEditName->text()))
         {
             QMessageBox::critical(this, tr("Renaming Sound failed!"), tr("Renaming Sound failed!"));
             return;

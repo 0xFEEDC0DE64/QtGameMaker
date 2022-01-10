@@ -11,8 +11,11 @@ HEADERS += \
     dialogs/fontpropertiesdialog.h \
     dialogs/imageeditordialog.h \
     dialogs/objectinformationdialog.h \
+    dialogs/objectpropertiesdialog.h \
     dialogs/pathpropertiesdialog.h \
+    dialogs/roompropertiesdialog.h \
     dialogs/scriptpropertiesdialog.h \
+    dialogs/timelinepropertiesdialog.h \
     futurecpp.h \
     jshighlighter.h \
     mainwindow.h \
@@ -34,8 +37,11 @@ SOURCES += main.cpp \
     dialogs/fontpropertiesdialog.cpp \
     dialogs/imageeditordialog.cpp \
     dialogs/objectinformationdialog.cpp \
+    dialogs/objectpropertiesdialog.cpp \
     dialogs/pathpropertiesdialog.cpp \
+    dialogs/roompropertiesdialog.cpp \
     dialogs/scriptpropertiesdialog.cpp \
+    dialogs/timelinepropertiesdialog.cpp \
     jshighlighter.cpp \
     mainwindow.cpp \
     projectcontainer.cpp \
@@ -55,8 +61,11 @@ FORMS += \
     dialogs/fontpropertiesdialog.ui \
     dialogs/imageeditordialog.ui \
     dialogs/objectinformationdialog.ui \
+    dialogs/objectpropertiesdialog.ui \
     dialogs/pathpropertiesdialog.ui \
+    dialogs/roompropertiesdialog.ui \
     dialogs/scriptpropertiesdialog.ui \
+    dialogs/timelinepropertiesdialog.ui \
     mainwindow.ui \
     dialogs/backgroundpropertiesdialog.ui \
     dialogs/editspritedialog.ui \

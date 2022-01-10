@@ -51,7 +51,7 @@ void BackgroundPropertiesDialog::accept()
 {
     if (m_background.name != m_ui->lineEditName->text())
     {
-        if (!m_projectModel.renameBackground(m_background, m_ui->lineEditName->text()))
+        if (!m_projectModel.rename<Background>(m_background, m_ui->lineEditName->text()))
         {
             QMessageBox::critical(this, tr("Renaming Background failed!"), tr("Renaming Background failed!"));
             return;

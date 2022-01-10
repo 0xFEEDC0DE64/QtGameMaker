@@ -46,12 +46,19 @@ private slots:
     void showProperties();
     void findResource();
     void showObjectInformation();
-    void createSprite();
-    void createSound();
-    void createBackground();
-    void createPath();
-    void createScript();
-    void createFont();
+private:
+    template<typename T>
+    void createFor();
+private slots:
+//    void createSprite();
+//    void createSound();
+//    void createBackground();
+//    void createPath();
+//    void createScript();
+//    void createFont();
+//    void createTimeLine();
+//    void createObject();
+//    void createRoom();
     void showGameInformation();
     void showGlobalGameSettings();
     void showExtensionPackages();
@@ -63,6 +70,18 @@ private slots:
 
 private:
     void updateTitle();
+
+    template<typename T>
+    std::map<T*, QMdiSubWindow*> &propertyWindowsFor();
+
+    template<typename T>
+    bool doubleClickedFor(const QModelIndex &index);
+
+    template<typename T>
+    bool rowsAboutToBeRemovedFor(const QModelIndex &parent, int first, int last);
+
+    template<typename T>
+    void modelAboutToBeResetFor();
 
     const std::unique_ptr<Ui::MainWindow> m_ui;
 
@@ -79,6 +98,9 @@ private:
     std::map<Path*, QMdiSubWindow*> m_pathPropertiesWindows;
     std::map<Script*, QMdiSubWindow*> m_scriptPropertiesWindows;
     std::map<Font*, QMdiSubWindow*> m_fontPropertiesWindows;
+    std::map<TimeLine*, QMdiSubWindow*> m_timeLinePropertiesWindows;
+    std::map<Object*, QMdiSubWindow*> m_objectPropertiesWindows;
+    std::map<Room*, QMdiSubWindow*> m_roomPropertiesWindows;
 
     QMdiSubWindow *m_objectInformationWindow{};
 };

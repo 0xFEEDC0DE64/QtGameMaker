@@ -14,11 +14,28 @@
 #include "dialogs/pathpropertiesdialog.h"
 #include "dialogs/scriptpropertiesdialog.h"
 #include "dialogs/fontpropertiesdialog.h"
+#include "dialogs/timelinepropertiesdialog.h"
+#include "dialogs/objectpropertiesdialog.h"
+#include "dialogs/roompropertiesdialog.h"
 #include "dialogs/preferencesdialog.h"
 #include "dialogs/gameinformationdialog.h"
 #include "dialogs/globalgamesettingsdialog.h"
 #include "dialogs/extensionpackagesdialog.h"
 #include "dialogs/objectinformationdialog.h"
+
+namespace {
+template<typename T> struct PropertiesDialogForDetail;
+template<> struct PropertiesDialogForDetail<Sprite> { using Type = SpritePropertiesDialog; };
+template<> struct PropertiesDialogForDetail<Sound> { using Type = SoundPropertiesDialog; };
+template<> struct PropertiesDialogForDetail<Background> { using Type = BackgroundPropertiesDialog; };
+template<> struct PropertiesDialogForDetail<Path> { using Type = PathPropertiesDialog; };
+template<> struct PropertiesDialogForDetail<Script> { using Type = ScriptPropertiesDialog; };
+template<> struct PropertiesDialogForDetail<Font> { using Type = FontPropertiesDialog; };
+template<> struct PropertiesDialogForDetail<TimeLine> { using Type = TimeLinePropertiesDialog; };
+template<> struct PropertiesDialogForDetail<Object> { using Type = ObjectPropertiesDialog; };
+template<> struct PropertiesDialogForDetail<Room> { using Type = RoomPropertiesDialog; };
+template<typename T> using PropertiesDialogFor = typename PropertiesDialogForDetail<T>::Type;
+}
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow{parent},
@@ -78,12 +95,15 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_ui->actionProperties, &QAction::triggered, this, &MainWindow::showProperties);
     connect(m_ui->actionFindResource, &QAction::triggered, this, &MainWindow::findResource);
     connect(m_ui->actionShowObjectInformation, &QAction::triggered, this, &MainWindow::showObjectInformation);
-    connect(m_ui->actionCreateSprite, &QAction::triggered, this, &MainWindow::createSprite);
-    connect(m_ui->actionCreateSound, &QAction::triggered, this, &MainWindow::createSound);
-    connect(m_ui->actionCreateBackground, &QAction::triggered, this, &MainWindow::createBackground);
-    connect(m_ui->actionCreatePath, &QAction::triggered, this, &MainWindow::createPath);
-    connect(m_ui->actionCreateScript, &QAction::triggered, this, &MainWindow::createScript);
-    connect(m_ui->actionCreateFont, &QAction::triggered, this, &MainWindow::createFont);
+    connect(m_ui->actionCreateSprite, &QAction::triggered, this, &MainWindow::createFor<Sprite>);
+    connect(m_ui->actionCreateSound, &QAction::triggered, this, &MainWindow::createFor<Sound>);
+    connect(m_ui->actionCreateBackground, &QAction::triggered, this, &MainWindow::createFor<Background>);
+    connect(m_ui->actionCreatePath, &QAction::triggered, this, &MainWindow::createFor<Path>);
+    connect(m_ui->actionCreateScript, &QAction::triggered, this, &MainWindow::createFor<Script>);
+    connect(m_ui->actionCreateFont, &QAction::triggered, this, &MainWindow::createFor<Font>);
+    connect(m_ui->actionCreateTimeLine, &QAction::triggered, this, &MainWindow::createFor<TimeLine>);
+    connect(m_ui->actionCreateObject, &QAction::triggered, this, &MainWindow::createFor<Object>);
+    connect(m_ui->actionCreateRoom, &QAction::triggered, this, &MainWindow::createFor<Room>);
     connect(m_ui->actionGameInformation, &QAction::triggered, this, &MainWindow::showGameInformation);
     connect(m_ui->actionGlobalGameSettings, &QAction::triggered, this, &MainWindow::showGlobalGameSettings);
     connect(m_ui->actionExtensionPackages, &QAction::triggered, this, &MainWindow::showExtensionPackages);
@@ -180,287 +200,25 @@ void MainWindow::contextMenuRequested(const QPoint &pos)
 
 void MainWindow::doubleClicked(const QModelIndex &index)
 {
-    switch (m_projectTreeModel->nodeType(index))
+    if (m_projectTreeModel->nodeType(index) == ProjectTreeModel::NodeType::Root)
     {
-    case ProjectTreeModel::NodeType::Root:
         if (index == m_projectTreeModel->gameInformationRoot())
             showGameInformation();
         else if (index == m_projectTreeModel->globalGameSettingsRoot())
             showGlobalGameSettings();
         else if (index == m_projectTreeModel->extensionPackagesRoot())
             showExtensionPackages();
-        break;
-    case ProjectTreeModel::NodeType::Sprite:
-    {
-        auto sprite = m_projectTreeModel->getSprite(index);
-        if (!sprite)
-            break;
-
-        if (const auto iter = m_spritePropertiesWindows.find(sprite); iter != std::cend(m_spritePropertiesWindows))
-        {
-            m_ui->mdiArea->setActiveSubWindow(iter->second);
-        }
-        else
-        {
-            auto dialog = new SpritePropertiesDialog{*sprite, *m_projectTreeModel};
-            auto subwindow = m_ui->mdiArea->addSubWindow(dialog);
-            auto action = m_ui->menuWindow->addAction(dialog->windowTitle());
-            action->setCheckable(true);
-            connect(action, &QAction::triggered,
-                    m_ui->mdiArea, [mdiArea=m_ui->mdiArea,subwindow,action](){
-                mdiArea->setActiveSubWindow(subwindow);
-                action->setChecked(subwindow->windowState().testFlag(Qt::WindowActive));
-            });
-            connect(subwindow, &QMdiSubWindow::windowStateChanged,
-                    action, [action](Qt::WindowStates oldState, Qt::WindowStates newState){
-                action->setChecked(newState.testFlag(Qt::WindowActive));
-            });
-            connect(dialog, &QWidget::windowTitleChanged, action, &QAction::setText);
-            connect(dialog, &QDialog::finished,
-                    this, [&spritePropertiesDialogs=m_spritePropertiesWindows,subwindow](){
-                        for (auto iter = std::begin(spritePropertiesDialogs); iter != std::end(spritePropertiesDialogs); )
-                        {
-                            if (iter->second == subwindow)
-                                iter = spritePropertiesDialogs.erase(iter);
-                            else
-                                iter++;
-                        }
-                    });
-            connect(dialog, &QDialog::finished,
-                    subwindow, &QObject::deleteLater);
-            connect(dialog, &QDialog::finished,
-                    action, &QObject::deleteLater);
-            m_spritePropertiesWindows[sprite] = subwindow;
-            dialog->show();
-        }
-        break;
+        return;
     }
-    case ProjectTreeModel::NodeType::Sound:
-    {
-        auto sound = m_projectTreeModel->getSound(index);
-        if (!sound)
-            break;
-
-        if (const auto iter = m_soundPropertiesWindows.find(sound); iter != std::cend(m_soundPropertiesWindows))
-        {
-            m_ui->mdiArea->setActiveSubWindow(iter->second);
-        }
-        else
-        {
-            auto dialog = new SoundPropertiesDialog{*sound, *m_projectTreeModel};
-            auto subwindow = m_ui->mdiArea->addSubWindow(dialog);
-            auto action = m_ui->menuWindow->addAction(dialog->windowTitle());
-            action->setCheckable(true);
-            connect(action, &QAction::triggered,
-                    m_ui->mdiArea, [mdiArea=m_ui->mdiArea,subwindow,action](){
-                        mdiArea->setActiveSubWindow(subwindow);
-                        action->setChecked(subwindow->windowState().testFlag(Qt::WindowActive));
-                    });
-            connect(subwindow, &QMdiSubWindow::windowStateChanged,
-                    action, [action](Qt::WindowStates oldState, Qt::WindowStates newState){
-                        action->setChecked(newState.testFlag(Qt::WindowActive));
-                    });
-            connect(dialog, &QWidget::windowTitleChanged, action, &QAction::setText);
-            connect(dialog, &QDialog::finished,
-                    this, [&soundPropertiesDialogs=m_soundPropertiesWindows,subwindow](){
-                        for (auto iter = std::begin(soundPropertiesDialogs); iter != std::end(soundPropertiesDialogs); )
-                        {
-                            if (iter->second == subwindow)
-                                iter = soundPropertiesDialogs.erase(iter);
-                            else
-                                iter++;
-                        }
-                    });
-            connect(dialog, &QDialog::finished,
-                    subwindow, &QObject::deleteLater);
-            connect(dialog, &QDialog::finished,
-                    action, &QObject::deleteLater);
-            m_soundPropertiesWindows[sound] = subwindow;
-            dialog->show();
-        }
-        break;
-    }
-    case ProjectTreeModel::NodeType::Background:
-    {
-        auto background = m_projectTreeModel->getBackground(index);
-        if (!background)
-            break;
-
-        if (const auto iter = m_backgroundPropertiesWindows.find(background); iter != std::cend(m_backgroundPropertiesWindows))
-        {
-            m_ui->mdiArea->setActiveSubWindow(iter->second);
-        }
-        else
-        {
-            auto dialog = new BackgroundPropertiesDialog{*background, *m_projectTreeModel};
-            auto subwindow = m_ui->mdiArea->addSubWindow(dialog);
-            auto action = m_ui->menuWindow->addAction(dialog->windowTitle());
-            action->setCheckable(true);
-            connect(action, &QAction::triggered,
-                    m_ui->mdiArea, [mdiArea=m_ui->mdiArea,subwindow,action](){
-                        mdiArea->setActiveSubWindow(subwindow);
-                        action->setChecked(subwindow->windowState().testFlag(Qt::WindowActive));
-                    });
-            connect(subwindow, &QMdiSubWindow::windowStateChanged,
-                    action, [action](Qt::WindowStates oldState, Qt::WindowStates newState){
-                        action->setChecked(newState.testFlag(Qt::WindowActive));
-                    });
-            connect(dialog, &QWidget::windowTitleChanged, action, &QAction::setText);
-            connect(dialog, &QDialog::finished,
-                    this, [&backgroundPropertiesDialogs=m_backgroundPropertiesWindows,subwindow](){
-                        for (auto iter = std::begin(backgroundPropertiesDialogs); iter != std::end(backgroundPropertiesDialogs); )
-                        {
-                            if (iter->second == subwindow)
-                                iter = backgroundPropertiesDialogs.erase(iter);
-                            else
-                                iter++;
-                        }
-                    });
-            connect(dialog, &QDialog::finished,
-                    subwindow, &QObject::deleteLater);
-            connect(dialog, &QDialog::finished,
-                    action, &QObject::deleteLater);
-            m_backgroundPropertiesWindows[background] = subwindow;
-            dialog->show();
-        }
-        break;
-    }
-    case ProjectTreeModel::NodeType::Path:
-    {
-        auto path = m_projectTreeModel->getPath(index);
-        if (!path)
-            break;
-
-        if (const auto iter = m_pathPropertiesWindows.find(path); iter != std::cend(m_pathPropertiesWindows))
-        {
-            m_ui->mdiArea->setActiveSubWindow(iter->second);
-        }
-        else
-        {
-            auto dialog = new PathPropertiesDialog{*path, *m_projectTreeModel};
-            auto subwindow = m_ui->mdiArea->addSubWindow(dialog);
-            auto action = m_ui->menuWindow->addAction(dialog->windowTitle());
-            action->setCheckable(true);
-            connect(action, &QAction::triggered,
-                    m_ui->mdiArea, [mdiArea=m_ui->mdiArea,subwindow,action](){
-                        mdiArea->setActiveSubWindow(subwindow);
-                        action->setChecked(subwindow->windowState().testFlag(Qt::WindowActive));
-                    });
-            connect(subwindow, &QMdiSubWindow::windowStateChanged,
-                    action, [action](Qt::WindowStates oldState, Qt::WindowStates newState){
-                        action->setChecked(newState.testFlag(Qt::WindowActive));
-                    });
-            connect(dialog, &QWidget::windowTitleChanged, action, &QAction::setText);
-            connect(dialog, &QDialog::finished,
-                    this, [&pathPropertiesDialogs=m_pathPropertiesWindows,subwindow](){
-                        for (auto iter = std::begin(pathPropertiesDialogs); iter != std::end(pathPropertiesDialogs); )
-                        {
-                            if (iter->second == subwindow)
-                                iter = pathPropertiesDialogs.erase(iter);
-                            else
-                                iter++;
-                        }
-                    });
-            connect(dialog, &QDialog::finished,
-                    subwindow, &QObject::deleteLater);
-            connect(dialog, &QDialog::finished,
-                    action, &QObject::deleteLater);
-            m_pathPropertiesWindows[path] = subwindow;
-            dialog->show();
-        }
-        break;
-    }
-    case ProjectTreeModel::NodeType::Script:
-    {
-        auto script = m_projectTreeModel->getScript(index);
-        if (!script)
-            break;
-
-        if (const auto iter = m_scriptPropertiesWindows.find(script); iter != std::cend(m_scriptPropertiesWindows))
-        {
-            m_ui->mdiArea->setActiveSubWindow(iter->second);
-        }
-        else
-        {
-            auto dialog = new ScriptPropertiesDialog{*script, *m_projectTreeModel};
-            auto subwindow = m_ui->mdiArea->addSubWindow(dialog);
-            auto action = m_ui->menuWindow->addAction(dialog->windowTitle());
-            action->setCheckable(true);
-            connect(action, &QAction::triggered,
-                    m_ui->mdiArea, [mdiArea=m_ui->mdiArea,subwindow,action](){
-                        mdiArea->setActiveSubWindow(subwindow);
-                        action->setChecked(subwindow->windowState().testFlag(Qt::WindowActive));
-                    });
-            connect(subwindow, &QMdiSubWindow::windowStateChanged,
-                    action, [action](Qt::WindowStates oldState, Qt::WindowStates newState){
-                        action->setChecked(newState.testFlag(Qt::WindowActive));
-                    });
-            connect(dialog, &QWidget::windowTitleChanged, action, &QAction::setText);
-            connect(dialog, &QDialog::finished,
-                    this, [&scriptPropertiesDialogs=m_scriptPropertiesWindows,subwindow](){
-                        for (auto iter = std::begin(scriptPropertiesDialogs); iter != std::end(scriptPropertiesDialogs); )
-                        {
-                            if (iter->second == subwindow)
-                                iter = scriptPropertiesDialogs.erase(iter);
-                            else
-                                iter++;
-                        }
-                    });
-            connect(dialog, &QDialog::finished,
-                    subwindow, &QObject::deleteLater);
-            connect(dialog, &QDialog::finished,
-                    action, &QObject::deleteLater);
-            m_scriptPropertiesWindows[script] = subwindow;
-            dialog->show();
-        }
-        break;
-    }
-    case ProjectTreeModel::NodeType::Font:
-    {
-        auto font = m_projectTreeModel->getFont(index);
-        if (!font)
-            break;
-
-        if (const auto iter = m_fontPropertiesWindows.find(font); iter != std::cend(m_fontPropertiesWindows))
-        {
-            m_ui->mdiArea->setActiveSubWindow(iter->second);
-        }
-        else
-        {
-            auto dialog = new FontPropertiesDialog{*font, *m_projectTreeModel};
-            auto subwindow = m_ui->mdiArea->addSubWindow(dialog);
-            auto action = m_ui->menuWindow->addAction(dialog->windowTitle());
-            action->setCheckable(true);
-            connect(action, &QAction::triggered,
-                    m_ui->mdiArea, [mdiArea=m_ui->mdiArea,subwindow,action](){
-                        mdiArea->setActiveSubWindow(subwindow);
-                        action->setChecked(subwindow->windowState().testFlag(Qt::WindowActive));
-                    });
-            connect(subwindow, &QMdiSubWindow::windowStateChanged,
-                    action, [action](Qt::WindowStates oldState, Qt::WindowStates newState){
-                        action->setChecked(newState.testFlag(Qt::WindowActive));
-                    });
-            connect(dialog, &QWidget::windowTitleChanged, action, &QAction::setText);
-            connect(dialog, &QDialog::finished,
-                    this, [&fontPropertiesDialogs=m_fontPropertiesWindows,subwindow](){
-                        for (auto iter = std::begin(fontPropertiesDialogs); iter != std::end(fontPropertiesDialogs); )
-                        {
-                            if (iter->second == subwindow)
-                                iter = fontPropertiesDialogs.erase(iter);
-                            else
-                                iter++;
-                        }
-                    });
-            connect(dialog, &QDialog::finished,
-                    subwindow, &QObject::deleteLater);
-            connect(dialog, &QDialog::finished,
-                    action, &QObject::deleteLater);
-            m_fontPropertiesWindows[font] = subwindow;
-            dialog->show();
-        }
-        break;
-    }
-    }
+    if (doubleClickedFor<Sprite>(index)) return;
+    if (doubleClickedFor<Sound>(index)) return;
+    if (doubleClickedFor<Background>(index)) return;
+    if (doubleClickedFor<Path>(index)) return;
+    if (doubleClickedFor<Script>(index)) return;
+    if (doubleClickedFor<Font>(index)) return;
+    if (doubleClickedFor<TimeLine>(index)) return;
+    if (doubleClickedFor<Object>(index)) return;
+    if (doubleClickedFor<Room>(index)) return;
 }
 
 void MainWindow::selectionChanged(const QModelIndex &index)
@@ -468,30 +226,30 @@ void MainWindow::selectionChanged(const QModelIndex &index)
     switch (const auto nodeType = m_projectTreeModel->nodeType(index))
     {
     case ProjectTreeModel::NodeType::Root:
-        if (index == m_projectTreeModel->spritesRoot() ||
-            index == m_projectTreeModel->soundsRoot() ||
-            index == m_projectTreeModel->backgroundsRoot() ||
-            index == m_projectTreeModel->pathsRoot() ||
-            index == m_projectTreeModel->scriptsRoot() ||
-            index == m_projectTreeModel->fontsRoot())
+        if (index == m_projectTreeModel->rootFor<Sprite>() ||
+            index == m_projectTreeModel->rootFor<Sound>() ||
+            index == m_projectTreeModel->rootFor<Background>() ||
+            index == m_projectTreeModel->rootFor<Path>() ||
+            index == m_projectTreeModel->rootFor<Script>() ||
+            index == m_projectTreeModel->rootFor<Font>() ||
+            index == m_projectTreeModel->rootFor<TimeLine>() ||
+            index == m_projectTreeModel->rootFor<Object>() ||
+            index == m_projectTreeModel->rootFor<Room>())
         {
             m_ui->actionCreate->setEnabled(true);
             m_ui->actionCreateGroup->setText(tr("Cr&eate Group"));
             m_ui->actionCreateGroup->setEnabled(true);
             m_ui->actionSortByName->setEnabled(true);
 
-            if (index == m_projectTreeModel->spritesRoot())
-                m_ui->actionCreate->setText(tr("&Create Sprite"));
-            else if (index == m_projectTreeModel->soundsRoot())
-                m_ui->actionCreate->setText(tr("&Create Sound"));
-            else if (index == m_projectTreeModel->backgroundsRoot())
-                m_ui->actionCreate->setText(tr("&Create Background"));
-            else if (index == m_projectTreeModel->pathsRoot())
-                m_ui->actionCreate->setText(tr("&Create Path"));
-            else if (index == m_projectTreeModel->scriptsRoot())
-                m_ui->actionCreate->setText(tr("&Create Script"));
-            else if (index == m_projectTreeModel->fontsRoot())
-                m_ui->actionCreate->setText(tr("&Create Font"));
+            if (index == m_projectTreeModel->rootFor<Sprite>())          m_ui->actionCreate->setText(tr("&Create Sprite"));
+            else if (index == m_projectTreeModel->rootFor<Sound>())      m_ui->actionCreate->setText(tr("&Create Sound"));
+            else if (index == m_projectTreeModel->rootFor<Background>()) m_ui->actionCreate->setText(tr("&Create Background"));
+            else if (index == m_projectTreeModel->rootFor<Path>())       m_ui->actionCreate->setText(tr("&Create Path"));
+            else if (index == m_projectTreeModel->rootFor<Script>())     m_ui->actionCreate->setText(tr("&Create Script"));
+            else if (index == m_projectTreeModel->rootFor<Font>())       m_ui->actionCreate->setText(tr("&Create Font"));
+            else if (index == m_projectTreeModel->rootFor<TimeLine>())   m_ui->actionCreate->setText(tr("&Create Time Line"));
+            else if (index == m_projectTreeModel->rootFor<Object>())     m_ui->actionCreate->setText(tr("&Create Object"));
+            else if (index == m_projectTreeModel->rootFor<Room>())       m_ui->actionCreate->setText(tr("&Create Room"));
         }
         else
         {
@@ -516,6 +274,9 @@ void MainWindow::selectionChanged(const QModelIndex &index)
     case ProjectTreeModel::NodeType::Path:
     case ProjectTreeModel::NodeType::Script:
     case ProjectTreeModel::NodeType::Font:
+    case ProjectTreeModel::NodeType::TimeLine:
+    case ProjectTreeModel::NodeType::Object:
+    case ProjectTreeModel::NodeType::Room:
         m_ui->actionCreate->setEnabled(true);
         switch (nodeType)
         {
@@ -525,6 +286,9 @@ void MainWindow::selectionChanged(const QModelIndex &index)
         case ProjectTreeModel::NodeType::Path:       m_ui->actionCreate->setText(tr("&Insert Path")); break;
         case ProjectTreeModel::NodeType::Script:     m_ui->actionCreate->setText(tr("&Insert Script")); break;
         case ProjectTreeModel::NodeType::Font:       m_ui->actionCreate->setText(tr("&Insert Font")); break;
+        case ProjectTreeModel::NodeType::TimeLine:   m_ui->actionCreate->setText(tr("&Insert Time Line")); break;
+        case ProjectTreeModel::NodeType::Object:     m_ui->actionCreate->setText(tr("&Insert Object")); break;
+        case ProjectTreeModel::NodeType::Room:       m_ui->actionCreate->setText(tr("&Insert Room")); break;
         default:
             __builtin_unreachable();
         }
@@ -737,18 +501,15 @@ void MainWindow::create()
     if (!index.isValid())
         return;
 
-    if (index == m_projectTreeModel->spritesRoot())
-        createSprite();
-    else if (index == m_projectTreeModel->soundsRoot())
-        createSound();
-    else if (index == m_projectTreeModel->backgroundsRoot())
-        createBackground();
-    else if (index == m_projectTreeModel->pathsRoot())
-        createPath();
-    else if (index == m_projectTreeModel->scriptsRoot())
-        createScript();
-    else if (index == m_projectTreeModel->fontsRoot())
-        createFont();
+    if (index == m_projectTreeModel->rootFor<Sprite>())          createFor<Sprite>();
+    else if (index == m_projectTreeModel->rootFor<Sound>())      createFor<Sound>();
+    else if (index == m_projectTreeModel->rootFor<Background>()) createFor<Background>();
+    else if (index == m_projectTreeModel->rootFor<Path>())       createFor<Path>();
+    else if (index == m_projectTreeModel->rootFor<Script>())     createFor<Script>();
+    else if (index == m_projectTreeModel->rootFor<Font>())       createFor<Font>();
+    else if (index == m_projectTreeModel->rootFor<TimeLine>())   createFor<TimeLine>();
+    else if (index == m_projectTreeModel->rootFor<Object>())     createFor<Object>();
+    else if (index == m_projectTreeModel->rootFor<Room>())       createFor<Room>();
     else
     {
         switch (m_projectTreeModel->nodeType(index))
@@ -759,6 +520,9 @@ void MainWindow::create()
         case ProjectTreeModel::NodeType::Path:
         case ProjectTreeModel::NodeType::Script:
         case ProjectTreeModel::NodeType::Font:
+        case ProjectTreeModel::NodeType::TimeLine:
+        case ProjectTreeModel::NodeType::Object:
+        case ProjectTreeModel::NodeType::Room:
             if (!m_projectTreeModel->insertRows(index.row(), 1, index.parent()))
                 QMessageBox::warning(this, tr("Inserting failed!"), tr("Inserting failed!"));
             break;
@@ -850,41 +614,22 @@ void MainWindow::showObjectInformation()
     }
 }
 
-void MainWindow::createSprite()
+template<typename T>
+void MainWindow::createFor()
 {
-    if (!m_projectTreeModel->insertRows(m_project.sprites.size(), 1, m_projectTreeModel->spritesRoot()))
-        QMessageBox::warning(this, tr("Creating Sprite failed!"), tr("Creating Sprite failed!"));
+    if (!m_projectTreeModel->insertRows(m_project.containerFor<T>().size(), 1, m_projectTreeModel->rootFor<T>()))
+        QMessageBox::warning(this, tr("Creating failed!"), tr("Creating failed!"));
 }
 
-void MainWindow::createSound()
-{
-    if (!m_projectTreeModel->insertRows(m_project.sounds.size(), 1, m_projectTreeModel->soundsRoot()))
-        QMessageBox::warning(this, tr("Creating Sound failed!"), tr("Creating Sound failed!"));
-}
-
-void MainWindow::createBackground()
-{
-    if (!m_projectTreeModel->insertRows(m_project.backgrounds.size(), 1, m_projectTreeModel->backgroundsRoot()))
-        QMessageBox::warning(this, tr("Creating Background failed!"), tr("Creating Background failed!"));
-}
-
-void MainWindow::createPath()
-{
-    if (!m_projectTreeModel->insertRows(m_project.paths.size(), 1, m_projectTreeModel->pathsRoot()))
-        QMessageBox::warning(this, tr("Creating Path failed!"), tr("Creating Path failed!"));
-}
-
-void MainWindow::createScript()
-{
-    if (!m_projectTreeModel->insertRows(m_project.scripts.size(), 1, m_projectTreeModel->scriptsRoot()))
-        QMessageBox::warning(this, tr("Creating Script failed!"), tr("Creating Script failed!"));
-}
-
-void MainWindow::createFont()
-{
-    if (!m_projectTreeModel->insertRows(m_project.fonts.size(), 1, m_projectTreeModel->fontsRoot()))
-        QMessageBox::warning(this, tr("Creating Font failed!"), tr("Creating Font failed!"));
-}
+template void MainWindow::createFor<Sprite>();
+template void MainWindow::createFor<Sound>();
+template void MainWindow::createFor<Background>();
+template void MainWindow::createFor<Path>();
+template void MainWindow::createFor<Script>();
+template void MainWindow::createFor<Font>();
+template void MainWindow::createFor<TimeLine>();
+template void MainWindow::createFor<Object>();
+template void MainWindow::createFor<Room>();
 
 void MainWindow::showGameInformation()
 {
@@ -917,112 +662,28 @@ void MainWindow::rowsInserted(const QModelIndex &parent, int first, int last)
 
 void MainWindow::rowsAboutToBeRemoved(const QModelIndex &parent, int first, int last)
 {
-    if (parent == m_projectTreeModel->spritesRoot())
-    {
-        for (int row = first; row <= last; row++)
-        {
-            if (const auto sprite = m_projectTreeModel->getSprite(m_projectTreeModel->index(row, 0, parent)))
-            {
-                if (const auto iter = m_spritePropertiesWindows.find(sprite); iter != std::end(m_spritePropertiesWindows))
-                {
-                    delete iter->second;
-                    m_spritePropertiesWindows.erase(iter);
-                }
-            }
-        }
-    }
-    else if (parent == m_projectTreeModel->soundsRoot())
-    {
-        for (int row = first; row <= last; row++)
-        {
-            if (const auto sound = m_projectTreeModel->getSound(m_projectTreeModel->index(row, 0, parent)))
-            {
-                if (const auto iter = m_soundPropertiesWindows.find(sound); iter != std::end(m_soundPropertiesWindows))
-                {
-                    delete iter->second;
-                    m_soundPropertiesWindows.erase(iter);
-                }
-            }
-        }
-    }
-    else if (parent == m_projectTreeModel->backgroundsRoot())
-    {
-        for (int row = first; row <= last; row++)
-        {
-            if (const auto background = m_projectTreeModel->getBackground(m_projectTreeModel->index(row, 0, parent)))
-            {
-                if (const auto iter = m_backgroundPropertiesWindows.find(background); iter != std::end(m_backgroundPropertiesWindows))
-                {
-                    delete iter->second;
-                    m_backgroundPropertiesWindows.erase(iter);
-                }
-            }
-        }
-    }
-    else if (parent == m_projectTreeModel->pathsRoot())
-    {
-        for (int row = first; row <= last; row++)
-        {
-            if (const auto path = m_projectTreeModel->getPath(m_projectTreeModel->index(row, 0, parent)))
-            {
-                if (const auto iter = m_pathPropertiesWindows.find(path); iter != std::end(m_pathPropertiesWindows))
-                {
-                    delete iter->second;
-                    m_pathPropertiesWindows.erase(iter);
-                }
-            }
-        }
-    }
-    else if (parent == m_projectTreeModel->scriptsRoot())
-    {
-        for (int row = first; row <= last; row++)
-        {
-            if (const auto script = m_projectTreeModel->getScript(m_projectTreeModel->index(row, 0, parent)))
-            {
-                if (const auto iter = m_scriptPropertiesWindows.find(script); iter != std::end(m_scriptPropertiesWindows))
-                {
-                    delete iter->second;
-                    m_scriptPropertiesWindows.erase(iter);
-                }
-            }
-        }
-    }
-    else if (parent == m_projectTreeModel->fontsRoot())
-    {
-        for (int row = first; row <= last; row++)
-        {
-            if (const auto font = m_projectTreeModel->getFont(m_projectTreeModel->index(row, 0, parent)))
-            {
-                if (const auto iter = m_fontPropertiesWindows.find(font); iter != std::end(m_fontPropertiesWindows))
-                {
-                    delete iter->second;
-                    m_fontPropertiesWindows.erase(iter);
-                }
-            }
-        }
-    }
+    if (rowsAboutToBeRemovedFor<Sprite>(parent, first, last)) return;
+    if (rowsAboutToBeRemovedFor<Sound>(parent, first, last)) return;
+    if (rowsAboutToBeRemovedFor<Background>(parent, first, last)) return;
+    if (rowsAboutToBeRemovedFor<Path>(parent, first, last)) return;
+    if (rowsAboutToBeRemovedFor<Script>(parent, first, last)) return;
+    if (rowsAboutToBeRemovedFor<Font>(parent, first, last)) return;
+    if (rowsAboutToBeRemovedFor<TimeLine>(parent, first, last)) return;
+    if (rowsAboutToBeRemovedFor<Object>(parent, first, last)) return;
+    if (rowsAboutToBeRemovedFor<Room>(parent, first, last)) return;
 }
 
 void MainWindow::modelAboutToBeReset()
 {
-    for (const auto &pair : m_spritePropertiesWindows)
-        delete pair.second;
-    m_spritePropertiesWindows.clear();
-    for (const auto &pair : m_soundPropertiesWindows)
-        delete pair.second;
-    m_soundPropertiesWindows.clear();
-    for (const auto &pair : m_backgroundPropertiesWindows)
-        delete pair.second;
-    m_backgroundPropertiesWindows.clear();
-    for (const auto &pair : m_pathPropertiesWindows)
-        delete pair.second;
-    m_pathPropertiesWindows.clear();
-    for (const auto &pair : m_scriptPropertiesWindows)
-        delete pair.second;
-    m_scriptPropertiesWindows.clear();
-    for (const auto &pair : m_fontPropertiesWindows)
-        delete pair.second;
-    m_fontPropertiesWindows.clear();
+    modelAboutToBeResetFor<Sprite>();
+    modelAboutToBeResetFor<Sound>();
+    modelAboutToBeResetFor<Background>();
+    modelAboutToBeResetFor<Path>();
+    modelAboutToBeResetFor<Script>();
+    modelAboutToBeResetFor<Font>();
+    modelAboutToBeResetFor<TimeLine>();
+    modelAboutToBeResetFor<Object>();
+    modelAboutToBeResetFor<Room>();
 }
 
 void MainWindow::updateTitle()
@@ -1030,4 +691,141 @@ void MainWindow::updateTitle()
     setWindowTitle(tr("%0 - Qt Gamemaker 1.0 Ultimate%1")
                        .arg(m_filePath.isEmpty() ? "<new-game>" : QFileInfo{m_filePath}.fileName())
                        .arg(m_unsavedChanges ? tr("*") : QString{}));
+}
+
+template<typename T>
+bool MainWindow::doubleClickedFor(const QModelIndex &index)
+{
+    if (m_projectTreeModel->nodeType(index) != ProjectTreeModel::nodeTypeFor<T>())
+        return false;
+
+    auto entry = m_projectTreeModel->get<T>(index);
+    if (!entry)
+        return true;
+
+    auto &propertyWindows = propertyWindowsFor<T>();
+    if (const auto iter = propertyWindows.find(entry); iter != std::cend(propertyWindows))
+    {
+        m_ui->mdiArea->setActiveSubWindow(iter->second);
+    }
+    else
+    {
+        auto dialog = new PropertiesDialogFor<T>{*entry, *m_projectTreeModel};
+        auto subwindow = m_ui->mdiArea->addSubWindow(dialog);
+        auto action = m_ui->menuWindow->addAction(dialog->windowTitle());
+        action->setCheckable(true);
+        connect(action, &QAction::triggered,
+                m_ui->mdiArea, [mdiArea=m_ui->mdiArea,subwindow,action](){
+                    mdiArea->setActiveSubWindow(subwindow);
+                    action->setChecked(subwindow->windowState().testFlag(Qt::WindowActive));
+                });
+        connect(subwindow, &QMdiSubWindow::windowStateChanged,
+                action, [action](Qt::WindowStates oldState, Qt::WindowStates newState){
+                    action->setChecked(newState.testFlag(Qt::WindowActive));
+                });
+        connect(dialog, &QWidget::windowTitleChanged, action, &QAction::setText);
+        connect(dialog, &QDialog::finished,
+                this, [&propertyWindows,subwindow](){
+                    for (auto iter = std::begin(propertyWindows); iter != std::end(propertyWindows); )
+                    {
+                        if (iter->second == subwindow)
+                            iter = propertyWindows.erase(iter);
+                        else
+                            iter++;
+                    }
+                });
+        connect(dialog, &QDialog::finished,
+                subwindow, &QObject::deleteLater);
+        connect(dialog, &QDialog::finished,
+                action, &QObject::deleteLater);
+        propertyWindows[entry] = subwindow;
+        dialog->show();
+    }
+
+    return true;
+}
+
+template<typename T>
+bool MainWindow::rowsAboutToBeRemovedFor(const QModelIndex &parent, int first, int last)
+{
+    if (parent != m_projectTreeModel->rootFor<T>())
+        return false;
+
+    for (int row = first; row <= last; row++)
+    {
+        if (const auto entry = m_projectTreeModel->get<T>(m_projectTreeModel->index(row, 0, parent)))
+        {
+            auto &propertyWindows = propertyWindowsFor<T>();
+            if (const auto iter = propertyWindows.find(entry); iter != std::end(propertyWindows))
+            {
+                delete iter->second;
+                propertyWindows.erase(iter);
+            }
+        }
+    }
+
+    return true;
+}
+
+template<typename T>
+void MainWindow::modelAboutToBeResetFor()
+{
+    auto &propertyWindows = propertyWindowsFor<T>();
+    for (const auto &pair : propertyWindows)
+        delete pair.second;
+    propertyWindows.clear();
+}
+
+template<>
+std::map<Sprite*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<Sprite>()
+{
+    return m_spritePropertiesWindows;
+}
+
+template<>
+std::map<Sound*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<Sound>()
+{
+    return m_soundPropertiesWindows;
+}
+
+template<>
+std::map<Background*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<Background>()
+{
+    return m_backgroundPropertiesWindows;
+}
+
+template<>
+std::map<Path*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<Path>()
+{
+    return m_pathPropertiesWindows;
+}
+
+template<>
+std::map<Script*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<Script>()
+{
+    return m_scriptPropertiesWindows;
+}
+
+template<>
+std::map<Font*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<Font>()
+{
+    return m_fontPropertiesWindows;
+}
+
+template<>
+std::map<TimeLine*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<TimeLine>()
+{
+    return m_timeLinePropertiesWindows;
+}
+
+template<>
+std::map<Object*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<Object>()
+{
+    return m_objectPropertiesWindows;
+}
+
+template<>
+std::map<Room*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<Room>()
+{
+    return m_roomPropertiesWindows;
 }

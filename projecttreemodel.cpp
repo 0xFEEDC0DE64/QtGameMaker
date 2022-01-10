@@ -9,6 +9,7 @@
 #include "futurecpp.h"
 #include "projectcontainer.h"
 
+namespace {
 enum {
     RowSprites,
     RowSounds,
@@ -24,6 +25,7 @@ enum {
     RowExtensionPackages,
     NumberOfRows
 };
+}
 
 ProjectTreeModel::ProjectTreeModel(QObject *parent) :
     QAbstractItemModel{parent}
@@ -53,6 +55,9 @@ QModelIndex ProjectTreeModel::index(int row, int column, const QModelIndex &pare
             case RowPaths:       return createIndex(row, column, std::to_underlying(NodeType::Path));
             case RowScripts:     return createIndex(row, column, std::to_underlying(NodeType::Script));
             case RowFonts:       return createIndex(row, column, std::to_underlying(NodeType::Font));
+            case RowTimeLines:   return createIndex(row, column, std::to_underlying(NodeType::TimeLine));
+            case RowObjects:     return createIndex(row, column, std::to_underlying(NodeType::Object));
+            case RowRooms:       return createIndex(row, column, std::to_underlying(NodeType::Room));
             default:
                 qWarning() << "unexpected parent row" << parent.row();
                 return {};
@@ -74,12 +79,15 @@ QModelIndex ProjectTreeModel::parent(const QModelIndex &child) const
     switch (nodeType(child))
     {
     case NodeType::Root:       return {};
-    case NodeType::Sprite:     return spritesRoot();
-    case NodeType::Sound:      return soundsRoot();
-    case NodeType::Background: return backgroundsRoot();
-    case NodeType::Path:       return pathsRoot();
-    case NodeType::Script:     return scriptsRoot();
-    case NodeType::Font:       return fontsRoot();
+    case NodeType::Sprite:     return rootFor<Sprite>();
+    case NodeType::Sound:      return rootFor<Sound>();
+    case NodeType::Background: return rootFor<Background>();
+    case NodeType::Path:       return rootFor<Path>();
+    case NodeType::Script:     return rootFor<Script>();
+    case NodeType::Font:       return rootFor<Font>();
+    case NodeType::TimeLine:   return rootFor<TimeLine>();
+    case NodeType::Object:     return rootFor<Object>();
+    case NodeType::Room:       return rootFor<Room>();
     default:
         qWarning() << "unexpected child type" << child.internalId();
         return {};
@@ -96,15 +104,15 @@ int ProjectTreeModel::rowCount(const QModelIndex &parent) const
     case NodeType::Root:
         switch (parent.row())
         {
-        case RowSprites:     return m_project ? m_project->sprites.size() : 0;
-        case RowSounds:      return m_project ? m_project->sounds.size() : 0;
-        case RowBackgrounds: return m_project ? m_project->backgrounds.size() : 0;
-        case RowPaths:       return m_project ? m_project->paths.size() : 0;
-        case RowScripts:     return m_project ? m_project->scripts.size() : 0;
-        case RowFonts:       return m_project ? m_project->fonts.size() : 0;
-        case RowTimeLines:
-        case RowObjects:
-        case RowRooms:
+        case RowSprites:     return m_project ? m_project->containerFor<Sprite>().size() : 0;
+        case RowSounds:      return m_project ? m_project->containerFor<Sound>().size() : 0;
+        case RowBackgrounds: return m_project ? m_project->containerFor<Background>().size() : 0;
+        case RowPaths:       return m_project ? m_project->containerFor<Path>().size() : 0;
+        case RowScripts:     return m_project ? m_project->containerFor<Script>().size() : 0;
+        case RowFonts:       return m_project ? m_project->containerFor<Font>().size() : 0;
+        case RowTimeLines:   return m_project ? m_project->containerFor<TimeLine>().size() : 0;
+        case RowObjects:     return m_project ? m_project->containerFor<Object>().size() : 0;
+        case RowRooms:       return m_project ? m_project->containerFor<Room>().size() : 0;
         case RowGameInformation:
         case RowGlobalGameSettings:
         case RowExtensionPackages:
@@ -115,12 +123,16 @@ int ProjectTreeModel::rowCount(const QModelIndex &parent) const
         }
 
         return {};
-    case NodeType::Sprite:     return 0;
-    case NodeType::Sound:      return 0;
-    case NodeType::Background: return 0;
-    case NodeType::Path:       return 0;
-    case NodeType::Script:     return 0;
-    case NodeType::Font:       return 0;
+    case NodeType::Sprite:
+    case NodeType::Sound:
+    case NodeType::Background:
+    case NodeType::Path:
+    case NodeType::Script:
+    case NodeType::Font:
+    case NodeType::TimeLine:
+    case NodeType::Object:
+    case NodeType::Room:
+        return 0;
     default:
         qWarning() << "unexpected parent child type" << parent.internalId();
         return -1;
@@ -156,12 +168,16 @@ int ProjectTreeModel::columnCount(const QModelIndex &parent) const
         }
 
         return {};
-    case NodeType::Sprite:     return 1;
-    case NodeType::Sound:      return 1;
-    case NodeType::Background: return 1;
-    case NodeType::Path:       return 1;
-    case NodeType::Script:     return 1;
-    case NodeType::Font:       return 1;
+    case NodeType::Sprite:
+    case NodeType::Sound:
+    case NodeType::Background:
+    case NodeType::Path:
+    case NodeType::Script:
+    case NodeType::Font:
+    case NodeType::TimeLine:
+    case NodeType::Object:
+    case NodeType::Room:
+        return 1;
     default:
         qWarning() << "unexpected parent child type" << parent.internalId();
         return -1;
@@ -224,191 +240,15 @@ QVariant ProjectTreeModel::data(const QModelIndex &index, int role) const
         default:
             return {};
         }
-    case NodeType::Sprite:
-    {
-        if (!m_project)
-        {
-            qWarning() << "unexpected null project";
-            return {};
-        }
-
-        if (index.row() >= m_project->sprites.size())
-        {
-            qWarning() << "sprite index out of bounds" << index.row();
-            return {};
-        }
-
-        auto iter = std::next(std::cbegin(m_project->sprites), index.row());
-
-        switch (role)
-        {
-        case Qt::DisplayRole:
-        case Qt::EditRole:
-            return iter->name;
-        case Qt::DecorationRole:
-            if (iter->pixmaps.empty() || iter->pixmaps.front().isNull())
-            {
-                QPixmap pixmap{16, 16};
-                pixmap.fill(Qt::white);
-                return pixmap;
-            }
-            return iter->pixmaps.front().scaled(16, 16, Qt::IgnoreAspectRatio /*KeepAspectRatio*/);
-
-        default:
-            return {};
-        }
-    }
-    case NodeType::Sound:
-    {
-        if (!m_project)
-        {
-            qWarning() << "unexpected null project";
-            return {};
-        }
-
-        if (index.row() >= m_project->sounds.size())
-        {
-            qWarning() << "sound index out of bounds" << index.row();
-            return {};
-        }
-
-        auto iter = std::next(std::cbegin(m_project->sounds), index.row());
-
-        switch (role)
-        {
-        case Qt::DisplayRole:
-        case Qt::EditRole:
-            return iter->name;
-        case Qt::DecorationRole:
-            switch (iter->type)
-            {
-            case Sound::Type::Sound:
-                return QPixmap{":/qtgameengine/icons/sound-file.png"}.scaled(16, 16);
-            case Sound::Type::Music:
-                return QPixmap{":/qtgameengine/icons/music-file.png"}.scaled(16, 16);
-            default:
-                qWarning() << "unexpected sound type" << std::to_underlying(iter->type);
-                return {};
-            }
-
-        default:
-            return {};
-        }
-    }
-    case NodeType::Background:
-    {
-        if (!m_project)
-        {
-            qWarning() << "unexpected null project";
-            return {};
-        }
-
-        if (index.row() >= m_project->backgrounds.size())
-        {
-            qWarning() << "sprite index out of bounds" << index.row();
-            return {};
-        }
-
-        auto iter = std::next(std::cbegin(m_project->backgrounds), index.row());
-
-        switch (role)
-        {
-        case Qt::DisplayRole:
-        case Qt::EditRole:
-            return iter->name;
-        case Qt::DecorationRole:
-            if (iter->pixmap.isNull())
-            {
-                QPixmap pixmap{16, 16};
-                pixmap.fill(Qt::white);
-                return pixmap;
-            }
-            return iter->pixmap.scaled(16, 16, Qt::KeepAspectRatio);
-        default:
-            return {};
-        }
-    }
-    case NodeType::Path:
-    {
-        if (!m_project)
-        {
-            qWarning() << "unexpected null project";
-            return {};
-        }
-
-        if (index.row() >= m_project->paths.size())
-        {
-            qWarning() << "path index out of bounds" << index.row();
-            return {};
-        }
-
-        auto iter = std::next(std::cbegin(m_project->paths), index.row());
-
-        switch (role)
-        {
-        case Qt::DisplayRole:
-        case Qt::EditRole:
-            return iter->name;
-        case Qt::DecorationRole:
-            return QPixmap{":/qtgameengine/icons/path-file.png"}.scaled(16, 16);
-        default:
-            return {};
-        }
-    }
-    case NodeType::Script:
-    {
-        if (!m_project)
-        {
-            qWarning() << "unexpected null project";
-            return {};
-        }
-
-        if (index.row() >= m_project->scripts.size())
-        {
-            qWarning() << "script index out of bounds" << index.row();
-            return {};
-        }
-
-        auto iter = std::next(std::cbegin(m_project->scripts), index.row());
-
-        switch (role)
-        {
-        case Qt::DisplayRole:
-        case Qt::EditRole:
-            return iter->name;
-        case Qt::DecorationRole:
-            return QPixmap{":/qtgameengine/icons/script-file.png"}.scaled(16, 16);
-        default:
-            return {};
-        }
-    }
-    case NodeType::Font:
-    {
-        if (!m_project)
-        {
-            qWarning() << "unexpected null project";
-            return {};
-        }
-
-        if (index.row() >= m_project->fonts.size())
-        {
-            qWarning() << "font index out of bounds" << index.row();
-            return {};
-        }
-
-        auto iter = std::next(std::cbegin(m_project->fonts), index.row());
-
-        switch (role)
-        {
-        case Qt::DisplayRole:
-        case Qt::EditRole:
-            return iter->name;
-        case Qt::DecorationRole:
-            return QPixmap{":/qtgameengine/icons/font-file.png"}.scaled(16, 16);
-        default:
-            return {};
-        }
-    }
+    case NodeType::Sprite:     return dataFor<Sprite>(index, role);
+    case NodeType::Sound:      return dataFor<Sound>(index, role);
+    case NodeType::Background: return dataFor<Background>(index, role);
+    case NodeType::Path:       return dataFor<Path>(index, role);
+    case NodeType::Script:     return dataFor<Script>(index, role);
+    case NodeType::Font:       return dataFor<Font>(index, role);
+    case NodeType::TimeLine:   return dataFor<TimeLine>(index, role);
+    case NodeType::Object:     return dataFor<Object>(index, role);
+    case NodeType::Room:       return dataFor<Room>(index, role);
     default:
         qWarning() << "unexpected index type" << index.internalId();
         return -1;
@@ -427,6 +267,9 @@ Qt::ItemFlags ProjectTreeModel::flags(const QModelIndex &index) const
     case NodeType::Path:
     case NodeType::Script:
     case NodeType::Font:
+    case NodeType::TimeLine:
+    case NodeType::Object:
+    case NodeType::Room:
         flags |= Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
     }
 
@@ -437,228 +280,15 @@ bool ProjectTreeModel::setData(const QModelIndex &index, const QVariant &value, 
 {
     switch (const auto nodeType = this->nodeType(index))
     {
-    case NodeType::Sprite:
-    {
-        if (!m_project)
-        {
-            qWarning() << "unexpected null project";
-            return {};
-        }
-
-        if (index.row() < 0 || index.row() >= m_project->sprites.size())
-        {
-            qWarning() << "unexpected sprite row" << index.row();
-            return false;
-        }
-        auto iter = std::next(std::begin(m_project->sprites), index.row());
-        switch (role)
-        {
-        case Qt::DisplayRole:
-        case Qt::EditRole:
-            if (auto name = value.toString(); name != iter->name)
-            {
-                if (std::any_of(std::cbegin(m_project->sprites), std::cend(m_project->sprites),
-                                [&name](const auto &entry){ return entry.name == name; }))
-                {
-                    qWarning() << "duplicate name" << name;
-                    emit errorOccured(tr("A Sprite with the name \"%0\" is already existing").arg(name));
-                    return false;
-                }
-                iter->name = std::move(name);
-                emit spriteNameChanged(*iter);
-                emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
-            }
-            return true;
-        default:
-            qWarning() << "unexpected role" << role;
-            return false;
-        }
-    }
-    case NodeType::Sound:
-    {
-        if (!m_project)
-        {
-            qWarning() << "unexpected null project";
-            return {};
-        }
-
-        if (index.row() < 0 || index.row() >= m_project->sounds.size())
-        {
-            qWarning() << "unexpected sound row" << index.row();
-            return false;
-        }
-        auto iter = std::next(std::begin(m_project->sounds), index.row());
-        switch (role)
-        {
-        case Qt::DisplayRole:
-        case Qt::EditRole:
-            if (auto name = value.toString(); name != iter->name)
-            {
-                if (std::any_of(std::cbegin(m_project->sprites), std::cend(m_project->sprites),
-                                [&name](const auto &entry){ return entry.name == name; }))
-                {
-                    qWarning() << "duplicate name" << name;
-                    emit errorOccured(tr("A Sound with the name \"%0\" is already existing").arg(name));
-                    return false;
-                }
-                iter->name = std::move(name);
-                emit soundNameChanged(*iter);
-                emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
-            }
-            return true;
-        default:
-            qWarning() << "unexpected role" << role;
-            return false;
-        }
-    }
-    case NodeType::Background:
-    {
-        if (!m_project)
-        {
-            qWarning() << "unexpected null project";
-            return {};
-        }
-
-        if (index.row() < 0 || index.row() >= m_project->backgrounds.size())
-        {
-            qWarning() << "unexpected background row" << index.row();
-            return false;
-        }
-        auto iter = std::next(std::begin(m_project->backgrounds), index.row());
-        switch (role)
-        {
-        case Qt::DisplayRole:
-        case Qt::EditRole:
-            if (auto name = value.toString(); name != iter->name)
-            {
-                if (std::any_of(std::cbegin(m_project->sprites), std::cend(m_project->sprites),
-                                [&name](const auto &entry){ return entry.name == name; }))
-                {
-                    qWarning() << "duplicate name" << name;
-                    emit errorOccured(tr("A Background with the name \"%0\" is already existing").arg(name));
-                    return false;
-                }
-                iter->name = std::move(name);
-                emit backgroundNameChanged(*iter);
-                emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
-            }
-            return true;
-        default:
-            qWarning() << "unexpected role" << role;
-            return false;
-        }
-    }
-    case NodeType::Path:
-    {
-        if (!m_project)
-        {
-            qWarning() << "unexpected null project";
-            return {};
-        }
-
-        if (index.row() < 0 || index.row() >= m_project->paths.size())
-        {
-            qWarning() << "unexpected path row" << index.row();
-            return false;
-        }
-        auto iter = std::next(std::begin(m_project->paths), index.row());
-        switch (role)
-        {
-        case Qt::DisplayRole:
-        case Qt::EditRole:
-            if (auto name = value.toString(); name != iter->name)
-            {
-                if (std::any_of(std::cbegin(m_project->sprites), std::cend(m_project->sprites),
-                                [&name](const auto &entry){ return entry.name == name; }))
-                {
-                    qWarning() << "duplicate name" << name;
-                    emit errorOccured(tr("A Path with the name \"%0\" is already existing").arg(name));
-                    return false;
-                }
-                iter->name = std::move(name);
-                emit pathNameChanged(*iter);
-                emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
-            }
-            return true;
-        default:
-            qWarning() << "unexpected role" << role;
-            return false;
-        }
-    }
-    case NodeType::Script:
-    {
-        if (!m_project)
-        {
-            qWarning() << "unexpected null project";
-            return {};
-        }
-
-        if (index.row() < 0 || index.row() >= m_project->scripts.size())
-        {
-            qWarning() << "unexpected script row" << index.row();
-            return false;
-        }
-        auto iter = std::next(std::begin(m_project->scripts), index.row());
-        switch (role)
-        {
-        case Qt::DisplayRole:
-        case Qt::EditRole:
-            if (auto name = value.toString(); name != iter->name)
-            {
-                if (std::any_of(std::cbegin(m_project->sprites), std::cend(m_project->sprites),
-                                [&name](const auto &entry){ return entry.name == name; }))
-                {
-                    qWarning() << "duplicate name" << name;
-                    emit errorOccured(tr("A Script with the name \"%0\" is already existing").arg(name));
-                    return false;
-                }
-                iter->name = std::move(name);
-                emit scriptNameChanged(*iter);
-                emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
-            }
-            return true;
-        default:
-            qWarning() << "unexpected role" << role;
-            return false;
-        }
-    }
-    case NodeType::Font:
-    {
-        if (!m_project)
-        {
-            qWarning() << "unexpected null project";
-            return {};
-        }
-
-        if (index.row() < 0 || index.row() >= m_project->fonts.size())
-        {
-            qWarning() << "unexpected font row" << index.row();
-            return false;
-        }
-        auto iter = std::next(std::begin(m_project->fonts), index.row());
-        switch (role)
-        {
-        case Qt::DisplayRole:
-        case Qt::EditRole:
-            if (auto name = value.toString(); name != iter->name)
-            {
-                if (std::any_of(std::cbegin(m_project->sprites), std::cend(m_project->sprites),
-                                [&name](const auto &entry){ return entry.name == name; }))
-                {
-                    qWarning() << "duplicate name" << name;
-                    emit errorOccured(tr("A Font with the name \"%0\" is already existing").arg(name));
-                    return false;
-                }
-                iter->name = std::move(name);
-                emit fontNameChanged(*iter);
-                emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
-            }
-            return true;
-        default:
-            qWarning() << "unexpected role" << role;
-            return false;
-        }
-    }
+    case NodeType::Sprite:     return setDataFor<Sprite>(index, value, role);
+    case NodeType::Sound:      return setDataFor<Sound>(index, value, role);
+    case NodeType::Background: return setDataFor<Background>(index, value, role);
+    case NodeType::Path:       return setDataFor<Path>(index, value, role);
+    case NodeType::Script:     return setDataFor<Script>(index, value, role);
+    case NodeType::Font:       return setDataFor<Font>(index, value, role);
+    case NodeType::TimeLine:   return setDataFor<TimeLine>(index, value, role);
+    case NodeType::Object:     return setDataFor<Object>(index, value, role);
+    case NodeType::Room:       return setDataFor<Room>(index, value, role);
     default:
         qWarning() << "unexpected nodeType" << std::to_underlying(nodeType);
         return false;
@@ -674,362 +304,34 @@ bool ProjectTreeModel::moveRows(const QModelIndex &sourceParent, int sourceRow, 
 
 bool ProjectTreeModel::insertRows(int row, int count, const QModelIndex &parent)
 {
-    if (parent == spritesRoot())
-    {
-        if (!m_project)
-        {
-            qWarning() << "unexpected null project";
-            return {};
-        }
+    if (auto result = insertRowsFor<Sprite>(row, count, parent))     return *result;
+    if (auto result = insertRowsFor<Sound>(row, count, parent))      return *result;
+    if (auto result = insertRowsFor<Background>(row, count, parent)) return *result;
+    if (auto result = insertRowsFor<Path>(row, count, parent))       return *result;
+    if (auto result = insertRowsFor<Script>(row, count, parent))     return *result;
+    if (auto result = insertRowsFor<Font>(row, count, parent))       return *result;
+    if (auto result = insertRowsFor<TimeLine>(row, count, parent))   return *result;
+    if (auto result = insertRowsFor<Object>(row, count, parent))     return *result;
+    if (auto result = insertRowsFor<Room>(row, count, parent))       return *result;
 
-        if (row < 0 || row > m_project->sprites.size())
-        {
-            qWarning() << "unexpected sprite row" << row;
-            return false;
-        }
-
-        QString name;
-        for (int i = 0; ; i++)
-        {
-            name = QStringLiteral("sprite%0").arg(i);
-            if (std::none_of(std::cbegin(m_project->sprites), std::cend(m_project->sprites),
-                             [&name](const Sprite &sprite){ return sprite.name == name; }))
-                break;
-        }
-
-        emit beginInsertRows(parent, row, row + count - 1);
-        m_project->sprites.emplace(std::next(std::begin(m_project->sprites), row), Sprite { .name = std::move(name) });
-        emit endInsertRows();
-
-        return true;
-    }
-    else if (parent == soundsRoot())
-    {
-        if (!m_project)
-        {
-            qWarning() << "unexpected null project";
-            return {};
-        }
-
-        if (row < 0 || row > m_project->sounds.size())
-        {
-            qWarning() << "unexpected sound row" << row;
-            return false;
-        }
-
-        QString name;
-        for (int i = 0; ; i++)
-        {
-            name = QStringLiteral("sound%0").arg(i);
-            if (std::none_of(std::cbegin(m_project->sounds), std::cend(m_project->sounds),
-                             [&name](const Sound &sound){ return sound.name == name; }))
-                break;
-        }
-
-        emit beginInsertRows(parent, row, row + count - 1);
-        m_project->sounds.emplace(std::next(std::begin(m_project->sounds), row), Sound { .name = std::move(name) });
-        emit endInsertRows();
-
-        return true;
-    }
-    else if (parent == backgroundsRoot())
-    {
-        if (!m_project)
-        {
-            qWarning() << "unexpected null project";
-            return {};
-        }
-
-        if (row < 0 || row > m_project->backgrounds.size())
-        {
-            qWarning() << "unexpected background row" << row;
-            return false;
-        }
-
-        QString name;
-        for (int i = 0; ; i++)
-        {
-            name = QStringLiteral("background%0").arg(i);
-            if (std::none_of(std::cbegin(m_project->backgrounds), std::cend(m_project->backgrounds),
-                             [&name](const Background &background){ return background.name == name; }))
-                break;
-        }
-
-        emit beginInsertRows(parent, row, row + count - 1);
-        m_project->backgrounds.emplace(std::next(std::begin(m_project->backgrounds), row), Background { .name = std::move(name) });
-        emit endInsertRows();
-
-        return true;
-    }
-    else if (parent == pathsRoot())
-    {
-        if (!m_project)
-        {
-            qWarning() << "unexpected null project";
-            return {};
-        }
-
-        if (row < 0 || row > m_project->paths.size())
-        {
-            qWarning() << "unexpected path row" << row;
-            return false;
-        }
-
-        QString name;
-        for (int i = 0; ; i++)
-        {
-            name = QStringLiteral("path%0").arg(i);
-            if (std::none_of(std::cbegin(m_project->paths), std::cend(m_project->paths),
-                             [&name](const Path &path){ return path.name == name; }))
-                break;
-        }
-
-        emit beginInsertRows(parent, row, row + count - 1);
-        m_project->paths.emplace(std::next(std::begin(m_project->paths), row), Path { .name = std::move(name) });
-        emit endInsertRows();
-
-        return true;
-    }
-    else if (parent == scriptsRoot())
-    {
-        if (!m_project)
-        {
-            qWarning() << "unexpected null project";
-            return {};
-        }
-
-        if (row < 0 || row > m_project->scripts.size())
-        {
-            qWarning() << "unexpected script row" << row;
-            return false;
-        }
-
-        QString name;
-        for (int i = 0; ; i++)
-        {
-            name = QStringLiteral("script%0").arg(i);
-            if (std::none_of(std::cbegin(m_project->scripts), std::cend(m_project->scripts),
-                             [&name](const Script &script){ return script.name == name; }))
-                break;
-        }
-
-        emit beginInsertRows(parent, row, row + count - 1);
-        m_project->scripts.emplace(std::next(std::begin(m_project->scripts), row), Script { .name = std::move(name) });
-        emit endInsertRows();
-
-        return true;
-    }
-    else if (parent == fontsRoot())
-    {
-        if (!m_project)
-        {
-            qWarning() << "unexpected null project";
-            return {};
-        }
-
-        if (row < 0 || row > m_project->scripts.size())
-        {
-            qWarning() << "unexpected script row" << row;
-            return false;
-        }
-
-        QString name;
-        for (int i = 0; ; i++)
-        {
-            name = QStringLiteral("font%0").arg(i);
-            if (std::none_of(std::cbegin(m_project->fonts), std::cend(m_project->fonts),
-                             [&name](const Font &font){ return font.name == name; }))
-                break;
-        }
-
-        emit beginInsertRows(parent, row, row + count - 1);
-        m_project->fonts.emplace(std::next(std::begin(m_project->fonts), row), Font { .name = std::move(name) });
-        emit endInsertRows();
-
-        return true;
-    }
-    else
-    {
-        qWarning() << "unexpected parent" << parent;
-        return false;
-    }
+    qWarning() << "unexpected parent" << parent;
+    return false;
 }
 
 bool ProjectTreeModel::removeRows(int row, int count, const QModelIndex &parent)
 {
-    if (parent == spritesRoot())
-    {
-        if (!m_project)
-        {
-            qWarning() << "unexpected null project";
-            return {};
-        }
+    if (auto result = removeRowsFor<Sprite>(row, count, parent))     return *result;
+    if (auto result = removeRowsFor<Sound>(row, count, parent))      return *result;
+    if (auto result = removeRowsFor<Background>(row, count, parent)) return *result;
+    if (auto result = removeRowsFor<Path>(row, count, parent))       return *result;
+    if (auto result = removeRowsFor<Script>(row, count, parent))     return *result;
+    if (auto result = removeRowsFor<Font>(row, count, parent))       return *result;
+    if (auto result = removeRowsFor<TimeLine>(row, count, parent))   return *result;
+    if (auto result = removeRowsFor<Object>(row, count, parent))     return *result;
+    if (auto result = removeRowsFor<Room>(row, count, parent))       return *result;
 
-        if (row < 0 || row >= m_project->sprites.size())
-        {
-            qWarning() << "unexpected sprite row" << row;
-            return false;
-        }
-
-        if (count < 0 || count > m_project->sprites.size() - row)
-        {
-            qWarning() << "unexpected sprite row+count" << count << row;
-            return false;
-        }
-
-        emit beginRemoveRows(parent, row, row + count - 1);
-        auto begin = std::next(std::begin(m_project->sprites), row);
-        auto end = std::next(begin, count);
-        m_project->sprites.erase(begin, end);
-        emit endRemoveRows();
-
-        return true;
-    }
-    else if (parent == soundsRoot())
-    {
-        if (!m_project)
-        {
-            qWarning() << "unexpected null project";
-            return {};
-        }
-
-        if (row < 0 || row >= m_project->sounds.size())
-        {
-            qWarning() << "unexpected sound row" << row;
-            return false;
-        }
-
-        if (count < 0 || count > m_project->sounds.size() - row)
-        {
-            qWarning() << "unexpected sound row+count" << count << row;
-            return false;
-        }
-
-        emit beginRemoveRows(parent, row, row + count - 1);
-        auto begin = std::next(std::begin(m_project->sounds), row);
-        auto end = std::next(begin, count);
-        m_project->sounds.erase(begin, end);
-        emit endRemoveRows();
-
-        return true;
-    }
-    else if (parent == backgroundsRoot())
-    {
-        if (!m_project)
-        {
-            qWarning() << "unexpected null project";
-            return {};
-        }
-
-        if (row < 0 || row >= m_project->backgrounds.size())
-        {
-            qWarning() << "unexpected background row" << row;
-            return false;
-        }
-
-        if (count < 0 || count > m_project->backgrounds.size() - row)
-        {
-            qWarning() << "unexpected background row+count" << count << row;
-            return false;
-        }
-
-        emit beginRemoveRows(parent, row, row + count - 1);
-        auto begin = std::next(std::begin(m_project->backgrounds), row);
-        auto end = std::next(begin, count);
-        m_project->backgrounds.erase(begin, end);
-        emit endRemoveRows();
-
-        return true;
-    }
-    else if (parent == pathsRoot())
-    {
-        if (!m_project)
-        {
-            qWarning() << "unexpected null project";
-            return {};
-        }
-
-        if (row < 0 || row >= m_project->paths.size())
-        {
-            qWarning() << "unexpected path row" << row;
-            return false;
-        }
-
-        if (count < 0 || count > m_project->paths.size() - row)
-        {
-            qWarning() << "unexpected path row+count" << count << row;
-            return false;
-        }
-
-        emit beginRemoveRows(parent, row, row + count - 1);
-        auto begin = std::next(std::begin(m_project->paths), row);
-        auto end = std::next(begin, count);
-        m_project->paths.erase(begin, end);
-        emit endRemoveRows();
-
-        return true;
-    }
-    else if (parent == scriptsRoot())
-    {
-        if (!m_project)
-        {
-            qWarning() << "unexpected null project";
-            return {};
-        }
-
-        if (row < 0 || row >= m_project->scripts.size())
-        {
-            qWarning() << "unexpected script row" << row;
-            return false;
-        }
-
-        if (count < 0 || count > m_project->scripts.size() - row)
-        {
-            qWarning() << "unexpected script row+count" << count << row;
-            return false;
-        }
-
-        emit beginRemoveRows(parent, row, row + count - 1);
-        auto begin = std::next(std::begin(m_project->scripts), row);
-        auto end = std::next(begin, count);
-        m_project->scripts.erase(begin, end);
-        emit endRemoveRows();
-
-        return true;
-    }
-    else if (parent == fontsRoot())
-    {
-        if (!m_project)
-        {
-            qWarning() << "unexpected null project";
-            return {};
-        }
-
-        if (row < 0 || row >= m_project->fonts.size())
-        {
-            qWarning() << "unexpected font row" << row;
-            return false;
-        }
-
-        if (count < 0 || count > m_project->fonts.size() - row)
-        {
-            qWarning() << "unexpected font row+count" << count << row;
-            return false;
-        }
-
-        emit beginRemoveRows(parent, row, row + count - 1);
-        auto begin = std::next(std::begin(m_project->fonts), row);
-        auto end = std::next(begin, count);
-        m_project->fonts.erase(begin, end);
-        emit endRemoveRows();
-
-        return true;
-    }
-    else
-    {
-        qWarning() << "unexpected parent" << parent;
-        return false;
-    }
+    qWarning() << "unexpected parent" << parent;
+    return false;
 }
 
 Qt::DropActions ProjectTreeModel::supportedDragActions() const
@@ -1057,47 +359,47 @@ ProjectTreeModel::NodeType ProjectTreeModel::nodeType(const QModelIndex &index) 
     return NodeType(index.internalId());
 }
 
-QModelIndex ProjectTreeModel::spritesRoot() const
+template<> QModelIndex ProjectTreeModel::rootFor<Sprite>() const
 {
-    return createIndex(RowSprites, 0,     std::to_underlying(NodeType::Root));
+    return createIndex(RowSprites, 0, std::to_underlying(NodeType::Root));
 }
 
-QModelIndex ProjectTreeModel::soundsRoot() const
+template<> QModelIndex ProjectTreeModel::rootFor<Sound>() const
 {
-    return createIndex(RowSounds, 0,      std::to_underlying(NodeType::Root));
+    return createIndex(RowSounds, 0, std::to_underlying(NodeType::Root));
 }
 
-QModelIndex ProjectTreeModel::backgroundsRoot() const
+template<> QModelIndex ProjectTreeModel::rootFor<Background>() const
 {
     return createIndex(RowBackgrounds, 0, std::to_underlying(NodeType::Root));
 }
 
-QModelIndex ProjectTreeModel::pathsRoot() const
+template<> QModelIndex ProjectTreeModel::rootFor<Path>() const
 {
     return createIndex(RowPaths, 0, std::to_underlying(NodeType::Root));
 }
 
-QModelIndex ProjectTreeModel::scriptsRoot() const
+template<> QModelIndex ProjectTreeModel::rootFor<Script>() const
 {
     return createIndex(RowScripts, 0, std::to_underlying(NodeType::Root));
 }
 
-QModelIndex ProjectTreeModel::fontsRoot() const
+template<> QModelIndex ProjectTreeModel::rootFor<Font>() const
 {
     return createIndex(RowFonts, 0, std::to_underlying(NodeType::Root));
 }
 
-QModelIndex ProjectTreeModel::timeLinesRoot() const
+template<> QModelIndex ProjectTreeModel::rootFor<TimeLine>() const
 {
     return createIndex(RowTimeLines, 0, std::to_underlying(NodeType::Root));
 }
 
-QModelIndex ProjectTreeModel::objectsRoot() const
+template<> QModelIndex ProjectTreeModel::rootFor<Object>() const
 {
     return createIndex(RowObjects, 0, std::to_underlying(NodeType::Root));
 }
 
-QModelIndex ProjectTreeModel::roomsRoot() const
+template<> QModelIndex ProjectTreeModel::rootFor<Room>() const
 {
     return createIndex(RowRooms, 0, std::to_underlying(NodeType::Root));
 }
@@ -1117,7 +419,8 @@ QModelIndex ProjectTreeModel::extensionPackagesRoot() const
     return createIndex(RowExtensionPackages, 0, std::to_underlying(NodeType::Root));
 }
 
-Sprite *ProjectTreeModel::getSprite(const QModelIndex &index)
+template<typename T>
+T *ProjectTreeModel::get(const QModelIndex &index)
 {
     if (!m_project)
     {
@@ -1125,28 +428,24 @@ Sprite *ProjectTreeModel::getSprite(const QModelIndex &index)
         return {};
     }
 
-    if (const auto nodeType = this->nodeType(index); nodeType != NodeType::Sprite)
+    if (const auto nodeType = this->nodeType(index); nodeType != nodeTypeFor<T>())
     {
         qWarning() << "unexpected index type" << std::to_underlying(nodeType);
         return nullptr;
     }
 
-    if (index.row() < 0)
+    auto &container = m_project->containerFor<T>();
+    if (index.row() < 0 || index.row() >= container.size())
     {
-        qWarning() << "unexpected negative row" << index.row();
+        qWarning() << "invalid row" << index.row();
         return nullptr;
     }
 
-    if (index.row() >= m_project->sprites.size())
-    {
-        qWarning() << "sprite index out of bounds" << index.row();
-        return {};
-    }
-
-    return &*std::next(std::begin(m_project->sprites), index.row());
+    return &*std::next(std::begin(container), index.row());
 }
 
-const Sprite *ProjectTreeModel::getSprite(const QModelIndex &index) const
+template<typename T>
+const T *ProjectTreeModel::get(const QModelIndex &index) const
 {
     if (!m_project)
     {
@@ -1154,487 +453,406 @@ const Sprite *ProjectTreeModel::getSprite(const QModelIndex &index) const
         return {};
     }
 
-    if (const auto nodeType = this->nodeType(index); nodeType != NodeType::Sprite)
+    if (const auto nodeType = this->nodeType(index); nodeType != nodeTypeFor<T>())
     {
         qWarning() << "unexpected index type" << std::to_underlying(nodeType);
         return nullptr;
     }
 
-    if (index.row() < 0)
+    const auto &container = m_project->containerFor<T>();
+    if (index.row() < 0 || index.row() >= container.size())
     {
-        qWarning() << "unexpected negative row" << index.row();
+        qWarning() << "invalid row" << index.row();
         return nullptr;
     }
 
-    if (index.row() >= m_project->sprites.size())
-    {
-        qWarning() << "sprite index out of bounds" << index.row();
-        return {};
-    }
-
-    return &*std::next(std::cbegin(m_project->sprites), index.row());
+    return &*std::next(std::cbegin(container), index.row());
 }
 
-Sound *ProjectTreeModel::getSound(const QModelIndex &index)
+template Sprite *ProjectTreeModel::get<Sprite>(const QModelIndex &index);
+template const Sprite *ProjectTreeModel::get<Sprite>(const QModelIndex &index) const;
+template Sound *ProjectTreeModel::get<Sound>(const QModelIndex &index);
+template const Sound *ProjectTreeModel::get<Sound>(const QModelIndex &index) const;
+template Background *ProjectTreeModel::get<Background>(const QModelIndex &index);
+template const Background *ProjectTreeModel::get<Background>(const QModelIndex &index) const;
+template Path *ProjectTreeModel::get<Path>(const QModelIndex &index);
+template const Path *ProjectTreeModel::get<Path>(const QModelIndex &index) const;
+template Script *ProjectTreeModel::get<Script>(const QModelIndex &index);
+template const Script *ProjectTreeModel::get<Script>(const QModelIndex &index) const;
+template Font *ProjectTreeModel::get<Font>(const QModelIndex &index);
+template const Font *ProjectTreeModel::get<Font>(const QModelIndex &index) const;
+template TimeLine *ProjectTreeModel::get<TimeLine>(const QModelIndex &index);
+template const TimeLine *ProjectTreeModel::get<TimeLine>(const QModelIndex &index) const;
+template Object *ProjectTreeModel::get<Object>(const QModelIndex &index);
+template const Object *ProjectTreeModel::get<Object>(const QModelIndex &index) const;
+template Room *ProjectTreeModel::get<Room>(const QModelIndex &index);
+template const Room *ProjectTreeModel::get<Room>(const QModelIndex &index) const;
+
+template<typename T>
+bool ProjectTreeModel::rename(const T &entry, const QString &newName)
 {
-    if (!m_project)
+    auto &container = m_project->containerFor<T>();
+    const auto iter = std::find_if(std::begin(container), std::end(container),
+                                   [&entry](const auto &otherEntry){ return &entry == &otherEntry; });
+    if (iter == std::cend(container))
     {
-        qWarning() << "unexpected null project";
-        return {};
-    }
-
-    if (const auto nodeType = this->nodeType(index); nodeType != NodeType::Sound)
-    {
-        qWarning() << "unexpected index type" << std::to_underlying(nodeType);
-        return nullptr;
-    }
-
-    if (index.row() < 0)
-    {
-        qWarning() << "unexpected negative row" << index.row();
-        return nullptr;
-    }
-
-    if (index.row() >= m_project->sounds.size())
-    {
-        qWarning() << "sound index out of bounds" << index.row();
-        return {};
-    }
-
-    return &*std::next(std::begin(m_project->sounds), index.row());
-}
-
-const Sound *ProjectTreeModel::getSound(const QModelIndex &index) const
-{
-    if (!m_project)
-    {
-        qWarning() << "unexpected null project";
-        return {};
-    }
-
-    if (const auto nodeType = this->nodeType(index); nodeType != NodeType::Sound)
-    {
-        qWarning() << "unexpected index type" << std::to_underlying(nodeType);
-        return nullptr;
-    }
-
-    if (index.row() < 0)
-    {
-        qWarning() << "unexpected negative row" << index.row();
-        return nullptr;
-    }
-
-    if (index.row() >= m_project->sounds.size())
-    {
-        qWarning() << "sound index out of bounds" << index.row();
-        return {};
-    }
-
-    return &*std::next(std::cbegin(m_project->sounds), index.row());
-}
-
-Background *ProjectTreeModel::getBackground(const QModelIndex &index)
-{
-    if (!m_project)
-    {
-        qWarning() << "unexpected null project";
-        return {};
-    }
-
-    if (const auto nodeType = this->nodeType(index); nodeType != NodeType::Background)
-    {
-        qWarning() << "unexpected index type" << std::to_underlying(nodeType);
-        return nullptr;
-    }
-
-    if (index.row() < 0)
-    {
-        qWarning() << "unexpected negative row" << index.row();
-        return nullptr;
-    }
-
-    if (index.row() >= m_project->backgrounds.size())
-    {
-        qWarning() << "background index out of bounds" << index.row();
-        return {};
-    }
-
-    return &*std::next(std::begin(m_project->backgrounds), index.row());
-}
-
-const Background *ProjectTreeModel::getBackground(const QModelIndex &index) const
-{
-    if (!m_project)
-    {
-        qWarning() << "unexpected null project";
-        return {};
-    }
-
-    if (const auto nodeType = this->nodeType(index); nodeType != NodeType::Background)
-    {
-        qWarning() << "unexpected index type" << std::to_underlying(nodeType);
-        return nullptr;
-    }
-
-    if (index.row() < 0)
-    {
-        qWarning() << "unexpected negative row" << index.row();
-        return nullptr;
-    }
-
-    if (index.row() >= m_project->backgrounds.size())
-    {
-        qWarning() << "background index out of bounds" << index.row();
-        return {};
-    }
-
-    return &*std::next(std::cbegin(m_project->backgrounds), index.row());
-}
-
-Path *ProjectTreeModel::getPath(const QModelIndex &index)
-{
-    if (!m_project)
-    {
-        qWarning() << "unexpected null project";
-        return {};
-    }
-
-    if (const auto nodeType = this->nodeType(index); nodeType != NodeType::Path)
-    {
-        qWarning() << "unexpected index type" << std::to_underlying(nodeType);
-        return nullptr;
-    }
-
-    if (index.row() < 0)
-    {
-        qWarning() << "unexpected negative row" << index.row();
-        return nullptr;
-    }
-
-    if (index.row() >= m_project->paths.size())
-    {
-        qWarning() << "path index out of bounds" << index.row();
-        return {};
-    }
-
-    return &*std::next(std::begin(m_project->paths), index.row());
-}
-
-const Path *ProjectTreeModel::getPath(const QModelIndex &index) const
-{
-    if (!m_project)
-    {
-        qWarning() << "unexpected null project";
-        return {};
-    }
-
-    if (const auto nodeType = this->nodeType(index); nodeType != NodeType::Path)
-    {
-        qWarning() << "unexpected index type" << std::to_underlying(nodeType);
-        return nullptr;
-    }
-
-    if (index.row() < 0)
-    {
-        qWarning() << "unexpected negative row" << index.row();
-        return nullptr;
-    }
-
-    if (index.row() >= m_project->paths.size())
-    {
-        qWarning() << "path index out of bounds" << index.row();
-        return {};
-    }
-
-    return &*std::next(std::cbegin(m_project->paths), index.row());
-}
-
-Script *ProjectTreeModel::getScript(const QModelIndex &index)
-{
-    if (!m_project)
-    {
-        qWarning() << "unexpected null project";
-        return {};
-    }
-
-    if (const auto nodeType = this->nodeType(index); nodeType != NodeType::Script)
-    {
-        qWarning() << "unexpected index type" << std::to_underlying(nodeType);
-        return nullptr;
-    }
-
-    if (index.row() < 0)
-    {
-        qWarning() << "unexpected negative row" << index.row();
-        return nullptr;
-    }
-
-    if (index.row() >= m_project->scripts.size())
-    {
-        qWarning() << "script index out of bounds" << index.row();
-        return {};
-    }
-
-    return &*std::next(std::begin(m_project->scripts), index.row());
-}
-
-const Script *ProjectTreeModel::getScript(const QModelIndex &index) const
-{
-    if (!m_project)
-    {
-        qWarning() << "unexpected null project";
-        return {};
-    }
-
-    if (const auto nodeType = this->nodeType(index); nodeType != NodeType::Script)
-    {
-        qWarning() << "unexpected index type" << std::to_underlying(nodeType);
-        return nullptr;
-    }
-
-    if (index.row() < 0)
-    {
-        qWarning() << "unexpected negative row" << index.row();
-        return nullptr;
-    }
-
-    if (index.row() >= m_project->scripts.size())
-    {
-        qWarning() << "script index out of bounds" << index.row();
-        return {};
-    }
-
-    return &*std::next(std::cbegin(m_project->scripts), index.row());
-}
-
-Font *ProjectTreeModel::getFont(const QModelIndex &index)
-{
-    if (!m_project)
-    {
-        qWarning() << "unexpected null project";
-        return {};
-    }
-
-    if (const auto nodeType = this->nodeType(index); nodeType != NodeType::Font)
-    {
-        qWarning() << "unexpected index type" << std::to_underlying(nodeType);
-        return nullptr;
-    }
-
-    if (index.row() < 0)
-    {
-        qWarning() << "unexpected negative row" << index.row();
-        return nullptr;
-    }
-
-    if (index.row() >= m_project->fonts.size())
-    {
-        qWarning() << "font index out of bounds" << index.row();
-        return {};
-    }
-
-    return &*std::next(std::begin(m_project->fonts), index.row());
-}
-
-const Font *ProjectTreeModel::getFont(const QModelIndex &index) const
-{
-    if (!m_project)
-    {
-        qWarning() << "unexpected null project";
-        return {};
-    }
-
-    if (const auto nodeType = this->nodeType(index); nodeType != NodeType::Font)
-    {
-        qWarning() << "unexpected index type" << std::to_underlying(nodeType);
-        return nullptr;
-    }
-
-    if (index.row() < 0)
-    {
-        qWarning() << "unexpected negative row" << index.row();
-        return nullptr;
-    }
-
-    if (index.row() >= m_project->fonts.size())
-    {
-        qWarning() << "font index out of bounds" << index.row();
-        return {};
-    }
-
-    return &*std::next(std::cbegin(m_project->fonts), index.row());
-}
-
-bool ProjectTreeModel::renameSprite(const Sprite &sprite, const QString &newName)
-{
-    const auto iter = std::find_if(std::begin(m_project->sprites), std::end(m_project->sprites),
-                                   [&sprite](const auto &entry){ return &entry == &sprite; });
-    if (iter == std::cend(m_project->sprites))
-    {
-        qWarning() << "sprite not from this project!";
+        qWarning() << "entry not from this project!";
         return false;
     }
 
     if (iter->name == newName)
         return true;
 
-    if (std::any_of(std::cbegin(m_project->sprites), std::cend(m_project->sprites),
+    if (std::any_of(std::cbegin(container), std::cend(container),
                     [&newName](const auto &entry){ return entry.name == newName; }))
     {
-        qWarning() << "duplicate sprite name" << newName;
+        qWarning() << "duplicate name" << newName;
         return false;
     }
 
     iter->name = newName;
 
-    emit spriteNameChanged(*iter);
-    const auto index = this->index(std::distance(std::begin(m_project->sprites), iter), 0, spritesRoot());
+    emitNameChanged<T>(*iter);
+    const auto index = this->index(std::distance(std::begin(container), iter), 0, rootFor<T>());
     emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
 
     return true;
 }
 
-bool ProjectTreeModel::renameSound(const Sound &sound, const QString &newName)
+template bool ProjectTreeModel::rename<Sprite>(const Sprite &entry, const QString &newName);
+template bool ProjectTreeModel::rename<Sound>(const Sound &entry, const QString &newName);
+template bool ProjectTreeModel::rename<Background>(const Background &entry, const QString &newName);
+template bool ProjectTreeModel::rename<Path>(const Path &entry, const QString &newName);
+template bool ProjectTreeModel::rename<Script>(const Script &entry, const QString &newName);
+template bool ProjectTreeModel::rename<Font>(const Font &entry, const QString &newName);
+template bool ProjectTreeModel::rename<TimeLine>(const TimeLine &entry, const QString &newName);
+template bool ProjectTreeModel::rename<Object>(const Object &entry, const QString &newName);
+template bool ProjectTreeModel::rename<Room>(const Room &entry, const QString &newName);
+
+template<typename T>
+QVariant ProjectTreeModel::dataFor(const QModelIndex &index, int role) const
 {
-    const auto iter = std::find_if(std::begin(m_project->sounds), std::end(m_project->sounds),
-                                   [&sound](const auto &entry){ return &entry == &sound; });
-    if (iter == std::cend(m_project->sounds))
+    if (!m_project)
     {
-        qWarning() << "sound not from this project!";
-        return false;
+        qWarning() << "unexpected null project";
+        return {};
     }
 
-    if (iter->name == newName)
-        return true;
-
-    if (std::any_of(std::cbegin(m_project->sounds), std::cend(m_project->sounds),
-                    [&newName](const auto &entry){ return entry.name == newName; }))
+    const auto &container = m_project->containerFor<T>();
+    if (index.row() >= container.size())
     {
-        qWarning() << "duplicate sound name" << newName;
-        return false;
+        qWarning() << "index out of bounds" << index.row();
+        return {};
     }
 
-    iter->name = newName;
+    auto iter = std::next(std::cbegin(container), index.row());
 
-    emit soundNameChanged(*iter);
-    const auto index = this->index(std::distance(std::begin(m_project->sounds), iter), 0, soundsRoot());
-    emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+    switch (role)
+    {
+    case Qt::DisplayRole:
+    case Qt::EditRole:
+        return iter->name;
+    case Qt::DecorationRole:
+        return iconFor<T>(*iter);
 
-    return true;
+    default:
+        return {};
+    }
 }
 
-bool ProjectTreeModel::renameBackground(const Background &background, const QString &newName)
+template<>
+QVariant ProjectTreeModel::iconFor<Sprite>(const Sprite &entry) const
 {
-    const auto iter = std::find_if(std::begin(m_project->backgrounds), std::end(m_project->backgrounds),
-                                   [&background](const auto &entry){ return &entry == &background; });
-    if (iter == std::cend(m_project->backgrounds))
+    if (entry.pixmaps.empty() || entry.pixmaps.front().isNull())
     {
-        qWarning() << "background not from this project!";
-        return false;
+        QPixmap pixmap{16, 16};
+        pixmap.fill(Qt::white);
+        return pixmap;
     }
-
-    if (iter->name == newName)
-        return true;
-
-    if (std::any_of(std::cbegin(m_project->backgrounds), std::cend(m_project->backgrounds),
-                    [&newName](const auto &entry){ return entry.name == newName; }))
-    {
-        qWarning() << "duplicate background name" << newName;
-        return false;
-    }
-
-    iter->name = newName;
-
-    emit backgroundNameChanged(*iter);
-    const auto index = this->index(std::distance(std::begin(m_project->backgrounds), iter), 0, backgroundsRoot());
-    emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
-
-    return true;
+    return entry.pixmaps.front().scaled(16, 16, Qt::IgnoreAspectRatio /*KeepAspectRatio*/);
 }
 
-bool ProjectTreeModel::renamePath(const Path &path, const QString &newName)
+template<>
+QVariant ProjectTreeModel::iconFor<Sound>(const Sound &entry) const
 {
-    const auto iter = std::find_if(std::begin(m_project->paths), std::end(m_project->paths),
-                                   [&path](const auto &entry){ return &entry == &path; });
-    if (iter == std::cend(m_project->paths))
+    switch (entry.type)
     {
-        qWarning() << "path not from this project!";
-        return false;
+    case Sound::Type::Sound:
+        return QPixmap{":/qtgameengine/icons/sound-file.png"}.scaled(16, 16);
+    case Sound::Type::Music:
+        return QPixmap{":/qtgameengine/icons/music-file.png"}.scaled(16, 16);
+    default:
+        qWarning() << "unexpected sound type" << std::to_underlying(entry.type);
+        return {};
     }
-
-    if (iter->name == newName)
-        return true;
-
-    if (std::any_of(std::cbegin(m_project->paths), std::cend(m_project->paths),
-                    [&newName](const auto &entry){ return entry.name == newName; }))
-    {
-        qWarning() << "duplicate path name" << newName;
-        return false;
-    }
-
-    iter->name = newName;
-
-    emit pathNameChanged(*iter);
-    const auto index = this->index(std::distance(std::begin(m_project->paths), iter), 0, pathsRoot());
-    emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
-
-    return true;
 }
 
-bool ProjectTreeModel::renameScript(const Script &script, const QString &newName)
+template<>
+QVariant ProjectTreeModel::iconFor<Background>(const Background &entry) const
 {
-    const auto iter = std::find_if(std::begin(m_project->scripts), std::end(m_project->scripts),
-                                   [&script](const auto &entry){ return &entry == &script; });
-    if (iter == std::cend(m_project->scripts))
+    if (entry.pixmap.isNull())
     {
-        qWarning() << "script not from this project!";
-        return false;
+        QPixmap pixmap{16, 16};
+        pixmap.fill(Qt::white);
+        return pixmap;
     }
-
-    if (iter->name == newName)
-        return true;
-
-    if (std::any_of(std::cbegin(m_project->scripts), std::cend(m_project->scripts),
-                    [&newName](const auto &entry){ return entry.name == newName; }))
-    {
-        qWarning() << "duplicate script name" << newName;
-        return false;
-    }
-
-    iter->name = newName;
-
-    emit scriptNameChanged(*iter);
-    const auto index = this->index(std::distance(std::begin(m_project->scripts), iter), 0, scriptsRoot());
-    emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
-
-    return true;
+    return entry.pixmap.scaled(16, 16, Qt::KeepAspectRatio);
 }
 
-bool ProjectTreeModel::renameFont(const Font &font, const QString &newName)
+template<>
+QVariant ProjectTreeModel::iconFor<Path>(const Path &entry) const
 {
-    const auto iter = std::find_if(std::begin(m_project->fonts), std::end(m_project->fonts),
-                                   [&font](const auto &entry){ return &entry == &font; });
-    if (iter == std::cend(m_project->fonts))
+    return QPixmap{":/qtgameengine/icons/path-file.png"}.scaled(16, 16);
+}
+
+template<>
+QVariant ProjectTreeModel::iconFor<Script>(const Script &entry) const
+{
+    return QPixmap{":/qtgameengine/icons/script-file.png"}.scaled(16, 16);
+}
+
+template<>
+QVariant ProjectTreeModel::iconFor<Font>(const Font &entry) const
+{
+    return QPixmap{":/qtgameengine/icons/font-file.png"}.scaled(16, 16);
+}
+
+template<>
+QVariant ProjectTreeModel::iconFor<TimeLine>(const TimeLine &entry) const
+{
+    return QPixmap{":/qtgameengine/icons/timeline-file.png"}.scaled(16, 16);
+}
+
+template<>
+QVariant ProjectTreeModel::iconFor<Object>(const Object &entry) const
+{
+    return QPixmap{":/qtgameengine/icons/object-file.png"}.scaled(16, 16);
+}
+
+template<>
+QVariant ProjectTreeModel::iconFor<Room>(const Room &entry) const
+{
+    return QPixmap{":/qtgameengine/icons/room-file.png"}.scaled(16, 16);
+}
+
+template<typename T>
+bool ProjectTreeModel::setDataFor(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (!m_project)
     {
-        qWarning() << "font not from this project!";
-        return false;
+        qWarning() << "unexpected null project";
+        return {};
     }
 
-    if (iter->name == newName)
+    auto &container = m_project->containerFor<T>();
+    if (index.row() < 0 || index.row() >= container.size())
+    {
+        qWarning() << "unexpected row" << index.row();
+        return false;
+    }
+    auto iter = std::next(std::begin(container), index.row());
+    switch (role)
+    {
+    case Qt::DisplayRole:
+    case Qt::EditRole:
+        if (auto name = value.toString(); name != iter->name)
+        {
+            if (std::any_of(std::cbegin(container), std::cend(container),
+                            [&name](const auto &entry){ return entry.name == name; }))
+            {
+                qWarning() << "duplicate name" << name;
+                emit errorOccured(tr("A Sprite with the name \"%0\" is already existing").arg(name));
+                return false;
+            }
+            iter->name = std::move(name);
+            emitNameChanged<T>(*iter);
+            emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+        }
         return true;
-
-    if (std::any_of(std::cbegin(m_project->fonts), std::cend(m_project->fonts),
-                    [&newName](const auto &entry){ return entry.name == newName; }))
-    {
-        qWarning() << "duplicate font name" << newName;
+    default:
+        qWarning() << "unexpected role" << role;
         return false;
     }
+}
 
-    iter->name = newName;
+template<typename T>
+std::optional<bool> ProjectTreeModel::insertRowsFor(int row, int count, const QModelIndex &parent)
+{
+    if (parent == rootFor<T>())
+    {
+        if (!m_project)
+        {
+            qWarning() << "unexpected null project";
+            return {};
+        }
 
-    emit fontNameChanged(*iter);
-    const auto index = this->index(std::distance(std::begin(m_project->fonts), iter), 0, fontsRoot());
-    emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+        auto &container = m_project->containerFor<T>();
+        if (row < 0 || row > container.size())
+        {
+            qWarning() << "unexpected row" << row;
+            return false;
+        }
 
-    return true;
+        QString name;
+        for (int i = 0; ; i++)
+        {
+            name = nameTempateFor<T>().arg(i);
+            if (std::none_of(std::cbegin(container), std::cend(container),
+                             [&name](const T &entry){ return entry.name == name; }))
+                break;
+        }
+
+        emit beginInsertRows(parent, row, row + count - 1);
+        container.emplace(std::next(std::begin(container), row), T { .name = std::move(name) });
+        emit endInsertRows();
+
+        return true;
+    }
+
+    return std::nullopt;
+}
+
+template<typename T>
+std::optional<bool> ProjectTreeModel::removeRowsFor(int row, int count, const QModelIndex &parent)
+{
+    if (parent == rootFor<T>())
+    {
+        if (!m_project)
+        {
+            qWarning() << "unexpected null project";
+            return false;
+        }
+
+        auto &container = m_project->containerFor<T>();
+
+        if (row < 0 || row >= container.size())
+        {
+            qWarning() << "unexpected row" << row;
+            return false;
+        }
+
+        if (count < 0 || count > container.size() - row)
+        {
+            qWarning() << "unexpected row+count" << count << row;
+            return false;
+        }
+
+        emit beginRemoveRows(parent, row, row + count - 1);
+        auto begin = std::next(std::begin(container), row);
+        auto end = std::next(begin, count);
+        container.erase(begin, end);
+        emit endRemoveRows();
+
+        return true;
+    }
+
+    return std::nullopt;
+}
+
+template<>
+void ProjectTreeModel::emitNameChanged<Sprite>(const Sprite &entry)
+{
+    emit spriteNameChanged(entry);
+}
+
+template<>
+void ProjectTreeModel::emitNameChanged<Sound>(const Sound &entry)
+{
+    emit soundNameChanged(entry);
+}
+
+template<>
+void ProjectTreeModel::emitNameChanged<Background>(const Background &entry)
+{
+    emit backgroundNameChanged(entry);
+}
+
+template<>
+void ProjectTreeModel::emitNameChanged<Path>(const Path &entry)
+{
+    emit pathNameChanged(entry);
+}
+
+template<>
+void ProjectTreeModel::emitNameChanged<Script>(const Script &entry)
+{
+    emit scriptNameChanged(entry);
+}
+
+template<>
+void ProjectTreeModel::emitNameChanged<Font>(const Font &entry)
+{
+    emit fontNameChanged(entry);
+}
+
+template<>
+void ProjectTreeModel::emitNameChanged<TimeLine>(const TimeLine &entry)
+{
+    emit timeLineNameChanged(entry);
+}
+
+template<>
+void ProjectTreeModel::emitNameChanged<Object>(const Object &entry)
+{
+    emit objectNameChanged(entry);
+}
+
+template<>
+void ProjectTreeModel::emitNameChanged<Room>(const Room &entry)
+{
+    emit roomNameChanged(entry);
+}
+
+template<>
+QString ProjectTreeModel::nameTempateFor<Sprite>()
+{
+    return QStringLiteral("sprite%0");
+}
+
+template<>
+QString ProjectTreeModel::nameTempateFor<Sound>()
+{
+    return QStringLiteral("sound%0");
+}
+
+template<>
+QString ProjectTreeModel::nameTempateFor<Background>()
+{
+    return QStringLiteral("background%0");
+}
+
+template<>
+QString ProjectTreeModel::nameTempateFor<Path>()
+{
+    return QStringLiteral("path%0");
+}
+
+template<>
+QString ProjectTreeModel::nameTempateFor<Script>()
+{
+    return QStringLiteral("script%0");
+}
+
+template<>
+QString ProjectTreeModel::nameTempateFor<Font>()
+{
+    return QStringLiteral("font%0");
+}
+
+template<>
+QString ProjectTreeModel::nameTempateFor<TimeLine>()
+{
+    return QStringLiteral("timeline%0");
+}
+
+template<>
+QString ProjectTreeModel::nameTempateFor<Object>()
+{
+    return QStringLiteral("object%0");
+}
+
+template<>
+QString ProjectTreeModel::nameTempateFor<Room>()
+{
+    return QStringLiteral("room%0");
 }
