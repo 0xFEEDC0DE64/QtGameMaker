@@ -1,27 +1,20 @@
 #include "scriptpropertiesdialog.h"
-#include "ui_scriptpropertiesdialog.h"
+#include "ui_codeeditordialog.h"
 
-#include <QDebug>
-#include <QFont>
-#include <QLineEdit>
 #include <QLabel>
-#include <QTextBlock>
+#include <QLineEdit>
 #include <QMessageBox>
+#include <QDebug>
 
 #include "projectcontainer.h"
 #include "projecttreemodel.h"
-#include "jshighlighter.h"
 
 ScriptPropertiesDialog::ScriptPropertiesDialog(Script &script, ProjectTreeModel &projectModel, QWidget *parent) :
-    QDialog{parent},
-    m_ui{std::make_unique<Ui::ScriptPropertiesDialog>()},
+    CodeEditorDialog{parent},
     m_script{script},
     m_projectModel{projectModel},
-    m_lineEditName{new QLineEdit{this}},
-    m_labelPosition{new QLabel{this}}
+    m_lineEditName{new QLineEdit{this}}
 {
-    m_ui->setupUi(this);
-
     updateTitle();
 
     {
@@ -32,45 +25,18 @@ ScriptPropertiesDialog::ScriptPropertiesDialog(Script &script, ProjectTreeModel 
     m_lineEditName->setMaximumWidth(100);
     m_ui->toolBar->addWidget(m_lineEditName);
 
-    m_labelPosition->setFrameStyle(QFrame::Sunken);
-    m_ui->statusbar->addWidget(m_labelPosition);
-
-    {
-        QFont font;
-        font.setFamily("Consolas");
-        font.setFixedPitch(true);
-        font.setPointSize(10);
-        m_ui->codeEdit->setFont(font);
-    }
-
-    new JSHighlighter{m_ui->codeEdit->document()};
 
     m_lineEditName->setText(m_script.name);
     m_ui->codeEdit->setPlainText(m_script.script);
 
-    updatePosition();
-
     connect(&m_projectModel, &ProjectTreeModel::scriptNameChanged,
             this, &ScriptPropertiesDialog::scriptNameChanged);
-
-    connect(m_ui->actionLoad, &QAction::triggered,
-            this, &ScriptPropertiesDialog::load);
-    connect(m_ui->actionSave, &QAction::triggered,
-            this, &ScriptPropertiesDialog::save);
-    connect(m_ui->actionPrint, &QAction::triggered,
-            this, &ScriptPropertiesDialog::print);
 
     connect(m_lineEditName, &QLineEdit::textChanged,
             this, &ScriptPropertiesDialog::changed);
     connect(m_ui->codeEdit, &QPlainTextEdit::textChanged,
             this, &ScriptPropertiesDialog::changed);
-    connect(m_ui->codeEdit, &QPlainTextEdit::textChanged,
-            this, &ScriptPropertiesDialog::updatePosition);
-    connect(m_ui->codeEdit, &QPlainTextEdit::cursorPositionChanged,
-            this, &ScriptPropertiesDialog::updatePosition);
 }
-
-ScriptPropertiesDialog::~ScriptPropertiesDialog() = default;
 
 void ScriptPropertiesDialog::accept()
 {
@@ -85,14 +51,14 @@ void ScriptPropertiesDialog::accept()
 
     m_script.script = m_ui->codeEdit->toPlainText();
 
-    QDialog::accept();
+    CodeEditorDialog::accept();
 }
 
 void ScriptPropertiesDialog::reject()
 {
     if (!m_unsavedChanges)
     {
-        QDialog::reject();
+        CodeEditorDialog::reject();
         return;
     }
 
@@ -109,7 +75,7 @@ void ScriptPropertiesDialog::reject()
         accept();
         return;
     case QMessageBox::Discard:
-        QDialog::reject();
+        CodeEditorDialog::reject();
         return;
     case QMessageBox::Cancel:
         return;
@@ -125,44 +91,6 @@ void ScriptPropertiesDialog::changed()
         m_unsavedChanges = true;
         updateTitle();
     }
-}
-
-void ScriptPropertiesDialog::load()
-{
-
-}
-
-void ScriptPropertiesDialog::save()
-{
-
-}
-
-void ScriptPropertiesDialog::print()
-{
-
-}
-
-void ScriptPropertiesDialog::updatePosition()
-{
-    auto cursor = m_ui->codeEdit->textCursor();
-    auto position = cursor.position();
-    cursor.movePosition(QTextCursor::StartOfLine);
-    position -= cursor.position() - 1;
-
-    int lines = 1;
-    while (cursor.positionInBlock() > 0)
-    {
-        cursor.movePosition(QTextCursor::Up);
-        //lines++;
-    }
-    QTextBlock block = cursor.block().previous();
-    while (block.isValid())
-    {
-        lines += 1; //block.lineCount();
-        block = block.previous();
-    }
-
-    m_labelPosition->setText(tr("%0/%1: %2").arg(lines).arg(m_ui->codeEdit->blockCount()).arg(position));
 }
 
 void ScriptPropertiesDialog::scriptNameChanged(const Script &script)
@@ -185,3 +113,4 @@ void ScriptPropertiesDialog::updateTitle()
                        .arg(m_unsavedChanges ? tr("*") : QString{})
                    );
 }
+

@@ -26,6 +26,7 @@ private slots:
     void saveSprite();
     void editSprite();
     void centerOrigin();
+    void modifyMask();
 
     void changed();
 
@@ -42,5 +43,5 @@ private:
 
     bool m_unsavedChanges{};
 
-    std::optional<std::vector<QPixmap>> m_newPixmaps;
+    std::vector<QPixmap> m_pixmaps;
 };

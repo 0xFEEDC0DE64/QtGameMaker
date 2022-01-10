@@ -7,12 +7,10 @@ ExtensionPackagesDialog::ExtensionPackagesDialog(QWidget *parent) :
 {
     m_ui->setupUi(this);
 
-    setWindowFlags(windowFlags()
-                   & ~Qt::Dialog
-                   | Qt::Window
-                   | Qt::WindowMinimizeButtonHint
-                   | Qt::WindowMaximizeButtonHint
-                   | Qt::WindowCloseButtonHint);
+#ifdef Q_OS_LINUX
+    setWindowFlags(windowFlags() & ~Qt::Dialog | Qt::Window);
+#endif
+    setWindowFlag(Qt::WindowCloseButtonHint);
 
     if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Ok))
         button->setIcon(QIcon{":/qtgameengine/icons/ok.png"});

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>728</width>
-    <height>449</height>
+    <width>921</width>
+    <height>576</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -78,6 +78,20 @@
         <addaction name="actionClear"/>
         <addaction name="actionReverse"/>
         <addaction name="actionShift"/>
+        <addaction name="actionMirrorHorizontally"/>
+        <addaction name="actionFlipVertically"/>
+        <addaction name="actionRotate"/>
+        <addaction name="actionScale"/>
+        <addaction name="separator"/>
+        <addaction name="actionShiftLeft"/>
+        <addaction name="actionShiftRight"/>
+        <addaction name="actionShiftTop"/>
+        <addaction name="actionShift_bottom"/>
+        <addaction name="actionCenterView"/>
+        <addaction name="separator"/>
+        <addaction name="separator"/>
+        <addaction name="actionGrid"/>
+        <addaction name="actionRoom"/>
        </widget>
       </item>
      </layout>
@@ -112,7 +126,11 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineEditName"/>
+          <widget class="QLineEdit" name="lineEditName">
+           <property name="toolTip">
+            <string>The name of the path</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -133,12 +151,18 @@
         </spacer>
        </item>
        <item>
-        <widget class="QListView" name="listView">
+        <widget class="QTreeView" name="treeView">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Ignored" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="rootIsDecorated">
+          <bool>false</bool>
+         </property>
+         <property name="headerHidden">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -170,7 +194,14 @@
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QSpinBox" name="spinBoxX"/>
+            <widget class="QSpinBox" name="spinBoxX">
+             <property name="toolTip">
+              <string>X-coordinate of the point</string>
+             </property>
+             <property name="maximum">
+              <number>16384</number>
+             </property>
+            </widget>
            </item>
            <item row="1" column="0">
             <widget class="QLabel" name="labelY">
@@ -180,7 +211,14 @@
             </widget>
            </item>
            <item row="1" column="1">
-            <widget class="QSpinBox" name="spinBoxY"/>
+            <widget class="QSpinBox" name="spinBoxY">
+             <property name="toolTip">
+              <string>Y-coordinate of the point</string>
+             </property>
+             <property name="maximum">
+              <number>16384</number>
+             </property>
+            </widget>
            </item>
            <item row="2" column="0">
             <widget class="QLabel" name="labelSp">
@@ -190,7 +228,14 @@
             </widget>
            </item>
            <item row="2" column="1">
-            <widget class="QSpinBox" name="spinBox_3"/>
+            <widget class="QSpinBox" name="spinBoxSp">
+             <property name="toolTip">
+              <string>Relative speed at this point (100 = default)</string>
+             </property>
+             <property name="maximum">
+              <number>16384</number>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -211,6 +256,9 @@
           <layout class="QVBoxLayout" name="verticalLayout_4">
            <item>
             <widget class="QPushButton" name="pushButtonAdd">
+             <property name="toolTip">
+              <string>Add the point to the path</string>
+             </property>
              <property name="text">
               <string>Add</string>
              </property>
@@ -218,6 +266,9 @@
            </item>
            <item>
             <widget class="QPushButton" name="pushButtonInsert">
+             <property name="toolTip">
+              <string>Insert the point before the current one</string>
+             </property>
              <property name="text">
               <string>Insert</string>
              </property>
@@ -225,6 +276,9 @@
            </item>
            <item>
             <widget class="QPushButton" name="pushButtonDelete">
+             <property name="toolTip">
+              <string>Delete the point from the path</string>
+             </property>
              <property name="text">
               <string>Delete</string>
              </property>
@@ -256,6 +310,9 @@
           <layout class="QVBoxLayout" name="verticalLayout_5">
            <item>
             <widget class="QGroupBox" name="groupBoxConnectionKind">
+             <property name="toolTip">
+              <string>Indicate the type of connections between the points</string>
+             </property>
              <property name="title">
               <string>connection kind</string>
              </property>
@@ -287,7 +344,11 @@
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QSpinBox" name="spinBoxPrecision"/>
+              <widget class="QSpinBox" name="spinBoxPrecision">
+               <property name="toolTip">
+                <string>Precision with which to create smooth curves</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
@@ -324,7 +385,14 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_7" stretch="1,0">
        <item>
-        <widget class="QWidget" name="widget" native="true"/>
+        <widget class="PathPointsWidget" name="widget" native="true">
+         <property name="minimumSize">
+          <size>
+           <width>300</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QStatusBar" name="statusbar"/>
@@ -394,7 +462,153 @@
     <string>Shift the path</string>
    </property>
   </action>
+  <action name="actionMirrorHorizontally">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/flip-horizontal.png</normaloff>:/qtgameengine/icons/flip-horizontal.png</iconset>
+   </property>
+   <property name="text">
+    <string>Mirror horizontally</string>
+   </property>
+   <property name="toolTip">
+    <string>Mirror the path horizontally</string>
+   </property>
+  </action>
+  <action name="actionFlipVertically">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/flip-vertical.png</normaloff>:/qtgameengine/icons/flip-vertical.png</iconset>
+   </property>
+   <property name="text">
+    <string>Flip vertically</string>
+   </property>
+   <property name="toolTip">
+    <string>Flip the path vertically</string>
+   </property>
+  </action>
+  <action name="actionRotate">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/rotate.png</normaloff>:/qtgameengine/icons/rotate.png</iconset>
+   </property>
+   <property name="text">
+    <string>Rotate</string>
+   </property>
+   <property name="toolTip">
+    <string>Rotate the path</string>
+   </property>
+  </action>
+  <action name="actionScale">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/scale.png</normaloff>:/qtgameengine/icons/scale.png</iconset>
+   </property>
+   <property name="text">
+    <string>Scale</string>
+   </property>
+   <property name="toolTip">
+    <string>Scale the path</string>
+   </property>
+  </action>
+  <action name="actionShiftLeft">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/arrow-left.png</normaloff>:/qtgameengine/icons/arrow-left.png</iconset>
+   </property>
+   <property name="text">
+    <string>Shift Left</string>
+   </property>
+   <property name="toolTip">
+    <string>Shift the view to the left</string>
+   </property>
+  </action>
+  <action name="actionShiftRight">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/arrow-right.png</normaloff>:/qtgameengine/icons/arrow-right.png</iconset>
+   </property>
+   <property name="text">
+    <string>Shift right</string>
+   </property>
+   <property name="toolTip">
+    <string>Shift the view to the right</string>
+   </property>
+  </action>
+  <action name="actionShiftTop">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/arrow-up.png</normaloff>:/qtgameengine/icons/arrow-up.png</iconset>
+   </property>
+   <property name="text">
+    <string>Shift top</string>
+   </property>
+   <property name="toolTip">
+    <string>Shift the view to the top</string>
+   </property>
+  </action>
+  <action name="actionShift_bottom">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/arrow-down.png</normaloff>:/qtgameengine/icons/arrow-down.png</iconset>
+   </property>
+   <property name="text">
+    <string>Shift bottom</string>
+   </property>
+   <property name="toolTip">
+    <string>Shift the view to the bottom</string>
+   </property>
+  </action>
+  <action name="actionCenterView">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/center.png</normaloff>:/qtgameengine/icons/center.png</iconset>
+   </property>
+   <property name="text">
+    <string>Center view</string>
+   </property>
+   <property name="toolTip">
+    <string>Center view around the path</string>
+   </property>
+  </action>
+  <action name="actionGrid">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/grid.png</normaloff>:/qtgameengine/icons/grid.png</iconset>
+   </property>
+   <property name="text">
+    <string>Grid</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle the showing of the grid</string>
+   </property>
+  </action>
+  <action name="actionRoom">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/qtgameengine/icons/room.png</normaloff>:/qtgameengine/icons/room.png</iconset>
+   </property>
+   <property name="text">
+    <string>Room</string>
+   </property>
+   <property name="toolTip">
+    <string>Indicate the room to show as background</string>
+   </property>
+  </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PathPointsWidget</class>
+   <extends>QWidget</extends>
+   <header>pathpointswidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../resources.qrc"/>
  </resources>

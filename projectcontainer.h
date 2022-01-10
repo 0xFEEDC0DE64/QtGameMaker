@@ -7,6 +7,7 @@
 #include <QPixmap>
 #include <QFont>
 #include <QDataStream>
+#include <QPoint>
 
 struct Sprite
 {
@@ -49,6 +50,15 @@ struct Background
 struct Path
 {
     QString name;
+    struct Point {
+        QPoint point;
+        int sp{100};
+    };
+    std::vector<Point> points;
+    enum class Type { Straight, Smooth };
+    Type type{Type::Straight};
+    bool closed{true};
+    int precision{4};
 };
 
 struct Script
@@ -98,23 +108,5 @@ struct ProjectContainer
     template<typename T> const std::list<T> &containerFor() const;
 };
 
-QDataStream &operator<<(QDataStream &ds, const Sprite &sprite);
-QDataStream &operator>>(QDataStream &ds, Sprite &sprite);
-QDataStream &operator<<(QDataStream &ds, const Sound &sound);
-QDataStream &operator>>(QDataStream &ds, Sound &sound);
-QDataStream &operator<<(QDataStream &ds, const Background &background);
-QDataStream &operator>>(QDataStream &ds, Background &background);
-QDataStream &operator<<(QDataStream &ds, const Path &path);
-QDataStream &operator>>(QDataStream &ds, Path &path);
-QDataStream &operator<<(QDataStream &ds, const Script &script);
-QDataStream &operator>>(QDataStream &ds, Script &script);
-QDataStream &operator<<(QDataStream &ds, const Font &font);
-QDataStream &operator>>(QDataStream &ds, Font &font);
-QDataStream &operator<<(QDataStream &ds, const TimeLine &timeLine);
-QDataStream &operator>>(QDataStream &ds, TimeLine &timeLine);
-QDataStream &operator<<(QDataStream &ds, const Object &object);
-QDataStream &operator>>(QDataStream &ds, Object &object);
-QDataStream &operator<<(QDataStream &ds, const Room &room);
-QDataStream &operator>>(QDataStream &ds, Room &room);
 QDataStream &operator<<(QDataStream &ds, const ProjectContainer &project);
 QDataStream &operator>>(QDataStream &ds, ProjectContainer &project);

@@ -9,10 +9,10 @@ CreateSpriteDialog::CreateSpriteDialog(QWidget *parent) :
 {
     m_ui->setupUi(this);
 
-    setWindowFlags(windowFlags()
-                    & ~Qt::Dialog
-                   | Qt::Window
-                   | Qt::WindowCloseButtonHint);
+#ifdef Q_OS_LINUX
+    setWindowFlags(windowFlags() & ~Qt::Dialog | Qt::Window);
+#endif
+    setWindowFlag(Qt::WindowCloseButtonHint);
 
     if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Ok))
         button->setIcon(QIcon{":/qtgameengine/icons/ok.png"});
@@ -29,7 +29,7 @@ CreateSpriteDialog::CreateSpriteDialog(const QSize &size, QWidget *parent) :
 
 CreateSpriteDialog::~CreateSpriteDialog() = default;
 
-QSize CreateSpriteDialog::size() const
+QSize CreateSpriteDialog::spriteSize() const
 {
     return QSize{m_ui->spinBoxWidth->value(), m_ui->spinBoxHeight->value()};
 }

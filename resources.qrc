@@ -65,5 +65,11 @@
         <file>icons/object-file.png</file>
         <file>icons/room-file.png</file>
         <file>icons/timeline-file.png</file>
+        <file>icons/flip-horizontal.png</file>
+        <file>icons/flip-vertical.png</file>
+        <file>icons/scale.png</file>
+        <file>icons/center.png</file>
+        <file>icons/grid.png</file>
+        <file>icons/constants.png</file>
     </qresource>
 </RCC>

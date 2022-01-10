@@ -6,8 +6,10 @@
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QDebug>
 
 #include "projecttreemodel.h"
+#include "dialogs/preferencesdialog.h"
 #include "dialogs/spritepropertiesdialog.h"
 #include "dialogs/soundpropertiesdialog.h"
 #include "dialogs/backgroundpropertiesdialog.h"
@@ -17,11 +19,13 @@
 #include "dialogs/timelinepropertiesdialog.h"
 #include "dialogs/objectpropertiesdialog.h"
 #include "dialogs/roompropertiesdialog.h"
-#include "dialogs/preferencesdialog.h"
+#include "dialogs/objectinformationdialog.h"
 #include "dialogs/gameinformationdialog.h"
 #include "dialogs/globalgamesettingsdialog.h"
 #include "dialogs/extensionpackagesdialog.h"
-#include "dialogs/objectinformationdialog.h"
+#include "dialogs/userdefinedconstantsdialog.h"
+#include "dialogs/triggersdialog.h"
+#include "dialogs/includedfilesdialog.h"
 
 namespace {
 template<typename T> struct PropertiesDialogForDetail;
@@ -107,6 +111,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_ui->actionGameInformation, &QAction::triggered, this, &MainWindow::showGameInformation);
     connect(m_ui->actionGlobalGameSettings, &QAction::triggered, this, &MainWindow::showGlobalGameSettings);
     connect(m_ui->actionExtensionPackages, &QAction::triggered, this, &MainWindow::showExtensionPackages);
+    connect(m_ui->actionDefineConstants, &QAction::triggered, this, &MainWindow::showDefineConstants);
+    connect(m_ui->actionDefineTriggers, &QAction::triggered, this, &MainWindow::showDefineTriggers);
+    connect(m_ui->actionIncludedFiles, &QAction::triggered, this, &MainWindow::showIncludedFiles);
     connect(m_ui->actionAbout, &QAction::triggered, this, &MainWindow::about);
     connect(m_ui->actionAboutQt, &QAction::triggered, qApp, &QApplication::aboutQt);
 
@@ -126,10 +133,16 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(m_projectTreeModel.get(), &ProjectTreeModel::rowsInserted,
             this, &MainWindow::rowsInserted);
+    connect(m_projectTreeModel.get(), &QAbstractTableModel::rowsInserted,
+            this, &MainWindow::changed);
     connect(m_projectTreeModel.get(), &ProjectTreeModel::rowsAboutToBeRemoved,
             this, &MainWindow::rowsAboutToBeRemoved);
+    connect(m_projectTreeModel.get(), &QAbstractTableModel::rowsRemoved,
+            this, &MainWindow::changed);
     connect(m_projectTreeModel.get(), &ProjectTreeModel::modelAboutToBeReset,
             this, &MainWindow::modelAboutToBeReset);
+    connect(m_projectTreeModel.get(), &QAbstractTableModel::dataChanged,
+            this, &MainWindow::changed);
 
     updateTitle();
 }
@@ -318,6 +331,15 @@ void MainWindow::modelErrorOccured(const QString &message)
     QMessageBox::warning(this, tr("Error occured!"), tr("Error occured!") + "\n\n" + message);
 }
 
+void MainWindow::changed()
+{
+    if (!m_unsavedChanges)
+    {
+        m_unsavedChanges = true;
+        updateTitle();
+    }
+}
+
 void MainWindow::newFile()
 {
     m_ui->mdiArea->closeAllSubWindows();
@@ -354,7 +376,7 @@ void MainWindow::newFile()
     m_project = {};
     m_projectTreeModel->setProject(&m_project);
 
-    m_filePath = {};
+    m_filePath = QString{};
     m_unsavedChanges = false;
 
     updateTitle();
@@ -492,7 +514,8 @@ void MainWindow::exportResources()
 
 void MainWindow::preferences()
 {
-    PreferencesDialog{this}.exec();
+    PreferencesDialog dialog{this};
+    dialog.exec();
 }
 
 void MainWindow::create()
@@ -501,7 +524,7 @@ void MainWindow::create()
     if (!index.isValid())
         return;
 
-    if (index == m_projectTreeModel->rootFor<Sprite>())          createFor<Sprite>();
+         if (index == m_projectTreeModel->rootFor<Sprite>())     createFor<Sprite>();
     else if (index == m_projectTreeModel->rootFor<Sound>())      createFor<Sound>();
     else if (index == m_projectTreeModel->rootFor<Background>()) createFor<Background>();
     else if (index == m_projectTreeModel->rootFor<Path>())       createFor<Path>();
@@ -583,35 +606,7 @@ void MainWindow::findResource()
 
 void MainWindow::showObjectInformation()
 {
-    if (m_objectInformationWindow)
-        m_ui->mdiArea->setActiveSubWindow(m_objectInformationWindow);
-    else
-    {
-        auto dialog = new ObjectInformationDialog;
-        auto subwindow = m_ui->mdiArea->addSubWindow(dialog);
-        auto action = m_ui->menuWindow->addAction(dialog->windowTitle());
-        action->setCheckable(true);
-        connect(action, &QAction::triggered,
-                m_ui->mdiArea, [mdiArea=m_ui->mdiArea,subwindow,action](){
-                    mdiArea->setActiveSubWindow(subwindow);
-                    action->setChecked(subwindow->windowState().testFlag(Qt::WindowActive));
-                });
-        connect(subwindow, &QMdiSubWindow::windowStateChanged,
-                action, [action](Qt::WindowStates oldState, Qt::WindowStates newState){
-                    action->setChecked(newState.testFlag(Qt::WindowActive));
-                });
-        connect(dialog, &QWidget::windowTitleChanged, action, &QAction::setText);
-        connect(dialog, &QDialog::finished,
-                this, [&objectInformationWindow=m_objectInformationWindow](){
-                    objectInformationWindow = nullptr;
-                });
-        connect(dialog, &QDialog::finished,
-                subwindow, &QObject::deleteLater);
-        connect(dialog, &QDialog::finished,
-                action, &QObject::deleteLater);
-        m_objectInformationWindow = subwindow;
-        dialog->show();
-    }
+    openOrActivateWindow<ObjectInformationDialog>(m_objectInformationWindow, m_project);
 }
 
 template<typename T>
@@ -633,17 +628,37 @@ template void MainWindow::createFor<Room>();
 
 void MainWindow::showGameInformation()
 {
-    GameInformationDialog{this}.exec();
+    GameInformationDialog dialog{this};
+    if (dialog.exec() == QDialog::Accepted)
+        changed();
 }
 
 void MainWindow::showGlobalGameSettings()
 {
-    GlobalGameSettingsDialog{this}.exec();
+    GlobalGameSettingsDialog dialog{this};
+    if (dialog.exec() == QDialog::Accepted)
+        changed();
 }
 
 void MainWindow::showExtensionPackages()
 {
-    ExtensionPackagesDialog{this}.exec();
+    ExtensionPackagesDialog dialog{this};
+    dialog.exec();
+}
+
+void MainWindow::showDefineConstants()
+{
+    openOrActivateWindow<UserDefinedConstantsDialog>(m_userDefinedConstantsWindow, m_project);
+}
+
+void MainWindow::showDefineTriggers()
+{
+    openOrActivateWindow<TriggersDialog>(m_triggersWindow, m_project);
+}
+
+void MainWindow::showIncludedFiles()
+{
+    openOrActivateWindow<IncludedFilesDialog>(m_includedFilesWindow, m_project);
 }
 
 void MainWindow::about()
@@ -688,9 +703,43 @@ void MainWindow::modelAboutToBeReset()
 
 void MainWindow::updateTitle()
 {
-    setWindowTitle(tr("%0 - Qt Gamemaker 1.0 Ultimate%1")
+    setWindowTitle(tr("%0%1 - Qt Gamemaker 1.0 Ultimate")
                        .arg(m_filePath.isEmpty() ? "<new-game>" : QFileInfo{m_filePath}.fileName())
                        .arg(m_unsavedChanges ? tr("*") : QString{}));
+}
+
+template<typename T, typename ...Targs>
+void MainWindow::openOrActivateWindow(QMdiSubWindow * &ptr, Targs &&...args)
+{
+    if (ptr)
+        m_ui->mdiArea->setActiveSubWindow(ptr);
+    else
+    {
+        auto dialog = new T{std::forward<Targs>(args)...};
+        auto subwindow = m_ui->mdiArea->addSubWindow(dialog);
+        auto action = m_ui->menuWindow->addAction(dialog->windowTitle());
+        action->setCheckable(true);
+        connect(action, &QAction::triggered,
+                m_ui->mdiArea, [mdiArea=m_ui->mdiArea,subwindow,action](){
+                    mdiArea->setActiveSubWindow(subwindow);
+                    action->setChecked(subwindow->windowState().testFlag(Qt::WindowActive));
+                });
+        connect(subwindow, &QMdiSubWindow::windowStateChanged,
+                action, [action](Qt::WindowStates oldState, Qt::WindowStates newState){
+                    action->setChecked(newState.testFlag(Qt::WindowActive));
+                });
+        connect(dialog, &QWidget::windowTitleChanged, action, &QAction::setText);
+        connect(dialog, &QDialog::finished,
+                this, [&ptr](){
+                    ptr = nullptr;
+                });
+        connect(dialog, &QDialog::finished,
+                subwindow, &QObject::deleteLater);
+        connect(dialog, &QDialog::finished,
+                action, &QObject::deleteLater);
+        ptr = subwindow;
+        dialog->show();
+    }
 }
 
 template<typename T>
@@ -725,7 +774,9 @@ bool MainWindow::doubleClickedFor(const QModelIndex &index)
                 });
         connect(dialog, &QWidget::windowTitleChanged, action, &QAction::setText);
         connect(dialog, &QDialog::finished,
-                this, [&propertyWindows,subwindow](){
+                this, [this,&propertyWindows,subwindow](int result){
+                    if (result == QDialog::Accepted)
+                        changed();
                     for (auto iter = std::begin(propertyWindows); iter != std::end(propertyWindows); )
                     {
                         if (iter->second == subwindow)

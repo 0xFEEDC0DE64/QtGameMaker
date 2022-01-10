@@ -9,12 +9,14 @@
 #include "projectcontainer.h"
 #include "projecttreemodel.h"
 #include "editspritedialog.h"
+#include "maskpropertiesdialog.h"
 
 SpritePropertiesDialog::SpritePropertiesDialog(Sprite &sprite, ProjectTreeModel &projectModel, QWidget *parent) :
     QDialog{parent},
     m_ui{std::make_unique<Ui::SpritePropertiesDialog>()},
     m_sprite{sprite},
-    m_projectModel{projectModel}
+    m_projectModel{projectModel},
+    m_pixmaps{m_sprite.pixmaps}
 {
     m_ui->setupUi(this);
 
@@ -31,7 +33,6 @@ SpritePropertiesDialog::SpritePropertiesDialog(Sprite &sprite, ProjectTreeModel 
     m_ui->spinBoxOriginY->setValue(m_sprite.origin.y);
     m_ui->checkBoxPreciseCollisionChecking->setChecked(m_sprite.preciseCollisionChecking);
     m_ui->checkBoxSeparateCollisionMasks->setChecked(m_sprite.separateCollisionMasks);
-    m_ui->labelPreview->setPixmap(m_sprite.pixmaps.empty() ? QPixmap{} : m_sprite.pixmaps.front());
 
     connect(&m_projectModel, &ProjectTreeModel::spriteNameChanged,
             this, &SpritePropertiesDialog::spriteNameChanged);
@@ -44,6 +45,8 @@ SpritePropertiesDialog::SpritePropertiesDialog(Sprite &sprite, ProjectTreeModel 
             this, &SpritePropertiesDialog::editSprite);
     connect(m_ui->pushButtonCenterOrigin, &QAbstractButton::pressed,
             this, &SpritePropertiesDialog::centerOrigin);
+    connect(m_ui->pushButtonModifyCollisionmask, &QAbstractButton::pressed,
+            this, &SpritePropertiesDialog::modifyMask);
 
     connect(m_ui->lineEditName, &QLineEdit::textChanged,
             this, &SpritePropertiesDialog::changed);
@@ -61,6 +64,12 @@ SpritePropertiesDialog::~SpritePropertiesDialog() = default;
 
 void SpritePropertiesDialog::accept()
 {
+    if (!m_unsavedChanges)
+    {
+        QDialog::reject();
+        return;
+    }
+
     if (m_sprite.name != m_ui->lineEditName->text())
     {
         if (!m_projectModel.rename<Sprite>(m_sprite, m_ui->lineEditName->text()))
@@ -70,8 +79,7 @@ void SpritePropertiesDialog::accept()
         }
     }
 
-    if (m_newPixmaps)
-        m_sprite.pixmaps = std::move(*m_newPixmaps);
+    m_sprite.pixmaps = std::move(m_pixmaps);
     m_sprite.origin.x = m_ui->spinBoxOriginX->value();
     m_sprite.origin.y = m_ui->spinBoxOriginY->value();
     m_sprite.preciseCollisionChecking = m_ui->checkBoxPreciseCollisionChecking->isChecked();
@@ -123,20 +131,14 @@ void SpritePropertiesDialog::loadSprite()
         return;
     }
 
-    m_ui->labelPreview->setPixmap(pixmap);
-
-    m_newPixmaps = std::vector<QPixmap>{ std::move(pixmap) };
-    m_unsavedChanges = true;
-
-    updateTitle();
+    m_pixmaps = std::vector<QPixmap>{ std::move(pixmap) };
+    changed();
     updateSpriteInfo();
 }
 
 void SpritePropertiesDialog::saveSprite()
 {
-    const auto &pixmaps = m_newPixmaps ? *m_newPixmaps : m_sprite.pixmaps;
-
-    if (pixmaps.empty() || pixmaps.front().isNull())
+    if (m_pixmaps.empty() || m_pixmaps.front().isNull())
     {
         QMessageBox::warning(this, tr("No sprites available to save!"), tr("No sprites available to save!"));
         return;
@@ -146,7 +148,7 @@ void SpritePropertiesDialog::saveSprite()
     if (path.isEmpty())
         return;
 
-    if (!pixmaps.front().save(path))
+    if (!m_pixmaps.front().save(path))
     {
         QMessageBox::warning(this, tr("Could not save Sprite!"), tr("Could not save Sprite!"));
         return;
@@ -155,20 +157,33 @@ void SpritePropertiesDialog::saveSprite()
 
 void SpritePropertiesDialog::editSprite()
 {
-    EditSpriteDialog{m_sprite}.exec();
+    EditSpriteDialog dialog{m_pixmaps, m_sprite.name, this};
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        m_pixmaps = dialog.pixmaps();
+        changed();
+        updateSpriteInfo();
+    }
 }
 
 void SpritePropertiesDialog::centerOrigin()
 {
-    const auto &pixmaps = m_newPixmaps ? *m_newPixmaps : m_sprite.pixmaps;
-    if (pixmaps.empty() || pixmaps.front().isNull())
+    if (m_pixmaps.empty() || m_pixmaps.front().isNull())
     {
         qDebug() << "unexpected empty pixmaps";
+        m_ui->spinBoxOriginX->setValue(0);
+        m_ui->spinBoxOriginY->setValue(0);
         return;
     }
 
-    m_ui->spinBoxOriginX->setValue(pixmaps.front().width() / 2);
-    m_ui->spinBoxOriginY->setValue(pixmaps.front().height() / 2);
+    m_ui->spinBoxOriginX->setValue(m_pixmaps.front().width() / 2);
+    m_ui->spinBoxOriginY->setValue(m_pixmaps.front().height() / 2);
+}
+
+void SpritePropertiesDialog::modifyMask()
+{
+    MaskPropertiesDialog dialog{this};
+    dialog.exec();
 }
 
 void SpritePropertiesDialog::changed()
@@ -203,8 +218,8 @@ void SpritePropertiesDialog::updateTitle()
 
 void SpritePropertiesDialog::updateSpriteInfo()
 {
-    const auto &pixmaps = m_newPixmaps ? *m_newPixmaps : m_sprite.pixmaps;
-    m_ui->labelWidth->setText(tr("Width: %0").arg(pixmaps.empty() ? tr("n/a") : QString::number(pixmaps.front().width())));
-    m_ui->labelHeight->setText(tr("Height: %0").arg(pixmaps.empty() ? tr("n/a") : QString::number(pixmaps.front().height())));
-    m_ui->labelSubimages->setText(tr("Number of subimages: %0").arg(pixmaps.size()));
+    m_ui->labelPreview->setPixmap(m_pixmaps.empty() ? QPixmap{} : m_pixmaps.front());
+    m_ui->labelWidth->setText(tr("Width: %0").arg(m_pixmaps.empty() ? tr("n/a") : QString::number(m_pixmaps.front().width())));
+    m_ui->labelHeight->setText(tr("Height: %0").arg(m_pixmaps.empty() ? tr("n/a") : QString::number(m_pixmaps.front().height())));
+    m_ui->labelSubimages->setText(tr("Number of subimages: %0").arg(m_pixmaps.size()));
 }

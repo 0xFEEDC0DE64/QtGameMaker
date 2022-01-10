@@ -43,7 +43,7 @@ private:
 
     bool m_unsavedChanges{};
 
-    std::optional<QString> m_newPath;
+    QString m_path;
 
     QSoundEffect m_soundEffect;
 };

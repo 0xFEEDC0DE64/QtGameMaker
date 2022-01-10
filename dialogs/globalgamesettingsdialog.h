@@ -14,6 +14,16 @@ public:
     explicit GlobalGameSettingsDialog(QWidget *parent = nullptr);
     ~GlobalGameSettingsDialog();
 
+    void accept() override;
+    void reject() override;
+
+private slots:
+    void changed();
+
 private:
+    void updateTitle();
+
     const std::unique_ptr<Ui::GlobalGameSettingsDialog> m_ui;
+
+    bool m_unsavedChanges{};
 };

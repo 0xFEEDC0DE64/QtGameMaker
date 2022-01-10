@@ -15,7 +15,7 @@ public:
     explicit CreateSpriteDialog(const QSize &size, QWidget *parent = nullptr);
     ~CreateSpriteDialog();
 
-    QSize size() const;
+    QSize spriteSize() const;
 
 private:
     const std::unique_ptr<Ui::CreateSpriteDialog> m_ui;

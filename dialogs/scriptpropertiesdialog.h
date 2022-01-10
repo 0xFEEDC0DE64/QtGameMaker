@@ -1,22 +1,15 @@
-#pragma once
-
-#include <QDialog>
-
-#include <memory>
+#include "codeeditordialog.h"
 
 class QLineEdit;
-class QLabel;
-namespace Ui { class ScriptPropertiesDialog; }
 struct Script;
 class ProjectTreeModel;
 
-class ScriptPropertiesDialog : public QDialog
+class ScriptPropertiesDialog : public CodeEditorDialog
 {
     Q_OBJECT
 
 public:
-    explicit ScriptPropertiesDialog(Script &script, ProjectTreeModel &projectModel, QWidget *parent = nullptr);
-    ~ScriptPropertiesDialog();
+    ScriptPropertiesDialog(Script &script, ProjectTreeModel &projectModel, QWidget *parent = nullptr);
 
     void accept() override;
     void reject() override;
@@ -24,18 +17,10 @@ public:
 private slots:
     void changed();
 
-    void load();
-    void save();
-    void print();
-
-    void updatePosition();
-
     void scriptNameChanged(const Script &script);
 
 private:
     void updateTitle();
-
-    const std::unique_ptr<Ui::ScriptPropertiesDialog> m_ui;
 
     Script &m_script;
     ProjectTreeModel &m_projectModel;
@@ -43,6 +28,4 @@ private:
     bool m_unsavedChanges{};
 
     QLineEdit * const m_lineEditName;
-
-    QLabel * const m_labelPosition;
 };

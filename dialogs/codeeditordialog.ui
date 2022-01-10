@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ScriptPropertiesDialog</class>
- <widget class="QDialog" name="ScriptPropertiesDialog">
+ <class>CodeEditorDialog</class>
+ <widget class="QDialog" name="CodeEditorDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Script Properties</string>
+   <string>Code Editor</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../resources.qrc">
@@ -231,6 +231,9 @@
    <property name="text">
     <string>OK</string>
    </property>
+   <property name="toolTip">
+    <string>OK, Save Changes</string>
+   </property>
   </action>
   <action name="actionLoad">
    <property name="icon">
@@ -391,7 +394,7 @@
   <connection>
    <sender>actionOk</sender>
    <signal>triggered()</signal>
-   <receiver>ScriptPropertiesDialog</receiver>
+   <receiver>CodeEditorDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">

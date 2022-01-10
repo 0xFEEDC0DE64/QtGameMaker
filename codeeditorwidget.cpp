@@ -3,8 +3,8 @@
 #include <QPainter>
 #include <QTextBlock>
 
-CodeEditorWidget::CodeEditorWidget(QWidget *parent)
-    : QPlainTextEdit{parent}
+CodeEditorWidget::CodeEditorWidget(QWidget *parent) :
+    QPlainTextEdit{parent}
 {
     lineNumberArea = new LineNumberArea(this);
 
@@ -105,7 +105,9 @@ void CodeEditorWidget::lineNumberAreaPaintEvent(QPaintEvent *event)
     }
 }
 
-LineNumberArea::LineNumberArea(CodeEditorWidget *editor) : QWidget(editor), codeEditor(editor)
+LineNumberArea::LineNumberArea(CodeEditorWidget *editor) :
+    QWidget{editor},
+    codeEditor{editor}
 {
 }
 

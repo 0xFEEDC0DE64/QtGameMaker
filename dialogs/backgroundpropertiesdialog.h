@@ -41,5 +41,5 @@ private:
 
     bool m_unsavedChanges{};
 
-    std::optional<QPixmap> m_newPixmap;
+    QPixmap m_pixmap;
 };

@@ -459,6 +459,10 @@
    </property>
   </action>
   <action name="actionShowObjectInformation">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/qtgameengine/icons/object-file.png</normaloff>:/qtgameengine/icons/object-file.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Show Object Information</string>
    </property>
@@ -608,6 +612,10 @@
    </property>
   </action>
   <action name="actionDefineConstants">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/qtgameengine/icons/constants.png</normaloff>:/qtgameengine/icons/constants.png</iconset>
+   </property>
    <property name="text">
     <string>Define Co&amp;nstants...</string>
    </property>

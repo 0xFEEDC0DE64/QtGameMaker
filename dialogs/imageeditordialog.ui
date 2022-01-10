@@ -31,7 +31,7 @@
    </property>
    <item>
     <widget class="QMenuBar" name="menuBar">
-     <widget class="QMenu" name="menu_File">
+     <widget class="QMenu" name="menuFile">
       <property name="title">
        <string>&amp;File</string>
       </property>
@@ -44,7 +44,7 @@
       <addaction name="separator"/>
       <addaction name="actionCloseSavingChanges"/>
      </widget>
-     <widget class="QMenu" name="menu_Edit">
+     <widget class="QMenu" name="menuEdit">
       <property name="title">
        <string>&amp;Edit</string>
       </property>
@@ -61,26 +61,26 @@
       <addaction name="separator"/>
       <addaction name="actionSelectAll"/>
      </widget>
-     <widget class="QMenu" name="menu_View">
+     <widget class="QMenu" name="menuView">
       <property name="title">
        <string>&amp;View</string>
       </property>
      </widget>
-     <widget class="QMenu" name="menu_Transform">
+     <widget class="QMenu" name="menuTransform">
       <property name="title">
        <string>&amp;Transform</string>
       </property>
      </widget>
-     <widget class="QMenu" name="menu_Image">
+     <widget class="QMenu" name="menuImage">
       <property name="title">
        <string>&amp;Image</string>
       </property>
      </widget>
-     <addaction name="menu_File"/>
-     <addaction name="menu_Edit"/>
-     <addaction name="menu_View"/>
-     <addaction name="menu_Transform"/>
-     <addaction name="menu_Image"/>
+     <addaction name="menuFile"/>
+     <addaction name="menuEdit"/>
+     <addaction name="menuView"/>
+     <addaction name="menuTransform"/>
+     <addaction name="menuImage"/>
     </widget>
    </item>
    <item>
@@ -135,7 +135,40 @@
     </widget>
    </item>
    <item>
-    <widget class="QGraphicsView" name="graphicsView"/>
+    <layout class="QHBoxLayout">
+     <item>
+      <widget class="QWidget">
+       <layout class="QVBoxLayout">
+        <item>
+         <widget class="QPushButton" />
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+    <widget class="QScrollArea" name="scrollArea">
+     <widget class="DrawingCanvasWidget" name="canvas">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>0</width>
+        <height>0</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+     </item>
+     <item>
+      <widget class="QWidget">
+       <layout class="QVBoxLayout">
+        <item>
+         <widget class="QPushButton" />
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QStatusBar" name="statusBar"/>
@@ -264,8 +297,32 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>DrawingCanvasWidget</class>
+   <extends>QWidget</extends>
+   <header>drawingcanvaswidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../resources.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>actionCloseSavingChanges</sender>
+   <signal>triggered()</signal>
+   <receiver>ImageEditorDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>285</x>
+     <y>226</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

@@ -40,6 +40,9 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="toolTip">
+          <string>The name of the background</string>
+         </property>
         </widget>
        </item>
       </layout>
@@ -59,6 +62,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="pushButtonLoad">
+       <property name="toolTip">
+        <string>Load the background from a file</string>
+       </property>
        <property name="text">
         <string>&amp;Load Background</string>
        </property>
@@ -70,6 +76,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="pushButtonSave">
+       <property name="toolTip">
+        <string>Save the background to a file</string>
+       </property>
        <property name="text">
         <string>&amp;Save Background</string>
        </property>
@@ -81,6 +90,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="pushButtonEdit">
+       <property name="toolTip">
+        <string>Edit the background image</string>
+       </property>
        <property name="text">
         <string>&amp;Edit Background</string>
        </property>
@@ -123,6 +135,9 @@
      </item>
      <item>
       <widget class="QCheckBox" name="checkBoxTileset">
+       <property name="toolTip">
+        <string>Indicate whether to use this background as a tile set</string>
+       </property>
        <property name="text">
         <string>&amp;Use as tile set</string>
        </property>

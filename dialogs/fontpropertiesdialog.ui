@@ -31,7 +31,11 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLineEdit" name="lineEditName"/>
+      <widget class="QLineEdit" name="lineEditName">
+       <property name="toolTip">
+        <string>The name of the font</string>
+       </property>
+      </widget>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="labelFont">
@@ -130,6 +134,9 @@
       </item>
       <item row="1" column="0">
        <widget class="QPushButton" name="pushButtonNormal">
+        <property name="toolTip">
+         <string>Set the character range to the normal range (32 - 127)</string>
+        </property>
         <property name="text">
          <string>Normal</string>
         </property>
@@ -137,6 +144,9 @@
       </item>
       <item row="2" column="0">
        <widget class="QPushButton" name="pushButtonDigits">
+        <property name="toolTip">
+         <string>Set the character range to the digits range (48 - 57)</string>
+        </property>
         <property name="text">
          <string>Digits</string>
         </property>
@@ -144,6 +154,9 @@
       </item>
       <item row="1" column="2">
        <widget class="QPushButton" name="pushButtonAll">
+        <property name="toolTip">
+         <string>Set the character range to the complete set (0 - 255)</string>
+        </property>
         <property name="text">
          <string>All</string>
         </property>
@@ -151,6 +164,9 @@
       </item>
       <item row="2" column="2">
        <widget class="QPushButton" name="pushButtonLetters">
+        <property name="toolTip">
+         <string>Set the character range to the letters range (65 - 122)</string>
+        </property>
         <property name="text">
          <string>Letters</string>
         </property>

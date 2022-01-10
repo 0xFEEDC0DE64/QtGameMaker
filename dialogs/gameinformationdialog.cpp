@@ -6,12 +6,13 @@ GameInformationDialog::GameInformationDialog(QWidget *parent) :
     m_ui{std::make_unique<Ui::GameInformationDialog>()}
 {
     m_ui->setupUi(this);
-    setWindowFlags(windowFlags()
-                   & ~Qt::Dialog
-                   | Qt::Window
-                   | Qt::WindowMinimizeButtonHint
-                   | Qt::WindowMaximizeButtonHint
-                   | Qt::WindowCloseButtonHint);
+
+#ifdef Q_OS_LINUX
+    setWindowFlags(windowFlags() & ~Qt::Dialog | Qt::Window);
+#endif
+    setWindowFlag(Qt::WindowMinimizeButtonHint);
+    setWindowFlag(Qt::WindowMaximizeButtonHint);
+    setWindowFlag(Qt::WindowCloseButtonHint);
 }
 
 GameInformationDialog::~GameInformationDialog() = default;

@@ -27,6 +27,7 @@ private slots:
     void doubleClicked(const QModelIndex &index);
     void selectionChanged(const QModelIndex &index);
     void modelErrorOccured(const QString &message);
+    void changed();
 
     void newFile();
     void openFile();
@@ -50,18 +51,12 @@ private:
     template<typename T>
     void createFor();
 private slots:
-//    void createSprite();
-//    void createSound();
-//    void createBackground();
-//    void createPath();
-//    void createScript();
-//    void createFont();
-//    void createTimeLine();
-//    void createObject();
-//    void createRoom();
     void showGameInformation();
     void showGlobalGameSettings();
     void showExtensionPackages();
+    void showDefineConstants();
+    void showDefineTriggers();
+    void showIncludedFiles();
     void about();
 
     void rowsInserted(const QModelIndex &parent, int first, int last);
@@ -70,6 +65,9 @@ private slots:
 
 private:
     void updateTitle();
+
+    template<typename T, typename ...Targs>
+    void openOrActivateWindow(QMdiSubWindow * &ptr, Targs &&...args);
 
     template<typename T>
     std::map<T*, QMdiSubWindow*> &propertyWindowsFor();
@@ -103,4 +101,7 @@ private:
     std::map<Room*, QMdiSubWindow*> m_roomPropertiesWindows;
 
     QMdiSubWindow *m_objectInformationWindow{};
+    QMdiSubWindow *m_userDefinedConstantsWindow{};
+    QMdiSubWindow *m_triggersWindow{};
+    QMdiSubWindow *m_includedFilesWindow{};
 };

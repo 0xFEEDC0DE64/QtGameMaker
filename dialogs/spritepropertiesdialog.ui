@@ -33,7 +33,11 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QLineEdit" name="lineEditName"/>
+        <widget class="QLineEdit" name="lineEditName">
+         <property name="toolTip">
+          <string>The name of the sprite</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -56,6 +60,9 @@
         <layout class="QVBoxLayout" name="verticalLayout_5">
          <item>
           <widget class="QPushButton" name="pushButtonLoad">
+           <property name="toolTip">
+            <string>Load the sprite from a file</string>
+           </property>
            <property name="text">
             <string>&amp;Load Sprite</string>
            </property>
@@ -67,6 +74,9 @@
          </item>
          <item>
           <widget class="QPushButton" name="pushButtonSave">
+           <property name="toolTip">
+            <string>Save the sprite to a file</string>
+           </property>
            <property name="text">
             <string>&amp;Save Sprite</string>
            </property>
@@ -78,6 +88,9 @@
          </item>
          <item>
           <widget class="QPushButton" name="pushButtonEdit">
+           <property name="toolTip">
+            <string>Edit the sprite</string>
+           </property>
            <property name="text">
             <string>&amp;Edit Sprite</string>
            </property>
@@ -151,7 +164,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QSpinBox" name="spinBoxOriginX"/>
+           <widget class="QSpinBox" name="spinBoxOriginX">
+            <property name="toolTip">
+             <string>The x-coordinate in the sprite that is used for the origin</string>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QLabel" name="labelOriginY">
@@ -167,7 +184,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QSpinBox" name="spinBoxOriginY"/>
+           <widget class="QSpinBox" name="spinBoxOriginY">
+            <property name="toolTip">
+             <string>The y-coordinate in the sprite that is used for the origin</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -188,6 +209,9 @@
           </item>
           <item>
            <widget class="QPushButton" name="pushButtonCenterOrigin">
+            <property name="toolTip">
+             <string>Put the origin in the center of the image</string>
+            </property>
             <property name="text">
              <string>&amp;Center</string>
             </property>
@@ -246,6 +270,9 @@
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
          <widget class="QCheckBox" name="checkBoxPreciseCollisionChecking">
+          <property name="toolTip">
+           <string>Perform pixel precise colliion checking</string>
+          </property>
           <property name="text">
            <string>&amp;Precise collision checking</string>
           </property>
@@ -253,6 +280,9 @@
         </item>
         <item>
          <widget class="QCheckBox" name="checkBoxSeparateCollisionMasks">
+          <property name="toolTip">
+           <string>Have separate collision masks for the subimages</string>
+          </property>
           <property name="text">
            <string>Separa&amp;te Collision Masks</string>
           </property>
@@ -260,6 +290,9 @@
         </item>
         <item>
          <widget class="QPushButton" name="pushButtonModifyCollisionmask">
+          <property name="toolTip">
+           <string>Modify additional options for the collision mask</string>
+          </property>
           <property name="text">
            <string>&amp;Modify Mask</string>
           </property>

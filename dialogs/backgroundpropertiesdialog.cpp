@@ -13,7 +13,8 @@ BackgroundPropertiesDialog::BackgroundPropertiesDialog(Background &background, P
     QDialog{parent},
     m_ui{std::make_unique<Ui::BackgroundPropertiesDialog>()},
     m_background{background},
-    m_projectModel{projectModel}
+    m_projectModel{projectModel},
+    m_pixmap{m_background.pixmap}
 {
     m_ui->setupUi(this);
 
@@ -27,7 +28,6 @@ BackgroundPropertiesDialog::BackgroundPropertiesDialog(Background &background, P
     m_ui->lineEditName->setText(m_background.name);
     updateSpriteInfo();
     m_ui->checkBoxTileset->setChecked(m_background.tileset);
-    m_ui->labelPreview->setPixmap(m_background.pixmap);
 
     connect(&m_projectModel, &ProjectTreeModel::backgroundNameChanged,
             this, &BackgroundPropertiesDialog::backgroundNameChanged);
@@ -49,6 +49,12 @@ BackgroundPropertiesDialog::~BackgroundPropertiesDialog() = default;
 
 void BackgroundPropertiesDialog::accept()
 {
+    if (!m_unsavedChanges)
+    {
+        QDialog::reject();
+        return;
+    }
+
     if (m_background.name != m_ui->lineEditName->text())
     {
         if (!m_projectModel.rename<Background>(m_background, m_ui->lineEditName->text()))
@@ -58,8 +64,7 @@ void BackgroundPropertiesDialog::accept()
         }
     }
 
-    if (m_newPixmap)
-        m_background.pixmap = std::move(*m_newPixmap);
+    m_background.pixmap = std::move(m_pixmap);
     m_background.tileset = m_ui->checkBoxTileset->isChecked();
 
     QDialog::accept();
@@ -108,20 +113,14 @@ void BackgroundPropertiesDialog::loadBackground()
         return;
     }
 
-    m_ui->labelPreview->setPixmap(pixmap);
-
-    m_newPixmap = std::move(pixmap);
-    m_unsavedChanges = true;
-
-    updateTitle();
+    m_pixmap = std::move(pixmap);
+    changed();
     updateSpriteInfo();
 }
 
 void BackgroundPropertiesDialog::saveBackground()
 {
-    const auto &pixmap = m_newPixmap ? *m_newPixmap : m_background.pixmap;
-
-    if (pixmap.isNull())
+    if (m_pixmap.isNull())
     {
         QMessageBox::warning(this, tr("No background available to save!"), tr("No background available to save!"));
         return;
@@ -131,7 +130,7 @@ void BackgroundPropertiesDialog::saveBackground()
     if (path.isEmpty())
         return;
 
-    if (!pixmap.save(path))
+    if (!m_pixmap.save(path))
     {
         QMessageBox::warning(this, tr("Could not save Background!"), tr("Could not save Background!"));
         return;
@@ -140,7 +139,13 @@ void BackgroundPropertiesDialog::saveBackground()
 
 void BackgroundPropertiesDialog::editBackground()
 {
-    ImageEditorDialog{this}.exec();
+    ImageEditorDialog dialog{m_pixmap, tr("Image Editor: %0").arg(m_background.name), this};
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        m_pixmap = dialog.pixmap();
+        changed();
+        updateSpriteInfo();
+    }
 }
 
 void BackgroundPropertiesDialog::changed()
@@ -175,7 +180,7 @@ void BackgroundPropertiesDialog::updateTitle()
 
 void BackgroundPropertiesDialog::updateSpriteInfo()
 {
-    const auto &pixmap = m_newPixmap ? *m_newPixmap : m_background.pixmap;
-    m_ui->labelWidth->setText(tr("Width: %0").arg(pixmap.width()));
-    m_ui->labelHeight->setText(tr("Height: %0").arg(pixmap.height()));
+    m_ui->labelWidth->setText(tr("Width: %0").arg(m_pixmap.width()));
+    m_ui->labelHeight->setText(tr("Height: %0").arg(m_pixmap.height()));
+    m_ui->labelPreview->setPixmap(m_pixmap);
 }

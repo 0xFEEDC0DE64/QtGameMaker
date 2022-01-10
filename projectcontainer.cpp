@@ -143,15 +143,37 @@ QDataStream &operator>>(QDataStream &ds, Background &background)
     return ds;
 }
 
+QDataStream &operator<<(QDataStream &ds, const Path::Point &point)
+{
+    ds << point.point;
+    ds << point.sp;
+    return ds;
+}
+
+QDataStream &operator>>(QDataStream &ds, Path::Point &point)
+{
+    ds >> point.point;
+    ds >> point.sp;
+    return ds;
+}
+
 QDataStream &operator<<(QDataStream &ds, const Path &path)
 {
     ds << path.name;
+    ds << path.points;
+    ds << path.type;
+    ds << path.closed;
+    ds << path.precision;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, Path &path)
 {
     ds >> path.name;
+    ds >> path.points;
+    ds >> path.type;
+    ds >> path.closed;
+    ds >> path.precision;
     return ds;
 }
 

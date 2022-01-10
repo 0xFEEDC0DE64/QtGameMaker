@@ -14,7 +14,8 @@ SoundPropertiesDialog::SoundPropertiesDialog(Sound &sound, ProjectTreeModel &pro
     QDialog{parent},
     m_ui{std::make_unique<Ui::SoundPropertiesDialog>()},
     m_sound{sound},
-    m_projectModel{projectModel}
+    m_projectModel{projectModel},
+    m_path{m_sound.path}
 {
     m_ui->setupUi(this);
 
@@ -33,6 +34,8 @@ SoundPropertiesDialog::SoundPropertiesDialog(Sound &sound, ProjectTreeModel &pro
     }
     m_ui->radioButtonNormal->setChecked(m_sound.type == Sound::Type::Sound);
     m_ui->radioButtonMusic->setChecked(m_sound.type == Sound::Type::Music);
+    m_ui->radioButton3D->setChecked(false);
+    m_ui->radioButtonMultimedia->setChecked(false);
     m_ui->checkBoxChorus->setChecked(m_sound.effects.chorus);
     m_ui->checkBoxFlanger->setChecked(m_sound.effects.flanger);
     m_ui->checkBoxGargle->setChecked(m_sound.effects.gargle);
@@ -88,6 +91,12 @@ SoundPropertiesDialog::~SoundPropertiesDialog() = default;
 
 void SoundPropertiesDialog::accept()
 {
+    if (!m_unsavedChanges)
+    {
+        QDialog::reject();
+        return;
+    }
+
     if (m_sound.name != m_ui->lineEditName->text())
     {
         if (!m_projectModel.rename<Sound>(m_sound, m_ui->lineEditName->text()))
@@ -97,16 +106,21 @@ void SoundPropertiesDialog::accept()
         }
     }
 
-    if (m_newPath)
-        m_sound.path = std::move(*m_newPath);
+    m_sound.path = std::move(m_path);
 
     if (m_ui->radioButtonNormal->isChecked())
         m_sound.type = Sound::Type::Sound;
     else if (m_ui->radioButtonMusic->isChecked())
         m_sound.type = Sound::Type::Music;
-    else
+    else if (m_ui->radioButton3D->isChecked() ||
+             m_ui->radioButtonMultimedia->isChecked())
     {
         QMessageBox::critical(this, tr("Not implemented"), tr("This kind of sound is not yet supported!"));
+        return;
+    }
+    else
+    {
+        QMessageBox::critical(this, tr("No kind selected!"), tr("No kind selected!"));
         return;
     }
 
@@ -153,7 +167,7 @@ void SoundPropertiesDialog::reject()
 
 void SoundPropertiesDialog::loadSound()
 {
-    const auto path = QFileDialog::getOpenFileName(this, tr("Open a Sound File..."));
+    auto path = QFileDialog::getOpenFileName(this, tr("Open a Sound File..."));
     if (path.isEmpty())
         return;
 
@@ -163,16 +177,15 @@ void SoundPropertiesDialog::loadSound()
         return;
     }
 
-    m_newPath = path;
+    m_path = std::move(path);
     changed();
-    m_ui->labelFilename->setText(tr("Filename: %0").arg(QFileInfo{path}.fileName()));
-    m_soundEffect.setSource(QUrl::fromLocalFile(path));
+    m_ui->labelFilename->setText(tr("Filename: %0").arg(QFileInfo{m_path}.fileName()));
+    m_soundEffect.setSource(QUrl::fromLocalFile(m_path));
 }
 
 void SoundPropertiesDialog::saveSound()
 {
-    const auto &path = m_newPath ? *m_newPath : m_sound.path;
-    if (path.isEmpty())
+    if (m_path.isEmpty())
     {
         QMessageBox::warning(this, tr("Could not save Sound!"), tr("Could not save Sound!") + "\n\n" + tr("No sound has been selected yet."));
         return;
@@ -182,7 +195,7 @@ void SoundPropertiesDialog::saveSound()
     if (savePath.isEmpty())
         return;
 
-    if (!QFile::copy(path, savePath))
+    if (!QFile::copy(m_path, savePath))
     {
         QMessageBox::warning(this, tr("Could not save Sound!"), tr("Could not save Sound!"));
         return;
