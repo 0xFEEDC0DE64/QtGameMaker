@@ -35,13 +35,13 @@ FontPropertiesDialog::FontPropertiesDialog(Font &font, ProjectTreeModel &project
     connect(&m_projectModel, &ProjectTreeModel::fontNameChanged,
             this, &FontPropertiesDialog::fontNameChanged);
 
-    connect(m_ui->pushButtonNormal, &QAbstractButton::pressed,
+    connect(m_ui->pushButtonNormal, &QAbstractButton::clicked,
             this, &FontPropertiesDialog::normalRange);
-    connect(m_ui->pushButtonDigits, &QAbstractButton::pressed,
+    connect(m_ui->pushButtonDigits, &QAbstractButton::clicked,
             this, &FontPropertiesDialog::digitsRange);
-    connect(m_ui->pushButtonAll, &QAbstractButton::pressed,
+    connect(m_ui->pushButtonAll, &QAbstractButton::clicked,
             this, &FontPropertiesDialog::allRange);
-    connect(m_ui->pushButtonLetters, &QAbstractButton::pressed,
+    connect(m_ui->pushButtonLetters, &QAbstractButton::clicked,
             this, &FontPropertiesDialog::lettersRange);
 
     connect(m_ui->lineEditName, &QLineEdit::textChanged,
@@ -64,6 +64,12 @@ FontPropertiesDialog::~FontPropertiesDialog() = default;
 
 void FontPropertiesDialog::accept()
 {
+    if (!m_unsavedChanges)
+    {
+        QDialog::reject();
+        return;
+    }
+
     if (m_font.name != m_ui->lineEditName->text())
     {
         if (!m_projectModel.rename<Font>(m_font, m_ui->lineEditName->text()))

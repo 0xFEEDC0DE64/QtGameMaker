@@ -32,64 +32,127 @@
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="0">
          <widget class="QPushButton" name="pushButtonInsert">
+          <property name="toolTip">
+           <string>Insert a constant before the current one</string>
+          </property>
           <property name="text">
            <string>&amp;Insert</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources.qrc">
+            <normaloff>:/qtgameengine/icons/add.png</normaloff>:/qtgameengine/icons/add.png</iconset>
           </property>
          </widget>
         </item>
         <item row="0" column="3">
          <widget class="QPushButton" name="pushButtonSort">
+          <property name="toolTip">
+           <string>Sort the constants</string>
+          </property>
           <property name="text">
            <string>&amp;Sort</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources.qrc">
+            <normaloff>:/qtgameengine/icons/sort.png</normaloff>:/qtgameengine/icons/sort.png</iconset>
           </property>
          </widget>
         </item>
         <item row="0" column="1">
          <widget class="QPushButton" name="pushButtonDelete">
+          <property name="toolTip">
+           <string>Delete the current constant</string>
+          </property>
           <property name="text">
            <string>&amp;Delete</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources.qrc">
+            <normaloff>:/qtgameengine/icons/delete.png</normaloff>:/qtgameengine/icons/delete.png</iconset>
           </property>
          </widget>
         </item>
         <item row="0" column="4">
          <widget class="QPushButton" name="pushButtonLoad">
+          <property name="toolTip">
+           <string>Load the constants from a text file</string>
+          </property>
           <property name="text">
            <string>&amp;Load</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources.qrc">
+            <normaloff>:/qtgameengine/icons/open.png</normaloff>:/qtgameengine/icons/open.png</iconset>
           </property>
          </widget>
         </item>
         <item row="0" column="2">
          <widget class="QPushButton" name="pushButtonUp">
+          <property name="toolTip">
+           <string>Moves the constant up</string>
+          </property>
           <property name="text">
            <string>&amp;Up</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources.qrc">
+            <normaloff>:/qtgameengine/icons/arrow-up.png</normaloff>:/qtgameengine/icons/arrow-up.png</iconset>
           </property>
          </widget>
         </item>
         <item row="1" column="0">
          <widget class="QPushButton" name="pushButtonAdd">
+          <property name="toolTip">
+           <string>Append a constant at the end of the list</string>
+          </property>
           <property name="text">
            <string>&amp;Add</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources.qrc">
+            <normaloff>:/qtgameengine/icons/add.png</normaloff>:/qtgameengine/icons/add.png</iconset>
           </property>
          </widget>
         </item>
         <item row="1" column="1">
          <widget class="QPushButton" name="pushButtonClear">
+          <property name="toolTip">
+           <string>Clear all the constants</string>
+          </property>
           <property name="text">
            <string>&amp;Clear</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources.qrc">
+            <normaloff>:/qtgameengine/icons/new.png</normaloff>:/qtgameengine/icons/new.png</iconset>
           </property>
          </widget>
         </item>
         <item row="1" column="2">
          <widget class="QPushButton" name="pushButtonDown">
+          <property name="toolTip">
+           <string>Moves the constant down</string>
+          </property>
           <property name="text">
            <string>Do&amp;wn</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources.qrc">
+            <normaloff>:/qtgameengine/icons/arrow-down.png</normaloff>:/qtgameengine/icons/arrow-down.png</iconset>
           </property>
          </widget>
         </item>
         <item row="1" column="4">
          <widget class="QPushButton" name="pushButtonSave">
+          <property name="toolTip">
+           <string>Save the constants to a text file</string>
+          </property>
           <property name="text">
            <string>Sa&amp;ve</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources.qrc">
+            <normaloff>:/qtgameengine/icons/save.png</normaloff>:/qtgameengine/icons/save.png</iconset>
           </property>
          </widget>
         </item>

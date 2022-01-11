@@ -11,6 +11,7 @@ SpritesModel::SpritesModel(const std::vector<QPixmap> &pixmaps, QObject *parent)
 
 int SpritesModel::rowCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent)
     return m_pixmaps.size();
 }
 

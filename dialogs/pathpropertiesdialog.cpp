@@ -108,11 +108,11 @@ PathPropertiesDialog::PathPropertiesDialog(Path &path, ProjectTreeModel &project
     connect(m_ui->checkBoxClosed, &QCheckBox::toggled,
             m_ui->widget, &PathPointsWidget::setClosed);
 
-    connect(m_ui->pushButtonAdd, &QAbstractButton::pressed,
+    connect(m_ui->pushButtonAdd, &QAbstractButton::clicked,
             this, &PathPropertiesDialog::add);
-    connect(m_ui->pushButtonInsert, &QAbstractButton::pressed,
+    connect(m_ui->pushButtonInsert, &QAbstractButton::clicked,
             this, &PathPropertiesDialog::insert);
-    connect(m_ui->pushButtonDelete, &QAbstractButton::pressed,
+    connect(m_ui->pushButtonDelete, &QAbstractButton::clicked,
             this, &PathPropertiesDialog::delete_);
 
     connect(m_ui->lineEditName, &QLineEdit::textChanged,

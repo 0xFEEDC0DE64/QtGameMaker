@@ -1,6 +1,6 @@
 #include <QApplication>
 #include <QStyleFactory>
-#include <QDebug>
+#include <QCommandLineParser>
 
 #include "mainwindow.h"
 
@@ -21,9 +21,21 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
 
+    QCoreApplication::setOrganizationDomain("brunner.ninja");
+    QCoreApplication::setOrganizationName("brunner.ninja");
+    QCoreApplication::setApplicationName("QtGameMaker");
+    QCoreApplication::setApplicationVersion("1.0");
+
+    QCommandLineParser parser;
+    parser.setApplicationDescription(QCoreApplication::applicationName());
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.addPositionalArgument("project", "The project to open.");
+    parser.process(app);
+
     QApplication::setStyle(QStyleFactory::create("Windows"));
 
-    MainWindow mainWindow;
+    MainWindow mainWindow{parser.positionalArguments().value(0)};
     mainWindow.show();
 
     return app.exec();

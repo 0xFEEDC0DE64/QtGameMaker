@@ -41,9 +41,10 @@ template<> struct PropertiesDialogForDetail<Room> { using Type = RoomPropertiesD
 template<typename T> using PropertiesDialogFor = typename PropertiesDialogForDetail<T>::Type;
 }
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(const QString &filePath, QWidget *parent) :
     QMainWindow{parent},
     m_ui{std::make_unique<Ui::MainWindow>()},
+    m_filePath{filePath},
     m_projectTreeModel{std::make_unique<ProjectTreeModel>(m_project, this)}
 {
     m_ui->setupUi(this);
@@ -145,6 +146,9 @@ MainWindow::MainWindow(QWidget *parent) :
             this, &MainWindow::changed);
 
     updateTitle();
+
+    if (!m_filePath.isEmpty())
+        loadFile(m_filePath);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -388,58 +392,7 @@ void MainWindow::openFile()
     if (path.isEmpty())
         return;
 
-    ProjectContainer project;
-
-    {
-        QFile file{path};
-        if (!file.open(QIODevice::ReadOnly))
-        {
-            QMessageBox::warning(this, tr("Could not load game!"), tr("Could not load game!") + "\n\n" + file.errorString());
-            return;
-        }
-
-        QDataStream dataStream{&file};
-        dataStream >> project;
-    }
-
-    m_ui->mdiArea->closeAllSubWindows();
-    if (!m_ui->mdiArea->subWindowList().empty())
-        return;
-
-    if (m_unsavedChanges)
-    {
-        const auto result = QMessageBox::warning(
-            this,
-            tr("The Game has been modified."),
-            tr("Do you want to save your changes?"),
-            QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
-            QMessageBox::Save
-        );
-        switch (result)
-        {
-        case QMessageBox::Save:
-            saveFile();
-            if (m_unsavedChanges)
-                return;
-            else
-                break;
-        case QMessageBox::Discard:
-            break;
-        case QMessageBox::Cancel:
-            return;
-        default:
-            qWarning() << "unexpected dialog result" << result;
-            return;
-        }
-    }
-
-    m_project = std::move(project);
-    m_projectTreeModel->setProject(&m_project);
-
-    m_filePath = path;
-    m_unsavedChanges = false;
-
-    updateTitle();
+    loadFile(path);
 }
 
 void MainWindow::saveFile()
@@ -537,15 +490,18 @@ void MainWindow::create()
     {
         switch (m_projectTreeModel->nodeType(index))
         {
-        case ProjectTreeModel::NodeType::Sprite:
-        case ProjectTreeModel::NodeType::Sound:
-        case ProjectTreeModel::NodeType::Background:
-        case ProjectTreeModel::NodeType::Path:
-        case ProjectTreeModel::NodeType::Script:
-        case ProjectTreeModel::NodeType::Font:
-        case ProjectTreeModel::NodeType::TimeLine:
-        case ProjectTreeModel::NodeType::Object:
-        case ProjectTreeModel::NodeType::Room:
+        using NodeType = ProjectTreeModel::NodeType;
+        case NodeType::Root:
+            break;
+        case NodeType::Sprite:
+        case NodeType::Sound:
+        case NodeType::Background:
+        case NodeType::Path:
+        case NodeType::Script:
+        case NodeType::Font:
+        case NodeType::TimeLine:
+        case NodeType::Object:
+        case NodeType::Room:
             if (!m_projectTreeModel->insertRows(index.row(), 1, index.parent()))
                 QMessageBox::warning(this, tr("Inserting failed!"), tr("Inserting failed!"));
             break;
@@ -669,6 +625,8 @@ void MainWindow::about()
 
 void MainWindow::rowsInserted(const QModelIndex &parent, int first, int last)
 {
+    Q_UNUSED(last)
+
     m_ui->treeView->expand(parent);
     const auto index = m_projectTreeModel->index(first, 0, parent);
     m_ui->treeView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);
@@ -701,6 +659,62 @@ void MainWindow::modelAboutToBeReset()
     modelAboutToBeResetFor<Room>();
 }
 
+void MainWindow::loadFile(const QString &path)
+{
+    ProjectContainer project;
+
+    {
+        QFile file{path};
+        if (!file.open(QIODevice::ReadOnly))
+        {
+            QMessageBox::warning(this, tr("Could not load game!"), tr("Could not load game!") + "\n\n" + file.errorString());
+            return;
+        }
+
+        QDataStream dataStream{&file};
+        dataStream >> project;
+    }
+
+    m_ui->mdiArea->closeAllSubWindows();
+    if (!m_ui->mdiArea->subWindowList().empty())
+        return;
+
+    if (m_unsavedChanges)
+    {
+        const auto result = QMessageBox::warning(
+            this,
+            tr("The Game has been modified."),
+            tr("Do you want to save your changes?"),
+            QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
+            QMessageBox::Save
+            );
+        switch (result)
+        {
+        case QMessageBox::Save:
+            saveFile();
+            if (m_unsavedChanges)
+                return;
+            else
+                break;
+        case QMessageBox::Discard:
+            break;
+        case QMessageBox::Cancel:
+            return;
+        default:
+            qWarning() << "unexpected dialog result" << result;
+            return;
+        }
+    }
+
+    m_project = std::move(project);
+    m_projectTreeModel->setProject(&m_project);
+
+    m_filePath = path;
+    m_unsavedChanges = false;
+
+    updateTitle();
+}
+
 void MainWindow::updateTitle()
 {
     setWindowTitle(tr("%0%1 - Qt Gamemaker 1.0 Ultimate")
@@ -726,6 +740,7 @@ void MainWindow::openOrActivateWindow(QMdiSubWindow * &ptr, Targs &&...args)
                 });
         connect(subwindow, &QMdiSubWindow::windowStateChanged,
                 action, [action](Qt::WindowStates oldState, Qt::WindowStates newState){
+                    Q_UNUSED(oldState)
                     action->setChecked(newState.testFlag(Qt::WindowActive));
                 });
         connect(dialog, &QWidget::windowTitleChanged, action, &QAction::setText);
@@ -770,6 +785,7 @@ bool MainWindow::doubleClickedFor(const QModelIndex &index)
                 });
         connect(subwindow, &QMdiSubWindow::windowStateChanged,
                 action, [action](Qt::WindowStates oldState, Qt::WindowStates newState){
+                    Q_UNUSED(oldState)
                     action->setChecked(newState.testFlag(Qt::WindowActive));
                 });
         connect(dialog, &QWidget::windowTitleChanged, action, &QAction::setText);

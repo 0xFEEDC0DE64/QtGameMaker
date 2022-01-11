@@ -220,12 +220,22 @@ QDataStream &operator>>(QDataStream &ds, TimeLine &timeLine)
 QDataStream &operator<<(QDataStream &ds, const Object &object)
 {
     ds << object.name;
+    ds << object.spriteName;
+    ds << object.visible;
+    ds << object.solid;
+    ds << object.depth;
+    ds << object.persistent;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, Object &object)
 {
     ds >> object.name;
+    ds >> object.spriteName;
+    ds >> object.visible;
+    ds >> object.solid;
+    ds >> object.depth;
+    ds >> object.persistent;
     return ds;
 }
 

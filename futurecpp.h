@@ -23,8 +23,11 @@ bit_cast(const From& src) noexcept
     return dst;
 }
 
+#if !__cpp_lib_to_underlying
 template <typename EnumT, typename = std::enable_if_t<std::is_enum<EnumT>{}>>
 constexpr std::underlying_type_t<EnumT> to_underlying(EnumT e) noexcept {
     return static_cast<std::underlying_type_t<EnumT>>(e);
 }
+#endif
 } // namespace std
+

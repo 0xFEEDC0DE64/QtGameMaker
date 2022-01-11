@@ -32,11 +32,11 @@ BackgroundPropertiesDialog::BackgroundPropertiesDialog(Background &background, P
     connect(&m_projectModel, &ProjectTreeModel::backgroundNameChanged,
             this, &BackgroundPropertiesDialog::backgroundNameChanged);
 
-    connect(m_ui->pushButtonLoad, &QAbstractButton::pressed,
+    connect(m_ui->pushButtonLoad, &QAbstractButton::clicked,
             this, &BackgroundPropertiesDialog::loadBackground);
-    connect(m_ui->pushButtonSave, &QAbstractButton::pressed,
+    connect(m_ui->pushButtonSave, &QAbstractButton::clicked,
             this, &BackgroundPropertiesDialog::saveBackground);
-    connect(m_ui->pushButtonEdit, &QAbstractButton::pressed,
+    connect(m_ui->pushButtonEdit, &QAbstractButton::clicked,
             this, &BackgroundPropertiesDialog::editBackground);
 
     connect(m_ui->lineEditName, &QLineEdit::textChanged,

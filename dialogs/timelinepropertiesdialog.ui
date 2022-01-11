@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>838</width>
+    <height>533</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,9 +17,341 @@
    <iconset resource="../resources.qrc">
     <normaloff>:/qtgameengine/icons/timeline-file.png</normaloff>:/qtgameengine/icons/timeline-file.png</iconset>
   </property>
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,1,0">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QLabel" name="labelName">
+       <property name="text">
+        <string>Name:</string>
+       </property>
+       <property name="buddy">
+        <cstring>lineEditName</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="lineEditName">
+       <property name="toolTip">
+        <string>The name of the time line</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QPushButton" name="pushButtonAdd">
+         <property name="toolTip">
+          <string>Click here to add another moment</string>
+         </property>
+         <property name="text">
+          <string>&amp;Add</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources.qrc">
+           <normaloff>:/qtgameengine/icons/add.png</normaloff>:/qtgameengine/icons/add.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="pushButtonChange">
+         <property name="toolTip">
+          <string>Change the moment</string>
+         </property>
+         <property name="text">
+          <string>&amp;Change</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources.qrc">
+           <normaloff>:/qtgameengine/icons/replace.png</normaloff>:/qtgameengine/icons/replace.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QPushButton" name="pushButtonDelete">
+         <property name="toolTip">
+          <string>Delete moments</string>
+         </property>
+         <property name="text">
+          <string>&amp;Delete</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources.qrc">
+           <normaloff>:/qtgameengine/icons/delete.png</normaloff>:/qtgameengine/icons/delete.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QPushButton" name="pushButtonShift">
+         <property name="toolTip">
+          <string>Shift moments by an amount</string>
+         </property>
+         <property name="text">
+          <string>&amp;Shift</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources.qrc">
+           <normaloff>:/qtgameengine/icons/arrow-right.png</normaloff>:/qtgameengine/icons/arrow-right.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="pushButtonClear">
+         <property name="toolTip">
+          <string>Clear all moments</string>
+         </property>
+         <property name="text">
+          <string>C&amp;lear</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources.qrc">
+           <normaloff>:/qtgameengine/icons/new.png</normaloff>:/qtgameengine/icons/new.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QPushButton" name="pushButtonDuplicate">
+         <property name="toolTip">
+          <string>Duplicate moments</string>
+         </property>
+         <property name="text">
+          <string>D&amp;uplicate</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources.qrc">
+           <normaloff>:/qtgameengine/icons/copy.png</normaloff>:/qtgameengine/icons/copy.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="4" column="0">
+        <widget class="QPushButton" name="pushButtonSpread">
+         <property name="toolTip">
+          <string>Spread out the moments adding additional time between them</string>
+         </property>
+         <property name="text">
+          <string>S&amp;pread</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources.qrc">
+           <normaloff>:/qtgameengine/icons/scale.png</normaloff>:/qtgameengine/icons/scale.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QPushButton" name="pushButtonMerge">
+         <property name="toolTip">
+          <string>Merge a number of moments into one</string>
+         </property>
+         <property name="text">
+          <string>&amp;Merge</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources.qrc">
+           <normaloff>:/qtgameengine/icons/merge.png</normaloff>:/qtgameengine/icons/merge.png</iconset>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonShowInformation">
+       <property name="toolTip">
+        <string>Show information about the time line</string>
+       </property>
+       <property name="text">
+        <string>Show &amp;Information</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources.qrc">
+         <normaloff>:/qtgameengine/icons/info.png</normaloff>:/qtgameengine/icons/info.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_4">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Ok</set>
+       </property>
+       <property name="centerButtons">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QLabel" name="labelMoments">
+       <property name="text">
+        <string>Moments:</string>
+       </property>
+       <property name="buddy">
+        <cstring>listViewMoments</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QListView" name="listViewMoments">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Ignored" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <item>
+      <widget class="QLabel" name="labelActions">
+       <property name="text">
+        <string>Actions:</string>
+       </property>
+       <property name="buddy">
+        <cstring>listViewActions</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QListView" name="listViewActions">
+       <property name="toolTip">
+        <string>Drag actions here</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QToolBox" name="toolBox">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="page">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>68</width>
+        <height>457</height>
+       </rect>
+      </property>
+      <attribute name="label">
+       <string>Page 1</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="page_2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>68</width>
+        <height>457</height>
+       </rect>
+      </property>
+      <attribute name="label">
+       <string>Page 2</string>
+      </attribute>
+     </widget>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources>
   <include location="../resources.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>TimeLinePropertiesDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>150</x>
+     <y>277</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>256</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>TimeLinePropertiesDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>150</x>
+     <y>277</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>256</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

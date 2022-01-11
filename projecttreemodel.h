@@ -49,7 +49,10 @@ public:
     Qt::DropActions supportedDragActions() const override;
     Qt::DropActions supportedDropActions() const override;
 
+    ProjectContainer *project() { return m_project; }
+    const ProjectContainer *project() const { return m_project; }
     void setProject(ProjectContainer *project);
+
     NodeType nodeType(const QModelIndex &index) const;
 
     template<typename T> QModelIndex rootFor() const;

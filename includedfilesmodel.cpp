@@ -10,10 +10,13 @@ IncludedFilesModel::IncludedFilesModel(ProjectContainer &project, QObject *paren
 
 int IncludedFilesModel::rowCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent)
     return 0;
 }
 
 QVariant IncludedFilesModel::data(const QModelIndex &index, int role) const
 {
+    Q_UNUSED(index)
+    Q_UNUSED(role)
     return {};
 }

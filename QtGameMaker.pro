@@ -1,7 +1,10 @@
 QT = core gui widgets multimedia
 
 CONFIG += c++latest
-QMAKE_CXXFLAGS += -std=c++23
+QMAKE_CXXFLAGS += \
+    -std=c++23 \
+    -Wno-missing-field-initializers \
+    -Wno-sign-compare
 
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 
@@ -13,6 +16,7 @@ HEADERS += \
     dialogs/fontpropertiesdialog.h \
     dialogs/imageeditordialog.h \
     dialogs/includedfilesdialog.h \
+    dialogs/installextensiondialog.h \
     dialogs/maskpropertiesdialog.h \
     dialogs/objectinformationdialog.h \
     dialogs/objectpropertiesdialog.h \
@@ -28,6 +32,8 @@ HEADERS += \
     includedfilesmodel.h \
     jshighlighter.h \
     mainwindow.h \
+    objectactionsmodel.h \
+    objecteventsmodel.h \
     pathpointsmodel.h \
     pathpointswidget.h \
     projectcontainer.h \
@@ -41,6 +47,8 @@ HEADERS += \
     dialogs/soundpropertiesdialog.h \
     dialogs/spritepropertiesdialog.h \
     spritesmodel.h \
+    timelineactionsmodel.h \
+    timelinemomentsmodel.h \
     triggersmodel.h
 
 SOURCES += main.cpp \
@@ -51,6 +59,7 @@ SOURCES += main.cpp \
     dialogs/fontpropertiesdialog.cpp \
     dialogs/imageeditordialog.cpp \
     dialogs/includedfilesdialog.cpp \
+    dialogs/installextensiondialog.cpp \
     dialogs/maskpropertiesdialog.cpp \
     dialogs/objectinformationdialog.cpp \
     dialogs/objectpropertiesdialog.cpp \
@@ -65,6 +74,8 @@ SOURCES += main.cpp \
     includedfilesmodel.cpp \
     jshighlighter.cpp \
     mainwindow.cpp \
+    objectactionsmodel.cpp \
+    objecteventsmodel.cpp \
     pathpointsmodel.cpp \
     pathpointswidget.cpp \
     projectcontainer.cpp \
@@ -78,6 +89,8 @@ SOURCES += main.cpp \
     dialogs/soundpropertiesdialog.cpp \
     dialogs/spritepropertiesdialog.cpp \
     spritesmodel.cpp \
+    timelineactionsmodel.cpp \
+    timelinemomentsmodel.cpp \
     triggersmodel.cpp
 
 FORMS += \
@@ -86,6 +99,7 @@ FORMS += \
     dialogs/fontpropertiesdialog.ui \
     dialogs/imageeditordialog.ui \
     dialogs/includedfilesdialog.ui \
+    dialogs/installextensiondialog.ui \
     dialogs/maskpropertiesdialog.ui \
     dialogs/objectinformationdialog.ui \
     dialogs/objectpropertiesdialog.ui \

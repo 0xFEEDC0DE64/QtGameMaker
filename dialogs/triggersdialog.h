@@ -17,6 +17,12 @@ public:
     ~TriggersDialog();
 
 private slots:
+    void add();
+    void delete_();
+    void load();
+    void save();
+    void clear();
+
     void openCodeEditor();
 
 private:

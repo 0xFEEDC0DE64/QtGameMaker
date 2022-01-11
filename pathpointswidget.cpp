@@ -66,6 +66,8 @@ void PathPointsWidget::setSelectedIndex(const std::optional<std::size_t> &select
 
 void PathPointsWidget::paintEvent(QPaintEvent *event)
 {
+    Q_UNUSED(event)
+
     if (m_showGrid)
     {
         if (!m_gridBrush || m_gridBrush->gridX != m_gridX || m_gridBrush->gridY != m_gridY)
@@ -174,6 +176,7 @@ createNew:
         }
         update();
         break;
+    default:;
     }
 }
 
@@ -186,6 +189,7 @@ void PathPointsWidget::mouseReleaseEvent(QMouseEvent *event)
     case Qt::LeftButton:
         m_dragIndex = std::nullopt;
         break;
+    default:;
     }
 }
 

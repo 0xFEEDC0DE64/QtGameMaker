@@ -16,7 +16,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(const QString &filePath, QWidget *parent = nullptr);
     ~MainWindow();
 
 protected:
@@ -64,6 +64,7 @@ private slots:
     void modelAboutToBeReset();
 
 private:
+    void loadFile(const QString &path);
     void updateTitle();
 
     template<typename T, typename ...Targs>

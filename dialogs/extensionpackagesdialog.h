@@ -14,6 +14,9 @@ public:
     explicit ExtensionPackagesDialog(QWidget *parent = nullptr);
     ~ExtensionPackagesDialog();
 
+private slots:
+    void install();
+
 private:
     const std::unique_ptr<Ui::ExtensionPackagesDialog> m_ui;
 };

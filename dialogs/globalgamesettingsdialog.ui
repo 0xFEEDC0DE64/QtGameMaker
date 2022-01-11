@@ -106,6 +106,9 @@
            <property name="text">
             <string>Color outside the room region:</string>
            </property>
+           <property name="buddy">
+            <cstring>toolButtonColorOutside</cstring>
+           </property>
           </widget>
          </item>
          <item>

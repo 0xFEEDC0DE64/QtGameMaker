@@ -18,7 +18,7 @@ EditSpriteDialog::EditSpriteDialog(const std::vector<QPixmap> &pixmaps, const QS
     m_ui->setupUi(this);
 
 #ifdef Q_OS_LINUX
-    setWindowFlags(windowFlags() & ~Qt::Dialog | Qt::Window);
+    setWindowFlags((windowFlags() & ~Qt::Dialog) | Qt::Window);
 #endif
     setWindowFlag(Qt::WindowMinimizeButtonHint);
     setWindowFlag(Qt::WindowMaximizeButtonHint);

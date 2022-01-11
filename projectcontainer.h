@@ -85,6 +85,11 @@ struct TimeLine
 struct Object
 {
     QString name;
+    QString spriteName;
+    bool visible{true};
+    bool solid{};
+    int depth{};
+    bool persistent{};
 };
 
 struct Room

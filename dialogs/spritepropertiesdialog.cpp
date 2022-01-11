@@ -37,15 +37,15 @@ SpritePropertiesDialog::SpritePropertiesDialog(Sprite &sprite, ProjectTreeModel 
     connect(&m_projectModel, &ProjectTreeModel::spriteNameChanged,
             this, &SpritePropertiesDialog::spriteNameChanged);
 
-    connect(m_ui->pushButtonLoad, &QAbstractButton::pressed,
+    connect(m_ui->pushButtonLoad, &QAbstractButton::clicked,
             this, &SpritePropertiesDialog::loadSprite);
-    connect(m_ui->pushButtonSave, &QAbstractButton::pressed,
+    connect(m_ui->pushButtonSave, &QAbstractButton::clicked,
             this, &SpritePropertiesDialog::saveSprite);
-    connect(m_ui->pushButtonEdit, &QAbstractButton::pressed,
+    connect(m_ui->pushButtonEdit, &QAbstractButton::clicked,
             this, &SpritePropertiesDialog::editSprite);
-    connect(m_ui->pushButtonCenterOrigin, &QAbstractButton::pressed,
+    connect(m_ui->pushButtonCenterOrigin, &QAbstractButton::clicked,
             this, &SpritePropertiesDialog::centerOrigin);
-    connect(m_ui->pushButtonModifyCollisionmask, &QAbstractButton::pressed,
+    connect(m_ui->pushButtonModifyCollisionmask, &QAbstractButton::clicked,
             this, &SpritePropertiesDialog::modifyMask);
 
     connect(m_ui->lineEditName, &QLineEdit::textChanged,

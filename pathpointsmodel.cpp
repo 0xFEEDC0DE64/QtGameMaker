@@ -18,11 +18,13 @@ PathPointsModel::PathPointsModel(std::vector<Path::Point> &points, QObject *pare
 
 int PathPointsModel::rowCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent)
     return m_points.size();
 }
 
 int PathPointsModel::columnCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent)
     return NumberOfColumns;
 }
 

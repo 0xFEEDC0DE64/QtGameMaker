@@ -71,5 +71,10 @@
         <file>icons/center.png</file>
         <file>icons/grid.png</file>
         <file>icons/constants.png</file>
+        <file>icons/add.png</file>
+        <file>icons/replace.png</file>
+        <file>icons/info.png</file>
+        <file>icons/merge.png</file>
+        <file>icons/sort.png</file>
     </qresource>
 </RCC>

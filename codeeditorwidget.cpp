@@ -21,6 +21,7 @@ CodeEditorWidget::CodeEditorWidget(QWidget *parent) :
 
 void CodeEditorWidget::updateLineNumberAreaWidth(int newBlockCount)
 {
+    Q_UNUSED(newBlockCount)
     setViewportMargins(lineNumberAreaWidth(), 0, 0, 0);
 }
 

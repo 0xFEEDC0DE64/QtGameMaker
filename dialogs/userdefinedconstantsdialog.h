@@ -16,6 +16,17 @@ public:
     explicit UserDefinedConstantsDialog(ProjectContainer &project, QWidget *parent = nullptr);
     ~UserDefinedConstantsDialog();
 
+private slots:
+    void insert();
+    void add();
+    void delete_();
+    void clear();
+    void up();
+    void down();
+    void sort();
+    void load();
+    void save();
+
 private:
     const std::unique_ptr<Ui::UserDefinedConstantsDialog> m_ui;
 

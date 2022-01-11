@@ -48,15 +48,15 @@ SoundPropertiesDialog::SoundPropertiesDialog(Sound &sound, ProjectTreeModel &pro
     connect(&m_projectModel, &ProjectTreeModel::soundNameChanged,
             this, &SoundPropertiesDialog::soundNameChanged);
 
-    connect(m_ui->pushButtonLoad, &QAbstractButton::pressed,
+    connect(m_ui->pushButtonLoad, &QAbstractButton::clicked,
             this, &SoundPropertiesDialog::loadSound);
-    connect(m_ui->pushButtonPlay, &QAbstractButton::pressed,
+    connect(m_ui->pushButtonPlay, &QAbstractButton::clicked,
             this, &SoundPropertiesDialog::playSound);
-    connect(m_ui->pushButtonStop, &QAbstractButton::pressed,
+    connect(m_ui->pushButtonStop, &QAbstractButton::clicked,
             this, &SoundPropertiesDialog::stopSound);
-    connect(m_ui->pushButtonSave, &QAbstractButton::pressed,
+    connect(m_ui->pushButtonSave, &QAbstractButton::clicked,
             this, &SoundPropertiesDialog::saveSound);
-    connect(m_ui->pushButtonEdit, &QAbstractButton::pressed,
+    connect(m_ui->pushButtonEdit, &QAbstractButton::clicked,
             this, &SoundPropertiesDialog::editSound);
 
     connect(m_ui->lineEditName, &QLineEdit::textChanged,

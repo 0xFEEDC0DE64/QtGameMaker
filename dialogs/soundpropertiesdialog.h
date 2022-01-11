@@ -5,7 +5,6 @@
 #include <QSoundEffect>
 
 #include <memory>
-#include <optional>
 
 namespace Ui { class SoundPropertiesDialog; }
 struct Sound;

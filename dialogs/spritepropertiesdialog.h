@@ -4,7 +4,6 @@
 #include <QString>
 
 #include <memory>
-#include <optional>
 
 namespace Ui { class SpritePropertiesDialog; }
 struct Sprite;

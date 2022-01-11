@@ -11,7 +11,7 @@ GlobalGameSettingsDialog::GlobalGameSettingsDialog(QWidget *parent) :
     m_ui->setupUi(this);
 
 #ifdef Q_OS_LINUX
-    setWindowFlags(windowFlags() & ~Qt::Dialog | Qt::Window);
+    setWindowFlags((windowFlags() & ~Qt::Dialog) | Qt::Window);
 #endif
     setWindowFlag(Qt::WindowCloseButtonHint);
 

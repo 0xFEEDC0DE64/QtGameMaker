@@ -24,6 +24,9 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="toolTip">
+        <string>List of all defined triggers. Click on a trigger to change it</string>
+       </property>
       </widget>
      </item>
      <item>
@@ -36,6 +39,10 @@
          <property name="text">
           <string>&amp;Load</string>
          </property>
+         <property name="icon">
+          <iconset resource="../resources.qrc">
+           <normaloff>:/qtgameengine/icons/open.png</normaloff>:/qtgameengine/icons/open.png</iconset>
+         </property>
         </widget>
        </item>
        <item row="0" column="1">
@@ -45,6 +52,10 @@
          </property>
          <property name="text">
           <string>&amp;Delete</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources.qrc">
+           <normaloff>:/qtgameengine/icons/delete.png</normaloff>:/qtgameengine/icons/delete.png</iconset>
          </property>
         </widget>
        </item>
@@ -56,6 +67,10 @@
          <property name="text">
           <string>&amp;Add</string>
          </property>
+         <property name="icon">
+          <iconset resource="../resources.qrc">
+           <normaloff>:/qtgameengine/icons/add.png</normaloff>:/qtgameengine/icons/add.png</iconset>
+         </property>
         </widget>
        </item>
        <item row="2" column="0">
@@ -66,6 +81,10 @@
          <property name="text">
           <string>&amp;Clear</string>
          </property>
+         <property name="icon">
+          <iconset resource="../resources.qrc">
+           <normaloff>:/qtgameengine/icons/new.png</normaloff>:/qtgameengine/icons/new.png</iconset>
+         </property>
         </widget>
        </item>
        <item row="1" column="1">
@@ -75,6 +94,10 @@
          </property>
          <property name="text">
           <string>&amp;Save</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources.qrc">
+           <normaloff>:/qtgameengine/icons/save.png</normaloff>:/qtgameengine/icons/save.png</iconset>
          </property>
         </widget>
        </item>
@@ -103,20 +126,34 @@
         <property name="text">
          <string>Name:</string>
         </property>
+        <property name="buddy">
+         <cstring>lineEditName</cstring>
+        </property>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEditName"/>
+       <widget class="QLineEdit" name="lineEditName">
+        <property name="toolTip">
+         <string>Type here a name for the trigger</string>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QLabel" name="labelCondition">
         <property name="text">
          <string>Condition:</string>
         </property>
+        <property name="buddy">
+         <cstring>plainTextEdit</cstring>
+        </property>
        </widget>
       </item>
       <item>
-       <widget class="QPlainTextEdit" name="plainTextEdit"/>
+       <widget class="QPlainTextEdit" name="plainTextEdit">
+        <property name="toolTip">
+         <string>Type here the condition for the trigger</string>
+        </property>
+       </widget>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -135,6 +172,9 @@
         </item>
         <item>
          <widget class="QPushButton" name="pushButtonUseCodeEditor">
+          <property name="toolTip">
+           <string>Use the code editor to edit the condition</string>
+          </property>
           <property name="text">
            <string>&amp;Use code editor</string>
           </property>
@@ -153,6 +193,9 @@
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
          <widget class="QRadioButton" name="radioButtonBegin">
+          <property name="toolTip">
+           <string>Event will be checked at the beginning of each step</string>
+          </property>
           <property name="text">
            <string>Begin of step</string>
           </property>
@@ -160,6 +203,9 @@
         </item>
         <item>
          <widget class="QRadioButton" name="radioButtonMiddle">
+          <property name="toolTip">
+           <string>Event will be checked in the middle of each step (just before the step event)</string>
+          </property>
           <property name="text">
            <string>Middle of step</string>
           </property>
@@ -167,6 +213,9 @@
         </item>
         <item>
          <widget class="QRadioButton" name="radioButtonEnd">
+          <property name="toolTip">
+           <string>Event will be checked at the end of each step</string>
+          </property>
           <property name="text">
            <string>End of step</string>
           </property>
@@ -179,17 +228,26 @@
         <property name="text">
          <string>Constant name:</string>
         </property>
+        <property name="buddy">
+         <cstring>lineEditConstantName</cstring>
+        </property>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEditConstantName"/>
+       <widget class="QLineEdit" name="lineEditConstantName">
+        <property name="toolTip">
+         <string>When required you can provide a constant name that you can use in code to call the event</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

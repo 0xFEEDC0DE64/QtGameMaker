@@ -6,7 +6,7 @@
 #include <utility>
 #include <algorithm>
 
-//#include "futurecpp.h"
+#include "futurecpp.h"
 #include "projectcontainer.h"
 
 namespace {
@@ -261,6 +261,8 @@ Qt::ItemFlags ProjectTreeModel::flags(const QModelIndex &index) const
 
     switch (nodeType(index))
     {
+    case NodeType::Root:
+        break;
     case NodeType::Sprite:
     case NodeType::Sound:
     case NodeType::Background:
@@ -297,6 +299,9 @@ bool ProjectTreeModel::setData(const QModelIndex &index, const QVariant &value, 
 
 bool ProjectTreeModel::moveRows(const QModelIndex &sourceParent, int sourceRow, int count, const QModelIndex &destinationParent, int destinationChild)
 {
+    Q_UNUSED(destinationParent)
+    Q_UNUSED(destinationChild)
+
     qDebug() << sourceParent << sourceRow << count;
 
     return false;
@@ -602,36 +607,53 @@ QVariant ProjectTreeModel::iconFor<Background>(const Background &entry) const
 template<>
 QVariant ProjectTreeModel::iconFor<Path>(const Path &entry) const
 {
+    Q_UNUSED(entry)
     return QPixmap{":/qtgameengine/icons/path-file.png"}.scaled(16, 16);
 }
 
 template<>
 QVariant ProjectTreeModel::iconFor<Script>(const Script &entry) const
 {
+    Q_UNUSED(entry)
     return QPixmap{":/qtgameengine/icons/script-file.png"}.scaled(16, 16);
 }
 
 template<>
 QVariant ProjectTreeModel::iconFor<Font>(const Font &entry) const
 {
+    Q_UNUSED(entry)
     return QPixmap{":/qtgameengine/icons/font-file.png"}.scaled(16, 16);
 }
 
 template<>
 QVariant ProjectTreeModel::iconFor<TimeLine>(const TimeLine &entry) const
 {
+    Q_UNUSED(entry)
     return QPixmap{":/qtgameengine/icons/timeline-file.png"}.scaled(16, 16);
 }
 
 template<>
 QVariant ProjectTreeModel::iconFor<Object>(const Object &entry) const
 {
-    return QPixmap{":/qtgameengine/icons/object-file.png"}.scaled(16, 16);
+    if (m_project && !entry.spriteName.isEmpty())
+    {
+        const auto iter = std::find_if(std::cbegin(m_project->sprites), std::cend(m_project->sprites),
+                                       [&](const Sprite &sprite){ return sprite.name == entry.spriteName; });
+        if (iter == std::cend(m_project->sprites))
+            qWarning() << "sprite" << entry.spriteName << "not found";
+        else if (!iter->pixmaps.empty() && !iter->pixmaps.front().isNull())
+            return iter->pixmaps.front().scaled(16, 16, Qt::KeepAspectRatio);
+    }
+
+    QPixmap pixmap{16, 16};
+    pixmap.fill(Qt::white);
+    return pixmap;
 }
 
 template<>
 QVariant ProjectTreeModel::iconFor<Room>(const Room &entry) const
 {
+    Q_UNUSED(entry)
     return QPixmap{":/qtgameengine/icons/room-file.png"}.scaled(16, 16);
 }
 

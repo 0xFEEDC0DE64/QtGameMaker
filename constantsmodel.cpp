@@ -18,16 +18,20 @@ ConstantsModel::ConstantsModel(ProjectContainer &project, QObject *parent) :
 
 int ConstantsModel::rowCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent)
     return 0;
 }
 
 int ConstantsModel::columnCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent)
     return NumberOfColumns;
 }
 
 QVariant ConstantsModel::data(const QModelIndex &index, int role) const
 {
+    Q_UNUSED(index)
+    Q_UNUSED(role)
     return {};
 }
 
