@@ -11,6 +11,7 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 HEADERS += \
     codeeditorwidget.h \
     constantsmodel.h \
+    dialogs/addeventdialog.h \
     dialogs/codeeditordialog.h \
     dialogs/createspritedialog.h \
     dialogs/fontpropertiesdialog.h \
@@ -54,6 +55,7 @@ HEADERS += \
 SOURCES += main.cpp \
     codeeditorwidget.cpp \
     constantsmodel.cpp \
+    dialogs/addeventdialog.cpp \
     dialogs/codeeditordialog.cpp \
     dialogs/createspritedialog.cpp \
     dialogs/fontpropertiesdialog.cpp \
@@ -94,6 +96,7 @@ SOURCES += main.cpp \
     triggersmodel.cpp
 
 FORMS += \
+    dialogs/addeventdialog.ui \
     dialogs/codeeditordialog.ui \
     dialogs/createspritedialog.ui \
     dialogs/fontpropertiesdialog.ui \

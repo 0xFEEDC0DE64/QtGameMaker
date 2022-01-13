@@ -3,14 +3,15 @@
 #include <QDialog>
 
 #include <memory>
+#include <map>
+
+#include "projectcontainer.h"
 
 class QMenu;
 namespace Ui { class ObjectPropertiesDialog; }
-struct Object;
 class ProjectTreeModel;
 class ObjectEventsModel;
 class ObjectActionsModel;
-class Sprite;
 
 class ObjectPropertiesDialog : public QDialog
 {
@@ -47,6 +48,8 @@ private:
 
     Object &m_object;
     ProjectTreeModel &m_projectModel;
+
+    std::map<Object::EventType, QString> m_events;
 
     const std::unique_ptr<ObjectEventsModel> m_eventsModel;
     const std::unique_ptr<ObjectActionsModel> m_actionsModel;

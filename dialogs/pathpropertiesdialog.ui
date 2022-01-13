@@ -114,18 +114,18 @@
         <number>10</number>
        </property>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
+        <layout class="QFormLayout" name="formLayout_3">
+         <item row="0" column="0">
           <widget class="QLabel" name="labelName">
            <property name="text">
-            <string>Name:</string>
+            <string>&amp;Name:</string>
            </property>
            <property name="buddy">
             <cstring>lineEditName</cstring>
            </property>
           </widget>
          </item>
-         <item>
+         <item row="0" column="1">
           <widget class="QLineEdit" name="lineEditName">
            <property name="toolTip">
             <string>The name of the path</string>
@@ -189,7 +189,7 @@
            <item row="0" column="0">
             <widget class="QLabel" name="labelX">
              <property name="text">
-              <string>X:</string>
+              <string>&amp;X:</string>
              </property>
              <property name="buddy">
               <cstring>spinBoxX</cstring>
@@ -209,7 +209,7 @@
            <item row="1" column="0">
             <widget class="QLabel" name="labelY">
              <property name="text">
-              <string>Y:</string>
+              <string>&amp;Y:</string>
              </property>
              <property name="buddy">
               <cstring>spinBoxY</cstring>
@@ -229,7 +229,7 @@
            <item row="2" column="0">
             <widget class="QLabel" name="labelSp">
              <property name="text">
-              <string>sp:</string>
+              <string>s&amp;p:</string>
              </property>
              <property name="buddy">
               <cstring>spinBoxSp</cstring>
@@ -269,7 +269,7 @@
               <string>Add the point to the path</string>
              </property>
              <property name="text">
-              <string>Add</string>
+              <string>&amp;Add</string>
              </property>
             </widget>
            </item>
@@ -279,7 +279,7 @@
               <string>Insert the point before the current one</string>
              </property>
              <property name="text">
-              <string>Insert</string>
+              <string>&amp;Insert</string>
              </property>
             </widget>
            </item>
@@ -289,7 +289,7 @@
               <string>Delete the point from the path</string>
              </property>
              <property name="text">
-              <string>Delete</string>
+              <string>&amp;Delete</string>
              </property>
             </widget>
            </item>
@@ -329,14 +329,14 @@
               <item>
                <widget class="QRadioButton" name="radioButtonStraight">
                 <property name="text">
-                 <string>Straight lines</string>
+                 <string>&amp;Straight lines</string>
                 </property>
                </widget>
               </item>
               <item>
                <widget class="QRadioButton" name="radioButtonSmooth">
                 <property name="text">
-                 <string>Smooth curves</string>
+                 <string>S&amp;mooth curves</string>
                 </property>
                </widget>
               </item>
@@ -348,7 +348,7 @@
              <item row="0" column="0">
               <widget class="QLabel" name="labelPrecision">
                <property name="text">
-                <string>Precision:</string>
+                <string>P&amp;recision:</string>
                </property>
                <property name="buddy">
                 <cstring>spinBoxPrecision</cstring>

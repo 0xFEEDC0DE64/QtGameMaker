@@ -16,7 +16,7 @@ ScriptPropertiesDialog::ScriptPropertiesDialog(Script &script, ProjectTreeModel 
     m_lineEditName{new QLineEdit{this}}
 {
     {
-        auto label = new QLabel{tr("Name:"), this};
+        auto label = new QLabel{tr("&Name:"), this};
         label->setBuddy(m_lineEditName);
         addToolbarWidget(label);
     }

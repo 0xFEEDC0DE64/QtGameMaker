@@ -73,135 +73,164 @@ QDataStream &operator>>(QDataStream &ds, std::vector<T> &list)
     return ds;
 }
 
+template<typename Tkey, typename Tvalue>
+QDataStream &operator<<(QDataStream &ds, const std::map<Tkey, Tvalue> &map)
+{
+    {
+        int entries = map.size();
+        ds << entries;
+    }
+    for (auto iter = std::cbegin(map); iter != std::cend(map); iter++)
+        ds << iter->first << iter->second;
+    return ds;
+}
+
+template<typename Tkey, typename Tvalue>
+QDataStream &operator>>(QDataStream &ds, std::map<Tkey, Tvalue> &map)
+{
+    int entries;
+    ds >> entries;
+
+    for (int i = 0; i < entries; i++)
+    {
+        Tkey key;
+        Tvalue value;
+        ds >> key
+           >> value;
+        map[std::move(key)] = std::move(value);
+    }
+    return ds;
+}
+
 QDataStream &operator<<(QDataStream &ds, const Sprite &sprite)
 {
-    ds << sprite.name;
-    ds << sprite.pixmaps;
-    ds << sprite.origin.x;
-    ds << sprite.origin.y;
-    ds << sprite.preciseCollisionChecking;
-    ds << sprite.separateCollisionMasks;
+    ds << sprite.name
+       << sprite.pixmaps
+       << sprite.origin.x
+       << sprite.origin.y
+       << sprite.preciseCollisionChecking
+       << sprite.separateCollisionMasks;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, Sprite &sprite)
 {
-    ds >> sprite.name;
-    ds >> sprite.pixmaps;
-    ds >> sprite.origin.x;
-    ds >> sprite.origin.y;
-    ds >> sprite.preciseCollisionChecking;
-    ds >> sprite.separateCollisionMasks;
+    ds >> sprite.name
+       >> sprite.pixmaps
+       >> sprite.origin.x
+       >> sprite.origin.y
+       >> sprite.preciseCollisionChecking
+       >> sprite.separateCollisionMasks;
     return ds;
 }
 
 QDataStream &operator<<(QDataStream &ds, const Sound &sound)
 {
-    ds << sound.name;
-    ds << sound.type;
-    ds << sound.path;
-    ds << sound.effects.chorus;
-    ds << sound.effects.flanger;
-    ds << sound.effects.gargle;
-    ds << sound.effects.echo;
-    ds << sound.effects.reverb;
-    ds << sound.volume;
-    ds << sound.pan;
-    ds << sound.preload;
+    ds << sound.name
+       << sound.type
+       << sound.path
+       << sound.effects.chorus
+       << sound.effects.flanger
+       << sound.effects.gargle
+       << sound.effects.echo
+       << sound.effects.reverb
+       << sound.volume
+       << sound.pan
+       << sound.preload;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, Sound &sound)
 {
-    ds >> sound.name;
-    ds >> sound.type;
-    ds >> sound.path;
-    ds >> sound.effects.chorus;
-    ds >> sound.effects.flanger;
-    ds >> sound.effects.gargle;
-    ds >> sound.effects.echo;
-    ds >> sound.effects.reverb;
-    ds >> sound.volume;
-    ds >> sound.pan;
-    ds >> sound.preload;
+    ds >> sound.name
+       >> sound.type
+       >> sound.path
+       >> sound.effects.chorus
+       >> sound.effects.flanger
+       >> sound.effects.gargle
+       >> sound.effects.echo
+       >> sound.effects.reverb
+       >> sound.volume
+       >> sound.pan
+       >> sound.preload;
     return ds;
 }
 
 QDataStream &operator<<(QDataStream &ds, const Background &background)
 {
-    ds << background.name;
-    ds << background.pixmap;
-    ds << background.tileset;
+    ds << background.name
+       << background.pixmap
+       << background.tileset;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, Background &background)
 {
-    ds >> background.name;
-    ds >> background.pixmap;
-    ds >> background.tileset;
+    ds >> background.name
+       >> background.pixmap
+       >> background.tileset;
     return ds;
 }
 
 QDataStream &operator<<(QDataStream &ds, const Path::Point &point)
 {
-    ds << point.point;
-    ds << point.sp;
+    ds << point.point
+       << point.sp;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, Path::Point &point)
 {
-    ds >> point.point;
-    ds >> point.sp;
+    ds >> point.point
+       >> point.sp;
     return ds;
 }
 
 QDataStream &operator<<(QDataStream &ds, const Path &path)
 {
-    ds << path.name;
-    ds << path.points;
-    ds << path.type;
-    ds << path.closed;
-    ds << path.precision;
+    ds << path.name
+       << path.points
+       << path.type
+       << path.closed
+       << path.precision;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, Path &path)
 {
-    ds >> path.name;
-    ds >> path.points;
-    ds >> path.type;
-    ds >> path.closed;
-    ds >> path.precision;
+    ds >> path.name
+       >> path.points
+       >> path.type
+       >> path.closed
+       >> path.precision;
     return ds;
 }
 
 QDataStream &operator<<(QDataStream &ds, const Script &script)
 {
-    ds << script.name;
-    ds << script.script;
+    ds << script.name
+       << script.script;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, Script &script)
 {
-    ds >> script.name;
-    ds >> script.script;
+    ds >> script.name
+       >> script.script;
     return ds;
 }
 
 QDataStream &operator<<(QDataStream &ds, const Font &font)
 {
-    ds << font.name;
-    ds << font.font;
+    ds << font.name
+       << font.font;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, Font &font)
 {
-    ds >> font.name;
-    ds >> font.font;
+    ds >> font.name
+       >> font.font;
     return ds;
 }
 
@@ -219,23 +248,25 @@ QDataStream &operator>>(QDataStream &ds, TimeLine &timeLine)
 
 QDataStream &operator<<(QDataStream &ds, const Object &object)
 {
-    ds << object.name;
-    ds << object.spriteName;
-    ds << object.visible;
-    ds << object.solid;
-    ds << object.depth;
-    ds << object.persistent;
+    ds << object.name
+       << object.spriteName
+       << object.visible
+       << object.solid
+       << object.depth
+       << object.persistent
+       << object.events;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, Object &object)
 {
-    ds >> object.name;
-    ds >> object.spriteName;
-    ds >> object.visible;
-    ds >> object.solid;
-    ds >> object.depth;
-    ds >> object.persistent;
+    ds >> object.name
+       >> object.spriteName
+       >> object.visible
+       >> object.solid
+       >> object.depth
+       >> object.persistent
+       >> object.events;
     return ds;
 }
 
@@ -253,29 +284,29 @@ QDataStream &operator>>(QDataStream &ds, Room &room)
 
 QDataStream &operator<<(QDataStream &ds, const ProjectContainer &project)
 {
-    ds << project.sprites;
-    ds << project.sounds;
-    ds << project.backgrounds;
-    ds << project.paths;
-    ds << project.scripts;
-    ds << project.fonts;
-    ds << project.timeLines;
-    ds << project.objects;
-    ds << project.rooms;
+    ds << project.sprites
+       << project.sounds
+       << project.backgrounds
+       << project.paths
+       << project.scripts
+       << project.fonts
+       << project.timeLines
+       << project.objects
+       << project.rooms;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, ProjectContainer &project)
 {
-    ds >> project.sprites;
-    ds >> project.sounds;
-    ds >> project.backgrounds;
-    ds >> project.paths;
-    ds >> project.scripts;
-    ds >> project.fonts;
-    ds >> project.timeLines;
-    ds >> project.objects;
-    ds >> project.rooms;
+    ds >> project.sprites
+       >> project.sounds
+       >> project.backgrounds
+       >> project.paths
+       >> project.scripts
+       >> project.fonts
+       >> project.timeLines
+       >> project.objects
+       >> project.rooms;
     return ds;
 }
 

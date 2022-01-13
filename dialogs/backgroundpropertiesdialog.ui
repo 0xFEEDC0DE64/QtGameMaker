@@ -25,7 +25,7 @@
        <item row="0" column="0">
         <widget class="QLabel" name="labelName">
          <property name="text">
-          <string>Name:</string>
+          <string>&amp;Name:</string>
          </property>
          <property name="buddy">
           <cstring>lineEditName</cstring>

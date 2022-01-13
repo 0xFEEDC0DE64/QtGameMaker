@@ -7,17 +7,18 @@
 
 #include <algorithm>
 
-#include "projectcontainer.h"
 #include "projecttreemodel.h"
 #include "objecteventsmodel.h"
 #include "objectactionsmodel.h"
+#include "addeventdialog.h"
 
 ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel &projectModel, QWidget *parent) :
     QDialog{parent},
     m_ui{std::make_unique<Ui::ObjectPropertiesDialog>()},
     m_object{object},
     m_projectModel{projectModel},
-    m_eventsModel{std::make_unique<ObjectEventsModel>()},
+    m_events{m_object.events},
+    m_eventsModel{std::make_unique<ObjectEventsModel>(m_events)},
     m_actionsModel{std::make_unique<ObjectActionsModel>()},
     m_spritesMenu{new QMenu{m_ui->toolButtonSprite}},
     m_spriteName{object.spriteName}
@@ -106,6 +107,7 @@ void ObjectPropertiesDialog::accept()
     m_object.solid = m_ui->checkBoxSolid->isChecked();
     m_object.depth = m_ui->spinBoxDepth->value();
     m_object.persistent = m_ui->checkBoxPersistent->isChecked();
+    m_object.events = std::move(m_events);
 
     QDialog::accept();
 }
@@ -157,7 +159,17 @@ void ObjectPropertiesDialog::showInformation()
 
 void ObjectPropertiesDialog::addEvent()
 {
-    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+    AddEventDialog dialog{this};
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        if (!m_events.contains(dialog.eventType()))
+        {
+            m_eventsModel->beginResetModel();
+            m_events[dialog.eventType()];
+            m_eventsModel->endResetModel();
+            m_unsavedChanges = true;
+        }
+    }
 }
 
 void ObjectPropertiesDialog::deleteEvent()

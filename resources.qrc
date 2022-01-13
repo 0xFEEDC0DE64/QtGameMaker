@@ -76,5 +76,8 @@
         <file>icons/info.png</file>
         <file>icons/merge.png</file>
         <file>icons/sort.png</file>
+        <file>icons/event-create.png</file>
+        <file>icons/event-destroy.png</file>
+        <file>icons/event-step.png</file>
     </qresource>
 </RCC>

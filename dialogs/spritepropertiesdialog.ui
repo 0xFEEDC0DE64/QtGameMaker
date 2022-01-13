@@ -25,7 +25,7 @@
        <item row="0" column="0">
         <widget class="QLabel" name="labelName">
          <property name="text">
-          <string>Name:</string>
+          <string>&amp;Name:</string>
          </property>
          <property name="buddy">
           <cstring>lineEditName</cstring>
@@ -153,7 +153,7 @@
           <item>
            <widget class="QLabel" name="labelOriginX">
             <property name="text">
-             <string>X:</string>
+             <string>&amp;X:</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -173,7 +173,7 @@
           <item>
            <widget class="QLabel" name="labelOriginY">
             <property name="text">
-             <string>Y:</string>
+             <string>&amp;Y:</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

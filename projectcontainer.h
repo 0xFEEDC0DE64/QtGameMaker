@@ -84,12 +84,19 @@ struct TimeLine
 
 struct Object
 {
+    enum class EventType {
+        Create,
+        Step,
+        Destroy
+    };
+
     QString name;
     QString spriteName;
     bool visible{true};
     bool solid{};
     int depth{};
     bool persistent{};
+    std::map<EventType, QString> events;
 };
 
 struct Room
