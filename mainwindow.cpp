@@ -8,7 +8,7 @@
 #include <QInputDialog>
 #include <QDebug>
 
-#include "projecttreemodel.h"
+#include "models/projecttreemodel.h"
 #include "dialogs/preferencesdialog.h"
 #include "dialogs/spritepropertiesdialog.h"
 #include "dialogs/soundpropertiesdialog.h"
@@ -529,6 +529,30 @@ void MainWindow::delete_()
     const auto index = m_ui->treeView->currentIndex();
     if (!index.isValid())
         return;
+
+    switch (m_projectTreeModel->nodeType(index))
+    {
+    using NodeType = ProjectTreeModel::NodeType;
+    case NodeType::Root:
+        return;
+    case NodeType::Sprite:
+    case NodeType::Sound:
+    case NodeType::Background:
+    case NodeType::Path:
+    case NodeType::Script:
+    case NodeType::Font:
+    case NodeType::TimeLine:
+    case NodeType::Object:
+    case NodeType::Room:
+        if (QMessageBox::question(this,
+                                  tr("Confirm"),
+                                  tr("You are about to delete %0. This will be permanent. Continue?")
+                                      .arg(m_projectTreeModel->data(index, Qt::DisplayRole).toString())
+                                  ) != QMessageBox::Yes)
+            return;
+        break;
+    }
+
     if (!m_projectTreeModel->removeRow(index.row(), index.parent()))
         QMessageBox::warning(this, tr("Deleting failed!"), tr("Deleting failed!"));
 }

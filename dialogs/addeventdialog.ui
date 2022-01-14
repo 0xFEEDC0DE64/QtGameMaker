@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>265</width>
-    <height>220</height>
+    <height>221</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,6 +20,10 @@
       <widget class="QPushButton" name="pushButtonDraw">
        <property name="text">
         <string>Dra&amp;w</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources.qrc">
+         <normaloff>:/qtgameengine/icons/event-draw.png</normaloff>:/qtgameengine/icons/event-draw.png</iconset>
        </property>
       </widget>
      </item>

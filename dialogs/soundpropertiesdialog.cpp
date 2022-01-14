@@ -8,7 +8,7 @@
 #include <QFileInfo>
 
 #include "projectcontainer.h"
-#include "projecttreemodel.h"
+#include "models/projecttreemodel.h"
 
 SoundPropertiesDialog::SoundPropertiesDialog(Sound &sound, ProjectTreeModel &projectModel, QWidget *parent) :
     QDialog{parent},

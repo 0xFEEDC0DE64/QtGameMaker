@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Viewing the world</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+
+<!--START-->
+
+<h3>Viewing the world</h3>
+
+Default you look along the negative z-axis toward the middle of the room. Often in 3D games
+you want to change how you look at the world. For example, in a first person shooter you probably
+want to have the camera look from a position a bit above the xy-plane along the xy-plane. In
+graphics terms you are setting the correct projection. To change
+the way you look the following two functions exist.
+
+<p>
+<blockquote>
+  <tt><b>d3d_set_projection(xfrom,yfrom,zfrom,xto,yto,zto,xup,yup,zup)</b></tt>
+	  Defines how to look in the world. You specify the point to
+	  look from, the point to look to and the up vector.<br>
+</blockquote>
+
+<p>
+This function requires some explanation. To set the projection you first need the
+position you look from. This is indicated by the parameters <tt>(xfrom,yfrom,zfrom)</tt>.
+Next you must specify the direction you look in. This is done by giving a second point
+to look towards. This is the point <tt>(xto,yto,zto)</tt>. Finally, you can still rotate
+the camera around the line from the viewpoint to the looking point. To specify this we
+must give an up vector, that is, the direction that is upwards in the camera. This
+is given by the last three parameters <tt>(xup,yup,zup)</tt>. Let me given an example.
+To look along the xy-plane as in a first person shooter you can use
+
+<p>
+<blockquote>
+<pre>
+{
+  d3d_set_projection(100,100,10,200,100,10,0,0,1);
+}
+</pre>
+</blockquote>
+
+So you look from point (100,100) and 10 above the plane in the direction of (200,100). The up vector
+points is the z-direction as required. To make this slightly more complicated, assume you have an
+instance in your room that specifies the position of the camera. It will have a current (x,y) position
+and a direction (and maybe even a speed). You can now specify this as your camera by using the
+following code:
+
+<p>
+<blockquote>
+<pre>
+{
+  <b>with</b> (obj_camera)
+    d3d_set_projection(x,y,10,
+               x+cos(direction*pi/180),y-sin(direction*pi/180),10,
+               0,0,1);
+}
+</pre>
+</blockquote>
+
+<p>
+This might look a bit complicated. We look from the camera position (x,y), 10 above the ground.
+To determine a point in the correct direction we need to do a little arithmetic. This point
+is indicated by the next three parameters. Finally we use the up vector as above.
+
+<p>
+One important remark! When <i>Game Maker</i> starts drawing a room it will set the view point
+back to the default position. So the first thing you must do when drawing the scene is set
+is to the projection you want. This must be done in a drawing event!
+
+<p>
+There is also an extended version of the function above:
+
+<p>
+<blockquote>
+  <tt><b>d3d_set_projection_ext(xfrom,yfrom,zfrom,xto,yto,zto,xup,yup,zup,angle,aspect,znear,zfar)</b></tt>
+	  An extended version of this function in which you also specify the
+	  angle defining the field of view, the aspect ratio between horizontal
+	  and vertical size of the view, and the near and far clipping planes.<br>
+</blockquote>
+
+<p>
+The additional parameters work as follows. If you specified the camera position, point to look at,
+and up vector, you can still change how wide the lens of the camera is. This is called the
+field of view. A reasonable value is somewhere between 40 and 45 degrees. But you can
+change this if you like. Next you can specify the aspect ratio between the horizontal and vertical
+projection. Normally you want to use the same as the aspect ration of the room or view, e.g. 640/480.
+Finally you can indicate the clipping planes. Objects that are closer than <tt>znear</tt> to the
+camera are not drawn. Similar for objects further than <tt>zfar</tt>. It can be important to
+set these parameters to reasonable values because they also influence the precision of the
+z-comparisons. If you make the range too large the precision gets worse. Default we use 1 and 32000.
+<tt>znear</tt> must be larger than 0!
+
+
+<p>
+Sometimes you temporarily need a normal orthographic projection as is used when there is no
+3D. Or you want to return to the default perspective projection.
+For this you can use the following functions:
+
+<p>
+<blockquote>
+  <tt><b>d3d_set_projection_ortho(x,y,w,h,angle)</b></tt>
+	  Sets a normal orthographic projection of the indicated area in the
+	  room, rotated over the indicated angle.<br>
+  <tt><b>d3d_set_projection_perspective(x,y,w,h,angle)</b></tt>
+	  Sets a normal perspective projection of the indicated area in the
+	  room, rotated over the indicated angle.<br>
+</blockquote>
+
+<p>
+A standard use for this is to draw an overlay to e.g. show the score or other aspects. To
+do so we set an orthographic projection. We also must temporarily switch off hidden surface
+removal cause we want the information to be drawn regardless of the current depth value. The
+following example shows how to create an overlay with the score.
+
+<p>
+<blockquote>
+<pre>
+{
+  draw_set_color(c_black);
+  d3d_set_projection_ortho(0,0,room_width,room_height,0);
+  d3d_set_hidden(false);
+  draw_text(10,10,'Score: ' + string(score));
+  d3d_set_hidden(true);
+}
+</pre>
+</blockquote>
+
+<!--END-->
+
+</body>
+</html>
+
+<!-- KEYWORDS
+projection
+orthographic projection
+perspective projection
+
+d3d_set_projection()
+d3d_set_projection_ext()
+d3d_set_projection_ortho()
+d3d_set_projection_perspective()
+
+-->

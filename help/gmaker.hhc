@@ -1,0 +1,817 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<!-- Sitemap 1.0 -->
+</HEAD><BODY>
+<OBJECT type="text/site properties">
+	<param name="Window Styles" value="0x800025">
+</OBJECT>
+<UL>
+  <LI> <OBJECT type="text/sitemap">
+        <param name="Name" value="Game Maker Documentation">
+        <param name="Local" value="files/index.html">
+       </OBJECT>
+  <LI> <OBJECT type="text/sitemap">
+        <param name="Name" value="What is New">
+        <param name="Local" value="files/new.html">
+       </OBJECT>
+  <LI> <OBJECT type="text/sitemap">
+        <param name="Name" value="Using Game Maker">
+        <param name="Local" value="files/100_index.html">
+       </OBJECT>
+       <UL>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="So you want to create your own computer games">
+          <param name="Local" value="files/101_00_introduction.html">
+         </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Installation">
+          <param name="Local" value="files/102_00_installation.html">
+         </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Upgrading to the Pro Edition">
+          <param name="Local" value="files/103_00_pro.html">
+         </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Getting Started">
+          <param name="Local" value="files/104_00_idea.html">
+         </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="The global user interface">
+          <param name="Local" value="files/106_00_interface.html">
+         </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Defining sprites">
+          <param name="Local" value="files/107_00_sprites.html">
+         </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Sound and music">
+          <param name="Local" value="files/108_00_sounds.html">
+         </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Backgrounds">
+          <param name="Local" value="files/109_00_backgrounds.html">
+         </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Defining objects">
+          <param name="Local" value="files/110_00_objects.html">
+         </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Events">
+          <param name="Local" value="files/111_00_events.html">
+         </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Actions">
+          <param name="Local" value="files/112_00_actions.html">
+         </OBJECT>
+         <UL>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Move actions">
+            <param name="Local" value="files/112_01_move.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Main actions, set 1">
+            <param name="Local" value="files/112_02_main1.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Main actions, set 2">
+            <param name="Local" value="files/112_03_main2.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Control actions">
+            <param name="Local" value="files/112_04_control.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Score actions">
+            <param name="Local" value="files/112_05_score.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Draw actions">
+            <param name="Local" value="files/112_06_draw.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Using expressions and variables">
+            <param name="Local" value="files/112_07_variables.html">
+           </OBJECT>
+         </UL>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Creating rooms">
+          <param name="Local" value="files/113_00_rooms.html">
+         </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Distributing your game">
+          <param name="Local" value="files/114_00_distributing.html">
+         </OBJECT>
+       </UL>
+  <LI> <OBJECT type="text/sitemap">
+        <param name="Name" value="Advanced use">
+        <param name="Local" value="files/200_index.html">
+       </OBJECT>
+       <UL>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Advanced mode">
+          <param name="Local" value="files/201_00_advanced.html">
+         </OBJECT>
+         <UL>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Preferences">
+            <param name="Local" value="files/201_01_preferences.html">
+           </OBJECT>
+         </UL>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="More about sprites">
+          <param name="Local" value="files/202_00_sprites.html">
+         </OBJECT>
+         <UL>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Editing your sprites">
+            <param name="Local" value="files/202_01_editing.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Strips">
+            <param name="Local" value="files/202_02_strips.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Editing individual images">
+            <param name="Local" value="files/202_03_individual.html">
+           </OBJECT>
+         </UL>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="More about sounds and music">
+          <param name="Local" value="files/203_00_sounds.html">
+         </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="More about backgrounds">
+          <param name="Local" value="files/204_00_backgrounds.html">
+         </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="More about objects">
+          <param name="Local" value="files/205_00_objects.html">
+         </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="More actions">
+          <param name="Local" value="files/206_00_actions.html">
+         </OBJECT>
+         <UL>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="More move actions">
+            <param name="Local" value="files/206_01_move.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="More main actions">
+            <param name="Local" value="files/206_02_main.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="More control actions">
+            <param name="Local" value="files/206_03_control.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="More draw actions">
+            <param name="Local" value="files/206_04_draw.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Particle actions">
+            <param name="Local" value="files/206_05_particles.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Extra actions">
+            <param name="Local" value="files/206_06_extra.html">
+           </OBJECT>
+         </UL>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Constants">
+          <param name="Local" value="files/207_00_constants.html">
+         </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Trigger events">
+          <param name="Local" value="files/208_00_triggers.html">
+         </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Including files in stand-alone games">
+          <param name="Local" value="files/209_00_include.html">
+         </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="More about rooms">
+          <param name="Local" value="files/210_00_rooms.html">
+         </OBJECT>
+         <UL>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Advanced settings">
+            <param name="Local" value="files/210_01_advanced.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Adding tiles">
+            <param name="Local" value="files/210_02_tiles.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Views">
+            <param name="Local" value="files/210_03_views.html">
+           </OBJECT>
+         </UL>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Fonts">
+          <param name="Local" value="files/211_00_fonts.html">
+         </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Paths">
+          <param name="Local" value="files/212_00_paths.html">
+         </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Time lines">
+          <param name="Local" value="files/213_00_timelines.html">
+         </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Scripts">
+          <param name="Local" value="files/214_00_scripts.html">
+         </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Extension Packages">
+          <param name="Local" value="files/215_00_extensions.html">
+         </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Exporting and importing resources">
+          <param name="Local" value="files/216_00_import.html">
+         </OBJECT>
+       </UL>
+  <LI> <OBJECT type="text/sitemap">
+        <param name="Name" value="Polishing your game">
+        <param name="Local" value="files/300_index.html">
+       </OBJECT>
+       <UL>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Game information">
+          <param name="Local" value="files/301_00_information.html">
+         </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Global Game Settings">
+          <param name="Local" value="files/302_00_settings.html">
+         </OBJECT>
+         <UL>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Graphics options">
+            <param name="Local" value="files/302_01_graphics.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Resolution">
+            <param name="Local" value="files/302_02_resolution.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Various other options">
+            <param name="Local" value="files/302_03_various.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Loading options">
+            <param name="Local" value="files/302_04_loading.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Error options">
+            <param name="Local" value="files/302_05_errors.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Information about the game">
+            <param name="Local" value="files/302_06_info.html">
+           </OBJECT>
+         </UL>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Speed considerations">
+          <param name="Local" value="files/303_00_speed.html">
+         </OBJECT>
+       </UL>
+  <LI> <OBJECT type="text/sitemap">
+        <param name="Name" value="The Game Maker Language (GML)">
+        <param name="Local" value="files/400_index.html">
+       </OBJECT>
+       <UL>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="GML Language Overview">
+          <param name="Local" value="files/401_00_language.html">
+         </OBJECT>
+         <UL>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="A Program">
+            <param name="Local" value="files/401_01_program.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Variables">
+            <param name="Local" value="files/401_02_variables.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Assignments">
+            <param name="Local" value="files/401_03_assignments.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Expressions">
+            <param name="Local" value="files/401_04_expressions.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Extra Variables">
+            <param name="Local" value="files/401_05_extra.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Addressing variables in other instances">
+            <param name="Local" value="files/401_06_addressing.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Arrays">
+            <param name="Local" value="files/401_07_arrays.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="If statement">
+            <param name="Local" value="files/401_08_if.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Repeat statement">
+            <param name="Local" value="files/401_09_repeat.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="While statement">
+            <param name="Local" value="files/401_10_while.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Do statement">
+            <param name="Local" value="files/401_11_do.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="For statement">
+            <param name="Local" value="files/401_12_for.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Switch statement">
+            <param name="Local" value="files/401_13_switch.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Break statement">
+            <param name="Local" value="files/401_14_break.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Continue statement">
+            <param name="Local" value="files/401_15_continue.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Exit statement">
+            <param name="Local" value="files/401_16_exit.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Functions">
+            <param name="Local" value="files/401_17_functions.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Scripts">
+            <param name="Local" value="files/401_18_scripts.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="With constructions">
+            <param name="Local" value="files/401_19_with.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Comment">
+            <param name="Local" value="files/401_20_comment.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Functions and variables in GML">
+            <param name="Local" value="files/401_21_funcvar.html">
+           </OBJECT>
+         </UL>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Computing things">
+          <param name="Local" value="files/402_00_computing.html">
+         </OBJECT>
+         <UL>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Constants">
+            <param name="Local" value="files/402_01_constants.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Real-valued functions">
+            <param name="Local" value="files/402_02_real.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="String handling functions">
+            <param name="Local" value="files/402_03_string.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Dealing with dates and time">
+            <param name="Local" value="files/402_04_dates.html">
+           </OBJECT>
+         </UL>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Game play">
+          <param name="Local" value="files/403_00_gameplay.html">
+         </OBJECT>
+         <UL>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Moving around">
+            <param name="Local" value="files/403_01_moving.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Paths">
+            <param name="Local" value="files/403_02_paths.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Motion planning">
+            <param name="Local" value="files/403_03_planning.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Collision checking">
+            <param name="Local" value="files/403_04_collision.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Instances">
+            <param name="Local" value="files/403_05_instances.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Deactivating instances">
+            <param name="Local" value="files/403_06_deactive.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Timing">
+            <param name="Local" value="files/403_07_timing.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Rooms">
+            <param name="Local" value="files/403_08_rooms.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Score">
+            <param name="Local" value="files/403_09_score.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Generating events">
+            <param name="Local" value="files/403_10_events.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Miscellaneous variables and functions">
+            <param name="Local" value="files/403_11_misc.html">
+           </OBJECT>
+         </UL>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="User Interaction">
+          <param name="Local" value="files/404_00_interaction.html">
+         </OBJECT>
+         <UL>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="The Keyboard">
+            <param name="Local" value="files/404_01_keyboard.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="The Mouse">
+            <param name="Local" value="files/404_02_mouse.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="The Joystick">
+            <param name="Local" value="files/404_03_joystick.html">
+           </OBJECT>
+         </UL>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Game Graphics">
+          <param name="Local" value="files/405_00_graphics.html">
+         </OBJECT>
+         <UL>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Sprites and Images">
+            <param name="Local" value="files/405_01_sprites.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Backgrounds">
+            <param name="Local" value="files/405_02_backgrounds.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Drawing Sprites and Backgrounds">
+            <param name="Local" value="files/405_03_drawing.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Drawing Shapes">
+            <param name="Local" value="files/405_04_shapes.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Fonts and Text">
+            <param name="Local" value="files/405_05_text.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Advanced Drawing Functions">
+            <param name="Local" value="files/405_06_advanced.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Drawing Surfaces">
+            <param name="Local" value="files/405_07_surfaces.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Tiles">
+            <param name="Local" value="files/405_08_tiles.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="The Display">
+            <param name="Local" value="files/405_09_display.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="The Window">
+            <param name="Local" value="files/405_10_window.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Views">
+            <param name="Local" value="files/405_11_views.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Repainting the Screen">
+            <param name="Local" value="files/405_12_repaint.html">
+           </OBJECT>
+         </UL>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Sound and music">
+          <param name="Local" value="files/406_00_sound.html">
+         </OBJECT>
+         <UL>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Basic sound functions">
+            <param name="Local" value="files/406_01_basic.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Sound Effects">
+            <param name="Local" value="files/406_02_effects.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="3D Sound">
+            <param name="Local" value="files/406_03_3d.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="CD Music">
+            <param name="Local" value="files/406_04_cd.html">
+           </OBJECT>
+         </UL>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Splash screens, highscores and other pop-ups">
+          <param name="Local" value="files/407_00_splash.html">
+         </OBJECT>
+         <UL>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Splash screens">
+            <param name="Local" value="files/407_01_splash.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Pop-up messages and questions">
+            <param name="Local" value="files/407_02_messages.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Highscore list">
+            <param name="Local" value="files/407_03_highscore.html">
+           </OBJECT>
+         </UL>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Resources">
+          <param name="Local" value="files/408_00_resources.html">
+         </OBJECT>
+         <UL>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Sprites">
+            <param name="Local" value="files/408_01_sprites.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Sounds">
+            <param name="Local" value="files/408_02_sounds.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Backgrounds">
+            <param name="Local" value="files/408_03_backgrounds.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Fonts">
+            <param name="Local" value="files/408_04_fonts.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Paths">
+            <param name="Local" value="files/408_05_paths.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Scripts">
+            <param name="Local" value="files/408_06_scripts.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Time lines">
+            <param name="Local" value="files/408_07_timelines.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Objects">
+            <param name="Local" value="files/408_08_objects.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Rooms">
+            <param name="Local" value="files/408_09_rooms.html">
+           </OBJECT>
+         </UL>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Changing Resources">
+          <param name="Local" value="files/409_00_changing.html">
+         </OBJECT>
+         <UL>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Sprites">
+            <param name="Local" value="files/409_01_sprites.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Sounds">
+            <param name="Local" value="files/409_02_sounds.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Backgrounds">
+            <param name="Local" value="files/409_03_backgrounds.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Fonts">
+            <param name="Local" value="files/409_04_fonts.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Paths">
+            <param name="Local" value="files/409_05_paths.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Scripts">
+            <param name="Local" value="files/409_06_scripts.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Time lines">
+            <param name="Local" value="files/409_07_timelines.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Objects">
+            <param name="Local" value="files/409_08_objects.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Rooms">
+            <param name="Local" value="files/409_09_rooms.html">
+           </OBJECT>
+         </UL>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Files, registry, and executing programs">
+          <param name="Local" value="files/410_00_files.html">
+         </OBJECT>
+         <UL>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Files">
+            <param name="Local" value="files/410_01_files.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Registry">
+            <param name="Local" value="files/410_02_registry.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="INI files">
+            <param name="Local" value="files/410_03_ini.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Executing programs">
+            <param name="Local" value="files/410_04_programs.html">
+           </OBJECT>
+         </UL>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Data Structures">
+          <param name="Local" value="files/411_00_datastructures.html">
+         </OBJECT>
+         <UL>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Stacks">
+            <param name="Local" value="files/411_01_stacks.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Queues">
+            <param name="Local" value="files/411_02_queues.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Lists">
+            <param name="Local" value="files/411_03_lists.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Maps">
+            <param name="Local" value="files/411_04_maps.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Priority queues">
+            <param name="Local" value="files/411_05_priority.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Grids">
+            <param name="Local" value="files/411_06_grid.html">
+           </OBJECT>
+         </UL>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Creating particles">
+          <param name="Local" value="files/412_00_particles.html">
+         </OBJECT>
+         <UL>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Simple Effects">
+            <param name="Local" value="files/412_01_1explosions.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Particle types">
+            <param name="Local" value="files/412_01_types.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Particle systems">
+            <param name="Local" value="files/412_02_systems.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Emitters">
+            <param name="Local" value="files/412_03_emitters.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Attractors">
+            <param name="Local" value="files/412_04_attractors.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Destroyers">
+            <param name="Local" value="files/412_05_destroyers.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Deflectors">
+            <param name="Local" value="files/412_06_deflectors.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Changers">
+            <param name="Local" value="files/412_07_changers.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Firework Example">
+            <param name="Local" value="files/412_08_example.html">
+           </OBJECT>
+         </UL>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Multiplayer Games">
+          <param name="Local" value="files/413_00_multiplayer.html">
+         </OBJECT>
+         <UL>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Setting up a connection">
+            <param name="Local" value="files/413_01_connection.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Creating and joining sessions">
+            <param name="Local" value="files/413_02_sessions.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Players">
+            <param name="Local" value="files/413_03_players.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Shared data">
+            <param name="Local" value="files/413_04_shared.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Messages">
+            <param name="Local" value="files/413_05_messages.html">
+           </OBJECT>
+         </UL>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="Using DLL's">
+          <param name="Local" value="files/414_00_dlls.html">
+         </OBJECT>
+    <LI> <OBJECT type="text/sitemap">
+          <param name="Name" value="3D Graphics">
+          <param name="Local" value="files/415_00_d3d.html">
+         </OBJECT>
+         <UL>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Going to 3D mode">
+            <param name="Local" value="files/415_01_mode.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Easy drawing">
+            <param name="Local" value="files/415_02_drawing.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Drawing polygons in 3D">
+            <param name="Local" value="files/415_03_primitives.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Drawing basic shapes">
+            <param name="Local" value="files/415_04_shapes.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Viewing the world">
+            <param name="Local" value="files/415_05_projection.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Transformations">
+            <param name="Local" value="files/415_06_transform.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Fog">
+            <param name="Local" value="files/415_07_fog.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Lighting">
+            <param name="Local" value="files/415_08_light.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Creating Models">
+            <param name="Local" value="files/415_09_1models.html">
+           </OBJECT>
+      <LI> <OBJECT type="text/sitemap">
+            <param name="Name" value="Final words">
+            <param name="Local" value="files/415_09_final.html">
+           </OBJECT>
+         </UL>
+       </UL>
+</UL>
+</BODY>
+</HTML>

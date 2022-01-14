@@ -5,7 +5,7 @@
 #include <QMessageBox>
 
 #include "projectcontainer.h"
-#include "triggersmodel.h"
+#include "models/triggersmodel.h"
 #include "triggerconditiondialog.h"
 
 TriggersDialog::TriggersDialog(ProjectContainer &project, QWidget *parent) :
@@ -67,6 +67,10 @@ TriggersDialog::~TriggersDialog() = default;
 void TriggersDialog::openCodeEditor()
 {
     TriggerConditionDialog dialog{this};
+    dialog.setScript(m_ui->plainTextEdit->toPlainText());
     if (dialog.exec() == QDialog::Accepted)
+    {
         m_ui->plainTextEdit->setPlainText(dialog.script());
+        // changed();
+    }
 }

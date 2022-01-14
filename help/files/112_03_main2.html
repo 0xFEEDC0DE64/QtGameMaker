@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Main actions, set 2</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+
+<h3>Main actions, set 2</h3>
+
+Here are some more main actions, dealing with timing, giving messages to the user, 
+and dealing with the game as a whole.
+
+<p>
+<b><img src="images/action_alarm.bmp"> Set Alarm</b><br>
+With this action you can set one of the twelve alarm clocks for the instance. 
+You select the number of steps and the alarm clock. After the indicated 
+number of steps, the instance will receive the corresponding alarm event. 
+You can also increase or decrease the value by checking the <b>Relative</b> box.  
+If you set the alarm clock to a value less than or equal to 0 you switch it off, 
+so the event is not generated.
+
+<p>
+<b><img src="images/action_sleep.bmp"> Sleep</b><br>
+With this action you can freeze the scene for a particular time. 
+This is typically used at the beginning or end of a level or when 
+you give the player some message. You specify the number of milliseconds to sleep. 
+Also you can indicate whether the screen should first be redrawn to 
+reflect the most recent situation.
+
+<p>
+<b><img src="images/action_info.bmp"> Display Message</b><br>
+With this action you can display a message in a dialog box. You simply type in 
+the message. If you use a # symbol in the message text it will be interpreted 
+as a new line character. (Use \# to get the # symbol itself.) If the message 
+text starts with a quote or double quote symbol, it is interpreted as an 
+expression. See below for more information about expressions. 
+
+<p>
+<b><img src="images/action_help.bmp"> Show Info</b><br>
+With this action you pop up the game information window.
+
+<p>
+<b><img src="images/action_gamerestart.bmp"> Restart Game</b><br>
+With this action you restart the game from the beginning.
+
+<p>
+<b><img src="images/action_gameend.bmp"> End Game</b><br>
+With this action you end the game.
+
+<p>
+<b><img src="images/action_gamesave.bmp"> Save Game</b><br>
+With this action you can save the current game status. You specify the 
+filename for saving (the file is created in the working directory for 
+the game). Later the game can be loaded with the next action. (Please
+realize that only the basic game status is save. Things that are for
+example not saved are the current sound that is playing, and advanced
+aspects like the contents of data structures, particles, etc.)
+
+<p>
+<b><img src="images/action_gameload.bmp"> Load Game</b><br>
+Load the game status from a file. You specify the file name. Make sure 
+the saved game is for the same game and created with the same version 
+of <i>Game Maker</i>. Otherwise an error will occur. (To be precise, 
+the game is loaded at the end of the current step. So some actions after 
+this one are still executed in the current game, not the loaded one!)
+
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+sound actions
+game actions
+alarm clocks
+timing
+-->

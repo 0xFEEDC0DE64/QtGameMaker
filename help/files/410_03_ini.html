@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>INI files</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>INI files</h3>
+
+To pass certain parameter settings to programs a standard mechanism is the use of 
+INI files. INI files contain sections and each section contains a number of 
+name-value pairs. For example, here is a typical INI file:
+
+<p>
+<blockquote>
+<pre>
+[Form]
+Top=100
+Left=100
+Caption=The best game ever
+[Game]
+MaxScore=12324
+</pre>
+</blockquote>
+
+<p>
+This file contains two sections, one call Form and the other called Game. 
+The first section contains three pairs. The first two have a real value 
+while the third has a string value. Such INI files are easy to create and change.
+The following functions exist in <i>Game Maker</i> to 
+read and change the data in them.
+
+<p>
+<blockquote>
+  <tt><b>ini_open(name)</b></tt> 
+    Opens the INI file with the given name. The ini file must be 
+	stored in the same folder as the game!<br>
+  <tt><b>ini_close()</b></tt> 
+    Closes the currently open INI file.<br>
+  <tt><b>ini_read_string(section,key,default)</b></tt> 
+    Reads the string value of the indicated key in the indicated 
+	section. When the key or section does not exist the default value is returned.<br>
+  <tt><b>ini_read_real(section,key,default)</b></tt> 
+    Reads the real value of the indicated key in the indicated 
+	section. When the key or section does not exist the default value is returned.<br>
+  <tt><b>ini_write_string(section,key,value)</b></tt> 
+    Writes the string value for the indicated key in the indicated section.<br>
+  <tt><b>ini_write_real(section,key,value)</b></tt> 
+    Writes the real value for the indicated key in the indicated section.<br>
+  <tt><b>ini_key_exists(section,key)</b></tt> 
+    Returns whether the indicated key exists in the indicated section.<br>
+  <tt><b>ini_section_exists(section)</b></tt> 
+    Returns whether the indicated section exists.<br>
+  <tt><b>ini_key_delete(section,key)</b></tt> 
+    Deletes the indicated key from the indicated section.<br>
+  <tt><b>ini_section_delete(section)</b></tt> 
+    Deletes the indicated section.<br>
+</blockquote>
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+ini files
+
+ini_open()
+ini_close()
+ini_read_string()
+ini_read_real()
+ini_write_string()
+ini_write_real()
+ini_key_exists()
+ini_section_exists()
+ini_key_delete()
+ini_section_delete()
+
+-->

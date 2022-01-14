@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Move actions</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>Move actions</h3>
+
+The first set of actions consists of those related to movement of objects. 
+The following actions exist:
+
+<p>
+<b><img src="images/action_move1.bmp"> Move Fixed</b><br>
+Use this action to start the instance moving in a particular direction. 
+You can indicate the direction using the buttons with the arrows on it. 
+Use the middle button to stop the motion. Also you need to specify 
+the speed of the motion. This speed is given in pixels per step. 
+Preferably don't use negative speeds. 
+You can specify multiple directions. In this case a random choice is made. 
+In this way you can let a monster start moving either left or right.
+
+<p>
+<b><img src="images/action_move2.bmp"> Move Free</b><br>
+This is the second way to specify a motion. Here you can indicate a precise direction. 
+This is an angle between 0 and 360 degrees. 0 means to the right. 
+The direction is counter-clockwise. So for example 90 indicates an 
+upward direction. If you want an arbitrary direction, you can type 
+<tt>random(360)</tt>. As you will see below the function <tt>random</tt> gives 
+a random number smaller than the indicated value. As you might have noticed there 
+is a checkbox labeled <b>Relative</b>. If you check this, the new motion is added 
+to the previous one. For example, if the instance is moving upwards and you 
+add some motion to the left, the new motion will be upwards to the left.
+
+<p>
+<b><img src="images/action_movepoint.bmp"> Move Towards</b><br>
+This action gives a third way to specify a motion. You indicate a position and 
+a speed and the instance starts moving with the speed towards the position. 
+(It won't stop at the position!) For example, if you want a bullet to fly 
+towards the position of the spaceship you can use as position <tt>spaceship.x, spaceship.y</tt>. 
+(You will learn more about the use of variables like these below.) 
+If you check the <b>Relative</b> box, you specify the position relative 
+to the current position of the instance. (The speed is not taken relatively!)
+
+<p>
+<b><img src="images/action_hspeed.bmp"> Speed Horizontal</b><br>
+The speed of an instance consists of a horizontal part and a vertical part. 
+With this action you can change the horizontal speed. A positive horizontal 
+speed means a motion to the right. A negative one means a motion to the left. 
+The vertical speed will remain the same. Use relative to increase the horizontal speed 
+(or decrease it by providing a negative number).
+
+<p>
+<b><img src="images/action_vspeed.bmp"> Speed Vertical</b><br>
+In a similar way, with this action you can change the vertical speed of the instance.
+
+<p>
+<b><img src="images/action_gravity.bmp"> Set Gravity</b><br>
+With this action you can create gravity for this particular object. 
+You specify a direction (angle between 0 and 360 degrees) and a speed, 
+and in each step this amount of speed in the given direction is added 
+to the current motion of the object instance. Normally you need a very 
+small speed increment (like 0.01). Typically you want a downward direction 
+(270 degrees). If you check the <b>Relative</b> box you increase the 
+gravity speed and direction. Note that, contrary to real life, 
+different object can have different gravity directions.
+
+<p>
+<b><img src="images/action_hreverse.bmp"> Reverse Horizontal</b><br>
+With this action you reverse the horizontal motion of the instance. 
+This can for example be used when the object collides with a vertical wall.
+
+<p>
+<b><img src="images/action_vreverse.bmp"> Reverse Vertical</b><br>
+With this action you reverse the vertical motion of the instance. 
+This can for example be used when the object collides with a horizontal wall.
+
+<p>
+<b><img src="images/action_friction.bmp"> Set Friction</b><br>
+Friction slows down the instances when they move. You specify the amount 
+of friction. In each step this amount is subtracted from the speed 
+until the speed becomes 0. Normally you want a very small number here (like 0.01).
+
+<p>
+<b><img src="images/action_jumpposition.bmp"> Jump to Position</b><br>
+Using this action you can place the instance in a particular position. 
+You simply specify the x- and y-coordinate, and the instance is placed 
+with its reference point on that position. If you check the <b>Relative</b> box, 
+the position is relative to the current position of the instance. 
+This action is often used to continuously move an instance. 
+In each step we increment the position a bit.
+
+<p>
+<b><img src="images/action_jumpstart.bmp"> Jump to Start</b><br>
+This action places the instance back at the position where it was created.
+
+<p>
+<b><img src="images/action_jumprandom.bmp"> Jump to Random</b><br>
+This action moves the instance to a random position in the room. 
+Only positions are chosen where the instance does not intersect any 
+solid instance. You can specify the snapping used. If you specify 
+positive values, the coordinates chosen with be integer multiples of 
+the indicated values. This could for example be used to keep the instance 
+aligned with the cells in your game (if any). You can specify a separate 
+horizontal snapping and vertical snapping.
+
+<p>
+<b><img src="images/action_grid.bmp"> Align to Grid</b><br>
+With this action you can round the position of the instance to a grid. 
+You can indicate both the horizontal and vertical snapping value (that is, 
+the size of the cells of the grid). This can be very useful to make sure 
+that instances stay on a grid.
+
+<p>
+<b><img src="images/action_wrap.bmp"> Wrap Screen</b><br>
+With this action you can let an instance wrap around, that is, when
+it leaves on one side of the room it reappears at the other side. This
+action is normally used in the <b>Outside</b> event. Note that the
+instance must have a speed for wrapping to work, cause the direction
+of wrapping is based on the direction of the motion. You can indicate
+whether to wrap only horizontal, only vertical, or in both directions.
+
+<p>
+<b><img src="images/action_contact.bmp"> Move to Contact</b><br>
+With this action you can move the instance in a given direction until a 
+contact position with an object is reached. If there already is a collision 
+at the current position the instance is not moved. Otherwise, the instance 
+is placed just before a collision occurs. You can specify the direction but 
+also a maximal distance to move. For example, when the instance is falling 
+you can move a maximal distance down until an object is encountered. You can 
+also indicate whether to consider solid object only or all objects. You typically 
+put this action in the collision event to make sure that the instance stops 
+in contact with the other instance involved in the collision.
+
+<p>
+<b><img src="images/action_bounce.bmp"> Bounce</b><br>
+When you put this action in the collision event with some object, the instance 
+bounces back from this object in a natural way. If you set the parameter precise 
+to false, only horizontal and vertical walls are treated correctly. When you set 
+precise to true also slanted (and even curved) walls are treated correctly. 
+This is though slower. Also you can indicate whether to bounce only against solid 
+objects or against all objects. Please realize that the bounce is not completely 
+accurate because this depends on many properties. But in many situations the 
+effect is good enough.
+
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+moving actions
+bouncing
+gravity
+friction
+wrap
+align to grid
+-->

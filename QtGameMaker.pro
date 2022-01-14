@@ -9,9 +9,13 @@ QMAKE_CXXFLAGS += \
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 
 HEADERS += \
-    codeeditorwidget.h \
-    constantsmodel.h \
+    dialogs/deletemomentsdialog.h \
+    models/actionscontainermodel.h \
+    widgets/actionscontainerwidget.h \
+    widgets/codeeditorwidget.h \
+    models/constantsmodel.h \
     dialogs/addeventdialog.h \
+    dialogs/codeactiondialog.h \
     dialogs/codeeditordialog.h \
     dialogs/createspritedialog.h \
     dialogs/fontpropertiesdialog.h \
@@ -28,17 +32,16 @@ HEADERS += \
     dialogs/triggerconditiondialog.h \
     dialogs/triggersdialog.h \
     dialogs/userdefinedconstantsdialog.h \
-    drawingcanvaswidget.h \
+    widgets/drawingcanvaswidget.h \
     futurecpp.h \
-    includedfilesmodel.h \
+    models/includedfilesmodel.h \
     jshighlighter.h \
     mainwindow.h \
-    objectactionsmodel.h \
-    objecteventsmodel.h \
-    pathpointsmodel.h \
-    pathpointswidget.h \
+    models/objecteventsmodel.h \
+    models/pathpointsmodel.h \
+    widgets/pathpointswidget.h \
     projectcontainer.h \
-    projecttreemodel.h \
+    models/projecttreemodel.h \
     dialogs/backgroundpropertiesdialog.h \
     dialogs/editspritedialog.h \
     dialogs/extensionpackagesdialog.h \
@@ -47,15 +50,18 @@ HEADERS += \
     dialogs/preferencesdialog.h \
     dialogs/soundpropertiesdialog.h \
     dialogs/spritepropertiesdialog.h \
-    spritesmodel.h \
-    timelineactionsmodel.h \
-    timelinemomentsmodel.h \
-    triggersmodel.h
+    models/spritesmodel.h \
+    models/timelinemomentsmodel.h \
+    models/triggersmodel.h
 
 SOURCES += main.cpp \
-    codeeditorwidget.cpp \
-    constantsmodel.cpp \
+    dialogs/deletemomentsdialog.cpp \
+    models/actionscontainermodel.cpp \
+    widgets/actionscontainerwidget.cpp \
+    widgets/codeeditorwidget.cpp \
+    models/constantsmodel.cpp \
     dialogs/addeventdialog.cpp \
+    dialogs/codeactiondialog.cpp \
     dialogs/codeeditordialog.cpp \
     dialogs/createspritedialog.cpp \
     dialogs/fontpropertiesdialog.cpp \
@@ -72,16 +78,15 @@ SOURCES += main.cpp \
     dialogs/triggerconditiondialog.cpp \
     dialogs/triggersdialog.cpp \
     dialogs/userdefinedconstantsdialog.cpp \
-    drawingcanvaswidget.cpp \
-    includedfilesmodel.cpp \
+    widgets/drawingcanvaswidget.cpp \
+    models/includedfilesmodel.cpp \
     jshighlighter.cpp \
     mainwindow.cpp \
-    objectactionsmodel.cpp \
-    objecteventsmodel.cpp \
-    pathpointsmodel.cpp \
-    pathpointswidget.cpp \
+    models/objecteventsmodel.cpp \
+    models/pathpointsmodel.cpp \
+    widgets/pathpointswidget.cpp \
     projectcontainer.cpp \
-    projecttreemodel.cpp \
+    models/projecttreemodel.cpp \
     dialogs/backgroundpropertiesdialog.cpp \
     dialogs/editspritedialog.cpp \
     dialogs/extensionpackagesdialog.cpp \
@@ -90,15 +95,15 @@ SOURCES += main.cpp \
     dialogs/preferencesdialog.cpp \
     dialogs/soundpropertiesdialog.cpp \
     dialogs/spritepropertiesdialog.cpp \
-    spritesmodel.cpp \
-    timelineactionsmodel.cpp \
-    timelinemomentsmodel.cpp \
-    triggersmodel.cpp
+    models/spritesmodel.cpp \
+    models/timelinemomentsmodel.cpp \
+    models/triggersmodel.cpp
 
 FORMS += \
     dialogs/addeventdialog.ui \
     dialogs/codeeditordialog.ui \
     dialogs/createspritedialog.ui \
+    dialogs/deletemomentsdialog.ui \
     dialogs/fontpropertiesdialog.ui \
     dialogs/imageeditordialog.ui \
     dialogs/includedfilesdialog.ui \
@@ -119,7 +124,8 @@ FORMS += \
     dialogs/globalgamesettingsdialog.ui \
     dialogs/preferencesdialog.ui \
     dialogs/soundpropertiesdialog.ui \
-    dialogs/spritepropertiesdialog.ui
+    dialogs/spritepropertiesdialog.ui \
+    widgets/actionscontainerwidget.ui
 
 RESOURCES += \
     resources.qrc

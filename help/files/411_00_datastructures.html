@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Data Structures</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+
+<!--START-->
+
+<h1>Data structures</h1>
+
+<i><b>This functionality is only available in the Pro Edition of Game Maker.</b></i>
+
+<p>
+In games you often need to store information. For example you need to store 
+lists of items that a person carries or you want to store places that still 
+need to be visited. You can use the arrays for this. But if you want to do more 
+complicated operations, like sorting the data or searching for a particular item, 
+you need to write large pieces of GML code which can be slow to execute.
+
+<p>
+To remedy this, <i>Game Maker</i> has a number of built-in data 
+structures that can be accessed through functions. At the moment 
+there are six different types of data structure available: stacks, 
+queues, lists, maps, priority queues, and grids. Each of these data structures 
+is tuned for a particular type of use (see below).
+
+<p>
+All data structures work globally in the same way. You can create a data 
+structure with a function that returns an id for the structures. You use 
+this id to perform operations on the data structures. Once you are done 
+you destroy the data structure again to save storage. You can use as many 
+of the structures at the same moment as you want. All structure can store 
+both strings and real values.
+
+<p>
+Please note that data structures and their content are not saved when you
+save the game using the actions or functions for that. If you use data
+structures and want to allow for saves you have to create your own mechanism
+for that.
+
+<p>
+When comparing values, for example when searching in a map or sorting a list, 
+<i>Game Maker</i> must decide when two values are equal. For strings and integer 
+values this is clear but for real numbers, due to round-off errors, equal number 
+can easily become unequal. For example (5/3)*3 will not be equal to 5. To avoid 
+this, a precision is used. When the difference between two numbers is smaller 
+than this precision they are considered equal. Default a precision of 0.0000001 
+is used. You can change this precision using the following function:
+
+<p>
+<blockquote>
+  <tt><b>ds_set_precision(prec)</b></tt> 
+    Sets the precision used for comparisons.<br>
+</blockquote>
+
+<p>
+This precision is used in all data structures but not in other comparisons in GML!
+
+
+<!--HELPONLY-->
+
+ <P>
+Information on data structures can be found in the following pages:
+
+<P>
+<p>
+<blockquote>
+    <a href="411_01_stacks.html">Stacks</a><br>
+    <a href="411_02_queues.html">Queues</a><br>
+    <a href="411_03_lists.html">Lists</a><br>
+    <a href="411_04_maps.html">Maps</a><br>
+    <a href="411_05_priority.html">Priority Queues</a><br>
+    <a href="411_06_grid.html">Grids</a><br>
+</blockquote>
+
+<p>
+
+<!--ENDHELPONLY-->
+
+<!--END-->
+
+</body>
+</html>
+
+<!-- KEYWORDS
+data structures
+ds_set_precision()
+
+-->

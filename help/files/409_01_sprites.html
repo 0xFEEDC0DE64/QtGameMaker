@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Sprites</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>Sprites</h3>
+
+The following routines are available for changing sprite properties:
+
+<p>
+<blockquote>
+  <tt><b>sprite_set_offset(ind,xoff,yoff)</b></tt> 
+  	Sets the offset of the sprite with the given index.<br>
+</blockquote>
+
+<p>
+
+The following routines can be used to create new sprites and to remove them.
+
+<p>
+<blockquote>
+  <tt><b>sprite_duplicate(ind)</b></tt> 
+  	Creates a duplicate of the sprite with the given 
+	index. It returns the index of the new sprite. When an error occurs -1 is returned.<br>
+  <tt><b>sprite_assign(ind,spr)</b></tt> 
+  	Assigns the indicated sprite to sprite ind. So 
+	this makes a copy of the sprite. In this way you can easily set an existing sprite to a 
+	different, e.g. new sprite.<br>
+  <tt><b>sprite_merge(ind1,ind2)</b></tt> 
+  	Merges the images from sprite ind2 into sprite 
+	ind1, adding them at the end. If the sizes don't match the sprites are stretched to fit. 
+	Sprite ind2 is not deleted!<br>
+  <tt><b>sprite_add(fname,imgnumb,removeback,smooth,xorig,yorig)</b></tt> 
+  	Adds the image stored in the file fname to the set of sprite resources. Many different
+	image file types can be dealt with. When the image is not a gif image it can be a strip 
+	containing a number of subimages for the sprite next to each other. Use imgnumb to 
+	indicate their number (1 for a single image). For (animated) gif images, this argument is 
+	not used; the number of images in the gif file is used. <tt>removeback</tt> indicates whether
+	to make all pixels with the background color (left-bottom pixel) transparent.
+	 <tt>smooth</tt> indicates whether to smooth the edges. 
+	<tt>xorig</tt> and <tt>yorig</tt> 
+	indicate the position of the origin in the sprite. The function returns the index of the 
+	new sprite that you can then use to draw it or to assign it to the variable sprite_index 
+	of an instance. When an error occurs -1 is returned.<br>
+   <tt><b>sprite_replace(ind,fname,imgnumb,removeback,smooth,xorig,yorig)</b></tt> 
+    Same as above but in this case the sprite with index ind is replaced. The function returns whether 
+	it is successful.<br>
+  <tt><b>sprite_add_sprite(fname)</b></tt> 
+  	Adds the sprite stored the file fname to the set of sprite resources. The file must be
+	a .gmspr file that is saved in the sprite property form in <i>Game Maker</i>. As this
+	file contains all sprite settings, no further arguments are required.
+	The function returns the index of the 
+	new sprite that you can then use to draw it or to assign it to the variable sprite_index 
+	of an instance. When an error occurs -1 is returned.<br>
+   <tt><b>sprite_replace_sprite(ind,fname)</b></tt> 
+    Same as above but in this case the sprite with index ind is replaced. The function returns whether 
+	it is successful.<br>
+  <tt><b>sprite_create_from_screen(x,y,w,h,removeback,smooth,xorig,yorig)</b></tt> 
+	Creates a sprite by copying the given area from the screen. 
+	<tt>removeback</tt> indicates whether
+	to make all pixels with the background color (left-bottom pixel) transparent.
+	<tt>smooth</tt> indicates whether to smooth the boundaries. This makes it possible to create any 
+	sprite you want. Draw the image on the screen using the drawing functions and next create a sprite 
+	from it. (If you don't do this in the drawing event you can even do it in such a way that it is 
+	not visible on the screen by not refreshing the screen.) The other parameters are as above. 
+	The function returns the index of the new sprite. A work of caution is required here. Even
+	though we speak about the screen, it is actually the drawing region that matters. The fact
+	that there is a window on the screen and that the image might be scaled in this window does
+	not matter.<br>
+  <tt><b>sprite_add_from_screen(ind,x,y,w,h,removeback,smooth)</b></tt> 
+    Adds an area of the screen as a next subimage to the sprite with index ind. <br>
+  <tt><b>sprite_create_from_surface(id,x,y,w,h,removeback,smooth,xorig,yorig)</b></tt> 
+	Creates a sprite by copying the given area from the surface with the given id.
+	<tt>removeback</tt> indicates whether
+	to make all pixels with the background color (left-bottom pixel) transparent.
+	<tt>smooth</tt> indicates whether to smooth the boundaries.
+	This makes it possible to create any sprite you want. Draw the image on the surface
+    using the drawing functions and next create a sprite 
+	from it. The function returns the index of the new sprite. Note that alpha values are
+	maintained in the sprite.<br>
+  <tt><b>sprite_add_from_surface(ind,id,x,y,w,h,removeback,smooth)</b></tt> 
+    Adds an area of the surface id as a next subimage to the sprite with index ind. <br>
+  <tt><b>sprite_delete(ind)</b></tt> 
+    Deletes the sprite from memory, freeing the memory used.<br>
+</blockquote>
+
+<p>
+
+The following routine exists to change the appearance of a sprite.
+
+<p>
+<blockquote>
+  <tt><b>sprite_set_alpha_from_sprite(ind,spr)</b></tt> 
+    Changes the alpha (transparancy) values in the sprite with index
+	<tt>ind</tt> using the intensity values in the sprite <tt>spr</tt>. This cannot
+	be undone.<br>
+</blockquote>
+
+<p>
+Finally, you can change the collision checking mask for the sprite with the following
+routine. Please realize that this does not work correctly when an instance with that sprite is
+already present in the room.
+
+<p>
+<blockquote>
+  <tt><b>sprite_collision_mask(ind,sepmasks,bboxmode,bbleft,bbright,bbtop,bbbottom,kind,tolerance)</b></tt> 
+    Changes the collision mask for the sprite with index
+	<tt>ind</tt>. <tt>sepmasks</tt> indicates whether there must be separate collision masks
+	for all subimages. 
+	<tt>bboxmode</tt> is the bounding box mode (0=automatic, 1=full image,
+	2=user defined). <tt>bbleft, bbright, bbtop, bbbottom</tt> indicate the bounding
+	box in case of user defined bounding box. You can use 0 for all these values in the other cases.
+	<tt>kind</tt> is the kind of mask (0=precise, 1=bounding box,
+	2=disk, 3=diamond). <tt>tolerance</tt> indicates the tolerance in the transparency value (0=no tolerance,
+	255=full tolerance). <br>
+</blockquote>
+
+
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+sprite_set_offset()
+sprite_duplicate()
+sprite_assign()
+sprite_merge()
+sprite_add()
+sprite_replace()
+sprite_add_sprite()
+sprite_replace_sprite()
+sprite_create_from_screen()
+sprite_add_from_screen()
+sprite_create_from_surface()
+sprite_add_from_surface()
+sprite_delete()
+sprite_set_alpha_from_sprite()
+sprite_collision_mask()
+
+-->

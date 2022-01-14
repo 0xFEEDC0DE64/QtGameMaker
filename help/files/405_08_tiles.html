@@ -1,0 +1,179 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Tiles</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>Tiles</h3>
+
+As you should know you can add tiles to rooms. A tile is a part of a background resource. 
+Tiles are just visible images. They do not react to events and they do not generate 
+collisions. As a result, tiles are handled a lot faster than objects. Anything that does 
+not need events or collisions can best be done through tiles. Also, often one better uses 
+a tile for the nice graphics while a simple object is used to generate the collision 
+events.
+
+<P>
+You actually have more control over tiles than you might think. You can add them when 
+designing the room but you can also add them during the running of the game. You can 
+change their position, and even scale them or make them partially transparent. A tile has 
+the following properties:
+
+<ul>
+  <li><tt><b>background</b></tt>. The background resource from which the tile is taken.</li>
+  <li><tt><b>left, top, width, height</b></tt>. The part of the background that is used.</li>
+  <li><tt><b>x,y</b></tt>. The position of the top left corner of the tile in the room.</li>
+  <li><tt><b>depth</b></tt>. The depth of the tile. You can choose any depth you like, 
+      making tiles appear between object instances.</li>
+  <li><tt><b>visible</b></tt>. Whether the tile is visible.</li>
+  <li><tt><b>xscale, yscale</b></tt>. Each tile can be drawn scaled (default is 1).</li>
+  <li><tt><b>blend</b></tt>. A blending color used when drawing the tile.</li>
+  <li><tt><b>alpha</b></tt>. An alpha value indicating tile transparency. 1 = not 
+      transparent, 0 = fully transparent.</li>
+</ul>
+
+To change the properties of a particular tile you need to know its id. When you add tiles 
+when creating rooms the id is shown in the information bar at the bottom. There is also a 
+function to find the id of a tile at a particular position.
+
+<P>
+The following functions exist that deal with tiles:
+
+<p>
+<blockquote>
+  <tt><b>tile_add(background,left,top,width,height,x,y,depth)</b></tt> 
+    Adds a new tile to the room with the indicated values 
+	(see above for their meaning). The function returns the 
+	id of the tile that can be used later on.<br>
+  <tt><b>tile_delete(id)</b></tt> 
+  	Deletes the tile with the given id.<br>
+  <tt><b>tile_exists(id)</b></tt> 
+  	Returns whether a tile with the given id exists.<br>
+  <br>
+  <tt><b>tile_get_x(id)</b></tt> 
+  	Returns the x-position of the tile with the given id.<br>
+  <tt><b>tile_get_y(id)</b></tt> 
+  	Returns the y-position of the tile with the given id.<br>
+  <tt><b>tile_get_left(id)</b></tt> 
+  	Returns the left value of the tile with the given id.<br>
+  <tt><b>tile_get_top(id)</b></tt> 
+  	Returns the top value of the tile with the given id.<br>
+  <tt><b>tile_get_width(id)</b></tt> 
+  	Returns the width of the tile with the given id.<br>
+  <tt><b>tile_get_height(id)</b></tt> 
+  	Returns the height of the tile with the given id.<br>
+  <tt><b>tile_get_depth(id)</b></tt> 
+  	Returns the depth of the tile with the given id.<br>
+  <tt><b>tile_get_visible(id)</b></tt> 
+  	Returns whether the tile with the given id is visible.<br>
+  <tt><b>tile_get_xscale(id)</b></tt> 
+  	Returns the xscale of the tile with the given id.<br>
+  <tt><b>tile_get_yscale(id)</b></tt> 
+  	Returns the yscale of the tile with the given id.<br>
+  <tt><b>tile_get_background(id)</b></tt> 
+  	Returns the background of the tile with the given id.<br>
+  <tt><b>tile_get_blend(id)</b></tt> 
+  	Returns the blending color of the tile with the given id.<br>
+  <tt><b>tile_get_alpha(id)</b></tt> 
+  	Returns the alpha value of the tile with the given id.<br>
+  <br>
+  <tt><b>tile_set_position(id,x,y)</b></tt> 
+  	Sets the position of the tile with the given id.<br>
+  <tt><b>tile_set_region(id,left,top,width,height)</b></tt> 
+  	Sets the region of the tile with the given id in its background.<br>
+  <tt><b>tile_set_background(id,background)</b></tt> 
+  	Sets the background for the tile with the given id.<br>
+  <tt><b>tile_set_visible(id,visible)</b></tt> 
+  	Sets whether the tile with the given id is visible.<br>
+  <tt><b>tile_set_depth(id,depth)</b></tt> 
+  	Sets the depth of the tile with the given id.<br>
+  <tt><b>tile_set_scale(id,xscale,yscale)</b></tt> 
+  	Sets the scaling of the tile with the given id.<br>
+  <tt><b>tile_set_blend(id,color)</b></tt> 
+  	Sets the blending color of the tile with the given id.
+	<b><i>Only available in the Pro Edition!</i></b><br>
+  <tt><b>tile_set_alpha(id,alpha)</b></tt> 
+  	Sets the alpha value of the tile with the given id.<br>
+</blockquote>
+
+<p>
+
+The following functions deal with layers of tiles, that is, collections of tiles at the 
+same depth.
+
+<p>
+<blockquote>
+  <tt><b>tile_layer_hide(depth)</b></tt> 
+  	Hides all tiles at the indicated depth layer.<br>
+  <tt><b>tile_layer_show(depth)</b></tt> 
+  	Shows all tiles at the indicated depth layer.<br>
+  <tt><b>tile_layer_delete(depth)</b></tt> 
+  	Deletes all tiles at the indicated depth layer.<br>
+  <tt><b>tile_layer_shift(depth,x,y)</b></tt> 
+  	Shifts all tiles at the indicated depth layer 
+	over the vector x,y. Can be used to create scrolling layers of tiles.<br>
+  <tt><b>tile_layer_find(depth,x,y)</b></tt> 
+  	Returns the id of the tile with the given depth at position (x,y). 
+	When no tile exists at the position -1 is returned. When multiple 
+	tiles with the given depth exist at the position the first one is returned.<br>
+  <tt><b>tile_layer_delete_at(depth,x,y)</b></tt> 
+    Deletes the tile with the given depth at position (x,y). 
+    When multiple tiles with the given depth exist at the position they are 
+	all deleted.<br>
+  <tt><b>tile_layer_depth(depth,newdepth)</b></tt> 
+  	Changes the depth of all tiles at the indicated depth to the 
+	new depth. With this function you can move whole tile layers to a 
+	new depth.<br>
+</blockquote>
+
+<p>
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+tiles
+tile depth
+tile layers
+adding tiles
+tile id
+tile functions
+
+tile_add() 
+tile_delete() 
+tile_exists() 
+tile_get_x() 
+tile_get_y() 
+tile_get_left() 
+tile_get_top() 
+tile_get_width() 
+tile_get_height() 
+tile_get_depth() 
+tile_get_visible() 
+tile_get_xscale() 
+tile_get_yscale() 
+tile_get_background() 
+tile_get_blend() 
+tile_get_alpha() 
+tile_set_position() 
+tile_set_region() 
+tile_set_background() 
+tile_set_visible() 
+tile_set_depth() 
+tile_set_scale() 
+tile_set_blend() 
+tile_set_alpha() 
+tile_layer_hide() 
+tile_layer_show() 
+tile_layer_delete() 
+tile_layer_shift() 
+tile_layer_find() 
+tile_layer_delete_at() 
+tile_layer_depth() 
+
+-->

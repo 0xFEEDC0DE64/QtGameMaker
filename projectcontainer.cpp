@@ -19,6 +19,22 @@ template<> const std::list<Object> &ProjectContainer::containerFor() const { ret
 template<> std::list<Room> &ProjectContainer::containerFor() { return rooms; }
 template<> const std::list<Room> &ProjectContainer::containerFor() const { return rooms; }
 
+template<typename T, std::size_t Tsize>
+QDataStream &operator<<(QDataStream &ds, const std::array<T, Tsize> &array)
+{
+    for (const auto &entry : array)
+        ds << entry;
+    return ds;
+}
+
+template<typename T, std::size_t Tsize>
+QDataStream &operator>>(QDataStream &ds, std::array<T, Tsize> &array)
+{
+    for (int i = 0; i < Tsize; i++)
+        ds >> array[i];
+    return ds;
+}
+
 template<typename T>
 QDataStream &operator<<(QDataStream &ds, const std::list<T> &list)
 {
@@ -234,15 +250,31 @@ QDataStream &operator>>(QDataStream &ds, Font &font)
     return ds;
 }
 
+QDataStream &operator<<(QDataStream &ds, const Action &action)
+{
+    ds << action.script;
+    ds << action.appliesTo;
+    return ds;
+}
+
+QDataStream &operator>>(QDataStream &ds, Action &action)
+{
+    ds >> action.script;
+    ds >> action.appliesTo;
+    return ds;
+}
+
 QDataStream &operator<<(QDataStream &ds, const TimeLine &timeLine)
 {
-    ds << timeLine.name;
+    ds << timeLine.name
+       << timeLine.moments;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, TimeLine &timeLine)
 {
-    ds >> timeLine.name;
+    ds >> timeLine.name
+       >> timeLine.moments;
     return ds;
 }
 

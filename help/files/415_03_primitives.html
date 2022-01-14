@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Drawing polygons in 3D</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+
+<!--START-->
+
+<h3>Drawing polygons in 3D</h3>
+
+The problem with drawing in the old way is that a sprite or polygon always lies in the xy-plane,
+that is, all corners have the same depth. For true 3D you want to be able to have vertices
+at different depths. From this moment on we will talk about z-coordinate rather than depth.
+So we want to specify coordinates as (x,y,z) tuples. For this there are special version of
+the advanced drawing functions:
+
+<p>
+<blockquote>
+  <tt><b>d3d_primitive_begin(kind)</b></tt>
+	  Start a 3D primitive of the indicated kind: <tt>pr_pointlist, pr_linelist,
+	  pr_linestrip,pr_trianglelist,pr_trianglestrip</tt> or <tt>pr_trianglefan</tt>.<br>
+  <tt><b>d3d_vertex(x,y,z)</b></tt>
+	  Add vertex (x,y,z) to the primitive, using the color and alpha value set before.<br>
+  <tt><b>d3d_vertex_color(x,y,z,col,alpha)</b></tt>
+	  Add vertex (x,y,z) to the primitive, with its own color and alpha
+		value. This allows you to create primitives with smoothly changing color and alpha values.<br>
+  <tt><b>d3d_primitive_end()</b></tt>
+	  End the description of the primitive. This function actually draws it.<br>
+</blockquote>
+
+<p>
+For example, to draw a tetrahedron (three sided pyramid) standing on the z=0 plane
+with its top at z = 200, you can use the following code: 
+
+<p>
+<blockquote>
+<pre>
+{
+  d3d_primitive_begin(pr_trianglelist);
+    d3d_vertex(100,100,0);
+    d3d_vertex(100,200,0);    
+    d3d_vertex(150,150,200);
+    d3d_vertex(100,200,0);
+    d3d_vertex(200,200,0);    
+    d3d_vertex(150,150,200);
+    d3d_vertex(200,200,0);
+    d3d_vertex(100,100,0);    
+    d3d_vertex(150,150,200);
+    d3d_vertex(100,100,0);
+    d3d_vertex(100,200,0);    
+    d3d_vertex(200,200,0);
+  d3d_primitive_end();
+}
+</pre>
+</blockquote>
+
+<p>
+Now if you would use this, most likely you would just see a triangle on the screen
+because the top of the tetrahedron will be behind it from the viewpoint. Also, using just one color,
+it would be difficult to see the different faces. Below we will see ways to change
+the viewpoint. Assigning colors can be done as before by added <tt>draw_set_color(col)</tt>
+function calls between the vertices.
+
+<p>
+You can also use textured poygons in 3D. It works exactly the same as described in the
+advanced drawing functions in the documentation. But this time you need 3D variants
+of the basic functions. One thing you must realize. In a texture the position (0,0) is the
+top-left corner. But often, when using projections (as indicated below), the bottom-left
+corner is (0,0). In such a case you might need to flip the texture vertically.
+
+<p>
+<blockquote>
+  <tt><b>d3d_primitive_begin_texture(kind,texid)</b></tt>
+	  Start a 3D primitive of the indicated kind with the given texture.<br>
+  <tt><b>d3d_vertex_texture(x,y,z,xtex,ytex)</b></tt>
+	  Add vertex (x,y,z) to the primitive with position (xtex,ytex) in the
+		texture, blending with the color and alpha value set before.<br>
+  <tt><b>d3d_vertex_texture_color(x,y,z,xtex,ytex,col,alpha)</b></tt>
+	  Add vertex (x,y,z) to the primitive with position
+		(xtex,ytex) in the texture, blending with its own color and alpha value.<br>
+  <tt><b>d3d_primitive_end()</b></tt>
+	  End the description of the primitive. This function actually draws it.<br>
+</blockquote>
+
+<p>
+So, for example you can use the following code to draw a background image that
+disappears into the distance
+
+<p>
+<blockquote>
+<pre>
+{
+  <b>var</b> ttt;
+  ttt = background_get_texture(back);
+  d3d_primitive_begin_texture(pr_trianglefan,ttt);
+    d3d_vertex_texture(0,480,0,0,0);
+    d3d_vertex_texture(640,480,0,1,0);    
+    d3d_vertex_texture(640,480,1000,1,1);
+    d3d_vertex_texture(0,480,1000,0,1);
+  d3d_primitive_end();
+}
+</pre>
+</blockquote>
+
+<p>
+A triangle has a front and a back side. The front side is defined to be the side where the vertices are
+defined in counter-clockwise order. Normally both sides are drawn. But if you make a closed shape this 
+is a waste because the back side of the triangle can never be seen. In this case you can switch on
+backface culling. This saves about half the amount of drawing time but it leaves you with the task of
+defining your polygons in the right way. The following function exists: 
+
+<p>
+<blockquote>
+  <tt><b>d3d_set_culling(cull)</b></tt>
+	  Indicates to start backface culling (true) or stop backface culling (false).<br>
+</blockquote>
+
+
+<!--END-->
+
+</body>
+</html>
+
+<!-- KEYWORDS
+3d primitives
+culling
+backface culling
+
+d3d_primitive_begin()
+d3d_vertex()
+d3d_vertex_color()
+d3d_primitive_begin_texture()
+d3d_vertex_texture()
+d3d_vertex_texture_color()
+d3d_primitive_end()
+d3d_set_culling()
+-->

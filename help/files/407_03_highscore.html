@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Highscore list</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>Highscore list</h3>
+
+One special pop-up is the highscore list that is maintained for each game. 
+The following functions exist:
+
+<p>
+<blockquote>
+  <tt><b>highscore_show(numb)</b></tt> 
+    Shows the highscore table. numb is the new score. If this score is 
+	good enough to be added to the list, the player can input a name. 
+	Use -1 to simple display the current list.<br>
+  <tt><b>highscore_set_background(back)</b></tt> 
+    Sets the background image to use. <tt>back</tt> must be the index
+	of one of the background resources.<br>
+  <tt><b>highscore_set_border(show)</b></tt> 
+    Sets whether the highscore form must have a border or not.<br>
+  <tt><b>highscore_set_font(name,size,style)</b></tt> 
+    Sets the font used for the text in the table. (This is a normal
+	Windows font, not one of the font resources.) You specify the name,
+	size and style (0=normal, 1= bold, 2=italic, 3=bold-italic).<br>
+  <tt><b>highscore_set_colors(back,new,other)</b></tt>
+    Sets the colors used for the background, the new entry in the table,
+	and the other entries.<br>
+  <tt><b>highscore_set_strings(caption,nobody,escape)</b></tt>
+    Changes the different default strings used when showing the
+	highscore table. <tt>caption</tt> is the caption of the form.
+	<tt>nobody</tt> is the string used when there is nobody at
+	the particular rank. <tt>escape</tt> is the string at the
+	bottom indicating to press the escape key. You can in particular
+	use this when your game should use a different language.<br>
+  <tt><b>highscore_show_ext(numb,back,border,col1,col2,name,size)</b></tt> 
+    Shows the highscore table with a number of options (can also be
+	achieved by using a number of the previous functions).
+	numb is the new score. If this score is good 
+	enough to be added to the list, the player can input a name. Use -1 to 
+	simple display the current list. back is the background image to use, 
+	border indicates whether or not to show the border. col1 is the color for 
+	the new entry, col2 the color for the other entries. name is the name of 
+	the font to use, and size is the font size.<br>
+  <tt><b>highscore_clear()</b></tt> 
+    Clears the highscore list.<br>
+  <tt><b>highscore_add(str,numb)</b></tt> 
+    Adds a player with name str and score numb to the list.<br>
+  <tt><b>highscore_add_current()</b></tt> 
+    Adds the current score to the highscore list. The player is asked to provide a name.<br>
+  <tt><b>highscore_value(place)</b></tt> 
+    Returns the score of the person on the given place (1-10). This can be used 
+	to draw your own highscore list.<br>
+  <tt><b>highscore_name(place)</b></tt> 
+    Returns the name of the person on the given place (1-10).<br>
+  <tt><b>draw_highscore(x1,y1,x2,y2)</b></tt> 
+    Draws the highscore table in the room in the indicated box, using the current font.
+</blockquote>
+
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+highscore list
+clearing highscores
+maintaining scores
+
+highscore_show_ext()
+highscore_show()
+highscore_set_strings()
+highscore_set_color()
+
+highscore_set_background(back);
+highscore_set_border(show);
+highscore_set_font(name,size,style);
+highscore_set_strings(caption,nobody,escape);
+highscore_set_colors(back,new,other);
+
+highscore_clear()
+highscore_add()
+highscore_add_current()
+highscore_value()
+highscore_name()
+draw_highscore()
+
+-->

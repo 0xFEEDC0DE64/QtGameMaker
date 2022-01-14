@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Simple Effects</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+
+<h3>Simple Effects</h3>
+
+The easiest way of creating particles is to use the effects mechanism.
+Effects are created using the particle system but you do not have to worry
+about all the details. You simply specify the type of effect, the position
+where it must be created, its size, and its color. That is all. 
+
+<p>
+There are a number of different kinds of effects:
+
+  <ul>
+    <li><tt>ef_explosion</tt></li>
+    <li><tt>ef_ring</tt></li>
+    <li><tt>ef_ellipse</tt></li>
+    <li><tt>ef_firework</tt></li>
+    <li><tt>ef_smoke</tt></li>
+    <li><tt>ef_smokeup</tt></li>
+    <li><tt>ef_star</tt></li>
+    <li><tt>ef_spark</tt></li>
+    <li><tt>ef_flare</tt></li>
+    <li><tt>ef_cloud</tt></li>
+    <li><tt>ef_rain</tt></li>
+    <li><tt>ef_snow</tt></li>
+  </ul>
+
+<p>
+Some you want to create just once (like the explosion) and some you want to create in every step (like the
+smoke or the rain). Note that rain and snow are always created at the top of the room so the position
+is irrelevant in this case.
+
+<p>
+Even though this might sound limited, they can actually be used to create great effects. For example
+by creating a smal puff of red smoke below a moving spaceship in each step, a tail of fire is created.
+The following two functions exist to create the effects:
+
+<p>
+<blockquote>
+  <tt><b>effect_create_below(kind,x,y,size,color)</b></tt> 
+    Creates an effect of the given kind (see above) at the
+	indicated position. size give the size as follows: 0 = small,
+	1 = medium, 2 = large. color indicates the color to
+	be used. The effect is created below the instances, that is,
+	at a depth of 100000.<br>
+  <tt><b>effect_create_above(kind,x,y,size,color)</b></tt> 
+    Similar to the previous function but this time the 
+	effect is created on top of the instances, that is,
+	at a depth of -100000.<br>
+</blockquote>
+
+<p>
+If you want to remove all effects, call the following function:
+
+<p>
+<blockquote>
+  <tt><b>effect_clear()</b></tt> 
+    Clears all effects.<br>
+</blockquote>
+
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+Effects
+Explosions
+Creating effects
+effect_create_below()
+effect_create_above()
+effect_clear()
+ef_explosion
+ef_ring
+ef_ellipse
+ef_firework
+ef_smoke
+ef_smokeup
+ef_star
+ef_spark
+ef_flare
+ef_cloud
+ef_rain
+ef_snow
+
+-->

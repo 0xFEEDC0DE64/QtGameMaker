@@ -1,0 +1,179 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Views</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>Views</h3>
+
+As you should know you can define up to eight different views when designing rooms. 
+A view is defined by its view area in the room and its viewport on the screen 
+(or to be precise in the drawing region within the window). Using views you can 
+show different parts of the room at different places on the screen. 
+Also, you can make sure that a particular object always stays visible. 
+
+<P>
+You can control the views from within code. You can make views 
+visible and invisible and change the place or size of the views
+in the drawing region or the position and size of the view in  
+the room (which is in particular useful when you indicate no object 
+to be visible). You can change the size of the horizontal and vertical 
+border around the visible object, and you can indicate which object 
+must remain visible in the views. The latter is very important when 
+the important object changes during the game. For example, you might 
+change the main character object based on its current status. 
+Unfortunately, this does mean that it is no longer the object 
+that must remain visible. This can be remedied by one line of 
+code in the creation event of all the possible main objects 
+(assuming this must happen in the first view):
+
+<p>
+<blockquote>
+<pre>
+{
+  view_object[0] = object_index;
+}
+</pre>
+</blockquote>
+
+<p>
+
+The following variables exist that influence the view. All, except the first two are 
+arrays ranging from 0 (the first view) to 7 (the last view).
+
+<p>
+<blockquote>
+  <tt><b>view_enabled</b></tt> 
+    Whether views are enabled or not.<br>
+  <tt><b>view_current*</b></tt> 
+    The currently drawn view (0-7). Use this only in the 
+	drawing event. You can for example check this variable to draw certain things in only one 
+	view. Variable cannot be changed.<br>
+  <tt><b>view_visible[0..7]</b></tt> 
+    Whether the particular view is visible on the screen.<p>
+  <tt><b>view_xview[0..7]</b></tt> 
+  	X position of the view in the room.<br>
+  <tt><b>view_yview[0..7]</b></tt> 
+  	Y position of the view in the room.<br>
+  <tt><b>view_wview[0..7]</b></tt> 
+  	Width of the view in the room.<br>
+  <tt><b>view_hview[0..7]</b></tt> 
+  	Height of the view in the room.<br>
+  <tt><b>view_xport[0..7]</b></tt> 
+  	X-position of the viewport in the drawing region.<br>
+  <tt><b>view_yport[0..7]</b></tt> 
+  	Y-position of the viewport in the drawing region.<br>
+  <tt><b>view_wport[0..7]</b></tt> 
+  	Width of the viewport in the drawing region.<br>
+  <tt><b>view_hport[0..7]</b></tt> 
+  	Height of the viewport in the drawing region.<br>
+  <tt><b>view_angle[0..7]</b></tt> 
+  	Rotation angle used for the view in the room (counter-clockwise in degrees).<br>
+  <tt><b>view_hborder[0..7]</b></tt> 
+  	Size of horizontal border around the visible object (in pixels).<br>
+  <tt><b>view_vborder[0..7]</b></tt> 
+  	Size of vertical border around visible object (in pixels).<br>
+  <tt><b>view_hspeed[0..7]</b></tt> 
+  	Maximal horizontal speed of the view.<br>
+  <tt><b>view_vspeed[0..7]</b></tt> 
+  	Maximal vertical speed of the view.<br>
+  <tt><b>view_object[0..7]</b></tt> 
+  	Object whose instance must remain visible in the view. 
+	If there are multiple instances of this object only the first one is followed. You can 
+	also assign an instance id to this variable. In that case the particular instance is 
+	followed.<br>
+</blockquote>
+
+<p>
+
+Note that the size of the image on the screen is decided based on the visible views at the 
+beginning of the room. If you change views during the game, they might no longer fit on 
+the screen. The screen size though is not adapted automatically. So if you need this you 
+have to do it yourself, using the following functions:
+
+<p>
+<blockquote>
+  <tt><b>window_set_region_size(w,h,adaptwindow)</b></tt> 
+  	Set the width and height of the drawing region in the window. 
+	<tt>adaptwindow</tt> indicates whether the window size must be adapted 
+	if the region does not fit in. The window size will always be
+	adapted if you use fixed scaling. (See the function
+	<tt>window_set_region_scale()</tt>.)<br>
+  <tt><b>window_get_region_width()</b></tt> 
+  	Returns the current width of the drawing region.<br>
+  <tt><b>window_get_region_height()</b></tt> 
+  	Returns the current height of the drawing region.<br>
+</blockquote>
+
+<p>
+
+In a game you often need the position of the mouse cursor. Normally you use 
+for this the variables <tt>mouse_x</tt> and <tt>mouse_y</tt>. When there are multiple views, 
+these variables give the mouse position with respect to the view the mouse 
+is in. Sometimes though, you might need the mouse position with respect to 
+a particular view, also when it is outside that view. For this the 
+following functions exist.
+
+<p>
+<blockquote>
+  <tt><b>window_view_mouse_get_x(id)</b></tt> 
+	Returns the x-coordinate of the mouse with respect to the view with index id.<br>
+  <tt><b>window_view_mouse_get_y(id)</b></tt> 
+   Returns the y-coordinate of the mouse with respect to the view with index id.<br>
+  <tt><b>window_view_mouse_set(id,x,y)</b></tt>
+   Sets the position of the mouse with respect to the view with index id.<br>
+  <tt><b>window_views_mouse_get_x()</b></tt> 
+    Returns the x-coordinate of the mouse with respect to the view it is in 
+	(same as <tt>mouse_x</tt>).<br>
+  <tt><b>window_views_mouse_get_y()</b></tt> 
+   Returns the y-coordinate of the mouse with respect to the view it is in 
+   (same as <tt>mouse_y</tt>).<br>
+  <tt><b>window_views_mouse_set(x,y)</b></tt> 
+   Sets the position of the mouse with respect to the first view that is visible.
+</blockquote>
+
+<p>
+
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+views
+view variables
+view orientation
+rotated views
+
+view_enabled
+view_current
+view_visible
+view_xview
+view_yview
+view_wview
+view_hview
+view_xport
+view_yport
+view_wport
+view_hport
+view_angle
+view_hborder
+view_vborder
+view_hspeed
+view_vspeed
+view_object
+window_set_region_size()
+window_get_region_width()
+window_get_region_height()
+window_view_mouse_get_x()
+window_view_mouse_get_y()
+window_view_mouse_set()
+window_views_mouse_get_x()
+window_views_mouse_get_y()
+window_views_mouse_set()
+
+-->

@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Graphics options</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+
+<h3>Graphics options</h3>
+
+In this tab you can set a number of options that are related to the graphical 
+appearance of your game. It is normally useful to check out the effects of these 
+options because they can have a significant effect on the way the game looks. 
+Remember though that different users have different machines. So better make sure 
+that the settings also work on other peoples machines.
+
+<p>
+<b>Start in fullscreen mode</b><br>
+When checked the game runs in the full screen; otherwise it runs in a window.
+
+<p>
+<b>Scaling</b><br>
+Here you can indicate what happens when the window is larger than the room
+or when the game is run in full-screen mode. There are three choices. You can
+indicate a fixed scaling. The room is drawn scaled with the given amount in the
+center of the window or the center of the screen. 100 indicates no scaling. 
+You typically use fixed scaling when your sprites and rooms are very small. The second
+option is scale the room such that it fills the window or screen but keep 
+the aspect ratio (ratio between width and height) the same. The third
+option is to scale such that the window or screen is completely filled. This
+can lead to distortions in the image (in particular in windowed mode when 
+the user can resize the window).
+
+<p>
+<b>Interpolate colors between pixels</b><br>
+When checked, colors of pixels in sprites, backgrounds, and tiles that are not 
+aligned with pixels on the screen will be interpolated. This in particular is the
+case when they are scaled, rotated, or placed at non-integer positions. Interpolation
+makes movement smoother but can also give a blurred effect. (Also for tiles it can
+lead to cracks between them, if not carefully designed.)
+
+<p>
+<b>Color outside the room region</b><br>
+When the room does not completely fill the window or screen there is some area
+unused around it. Here you can specify the color of the area.
+
+<p>
+<b>Allow the player to resize the game window</b><br>
+When checked in windowed mode the user can change the size of the game window by
+dragging with the mouse at its corners.
+
+<p>
+<b>Let the game window always stay on top</b><br>
+When checked in windowed mode the game window always stays on top of other windows.
+
+<p>
+<b>Don't draw a border in windowed mode</b><br>
+When checked in windowed mode the game window will not have a border or a caption bar.
+
+<p>
+<b>Don't show the buttons in the window caption</b><br>
+When checked in windowed mode the window caption will not show the buttons to 
+close the window or to minimize or maximize it.
+
+<p>
+<b>Display the cursor</b><br>
+Indicates whether you want the mouse pointer to be visible. Turning it off is
+normally faster and nicer. 
+(You can easily make you own cursor object in <i>Game Maker</i>.)
+
+<p>
+<b>Freeze the game when the form loses focus</b><br>
+When checked, whenever the player brings some other form to the top (e.g. 
+another application) the game freezes until the game window again gets the 
+focus.
+
+<p>
+<b>Disable screensavers and power saving actions</b><br>
+When checked (default) screensavers or power saving actions (sleep, hibernate) will not
+activate while the game is running. This is important as these might destroy certain
+graphics aspects of the game (like surfaces).
+
+	
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+fullscreen mode
+scaling
+window
+resizable window
+window border
+border window
+outside color
+displaying the cursor
+cursor display
+freezing
+-->

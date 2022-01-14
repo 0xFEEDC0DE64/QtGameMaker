@@ -7,7 +7,7 @@
 #include <QSignalBlocker>
 
 #include "projectcontainer.h"
-#include "projecttreemodel.h"
+#include "models/projecttreemodel.h"
 #include "editspritedialog.h"
 #include "maskpropertiesdialog.h"
 

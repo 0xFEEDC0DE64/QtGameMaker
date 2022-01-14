@@ -7,7 +7,7 @@
 #include <QDebug>
 
 #include "projectcontainer.h"
-#include "projecttreemodel.h"
+#include "models/projecttreemodel.h"
 
 ScriptPropertiesDialog::ScriptPropertiesDialog(Script &script, ProjectTreeModel &projectModel, QWidget *parent) :
     CodeEditorDialog{tr("Script Properties: %0").arg(script.name), parent},

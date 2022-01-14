@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Resolution</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>Resolution</h3>
+
+In this tab you can set the screen resolution in which your game must run.
+By default the resolution is not changed. But sometimes you want to run the
+game in a lower resolutions or you want to set the frequency of the monitor
+to make sure the timing in the game works correctly. If you want to change
+the resolution you must first check the box labeled 
+<b>Set the resolution of the screen</b>. 
+
+<p>
+There are three things you can change. First of all there is the color depth.
+This indicates the number of bits used to represent the color for a pixel.
+Most machines now only allow for 16-bit (High Color) or 32-bit (Full Color) but
+older machines also allowed for 8-bit and sometimes 24-bit color. 
+<i>Game Maker</i> only works correctly in 16-bit and 32-bit color. 32-bit
+color gives nicer looking images but will take more memory and processing
+time. If you want your game to run will on most older machines set the
+color depth to 16-bit. Otherwise use 32-bit or don't change it.
+
+<p>
+Secondly there is the screen resolution, the number 
+of pixels (horizontal and vertical) on the screen. Changing the
+resolution is useful when e.g. your rooms are very small. In this case
+it might help to reduce the resolution of the screen. Realize though that
+this will also effect other applications running. This can in particular
+give problems with low resolutions. So in general it is better
+to only do this when running the game in full screen mode. <i>Game Maker</i>
+will automatically change the resolution back to the starting situation
+once the game finishes.
+
+<p>
+Finally you can change the refresh frequency. This indicates how many times per second
+the image on the screen is refreshed. If your room speed is larger than the frequency
+not all steps are actually visible. It works best if the frequency is a multiple of
+the room speed. (If you specify a frequency that is too high or not available the
+frequency is not changed.)
+
+<p>
+There also is a setting here to <b>Use synchronization to avoid tearing</b>. This requires
+some explanation. A display is redrawn a number of times per second, depending on the 
+refresh frequency. If a room is drawn halfway such a refresh, the top of the display will still
+show the old image while the bottom part shows the new image. This is called tearing. To
+avoid this you can check this option. In this case the new room image is only copied to
+the screen when the refresh is not inside the window avoiding the tearing most of the time.
+The disadvantage is that we normally have to wait till the next refresh. This means that the
+maximal number of frames is bounded by the frequency of the monitor and, when the processing
+is not fast enough, the framerate immediately drops to half that number.
+Also there can be a conflict between the internal timing of the game and the synchronization. 
+If you want to do this best set the monitor frequency to e.g. 60 and also make the room speed
+either 30 or 60.
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+changing screen resolution
+screen resolution
+resolution
+frequency
+graphics mode
+color depth
+synchronization
+tearing
+-->

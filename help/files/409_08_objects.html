@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Objects</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>Objects</h3>
+
+Also objects can be manipulated and created during the game play. NEVER change or delete 
+an object for which there are instances. This can lead to unexpected effects as certain 
+object properties are stored with the instance and, hence, changing them in the object 
+will not have the desired effect.
+
+<p>
+<blockquote>
+  <tt><b>object_set_sprite(ind,spr)</b></tt> 
+  	Sets the sprite of the object with the given 
+	index. Use -1 to remove the current sprite from the object.<br>
+  <tt><b>object_set_solid(ind,solid)</b></tt> 
+  	Sets whether instances created of the object 
+	must default be solid (true or false).<br>
+  <tt><b>object_set_visible(ind,vis)</b></tt> 
+  	Sets whether instances created of the object 
+	must default be visible (true or false).<br>
+  <tt><b>object_set_depth(ind,depth)</b></tt> 
+  	Sets the default depth of instances created of the object.<br>
+  <tt><b>object_set_persistent(ind,pers)</b></tt> 
+  	Sets whether instances created of the 
+	object must default be persistent (true or false).<br>
+  <tt><b>object_set_mask(ind,spr)</b></tt> 
+  	Sets the sprite mask of the object with the 
+	given index. Use -1 to set the mask to be the sprite of the object.<br>
+  <tt><b>object_set_parent(ind,obj)</b></tt> 
+  	Sets the parent of the object. Use -1 to not 
+	have a parent. Changing the parent changes the behavior of instances of the object.<br>
+</blockquote>
+
+<p>
+
+The following routines are useful for creating objects on the fly. As with all resource 
+changing routines, be very careful that you don't create new objects all the time.
+
+<p>
+<blockquote>
+  <tt><b>object_add()</b></tt> 
+  	Adds a new object. It returns the index of the object. You 
+	can now use this index in the routines above to set certain properties of the object and 
+	then you can use the index to create instances of the object.<br>
+  <tt><b>object_delete(ind)</b></tt> 
+  	Deletes the object with the given index. Make sure no 
+	instances of the object exist in any of the rooms.<br>
+  <tt><b>object_event_add(ind,evtype,evnumb,codestr)</b></tt> 
+  	To give the object a 
+	behavior we must define events for the object. You can only add code actions to events. 
+	You need to specify the object, the event type, the event number (use the constants that 
+	have been specified before for the event_perform() function). Finally you provide the code 
+	string that must be executed. You can add multiple code actions to each event.<br>
+  <tt><b>object_event_clear(ind,evtype,evnumb)</b></tt> 
+  	You can use this function to clear 
+	all the actions for a particular event.<br>
+</blockquote>
+
+<p>
+
+Creating objects is in particular useful when you are designing scripts or action 
+libraries. For example, an initialization script can create an object to display a text 
+and another script can add such an object with a particular text. In this way you have a 
+simple mechanism to display texts without the need to create objects using the standard 
+interface.
+
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+object_set_sprite()
+object_set_solid()
+object_set_visible()
+object_set_depth()
+object_set_persistent()
+object_set_mask()
+object_set_parent()
+object_add()
+object_delete()
+object_event_clear()
+object_event_add()
+
+-->

@@ -77,18 +77,39 @@ struct Font
     } range;
 };
 
+struct Action {
+    enum class AppliesTo {
+        Self,
+        Other,
+        Object
+    };
+
+    QString script;
+    AppliesTo appliesTo{AppliesTo::Self};
+};
+
+using ActionsContainer = std::array<Action, 1>;
+
 struct TimeLine
 {
+    using moment_key_t = int;
+    using moments_container_t = std::map<moment_key_t, ActionsContainer>;
+
     QString name;
+
+    moments_container_t moments;
 };
 
 struct Object
 {
     enum class EventType {
         Create,
+        Destroy,
         Step,
-        Destroy
+        Draw,
     };
+
+    using events_container_t = std::map<EventType, ActionsContainer>;
 
     QString name;
     QString spriteName;
@@ -96,7 +117,7 @@ struct Object
     bool solid{};
     int depth{};
     bool persistent{};
-    std::map<EventType, QString> events;
+    events_container_t events;
 };
 
 struct Room

@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Time lines</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>Time lines</h3>
+
+The following routines are available for creating and changing time lines. Don't change 
+time lines that are in use!
+
+<p>
+<blockquote>
+  <tt><b>timeline_add()</b></tt> 
+ 	 Adds a new time line. It returns the index of the time line.<br>
+  <tt><b>timeline_delete(ind)</b></tt> 
+  	Deletes the time line with the given index. Make 
+	sure no instances uses the time line in any room.<br>
+  <tt><b>timeline_clear(ind)</b></tt> 
+  	Clears the time line with the given index removing all its moments. Make 
+	sure no instances uses the time line at the moment.<br>
+  <tt><b>timeline_moment_add(ind,step,codestr)</b></tt> 
+  	Adds a code action to the time 
+	line at moment step. codestr contains the code for the actions. If the step does not exist 
+	it is created. So you can add multiple code actions for the same moment.<br>
+  <tt><b>timeline_moment_clear(ind,step)</b></tt> 
+  	You can use this function to clear all the actions for a particular moment.<br>
+</blockquote>
+
+<p>
+
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+timeline_add()
+timeline_delete()
+timeline_clear()
+timeline_moment_clear()
+timeline_moment_add()
+
+-->

@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Various other options</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>Various other options</h3>
+
+Here you can set a number of additional options. First of all you can set some default keys:
+
+<p>
+<b>Let &lt;Esc&gt; end the game</b><br>
+When checked, pressing the escape key will end the game. More advanced games 
+normally don't want this to happen because they might want to do some processing 
+(like saving) before ending the game. In this case, uncheck this box and provide 
+your own actions for the escape key. 
+
+<p>
+<b>Treat the close button as &lt;Esc&gt; key</b><br>
+When checked the close button of the window will generate an escape key event. When
+not checked the close button events are called instead.
+
+<p>
+<b>Let &lt;F1&gt; show the game information</b><br>
+When checked pressing the F1 key will display the game information.
+
+<p>
+<b>Let &lt;F4&gt; switch between screen modes</b><br>
+When checked the F4 key will switch between fullscreen and windowed mode.
+
+<p>
+<b>Let &lt;F5&gt; save the game and &lt;F6&gt; load a game</b><br>
+When checked the player can use &lt;F5&gt; to store the current game situation
+and &lt;F6&gt; to load the last saved game. (Note that only the basic game
+data is stored. Once you use advanced features like particles or data structures
+those settings are not saved and you might have to create a save mechanism yourself.
+
+<p>
+<b>Let &lt;F9&gt; take a screenshot of a game</b><br>
+When checked the player can use &lt;F9&gt; to create a screenshot of the game.
+This screenshot will be place in the file screenshotXXX.png in the folder where
+the game is running, where XXX is the number of the screenshot. When creating
+multiple screenshot the number is automatically increased.
+
+<p>
+Also you can set the priority of the game process. This priority indicates how 
+much processor time is allotted to the game. In normal mode the operating system 
+tries to give processor time to each process that needs it in some reasonable way. 
+The higher you put the priority the more time is allotted to the game, making it 
+run more smoothly and faster. But other processes get less time (also Windows 
+processes so even the mouse might not move anymore). Use this with care.
+
+<p>
+Finally, you can set the version information of the game. This information is shown in the
+helptip that pops up when the user rests his mouse on the game executable. It is also
+shown when the users clicks with the right mouse button on the program and chooses 
+properties and then version. If you distribute your game you best fill in this 
+information. 
+
+<p>
+You should give your game a version number that consists of four parts: the major version,
+the minor version, the release number and the build number. Also you should provide the
+name of the company (you), the name of the product, the copyright information, and a
+very brief description. All these fields should be at most 64 characters long.
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+special keys
+priority
+-->

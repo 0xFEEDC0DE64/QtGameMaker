@@ -7,8 +7,8 @@
 #include <QMessageBox>
 
 #include "projectcontainer.h"
-#include "projecttreemodel.h"
-#include "pathpointsmodel.h"
+#include "models/projecttreemodel.h"
+#include "models/pathpointsmodel.h"
 
 PathPropertiesDialog::PathPropertiesDialog(Path &path, ProjectTreeModel &projectModel, QWidget *parent) :
     QDialog{parent},

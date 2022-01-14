@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html><head>
+<title>More about backgrounds</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+
+<h1>More about backgrounds</h1>
+
+In advanced more there are a number of additional options for background.
+First of all, a new button <b>Save Background</b> has appeared. With this
+button you can save the background in a proprietary format. This will not only
+store the image itself but also for example information about the tiles (see below).
+These files will have the extension .gmbck. You can load them in <i>Game Maker</i>
+and while running a game.
+
+Also you can also change a background or create your own backgrounds by pressing the 
+button labeled <b>Edit Background</b>. A built-in image editor opens that has many
+features. Please realize that this is not a full-blown program and if you require
+more advanced editing tools you might want to use a separate drawing program. 
+For more information  on how to use the image editor see the section on 
+<a href="202_03_individual.html">Editing images</a>.
+
+<p>
+Sometimes you want to use a background as a set of tiles, that is, a collection
+of smaller images in one big image. When create the rooms you can then add these
+subimages at different places in the room. This is very useful for creating
+nice looking levels. To use a background as a tile set, check the box labelled
+<b>Use as tile set</b>. The form now changes to look as follows:
+
+<p>
+<img src="images/form_background_advanced.jpg">
+
+<p>
+You can indicate a number of settings for the tile set. In particular you can
+indicate the width and height of each tile. (Only one size can be given, so
+better make sure that all tiles in the set have the same size. If you have
+different sizes, create two or more tile sets.) You can also indicate an
+offset where the top leftmost tile starts. Finally, a
+separation between the tiles (this is normally 0 or 1) can be indicated.
+For more information on using tiles, see the section on 
+<a href="210_02_tiles.html">Adding Tiles</a> when creating rooms.
+
+<p>
+A word of warning is required here. When you put separating borders between the 
+sprites and use interpolation between pixels (see the global game settings) this
+can result in cracks between the tiles. Better make sure the pixels around the
+tiles actually match with the pixels just inside the tiles to avoid this. You can
+easily achieve this by editing the background and changing the color of such pixels.
+
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+creating backgrounds
+saving backgrounds
+painting backgrounds
+tile sets
+-->

@@ -6,7 +6,7 @@
 #include <QMessageBox>
 
 #include "projectcontainer.h"
-#include "projecttreemodel.h"
+#include "models/projecttreemodel.h"
 #include "imageeditordialog.h"
 
 BackgroundPropertiesDialog::BackgroundPropertiesDialog(Background &background, ProjectTreeModel &projectModel, QWidget *parent) :

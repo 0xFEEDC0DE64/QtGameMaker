@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Backgrounds</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>Backgrounds</h3>
+
+Each room can have up to 8 backgrounds. Also it has a background color. All aspects of
+these backgrounds you can change in a piece of code using the following variables (note
+that some are arrays that range from 0 to 7, indicating the different backgrounds):
+
+<p>
+<blockquote>
+  <tt><b>background_color</b></tt> 
+  	Background color for the room.<br>
+  <tt><b>background_showcolor</b></tt> 
+  	Whether to clear the window in the background color.<br>
+  <tt><b>background_visible[0..7]</b></tt> 
+  	Whether the particular background image is visible.<br>
+  <tt><b>background_foreground[0..7]</b></tt> 
+  	Whether the background is actually a foreground.<br>
+  <tt><b>background_index[0..7]</b></tt> 
+  	Background image index for the background.<br>
+  <tt><b>background_x[0..7]</b></tt> 
+  	X position of the background image.<br>
+  <tt><b>background_y[0...7]</b></tt> 
+  	Y position of the background image.<br>
+  <tt><b>background_width[0...7]*</b></tt> 
+  	Width of the background image.<br>
+  <tt><b>background_height[0...7]*</b></tt> 
+  	Height of the background image.<br>
+  <tt><b>background_htiled[0..7]</b></tt> 
+  	Whether horizontally tiled.<br>
+  <tt><b>background_vtiled[0..7]</b></tt> 
+  	Whether vertically tiled.<br>
+  <tt><b>background_xscale[0..7]</b></tt> 
+  	Horizontal scaling factor for the background. (This must be positive; you cannot
+	use a negative value to mirror the background.)<br>
+  <tt><b>background_yscale[0..7]</b></tt> 
+  	Vertical scaling factor for the background. (This must be positive; you cannot
+	use a negative value to flip the background.)<br>
+  <tt><b>background_hspeed[0..7]</b></tt> 
+  	Horizontal scrolling speed of the background
+    (pixels per step).<br>
+  <tt><b>background_vspeed[0..7]</b></tt> 
+  	Vertical scrolling speed of the background
+    (pixels per step).<br>
+  <tt><b>background_blend[0..7]</b></tt> 
+  	Blending color to use when drawing the background.
+  	A value of c_white is the default.
+	<b><i>Only available in the Pro Edition!</i></b><br>
+  <tt><b>background_alpha[0..7]</b></tt> 
+  	Transparency (alpha) value to use when drawing
+	the background. A value of 1 is the normal setting; a value of 0 is completely
+	transparent.<br>
+</blockquote>
+
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+background settings
+background speed
+
+background_color 
+background_showcolor 
+background_visible 
+background_foreground 
+background_index 
+background_x 
+background_y 
+background_width 
+background_height
+background_htiled 
+background_vtiled 
+background_xscale 
+background_yscale 
+background_hspeed 
+background_vspeed 
+background_blend 
+background_alpha 
+
+-->

@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Extra Variables</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>Extra variables</h3>
+
+You create new variables by assigning a value to them (no need to declare
+them first). If you simply use a variable name, the variable will be
+stored with the current object instance only. So don't expect to find it
+when dealing with another object (or another instance of the same object)
+later. You can also set and read variables in other objects by putting the
+object name with a dot before the variable name.
+
+<p>
+To create global variables, that are visible to all object instances,
+precede them with the word <tt>global</tt> and a dot. So for example you
+can write:
+
+<p>
+<blockquote>
+<pre>
+{
+  <b>if</b> (<b>global</b>.doit)
+  {
+    // do something
+    <b>global</b>.doit = false;
+  }
+}
+</pre>
+</blockquote>
+
+<p>
+Alternatively you can declare the variables as being global.
+This declaration looks as follows.
+
+<p>
+<blockquote>
+<pre><b>globalvar</b> &lt;varname1&gt;,&lt;varname2&gt;,&lt;varname3&gt;, ... ;</pre>
+</blockquote>
+
+<p>
+Once this declaration has been executed, the variable is always treated as global without
+the need to put the word <tt>global</tt> and a dot in front of it. It only needs to
+be declared once in a piece of code that is executed. After that in all other
+places the variable is considered as being global.
+
+<p>
+Sometimes you want variables only within the current piece of code or
+script. In this way you avoid wasting memory and you are sure there is no
+naming conflict. It is also faster than using global variables. To achieve
+this you must declare the variables at the beginning of the piece of code
+using the keyword var. This declaration looks as follows.
+
+<p>
+<blockquote>
+<pre><b>var</b> &lt;varname1&gt;,&lt;varname2&gt;,&lt;varname3&gt;, ... ;</pre>
+</blockquote>
+
+<p>
+For example, you can write:
+
+<p>
+<blockquote>
+<pre>
+{
+  <b>var</b> xx,yy;
+  xx = x+10;
+  yy = y+10;
+  instance_create(xx,yy,ball);
+}
+</pre>
+</blockquote>
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+global variables
+local variables
+declaring variables
+var
+globalvar
+-->

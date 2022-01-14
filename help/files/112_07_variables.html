@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Using expressions and variables</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>Using expressions and variables</h3>
+
+In many actions you need to provide values for parameters. Rather than just 
+typing a number, you can also type a formula, e.g. 32*12. But you can actually 
+type much more complicated expressions. For example, if you want to double the 
+horizontal speed, you could set it to <tt>2*hspeed</tt>. Here <tt>hspeed</tt> is a 
+variable indicating the current horizontal speed of the instance.  
+There are a large number of other variables that you can use. 
+Some of the most important ones are:
+
+<p>
+<blockquote>
+	<b>x</b> the x-coordinate of the instance<br>
+	<b>y</b> the y-coordinate of the instance<br>
+	<b>hspeed</b> the horizontal speed (in pixels per step)<br>
+	<b>vspeed</b> the vertical speed (in pixels per step)<br>
+	<b>direction</b> the current direction of motion in degrees (0-360)<br>
+	<b>speed</b> the current speed in this direction<br>
+	<b>visible</b> whether the object is visible (1) or invisible (0)<br>
+	<b>image_index</b> this variable indicate which subimage in the current sprite is currently shown.
+	  If you change it and set the speed to 0 (see below) you can display a fixed subimage.<br>
+	<b>image_speed</b> this variable indicates the speed with which the subimages are shown.
+	  The default value is 1. If you make this value larger than 1 some subimages 
+	  are skipped to make the animation faster. If you make it 
+	  smaller than 1 the animation becomes slower by repeating subimages.<br>
+	<b>score</b> the current value of the score<br>
+	<b>lives</b> the current number of lives<br>
+	<b>health</b> the current health (0-100)<br>
+	<b>mouse_x</b> x-position of the mouse<br>
+	<b>mouse_y</b> y-position of the mouse<br>
+</blockquote>
+
+You can change most of these variables using the set variable action.
+You can also define your own variables by setting them to a value. 
+(Don't use relative, because they don't exist yet.) Then you can use these 
+variables in expressions. Variables you create are local to the current 
+instance. That is, each object has its own copy of them. To create a global 
+variable, put the word global and a dot in front of it.
+
+<p>
+You can also refer to the values of variables for other objects 
+by putting the object name and a dot in front of them. So for example, 
+if you want a ball to move to the place where the coin is you can 
+set the position to (<tt>coin.x</tt> , <tt>coin.y</tt>). In the 
+case of a collision event you can refer to the x-coordinate of the 
+other object as <tt>other.x</tt>. In conditional expressions you 
+can use comparisons like &lt; (smaller than), &gt;, etc.
+
+<p>
+In your expressions you can also use functions. For example, the function 
+<tt>random(10)</tt> gives a random integer number below 10. So you can 
+set for example the speed or direction of motion to a random value. 
+Many more functions exist. They are described in <A HREF="400_index.html">Part 4</A> of the
+documentation.
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+expressions
+variables
+mouse position
+-->

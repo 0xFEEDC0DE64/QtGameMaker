@@ -301,7 +301,7 @@
   <customwidget>
    <class>DrawingCanvasWidget</class>
    <extends>QWidget</extends>
-   <header>drawingcanvaswidget.h</header>
+   <header>widgets/drawingcanvaswidget.h</header>
   </customwidget>
  </customwidgets>
  <resources>

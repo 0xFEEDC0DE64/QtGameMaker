@@ -21,10 +21,12 @@ AddEventDialog::AddEventDialog(QWidget *parent) :
 
     connect(m_ui->pushButtonCreate, &QAbstractButton::clicked,
             this, [this](){ m_eventType = Object::EventType::Create; accept(); });
-    connect(m_ui->pushButtonStep, &QAbstractButton::clicked,
-            this, [this](){ m_eventType = Object::EventType::Step; accept(); });
     connect(m_ui->pushButtonDestroy, &QAbstractButton::clicked,
             this, [this](){ m_eventType = Object::EventType::Destroy; accept(); });
+    connect(m_ui->pushButtonDraw, &QAbstractButton::clicked,
+            this, [this](){ m_eventType = Object::EventType::Draw; accept(); });
+    connect(m_ui->pushButtonStep, &QAbstractButton::clicked,
+            this, [this](){ m_eventType = Object::EventType::Step; accept(); });
 }
 
 AddEventDialog::~AddEventDialog() = default;

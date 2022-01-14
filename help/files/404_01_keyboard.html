@@ -1,0 +1,265 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>The Keyboard</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>The keyboard</h3>
+
+For keyboard interaction, the following variables and functions exist:
+
+<p>
+<blockquote>
+  <tt><b>keyboard_lastkey</b></tt> 
+    Keycode of last key pressed. See below for keycode constants. 
+	You can change it, e.g. set it to 0 if you handled it.<br>
+  <tt><b>keyboard_key</b></tt> 
+    Keycode of current key pressed (see below; 0 if none).<br>
+  <tt><b>keyboard_lastchar</b></tt> 
+    Last character pressed (as string).<br>
+  <tt><b>keyboard_string</b></tt> 
+    String containing the last at most 1024 characters typed. This string 
+	will only contain the printable characters typed. It also correctly 
+	responds to pressing the backspace key by erasing the last character.<br>
+</blockquote>
+
+<p>
+
+Sometimes it is useful to map one key to another. For example you might want 
+to allow the player to use both the arrow keys and the numpad keys. Rather 
+than duplicating the actions you can map the numpad keys to the arrow keys. 
+Also you might want to implement a mechanism in which the player can set 
+the keys to use. For this the following functions are available:
+
+<p>
+<blockquote>
+  <tt><b>keyboard_set_map(key1,key2)</b></tt> 
+    Maps the key with keycode key1 to key2.<br>
+  <tt><b>keyboard_get_map(key)</b></tt> 
+  	Returns the current mapping for key.<br>
+  <tt><b>keyboard_unset_map()</b></tt> 
+  	Resets all keys to map to themselves.<br>
+</blockquote>
+
+<p>
+
+To check whether a particular key or mouse button is pressed you can use the following 
+functions. This is in particular useful when multiple keys are pressed simultaneously.
+
+<p>
+<blockquote>
+  <tt><b>keyboard_check(key)</b></tt>
+    Returns whether the key with the particular keycode is currently down.<br>
+  <tt><b>keyboard_check_pressed(key)</b></tt>
+    Returns whether the key with the particular keycode was pressed since the last step.<br>
+  <tt><b>keyboard_check_released(key)</b></tt>
+    Returns whether the key with the particular keycode was released since the last step.<br>
+  <tt><b>keyboard_check_direct(key)</b></tt> 
+    Returns whether the key with the particular keycode is pressed 
+	by checking the hardware directly. The result is independent of 
+	which application has focus. It allows for a few more checks. 
+	In particular you can use keycodes vk_lshift, vk_lcontrol, 
+	vk_lalt, vk_rshift, vk_rcontrol and vk_ralt to check 
+	whether the left or right shift, control or alt key is pressed.<br>
+</blockquote>
+
+<p>
+
+The following routines can be used to manipulate the keyboard state:
+
+<p>
+<blockquote>
+  <tt><b>keyboard_get_numlock()</b></tt> 
+    Returns whether the numlock is set.<br>
+  <tt><b>keyboard_set_numlock(on)</b></tt> 
+    Sets (true) or unsets (false) the numlock.<br>
+  <tt><b>keyboard_key_press(key)</b></tt> 
+    Simulates a press of the key with the indicated keycode.<br>
+  <tt><b>keyboard_key_release(key)</b></tt> 
+    Simulates a release of the key with the indicated keycode.<br>
+</blockquote>
+
+<p>
+
+The following constants for virtual keycodes exist:
+
+<p>
+<blockquote>
+  <tt><b>vk_nokey</b></tt> keycode representing that no key is pressed<br>
+  <tt><b>vk_anykey</b></tt> keycode representing that any key is pressed<br>
+  <tt><b>vk_left</b></tt> keycode for left arrow key<br>
+  <tt><b>vk_right</b></tt> keycode for right arrow key<br>
+  <tt><b>vk_up</b></tt> keycode for up arrow key<br>
+  <tt><b>vk_down</b></tt> keycode for down arrow key<br>
+  <tt><b>vk_enter</b></tt> enter key<br>
+  <tt><b>vk_escape</b></tt> escape key<br>
+  <tt><b>vk_space</b></tt> space key<br>
+  <tt><b>vk_shift</b></tt> shift key<br>
+  <tt><b>vk_control</b></tt> control key<br>
+  <tt><b>vk_alt</b></tt> alt key<br>
+  <tt><b>vk_backspace</b></tt> backspace key<br>
+  <tt><b>vk_tab</b></tt> tab key<br>
+  <tt><b>vk_home</b></tt> home key<br>
+  <tt><b>vk_end</b></tt> end key<br>
+  <tt><b>vk_delete</b></tt> delete key<br>
+  <tt><b>vk_insert</b></tt> insert key<br>
+  <tt><b>vk_pageup</b></tt> pageup key<br>
+  <tt><b>vk_pagedown</b></tt> pagedown key<br>
+  <tt><b>vk_pause</b></tt> pause/break key<br>
+  <tt><b>vk_printscreen</b></tt> printscreen/sysrq key<br>
+  <tt><b>vk_f1 ... vk_f12</b></tt> keycodes for the function keys F1 to F12<br>
+  <tt><b>vk_numpad0 ... vk_numpad9</b></tt> number keys on the numeric keypad<br>
+  <tt><b>vk_multiply</b></tt> multiply key on the numeric keypad<br>
+  <tt><b>vk_divide</b></tt> divide key on the numeric keypad<br>
+  <tt><b>vk_add</b></tt> add key on the numeric keypad<br>
+  <tt><b>vk_subtract</b></tt> subtract key on the numeric keypad<br>
+  <tt><b>vk_decimal</b></tt> decimal dot keys on the numeric keypad<br>
+</blockquote>
+
+<p>
+
+For the letter keys use for example <tt>ord('A')</tt>. (The capital letters.) 
+For the digit keys use for example <tt>ord('5')</tt> to get the &lt;5&gt; key.
+The following constants can only be used in <tt>keyboard_check_direct:</tt>
+
+<p>
+<blockquote>
+  <tt><b>vk_lshift</b></tt> left shift key<br>
+  <tt><b>vk_lcontrol</b></tt> left control key<br>
+  <tt><b>vk_lalt</b></tt> left alt key<br>
+  <tt><b>vk_rshift</b></tt> right shift key<br>
+  <tt><b>vk_rcontrol</b></tt> right control key<br>
+  <tt><b>vk_ralt</b></tt> right alt key<br>
+</blockquote>
+
+<p>
+
+For example, assume you have an object that the user can control with the arrow 
+keys you can put the following piece of code in the step event of the object:
+
+<p>
+<blockquote>
+<pre>
+{
+  <b>if</b> (keyboard_check(vk_left))  x -= 4;
+  <b>if</b> (keyboard_check(vk_right)) x += 4;
+  <b>if</b> (keyboard_check(vk_up))    y -= 4;
+  <b>if</b> (keyboard_check(vk_down))  y += 4;
+}
+</pre>
+</blockquote>
+
+<p>
+
+Of course it is a lot easier to simply put this in the keyboard events.
+
+<p>
+There are some additional functions related to keyboard interaction.
+
+<p>
+<blockquote>
+  <tt><b>keyboard_clear(key)</b></tt> 
+    Clears the state of the key. This means that it will no longer 
+	generate keyboard events until it starts repeating.<br>
+  <tt><b>io_clear()</b></tt> 
+    Clears all keyboard and mouse states.<br>
+  <tt><b>io_handle()</b></tt> 
+    Handle user io, updating keyboard and mouse status.<br>
+  <tt><b>keyboard_wait()</b></tt> 
+    Waits till the user presses a key on the keyboard.<br>
+</blockquote>
+
+<p>
+
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+keyboard status
+keycodes
+numlock
+key mapping
+
+keyboard_key
+keyboard_lastkey
+keyboard_lastchar
+keyboard_string
+keyboard_set_map()
+keyboard_get_map()
+keyboard_unset_map()
+keyboard_check()
+keyboard_check_pressed()
+keyboard_check_released()
+keyboard_check_direct()
+keyboard_get_numlock()
+keyboard_set_numlock()
+keyboard_key_press()
+keyboard_key_release()
+vk_nokey
+vk_anykey
+vk_enter
+vk_return
+vk_shift
+vk_control
+vk_alt
+vk_escape
+vk_space
+vk_backspace
+vk_tab
+vk_pause
+vk_printscreen
+vk_left
+vk_right
+vk_up
+vk_down
+vk_home
+vk_end
+vk_delete
+vk_insert
+vk_pageup
+vk_pagedown
+vk_f1
+vk_f2
+vk_f3
+vk_f4
+vk_f5
+vk_f6
+vk_f7
+vk_f8
+vk_f9
+vk_f10
+vk_f11
+vk_f12
+vk_numpad0
+vk_numpad1
+vk_numpad2
+vk_numpad3
+vk_numpad4
+vk_numpad5
+vk_numpad6
+vk_numpad7
+vk_numpad8
+vk_numpad9
+vk_divide
+vk_multiply
+vk_subtract
+vk_add
+vk_decimal
+vk_lshift
+vk_lcontrol
+vk_lalt
+vk_rshift
+vk_rcontrol
+vk_ralt
+keyboard_clear()
+io_clear()
+io_handle()
+keyboard_wait()
+
+-->

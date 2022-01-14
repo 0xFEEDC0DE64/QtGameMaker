@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Strips</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>Strips</h3>
+
+<p>
+As indicated above, sprites are normally either stored as animated gif files or
+as strips in PNG files, in which all subimages are placed next to each other. In the
+second case the file name should end with _stripXX where XX indicates the number
+of subimages.
+
+<p>
+However, sometimes sprites are part of a larger bitmap in which the sub images can
+be stored next to each other or below each other and maybe there are separating lines
+between them. Such a strip cannot be read automatically as <i>Game Maker</i> will not 
+know the size and position of the subimage. For example, the following piece of a strip file 
+contains four different animations.
+
+<p>
+<img src="images/sprites2.gif">
+
+<p>
+If you want to pick a certain animation out of such a file you must indicate where the
+images are. To this end you can choose 
+<b>Create from Strip</b> or <b>Add from Strip</b> from the <b>File</b> menu
+in the sprite editor. 
+After indicating the appropriate strip image file, the following form will show:
+
+<p>
+<img src="images/form_strip.jpg">
+
+<p>
+At the right you see (part of) the strip image you selected. At the left you 
+can specify a number of parameters that specify which subimages you are 
+interested in. Note that one or more rectangles in the image indicate the 
+images you are selecting. The following parameters can be specified:
+
+<p>
+<ul>
+  <li><b>Number of images.</b> 
+    This is the number of sub images you want to take from the strip.</li>
+  <li><b>Images per row.</b> 
+    How many images of the ones you want are there per row. For example, 
+	by setting this to 1 you will select a vertical sequence of images.</li>
+  <li><b>Image width.</b> 
+    Width of the individual images.</li>
+  <li><b>Image height.</b> 
+    Height of the individual images.</li>
+  <li><b>Horizontal cell offset.</b> 
+    If you don't want to select the top-left images, you can set here 
+	how many images should be skipped horizontally.</li>
+  <li><b>Vertical cell offset.</b> 
+    Here you indicate how many images to skip vertically.</li>
+  <li><b>Horizontal pixel offset.</b> 
+    Sometimes there is some additional space at the left top. 
+	Here you indicate this amount (in pixels). You can also use the mouse to indicate
+	the place where the first image should start</li>
+  <li><b>Vertical pixel offset.</b> 
+    Vertical amount of extra space.</li>
+  <li><b>Horizontal separation.</b> 
+    In some strips there are lines or empty space between the images. Here 
+	you can indicate the horizontal amount to skip between the images (in pixels).</li>
+  <li><b>Vertical separation.</b> 
+    Vertical amount to skip between the images.</li>
+</ul>
+
+<p>
+Once you selected the correct set of images, press <b>OK</b> to create your sprite. 
+Please remember that you are only allowed to use images created by others when you 
+have their permission or when they are freeware.
+
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+strips
+-->

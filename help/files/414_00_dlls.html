@@ -1,0 +1,237 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Using DLL's</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h1>Using DLL's</h1>
+
+<i><b>This functionality is only available in the Pro Edition of Game Maker.</b></i>
+
+
+<p>
+<i><b>Please note that since version 7 there is a new extension mechanism in Game Maker.
+You are strongly encouraged to use that extension mechanism, rather than the functions
+described in this section. 
+See
+<a href="http://www.yoyogames.com/extensions" target="_blank">http://www.yoyogames.com/extensions</a>
+for details.
+These functions are mainly left in for compatibility
+with the past.</b></i>
+
+
+<p>
+In those cases were the functionality of GML is not enough for your wishes, 
+you can actually extend the possibilities by using plug-ins. A plug-in comes 
+in the form of a DLL file (a Dynamic Link Library). In such a DLL file you 
+can define functions. Such functions can be programmed in any programming 
+language that supports the creation of DLL's (e.g. Delphi, C, C++, etc.) 
+You will though need to have some programming skill to do this. Plug-in 
+functions must have a specific format. They can have between 0 and 16 
+arguments, each of which can either be a real number (double in C) or 
+a null-terminated string. (For more than 4 arguments, only real 
+arguments are supported at the moment.) They must return either 
+a real or a null-terminated string.
+
+<p>
+In Delphi you create a DLL by first choosing <b>New</b> 
+from the <b>File</b> menu and then choosing DLL. Here 
+is an example of a DLL you can use with <i>Game Maker</i> 
+written in Delphi. (Note that this is Delphi code, 
+not GML code!)
+
+<p>
+<blockquote>
+<pre>
+library MyDLL;
+
+uses SysUtils, Classes;
+
+function MyMin(x,y:double):double;  cdecl;
+begin
+  if x&lt;y then Result := x else Result := y;
+end;
+
+var res : array[0..1024] of char;
+
+function DoubleString(str:PChar):PChar; cdecl;
+begin
+  StrCopy(res,str);
+  StrCat(res,str);
+  Result := res;
+end;
+
+exports MyMin, DoubleString;
+
+begin
+end.
+</pre>
+</blockquote>
+
+<p>
+This DLL defines two functions: <tt>MyMin</tt> that takes two real arguments 
+and returns the minimum of the two, and <tt>DoubleString</tt> that 
+doubles the string. Note that you have to be careful with memory 
+management. That is why I declared the resulting string global. 
+Also notice the use of the cdecl calling convention. You can 
+either use cdecl or stdcall calling conventions. Once you build 
+the DLL in Delphi you will get a file <tt>MyDLL.DLL</tt>. This 
+file must be placed in the running directory of your game. 
+(Or any other place where Windows can find it.) 
+
+<p>
+To use this DLL in <i>Game Maker</i> you first need to specify the 
+external functions you want to use and what type of arguments they 
+take. For this there is the following function in GML:
+
+<p>
+<blockquote>
+  <tt><b>external_define(dll,name,calltype,restype,argnumb,arg1type,arg2type, ...)</b></tt> 
+    Defines an external function. dll is the name of the dll file. 
+	name is the name of the functions. calltype is the calling convention 
+	used. For this use either dll_cdecl or dll_stdcall. restype is the 
+	type of the result. For this use either ty_real or ty_string. argnumb 
+	is the number of arguments (0-16). Next, for each argument you must 
+	specify its type. For this again use either ty_real or ty_string. 
+	When there are more than 4 arguments all of them must be of type ty_real.<br>
+</blockquote>
+
+<p>
+This function returns the id of the external function that 
+must be used for calling it. So in the above example, at the 
+start of the game you would use the following GML code:
+
+<p>
+<blockquote>
+<pre>
+{
+  global.mmm = external_define('MyDLL.DLL','MyMin',dll_cdecl,
+                                     ty_real,2,ty_real,ty_real);
+  global.ddd = external_define('MyDLL.DLL','DoubleString',dll_cdecl,
+                                     ty_string,1,ty_string);
+}
+</pre>
+</blockquote>
+
+<p>
+Now whenever you need to call the functions, you use the following function:
+
+<p>
+<blockquote>
+  <tt><b>external_call(id,arg1,arg2,...)</b></tt> 
+    Calls the external function with the given id, and the given 
+	arguments. You need to provide the correct number of arguments 
+	of the correct type (real or string). The function returns
+	the result of the external function.<br>
+</blockquote>
+
+<p>
+So, for example, you would write:
+
+<p>
+<blockquote>
+<pre>
+{
+  aaa = external_call(global.mmm,x,y);
+  sss = external_call(global.ddd,'Hello');
+}
+</pre>
+</blockquote>
+
+<p>
+If you don't need to use the DLL anymore you had better free it.
+
+<p>
+<blockquote>
+  <tt><b>external_free(dll)</b></tt> 
+    Frees the DLL with the given name. This is in particular necessary if the 
+	game should remove the DLL. As long as the DLL is not freed it cannot be 
+	removed. Best do this e.g. in an end of game event.<br>
+</blockquote>
+
+<p>
+You might wonder how to make a function in a DLL that does 
+something in the game. For example, you might want to create 
+a DLL that adds instances of objects to your game. The easiest 
+way is to let your DLL function return a string that 
+contains a piece of GML code. This string that contains 
+the piece of GML can be executed using the GML function
+
+<p>
+<blockquote>
+  <tt><b>execute_string(str,arg0,arg1,...)</b></tt> 
+    Execute the piece of code in the string str with the indicated arguments.<br>
+</blockquote>
+
+<p>
+Alternatively you can let the DLL create a file with a 
+script that can be executed (this function can also be 
+used to later modify the behavior of a game).
+
+<p>
+<blockquote>
+  <tt><b>execute_file(fname)</b></tt> 
+    Execute the piece of code in the file.<br>
+</blockquote>
+
+<p>
+Now you can call an external function and then execute the resulting string, e.g. as follows:
+
+<p>
+<blockquote>
+<pre>
+{
+  ccc = external_call(global.ddd,x,y);
+  execute_string(ccc);
+}
+</pre>
+</blockquote>
+
+<p>
+In some rare cases your DLL might need to know the handle of the main
+graphics window for the game. This can be obtained with the following 
+function and can then be passed to the DLL:
+
+<p>
+<blockquote>
+  <tt><b>window_handle()</b></tt> 
+    Returns the window handle for the main window.<br>
+</blockquote>
+
+<p>
+Note that DLLs cannot be used in secure mode.
+
+<p>
+Using external DLLs is an extremely powerful mechanism. 
+But please only use it if you know what you are doing.
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+DLL
+plug-in
+external functions
+Delphi
+C++
+extending Game Maker
+adding functionality
+window handle
+executing strings
+executing external scripts
+executing files
+
+external_call()
+external_define()
+external_free()
+window_handle()
+ty_real
+ty_string
+dll_cdecl
+dll_stdcall
+-->

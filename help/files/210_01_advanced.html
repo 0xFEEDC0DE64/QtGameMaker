@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Advanced settings</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>Advanced settings</h3>
+
+There were two aspects in the <b>settings</b> tab that we have not yet
+discussed. First of all, there is a checkbox labeled <b>Persistent</b>.
+Normally, when you leave a room and return to the same room later, the room
+is reset to its initial settings. This is fine if you have a number of
+levels in your game but it is normally not what you want in for example an
+RPG. Here the room should be the way you left it the last time. Checking the
+box labeled <b>Persistent</b> will do exactly that. The room status will be
+remembered and when you return to it later, it will be exactly the same as
+you left it. Only when you restart the game will the room be reset.
+Actually, there is one exception to this. If you marked certain objects as
+being persistent, instances of this object will not stay in
+the room but move to the next room.
+
+<p>
+Secondly, there is a button labeled <b>Creation code</b>. Here you can type
+in a piece of code in GML (see later) that is executed when the room is
+created. This is useful to fill in certain variables for the room,
+create certain instances, etc. It is important to understand what exactly
+happens when you move to a particular room in the game.
+
+<ul>
+  <li>First, in the current room (if any) all instances get a room-end
+    event. Next the non-persistent instances are removed (no destroy event is
+    generated!).</li>
+  <li>Next, for the new room the persistent instances from the previous room
+    are added.</li>
+  <li>All new instances are created and their creation events are executed
+    (if the room is not persistent or has not been visited before).</li>
+  <li>When this is the first room, for all instances the game-start event is
+    generated.</li>
+  <li>Now the room creation code is executed.</li>
+  <li>Finally, all instances get a room-start event.</li>
+</ul>
+
+<p>
+So, for example, the room-start events can use variables set by the creation
+code for the room and in the creation code you can refer to the instances
+(both new ones and persistent ones) in the room.
+
+<p>
+There is one further option. In the pop-up menu when you right click on an
+instance with the &lt;Ctrl&gt; key you can now indicate some creation code
+for the specific instance. This code is executed when the room is started,
+just before the creation event of the instance is executed. This is very
+useful to e.g. set certain parameters that are specific to the instance.
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+persistent rooms
+persistence, rooms
+room creation code
+creation code
+event order
+-->

@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Changers</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>Changers</h3>
+
+Changers change certain particles when they appear in their region. 
+A particle system can have an arbitrary number of changers. 
+A changer has the following properties:
+
+<ul>
+  <li><tt><b>xmin, xmax, ymin, ymax</b></tt> 
+    indicates the extent of the region in which the particles are changed.</li>
+  <li><tt><b>shape</b></tt> 
+    indicates the shape of the region. It can have the following values:</li>
+  <ul>
+    <li><tt>ps_shape_rectangle</tt></li>
+    <li><tt>ps_shape_ellipse</tt></li>
+    <li><tt>ps_shape_diamond</tt></li>
+  </ul>
+  <li><tt><b>parttype1</b></tt> 
+    indicates the particle type that is changed.</li>
+  <li><tt><b>parttype2</b></tt> 
+    indicates the particle type into which it is changed.</li>
+  <li><tt><b>kind</b></tt> 
+    indicates the kind of changer. It can have the following values:</li>
+  <ul>
+    <li><tt>ps_change_motion</tt> 
+	  only changes the motion parameters of the particle, not the color and shape or lifetime settings.</li>
+    <li><tt>ps_change_shape</tt> 
+	  only changes the shape parameters like size and color and shape.</li>
+    <li><tt>ps_change_all</tt> 
+	  changes all parameters, this basically means that the particle is destroyed
+	  and a new one of the new type is created.</li>
+  </ul>
+</ul>
+
+<p>
+The following functions are available to set the properties of the changer. 
+Note that each of them gets the index of the particle system to which 
+it belongs as a first argument.
+
+<p>
+<blockquote>
+  <tt><b>part_changer_create(ps)</b></tt> 
+    Creates a new changer in the given particle system. It returns the index of the changer. 
+	This index must be used in all calls below to set the properties of the changer.<br>
+  <tt><b>part_changer_destroy(ps,ind)</b></tt> 
+    Destroys changer ind in the particle system. 
+	Call this if you don't need it anymore to save space.<br>
+  <tt><b>part_changer_destroy_all(ps)</b></tt> 
+    Destroys all changers in the particle system that have been created.<br>
+  <tt><b>part_changer_exists(ps,ind)</b></tt> 
+    Returns whether the indicated changer exists in the particle system.<br>
+  <tt><b>part_changer_clear(ps,ind)</b></tt> 
+    Clears the changer ind to its default settings.<br>
+  <tt><b>part_changer_region(ps,ind,xmin,xmax,ymin,ymax,shape)</b></tt> 
+    Sets the region for the changer.<br>
+  <tt><b>part_changer_types(ps,ind,parttype1,parttype2)</b></tt> 
+    Sets which particle type the changer must change into what other type.<br>
+  <tt><b>part_changer_kind(ps,ind,kind)</b></tt> 
+    Sets the kind for the changer.
+</blockquote>
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+part_changer_create()
+part_changer_destroy()
+part_changer_destroy_all()
+part_changer_exists()
+part_changer_clear()
+part_changer_region()
+part_changer_kind()
+part_changer_types()
+ps_change_all
+ps_change_shape
+ps_change_motion
+
+-->

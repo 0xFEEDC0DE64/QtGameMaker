@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Draw actions</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+
+<h3>Draw actions</h3>
+
+Normally in each step of the game, for each instance, its sprite is drawn in the room.
+You can change this by putting actions in the draw event. (Note that these are only
+executed when the instance is visible!) The following drawing actions are available.
+These actions only make sense in the drawing event. At other places they are 
+basically ignored.
+
+<p>
+<b><img src="images/action_drawsprite.bmp"> Draw Sprite</b><br>
+You specify the sprite, the position (either absolute or relative 
+to the current instance position) and the subimage of the sprite. 
+(The subimages are numbered from 0 upwards.) If you want to 
+draw the current subimage, use number -1.
+
+<p>
+<b><img src="images/action_drawbackground.bmp"> Draw Background</b><br>
+You indicate the background image, the position (absolute or relative) and 
+whether the image should be tiled all over the room or not.
+
+<p>
+<b><img src="images/action_drawtext.bmp"> Draw Text</b><br>
+You specify the text and the position. A # symbol in the text is interpreted 
+as going to a new line. (Use \# to get the # symbol itself.) So you can 
+create multi-line texts. If the text starts with a quote or a double quote, 
+it is interpreted as an expression. For example, you can use
+
+<pre>
+'X: ' + string(x)
+</pre>
+
+<p>
+to display the value of the x-coordinate of the instance. 
+(The variable x stores the current x-coordinate. The function <tt>string()</tt> turns 
+this number into a string. + concatenates the two strings.)
+
+<p>
+<b><img src="images/action_drawtextext.bmp"> Draw Scaled Text</b><br>
+This action is similar to the previous action but this time you can also 
+specify a horizontal and vertical scaling factor to change the size of the
+text and you can specify an angle to rotate it. 
+<b><i>This action is only available in the Pro Edition.</i></b> 
+
+<p>
+<b><img src="images/action_drawrectangle.bmp"> Draw Rectangle</b><br>
+You specify the coordinates of the two opposite corners of the rectangle; 
+either absolute or relative to the current instance position.
+
+<p>
+<b><img src="images/action_drawhorgradient.bmp"> Horizontal Gradient</b><br>
+This action also draws a rectangle but this time using a gradient color that 
+changes from left to right. You specify the rectangle and the two colors to use.
+<b><i>This action is only available in the Pro Edition.</i></b> 
+
+<p>
+<b><img src="images/action_drawvertgradient.bmp"> Vertical Gradient</b><br>
+This action also draws a rectangle but this time using a gradient color that 
+changes from top to bottom. You specify the rectangle and the two colors to use.
+<b><i>This action is only available in the Pro Edition.</i></b> 
+
+<p>
+<b><img src="images/action_drawellipse.bmp"> Draw Ellipse</b><br>
+This action draws an ellipse.
+You specify the coordinates of the two opposite corners of the surrounding 
+rectangle; either absolute or relative to the current instance position.
+
+<p>
+<b><img src="images/action_drawellipsegradient.bmp"> Gradient Ellipse</b><br>
+Again an ellipse is drawn but this time you specify a color for the center and
+the boundary.
+<b><i>This action is only available in the Pro Edition.</i></b> 
+
+<p>
+<b><img src="images/action_drawline.bmp"> Draw Line</b><br>
+You specify the coordinates of the two endpoints of the line; either 
+absolute or relative to the current instance position.
+
+<p>
+<b><img src="images/action_drawarrow.bmp"> Draw Arrow</b><br>
+Draws an arrow. You specify the coordinates of the two endpoints of the line
+and the size of the arrow tip.
+
+<p>
+<b><img src="images/action_color.bmp"> Set Color</b><br>
+Lets you set the color used for drawing shapes, lines, and text.
+(It does not influence the way sprites and backgrounds are drawn.)
+
+<p>
+<b><img src="images/action_fullscreen.bmp"> Set Full Screen</b><br>
+With this action you can change the screen mode from windowed to fullscreen 
+and back. You can indicate whether to toggle the mode or whether to go to 
+windowed or fullscreen mode.
+
+<p>
+<b><img src="images/action_snapshot.bmp"> Take Snapshot</b><br>
+With this action you can take a snapshot image of the game and store 
+it in a .png file. You specify the filename to store the image in.
+<b><i>This action is only available in the Pro Edition.</i></b> 
+
+<p>
+<b><img src="images/action_explosion.bmp"> Create Effect</b><br>
+With this action you can create all sorts of effects in a very simple way. You 
+specify the type of effect, e.g. an explosion or smoke, its position, its size and its color and
+whether it should be shown below the objects or on top of them. For the
+rest it works automatic. (For rain and snow the position is irrelevant
+as it always falls down from the top of the screen. To get continuous
+rain you should create it in each step.) Please note that below actually means
+at a depth of 100000 and above means at a depth of -100000.
+<b><i>This action is only available in the Pro Edition.</i></b> 
+
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+drawing actions
+drawing shapes
+-->

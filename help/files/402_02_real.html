@@ -1,0 +1,166 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Real-valued functions</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>Real-valued functions</h3>
+
+The following functions exist that deal with real numbers.
+
+<p>
+<blockquote>
+  <tt><b>random(x)</b></tt>
+    Returns a random real number between 0 and x. The number is always smaller than x.<br>
+  <tt><b>random_range(x1,x2)</b></tt>
+    Returns a random real number between x1 (inclusive) and x2 (exclusive).<br>
+  <tt><b>irandom(x)</b></tt>
+    Returns a random integer number between 0 and x (inclusive when x is an integer).<br>
+  <tt><b>irandom_range(x1,x2)</b></tt>
+    Returns a random real number between x1 (inclusive) and x2 (inclusive). Both x1 and x2 must
+	be integer values (otherwise they are rounded down).<br>
+  <tt><b>random_set_seed(seed)</b></tt>
+    Sets the seed (an integer) that is used for the random number generation. Can be used
+	to repeat the same random sequence. (Note though that also some actions and the system
+	itself uses random numbers.)<br>
+  <tt><b>random_get_seed()</b></tt>
+    Returns the current seed.<br>
+  <tt><b>randomize()</b></tt>
+    Sets the seed to a random number.<br>
+  <tt><b>choose(val1,val2,val3,...)</b></tt>
+    Returns one of the arguments choosen randomly.
+	The function can have up to 16 arguments.<br>
+  <tt><b>abs(x)</b></tt>
+    Returns the absolute value of x.<br>
+  <tt><b>sign(x)</b></tt>
+    Returns the sign of x (-1, 0 or 1).<br>
+  <tt><b>round(x)</b></tt>
+    Returns x rounded to the nearest integer.<br>
+  <tt><b>floor(x)</b></tt>
+    Returns the floor of x, that is, x rounded down to an integer.<br>
+  <tt><b>ceil(x)</b></tt>
+    Returns the ceiling of x, that is, x rounded up to an integer.<br>
+  <tt><b>frac(x)</b></tt>
+    Returns the fractional part of x, that is, the part behind the decimal dot.<br>
+  <tt><b>sqrt(x)</b></tt>
+    Returns the square root of x. x must be non-negative.<br>
+  <tt><b>sqr(x)</b></tt>
+    Returns x*x.<br>
+  <tt><b>power(x,n)</b></tt>
+    Returns x to the power n.<br>
+  <tt><b>exp(x)</b></tt>
+    Returns e to the power x.<br>
+  <tt><b>ln(x)</b></tt>
+    Returns the natural logarithm of x.<br>
+  <tt><b>log2(x)</b></tt>
+    Returns the log base 2 of x.<br>
+  <tt><b>log10(x)</b></tt>
+    Returns the log base 10 of x.<br>
+  <tt><b>logn(n,x)</b></tt>
+    Returns the log base n of x.<br>
+  <tt><b>sin(x)</b></tt>
+    Returns the sine of x (x in radians).<br>
+  <tt><b>cos(x)</b></tt>
+    Returns the cosine of x (x in radians).<br>
+  <tt><b>tan(x)</b></tt>
+    Returns the tangent of x (x in radians).<br>
+  <tt><b>arcsin(x)</b></tt>
+    Returns the inverse sine of x.<br>
+  <tt><b>arccos(x)</b></tt>
+    Returns the inverse cosine of x.<br>
+  <tt><b>arctan(x)</b></tt>
+    Returns the inverse tangent of x.<br>
+  <tt><b>arctan2(y,x)</b></tt>
+    Calculates arctan(Y/X), and returns an angle in the correct quadrant.<br>
+  <tt><b>degtorad(x)</b></tt>
+    Converts degrees to radians.<br>
+  <tt><b>radtodeg(x)</b></tt>
+    Converts radians to degrees.<br>
+  <tt><b>min(val1,val2,val3,...)</b></tt>
+    Returns the minimum of the values. The function can have up to 16 arguments. 
+	They must either be all real or all strings.<br>
+  <tt><b>max(val1,val2,val3,...)</b></tt>
+    Returns the maximum of the values. The function can have up to 16 arguments. 
+	They must either be all real or all strings.<br>
+  <tt><b>mean(val1,val2,val3,...)</b></tt>
+    Returns the average of the values. The function can have up to 16 arguments. 
+	They must all be real values.<br>
+  <tt><b>median(val1,val2,val3,...)</b></tt>
+    Returns the median of the values, that is, the middle value. (When the number
+	of arguments is even, the smaller of the two middle values is returned.)
+	The function can have up to 16 arguments. 
+	They must all be real values.<br>
+  <tt><b>point_distance(x1,y1,x2,y2)</b></tt>
+    Returns the distance between point (x1,y1) and point (x2,y2).<br>
+  <tt><b>point_direction(x1,y1,x2,y2)</b></tt>
+    Returns the direction from point (x1,y1) toward point (x2,y2) in degrees.<br>
+  <tt><b>lengthdir_x(len,dir)</b></tt>
+    Returns the horizontal x-component of the vector determined by the 
+	indicated length and direction.<br>
+  <tt><b>lengthdir_y(len,dir)</b></tt>
+    Returns the vertical y-component of the vector determined by the 
+	indicated length and direction.<br>
+  <tt><b>is_real(x)</b></tt>
+    Returns whether x is a real value (as opposed to a string).<br>
+  <tt><b>is_string(x)</b></tt>
+    Returns whether x is a string (as opposed to a real value).<br>
+</blockquote>
+
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+mathematical functions
+computing
+calculations
+mathematics
+trigonometric functions
+
+is_real()
+is_string()
+random()
+random_range()
+irandom()
+irandom_range()
+random_set_seed()
+random_get_seed()
+randomize()
+choose()
+abs()
+round()
+floor()
+ceil()
+sign()
+frac()
+sqrt()
+sqr()
+exp()
+ln()
+log2()
+log10()
+sin()
+cos()
+tan()
+arcsin()
+arccos()
+arctan()
+arctan2()
+degtorad()
+radtodeg()
+power()
+logn()
+min()
+max()
+mean()
+median()
+point_distance()
+point_direction()
+lengthdir_x()
+lengthdir_y()
+-->

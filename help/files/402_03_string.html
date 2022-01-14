@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>String handling functions</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>String handling functions</h3>
+
+The following functions deal with characters and string.
+
+<p>
+<blockquote>
+  <tt><b>chr(val)</b></tt>
+    Returns a string containing the character with asci code val.<br>
+  <tt><b>ord(str)</b></tt>
+    Returns the asci code of the first character in str.<br>
+  <tt><b>real(str)</b></tt>
+    Turns str into a real number. str can contain a minus sign, a decimal 
+	dot and even an exponential part.<br>
+  <tt><b>string(val)</b></tt>
+    Turns the real value into a string using a standard format (no decimal 
+	places when it is an integer, and two decimal places otherwise).<br>
+  <tt><b>string_format(val,tot,dec)</b></tt>
+    Turns val into a string using your own format: tot indicates the total 
+	number of places and dec indicates the number of decimal places.<br>
+  <tt><b>string_length(str)</b></tt>
+    Returns the number of characters in the string.<br>
+  <tt><b>string_pos(substr,str)</b></tt>
+    Returns the position of substr in str (0=no occurrence).<br>
+  <tt><b>string_copy(str,index,count)</b></tt>
+    Returns a substring of str, starting at position index, and of length count.<br>
+  <tt><b>string_char_at(str,index)</b></tt>
+    Returns the character in str at position index.<br>
+  <tt><b>string_delete(str,index,count)</b></tt>
+    Returns a copy of str with the part removed that starts at position 
+	index and has length count.<br>
+  <tt><b>string_insert(substr,str,index)</b></tt>
+    Returns a copy of str with substr added at position index.<br>
+  <tt><b>string_replace(str,substr,newstr)</b></tt>
+    Returns a copy of str with the first occurrence of substr replaced by newstr.<br>
+  <tt><b>string_replace_all(str,substr,newstr)</b></tt>
+     Returns a copy of str with all occurrences of substr replaced by newstr.<br>
+  <tt><b>string_count(substr,str)</b></tt>
+    Returns the number of occurrences of substr in str.<br>
+  <tt><b>string_lower(str)</b></tt>
+    Returns a lowercase copy of str.<br>
+  <tt><b>string_upper(str)</b></tt>
+    Returns an uppercase copy of str.<br>
+  <tt><b>string_repeat(str,count)</b></tt>
+    Returns a string consisting of count copies of str.<br>
+  <tt><b>string_letters(str)</b></tt>
+    Returns a string that only contains the letters in str.<br>
+  <tt><b>string_digits(str)</b></tt>
+    Returns a string that only contains the digits in str.<br>
+  <tt><b>string_lettersdigits(str)</b></tt>
+    Returns a string that contains the letters and digits in str.<br>
+</blockquote>
+
+<p>
+The following functions deal with the clipboard for storing text.
+
+<p>
+<blockquote>
+  <tt><b>clipboard_has_text()</b></tt>
+    Returns whether there is any text on the clipboard.<br>
+  <tt><b>clipboard_get_text()</b></tt>
+    Returns the current text on the clipboard.<br>
+  <tt><b>clipboard_set_text(str)</b></tt>
+    Sets the string str on the clipboard.<br>
+</blockquote>
+
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+string functions
+clipboard functions
+
+real()
+string()
+string_format()
+chr()
+ord()
+string_length()
+string_pos()
+string_copy()
+string_char_at()
+string_delete()
+string_insert()
+string_lower()
+string_upper()
+string_repeat()
+string_letters()
+string_digits()
+string_lettersdigits()
+string_replace()
+string_replace_all()
+string_count()
+clipboard_has_text()
+clipboard_set_text()
+clipboard_get_text()
+-->

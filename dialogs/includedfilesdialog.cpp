@@ -2,7 +2,7 @@
 #include "ui_includedfilesdialog.h"
 
 #include "projectcontainer.h"
-#include "includedfilesmodel.h"
+#include "models/includedfilesmodel.h"
 
 IncludedFilesDialog::IncludedFilesDialog(ProjectContainer &project, QWidget *parent) :
     QDialog{parent},

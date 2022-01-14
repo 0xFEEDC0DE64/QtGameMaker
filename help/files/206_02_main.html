@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>More main actions</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+
+<h3>More main actions</h3>
+
+Some additional main actions are available in advanced mode. The following actions are added:
+
+<p>
+<b><img src="images/action_timeline_set.bmp"> Set Time Line</b><br>
+With this action you set the particular 
+time line for an instance of an object. You indicate the time line and the 
+starting position within the time line (0 is the beginning). Also you indicate
+whether the time line should start immediately and whether it should loop at the end.
+
+<p>
+<b><img src="images/action_timeline_position.bmp"> Time Line Position</b><br>
+With this action you can change the position 
+in the current time line (either absolute or relative). This can be used to skip 
+certain parts of the time line or to repeat certain parts.
+
+<p>
+<b><img src="images/action_timeline_speed.bmp"> Time Line Speed</b><br>
+With this action you can change the speed of the time line (either absolute or relative).
+A speed of 1 is the normal speed. When you e.g. set it to 2 the actions will happen twice
+as fast and when you set it to 0.5 twice as slow. You can also set a negative speed, in which
+case the time line is played backwards.
+
+<p>
+<b><img src="images/action_timeline_start.bmp"> Start Time Line</b><br>
+This action starts the time line from its current position (if it is paused or stopped).
+
+<p>
+<b><img src="images/action_timeline_pause.bmp"> Pause Time Line</b><br>
+This action pauses the time line. Use the start action to let it continue.
+
+<p>
+<b><img src="images/action_timeline_stop.bmp"> Stop Time Line</b><br>
+This action stops the time line and sets the position back to 0.
+
+<p>
+<b><img src="images/action_splash_text.bmp"> Splash Text</b><br>
+With this action you can show a text file. This can either be a .txt
+file or a .rtf (Rich Text Format) file (no images or embedded objects
+are shown though). You specify the file name. Make sure 
+the file exists. You should either distribute it with the game or 
+include it in the game through <b>Include Files</b> in the <b>Resources</b> menu.
+(Note that no scrollbar will be shown nor is
+there another way to scroll the text. So the text must fit the window.)
+<b><i>This action is only available in the Pro Edition.</i></b> 
+
+<p>
+<b><img src="images/action_splash_image.bmp"> Splash Image</b><br>
+With this action you can show an image file. Most common image
+file types are supported. You specify the file name. Make sure 
+the file exists. You should either distribute it with the game or 
+include it in the game through <b>Include Files</b> in the <b>Resources</b> menu.
+You can e.g. use this to create a series of images as help for your
+game. Not including the images in the game itself will reduce game
+size and improve game loading time.
+<b><i>This action is only available in the Pro Edition.</i></b> 
+
+<p>
+<b><img src="images/action_splash_web.bmp"> Splash Webpage</b><br>
+With this action you can show a webpage. You provide the url and
+whether it should be shown in the game window or in the default web browser.
+The url can be the address of a website, for example 
+<tt>http://www.yoyogames.com</tt>) or can be the file name for a local html file. 
+Note however that you must provide the full path for this to work (which is not the
+case for the other splash actions). So you best use as url
+something like <tt>"" + working_directory + "\index.html"</tt>.
+(The first two quotes are required to indicate this is an expression
+rather than a string.) You should either distribute the file with the game or 
+include it in the game through <b>Include Files</b> in the <b>Resources</b> menu.
+You can e.g. use this to create fancy help pages for your game.
+<b><i>This action is only available in the Pro Edition.</i></b> 
+
+<p>
+<b><img src="images/action_splash_video.bmp"> Splash Video</b><br>
+With this action you can show a video/movie file. You specify the file 
+name and whether is must be looped. Make sure 
+the video file exists. You should either distribute it with the game or 
+include it in the game through <b>Include Files</b> in the <b>Resources</b> menu.
+<b><i>This action is only available in the Pro Edition.</i></b> 
+
+<p>
+<b><img src="images/action_splash_settings.bmp"> Splash Settings</b><br>
+With this action you can change certain settings for the splash screens that
+you display with the previous actions. You can provide the caption for the
+help window (only when it is shown in a separate normal window), you can indicate
+where the splash screens must be shown (inside the game window, in a normal 
+window, or full screen), you can indicate whether a close button must be shown
+in the top right corner of the splash screen and whether pressing the escape
+key or clicking with a mouse in the splash screen will close the splash screen.
+(For web pages clicking with the mouse will not work nor will the escape key
+work unless the close button is shown.)
+<b><i>This action is only available in the Pro Edition.</i></b> 
+
+<p>
+<b><img src="images/action_resourcesprite.bmp"> Replace Sprite</b><br>
+This action can be used to replace a sprite from the contents of a file. 
+You indicate the sprite you want to replace, the filename 
+and the number of subimages in the sprite. 
+Many different images file formats are supported, e.g. .bmp, .jpg, .tif, and .gif.
+For a gif file the number of subimages is automatically decided based on the 
+number of subimages in the gif file. Other settings for the sprite, e.g. 
+whether it is transparent or not, are not changed. You can use this action 
+to avoid storing all sprites in the program itself. For example, at the beginning of a 
+level you can replace sprites by the actual character sprites you want 
+to use. DON'T change a sprite that is at that moment being used in an instance in 
+the room. This might give unwanted effects with collisions.
+<b><i>This action is only available in the Pro Edition.</i></b> 
+
+<p>
+<b><img src="images/action_resourcesound.bmp"> Replace Sound</b><br>
+With this action you can replace a sound by the contents of a file (.wav, .mid, or .mp3). 
+You specify the sound and the filename. This avoids having to store all the sounds in the 
+game itself. For example, you can use different pieces of background music and pick the 
+one you want to play. DON'T change a sound while it is playing.
+<b><i>This action is only available in the Pro Edition.</i></b> 
+
+<p>
+<b><img src="images/action_resourcebackground.bmp"> Replace Background</b><br>
+With this action you can replace a background by the contents of a file. 
+Many different images file formats are supported, e.g. .bmp, .jpg, .tif, and .gif.
+You specify the background and the filename. This avoids having to store all the backgrounds 
+in the game itself. DON'T change a background that is visible.
+<b><i>This action is only available in the Pro Edition.</i></b> 
+
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+replacing resources
+showing videos
+video display
+movie display
+showing splash screens
+splash screens
+fancy help
+webpage display
+showing webpages
+webpage
+show website
+website
+time line
+looping time lines
+-->

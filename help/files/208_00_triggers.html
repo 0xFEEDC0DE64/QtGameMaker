@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html><head>
+<title>Trigger events</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+
+<h1>Trigger events</h1>
+
+<b><i>This functionality is only available in the Pro Edition of Game Maker.</i></b>
+
+<p>
+In advanced mode a new type of events is available: trigger events. Trigger events
+you can define yourself. You specify the condition when the event must be executed.
+To define trigger events you chose <b>Define Triggers</b> from the <b>Resources</b> menu.
+The following form will show (in which already some triggers have been defined):
+
+
+<p>
+<img src="images/form_trigger.jpg">
+
+<p>
+At the left you see a list of all triggers that have been defined. Initially this list is empty. 
+Below there are some buttons with the following function:
+
+<p>
+<ul>
+  <li><b>Add.</b> 
+    Use this button to add a new trigger event to the list. </li>
+  <li><b>Delete.</b> 
+    Deletes the currently selected trigger event to the list. Be careful to never
+	delete a trigger event that is used in an object. It might lead to unexpected
+	results. </li>
+  <li><b>Load.</b> 
+    Loads a collection of triggers from a file. Such a file must have extension
+	.gmtrg. The triggers from the file are added to the list of triggers.  </li>
+  <li><b>Save.</b> 
+    Saves the collection of triggers to a file. Such a file must have extension
+	.gmtrg. In this way you can create your own collections of useful triggers that
+	you can use in different games. </li>
+  <li><b>Clear.</b> 
+    Clears the list of triggers. Be careful to only use this when no object uses
+	any trigger event. </li>
+</ul>
+
+<p>
+Once you are finished you can press the <b>OK</b> button to save the changes. If you do not
+want to save the changes, close the form with the cross in the top right corner and indicate
+that you do not want to save changes.
+
+<h3>Defining a trigger</h3>
+
+<p>
+Once you added a trigger you should fill in its properties. First of all you must give the trigger a name.
+This name will appear in the menu with available triggers and in the event lists for objects. Next you
+must specify the condition that will trigger the event. This is a piece of GML-code. It must contain
+a return statement that returns a true or false value. The trigger will fire when the return value is true.
+Here are some examples. 
+
+<p>
+Assume you want to create an event that happens when the player presses both the Control key and the A key.
+For this you can use the following condition:
+
+<p>
+<blockquote>
+<pre>
+{
+  <b>return</b> keyboard_check(ord('A')) &&
+         keyboard_check(vk_control);
+}
+</pre>
+</blockquote>
+
+<p>
+You can put complete scripts in the condition as long as there somewhere is a return statement. For
+example, to have an event that happen when the number of balls is between 3 and 5, you can use the
+following condition:
+
+<p>
+<blockquote>
+<pre>
+{
+  <b>var</b> n;
+  n = instance_number(obj_ball);
+  <b>return</b> (n &gt;= 3) && (n &lt;= 5);
+}
+</pre>
+</blockquote>
+
+<p>
+You can create many other type of trigger events. For example events that check for combinations of
+keys and mouse buttons, events that check whether you are near to an enemy, events to check whether
+you collected enough money or score, etc. 
+
+<p>
+If the condition gets a bit long you might want to edit it in the code editor instead. To that end press
+the button <b>Use code editor</b>.
+</p>
+
+<p>
+After you specified the condition you should specify when the condition is tested. There are three options
+here. You can test the condition at the beginning of a step (just before the begin step event), in
+the middle (just before the normal step event) or at the end (just before the end step event). Most
+of the time the default middle position is fine but in certain cases you need the other moments.
+</p>
+
+<p>
+Finally, when you also want to call the event from code you can specify a constant with which you
+can refer in code to the event. See Chapter 4 for more details about calling events from code.
+</p>
+
+<h3>Using a trigger</h3>
+
+<p>
+Once you have defined your scripts you can use them when defining objects. When setting the object
+properties and click on <b>Add Event</b>, you can now select <b>Trigger</b> events.
+
+<p>
+<img src="images/form_event_selector2.jpg">
+
+<p>
+In the drop-down menu that appears you can select the type of trigger event you want to use. Now
+you can add actions to this event in the same way as you add actions to other events.
+</p>
+
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+trigger
+trigger events
+defining triggers
+-->

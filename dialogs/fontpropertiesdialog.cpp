@@ -5,7 +5,7 @@
 #include <QMessageBox>
 
 #include "projectcontainer.h"
-#include "projecttreemodel.h"
+#include "models/projecttreemodel.h"
 
 FontPropertiesDialog::FontPropertiesDialog(Font &font, ProjectTreeModel &projectModel, QWidget *parent) :
     QDialog{parent},

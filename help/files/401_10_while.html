@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>While statement</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>While statement</h3>
+
+A while statement has the form
+
+<p>
+<blockquote>
+<pre><b>while</b> (&lt;expression&gt;) &lt;statement&gt;</pre>
+</blockquote>
+
+<p>
+As long as the expression is true, the statement (which can also be a
+block) is executed. Be careful with your while loops. You can easily make
+them loop forever, in which case your game will hang and not react to any
+user input anymore.
+
+<p>
+<b>Example</b><br>
+
+The following program tries to place the current object at a free position
+(this is about the same as the action to move an object to a random
+position).
+
+<p>
+<blockquote>
+<pre>
+{
+  <b>while</b> (!place_free(x,y))
+  {
+    x = random(room_width);
+    y = random(room_height);
+  }
+}
+</pre>
+</blockquote>
+
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+while statement
+loop
+-->

@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html><head>
+<title>Defining sprites</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h1>Defining sprites</h1>
+
+Sprites are the visual representations of all the objects in the game. A
+sprite is either a single image, drawn with any drawing program you like,
+or a set of images that, when played one after another, looks like an
+animated motion. For example, the following four images form a sprite for
+a character moving to the right.
+
+<p>
+<img src="images/sprite.jpg">
+
+<p>
+When you make a game you normally start by collecting a set of nice
+sprites for the objects in your game. A considerable number of useful sprites is 
+bundled with <i>Game Maker</i>. Other collections of interesting
+sprites can be found on the <i>Game Maker</i> website. Many more
+sprites can be found on the web, normally in the form of png or animated gif
+files.
+
+<p>
+To create a sprite, choose the item <b>Create</b> Sprite from the <b>Resources</b>
+menu, or use the corresponding button on the toolbar. The following form
+will pop up.
+
+<p>
+<img src="images/form_sprite.jpg">
+
+<p>
+At the top-left you can indicate the name of the sprite. All sprites (and all
+other resources) have a name. It's best to give each sprite a descriptive
+name. Make sure all resources get different names. Even though this is
+not strictly required, you are strongly advised to use only letters and
+digits and the underscore symbol (_) in a name of a sprite (and any other
+resource) and to let it start with a letter. In particular don't use the
+space character. This will become important once you start using code.
+
+<p>
+To load a sprite, click on the button <b>Load Sprite</b>. A special file
+dialog opens in which you can choose the sprite:
+
+<p>
+<img src="images/sprite_dialog.jpg">
+
+<p>
+The left part looks like the standard file selector in which you can select the 
+sprite that you want. At the right you get a preview of the animated sprite and
+some information about it. Here you can also indicate that you want to make the
+sprite opaque (that is, remove any transparent parts), whether
+to remove the background, making it transparent (default), and whether to smooth the
+edges of the sprite, which can improve its appearance. When you are happy with
+the result press <b>Open</b> to load the sprite. 
+<p>
+<i>Game Maker</i> can
+load many different graphics files. When you load an animated gif, the
+different subimages form the sprite images. 
+When the file name ends with _stripXX, with XX a number, it 
+is considered to contain a strip of XX subimages next to each other (not for
+gif files). For example, a image file with name ball_strip4.png is assumed to
+contain 4 subimages.
+
+<p>
+Once the sprite is loaded
+the first subimage is shown on the right. When there are multiple sub-
+images, you can cycle through them using the arrow buttons.
+
+<p>
+With the button <b>Edit Sprite</b> you can edit the sprite, or even
+create a completely new sprite. <i>Game Maker</i> has an extensive built-in sprite
+and image editor. For more information see the sections on
+<a href="202_01_editing.html">Editing your sprites</a> and on
+<a href="202_03_individual.html">Editing individual subimages</a>.
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+adding sprites
+creating sprites
+sprites
+images
+loading sprites
+transparent sprites
+editing sprites
+sprites, subimages
+GIF files
+PNG files
+strips
+animated sprites
+-->

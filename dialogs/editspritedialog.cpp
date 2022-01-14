@@ -4,7 +4,7 @@
 #include <QMessageBox>
 
 #include "projectcontainer.h"
-#include "spritesmodel.h"
+#include "models/spritesmodel.h"
 #include "createspritedialog.h"
 #include "imageeditordialog.h"
 

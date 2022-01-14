@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>3D Graphics</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<H1>3D Graphics</H1>
+
+<i><b>This functionality is only available in the Pro Edition of Game Maker.</b></i>
+
+<p>
+<i>Game Maker</i> is a program meant for making 2-dimensional and isometric games. Still
+there is some functionality to create 3-dimensional graphics. Before you start with this though 
+there are a few things you must understand.
+
+<ul>
+  <li> The 3D functionality in <i>Game Maker</i> is limited to the graphics part. There is
+    no support for other 3D functionality. Once you start using 3D graphics you might
+	get problems with other aspects of <i>Game Maker</i>, like the views,
+	depth ordering, etc. The functionality is limited and has low priority to
+	be extended. So don't expect support for 3D object models, etc.</li>
+  <li> When you use the 3D functionality, there are a number of other things that can no
+    longer be used. 
+	<ul>
+	  <li> You cannot use background and foregrounds in your rooms
+	    anymore. (The reason is that they are tiled to fill the image but with perspective
+	    projections this no longer work correctly).</li>
+	  <li> You cannot use the mouse position anymore. The mouse will not be transformed to the 
+	    3D coordinates. You can still get the position of the mouse on the screen (in the view)
+		but you will have to do calculation with this yourself (or not use the mouse at all).</li>
+	  <li> You cannot use tiles anymore. Tiles will most likely no longer match up correctly.</li>
+	  <li> Collision checking still uses the 2-d positions of the instances in the room. So there
+	    is no collision detection in 3D. Sometimes you can still use this (if you use the room
+		as a representation of a flat world (e.g. for racing or FPS games) but in other situations
+		you have to do things yourself.</li>
+	</ul>
+  <li> All 3D functionality is through code. You must be rather fluent with the GML language. 
+    Also you must really understand a lot about how <i>Game Maker</i> works otherwise you will
+	run into trouble.</li>
+  <li> You must have some basic knowledge about 3D graphics. In particular I will use terms
+    like perspective projections, hidden surface removal, lighting, and fog, without much
+	explanation.</li>
+  <li> There is no 3D modelling in <i>Game Maker</i>. Also I do not plan on adding support
+    for loading 3D models.</li>
+  <li> You must work carefully to keep a reasonable speed. Also, things are not really 
+    optimized for speed. </li>
+</ul>
+
+<p>
+If this did not discourage you, read on.
+
+<!--HELPONLY-->
+
+ <P>
+Information on 3d graphics can be found in the following pages:
+
+<P>
+<p>
+<blockquote>
+    <a href="415_01_mode.html">Going to 3D mode</a><br>
+    <a href="415_02_drawing.html">Easy drawing</a><br>
+    <a href="415_03_primitives.html">Drawing polygons in 3D</a><br>
+    <a href="415_04_shapes.html">Drawing basic shapes</a><br>
+    <a href="415_05_projection.html">Viewing the world</a><br>
+    <a href="415_06_transform.html">Transformations</a><br>
+    <a href="415_07_fog.html">Fog</a><br>
+    <a href="415_08_light.html">Lighting</a><br>
+    <a href="415_09_1models.html">Creating models</a><br>    
+	<a href="415_09_final.html">Final words</a><br>
+</blockquote>
+
+<p>
+
+<!--ENDHELPONLY-->
+
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+3D graphics
+-->

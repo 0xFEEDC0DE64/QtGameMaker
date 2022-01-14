@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html><head>
+<title>Defining objects</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h1>Defining objects</h1>
+
+With the resources you have seen so far you can add some nice images and
+sounds to the game, but they don't do anything. We now come to the most
+important resource of <i>Game Maker</i>, the objects. Objects are
+entities in the game that do things. Most of the time they have a sprite
+as a graphical representation so that you see them. They have behavior
+because they can react to certain events. All things you see in the game
+(except for the background) are objects. (Or to be more precise, they are
+instances of objects.) The characters, the monsters, the balls, the
+walls, etc. are all objects. There might also be certain objects that you
+don't see but which control certain aspects of the game play.
+
+<p>
+Please realize the difference between sprites and objects. Sprites are
+just (animated) images that don't have any behavior. Objects normally
+have a sprite to represent them but objects have behavior. Without
+objects there is no game!
+
+<p>
+Also realize the difference between objects and instances. An object
+describes a certain entity, e.g. a monster. There can be multiple
+instances of this object in the game. When we talk about an instance we
+mean one particular instance of the object. When we talk about an object
+we mean all the instances of this object.
+
+<p>
+To create an object in your game, choose <b>Create Object</b> from the <b>Resources</b> 
+menu. The following form will appear:
+
+<p>
+<img src="images/form_object.jpg">
+
+<p>
+This is rather complex. At the left there is some general information
+about the object. In the middle there is the list of events that can
+happen to the object. At the right there are the different actions the
+object can perform. Events and actions will be discussed in the coming
+chapters.
+
+<p>
+As always, you can (and should) give your object a name. Next you can
+choose the sprite for the object. To this end, click with the left
+mouse button on the sprite box or the menu button next to it. A menu will
+pop-up with all the available sprites. Select the one you want to use for
+the object. 
+If you do not have a sprite yet, you can click the button <B>New</B> to
+create a new sprite resource and change it. Also, when you select a resource
+there will be a button <B>Edit</B> here that you can use to change the
+sprite. This is faster than first finding the resource in the list of
+resources and then indicating you want to edit it.
+
+<P>
+Below this there are two check boxes. <b>Visible</b> indicates whether
+instances of this object are visible. Clearly, most objects are visible,
+but sometimes it is useful to have invisible objects. For example, you
+can use them for waypoints for a moving monster. Invisible objects will
+react to events and other instances do collide with them. The box labeled
+<b>Solid</b> indicates whether this is a solid object (like a wall).
+Collisions with solid objects are treated differently from collisions
+with non-solid objects. You are strongly advised to use <b>Solid</b> only
+for object that are not moving.
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+adding objects
+creating objects
+objects
+instances
+object properties
+object sprite
+solid
+visible
+
+-->

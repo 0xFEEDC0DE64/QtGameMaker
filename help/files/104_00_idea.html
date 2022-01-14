@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html><head>
+<title>Getting Started</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+
+<h1>Getting started</h1>
+
+<p>
+Creating your first game is always a challenge. But if you are willing to
+put a little bit of effort in it, it will actually be rather easy. You can
+have it running within an hour.
+</p>
+
+<p>
+Even though it is really easy to make games with <i>Game Maker</i> you will
+need to understand some of the basic concepts. To this end you are strongly
+recommended to follow the tutorial that is shown when <i>Game Maker</i> is started.
+If you did remove the tutorial from view, you can always make it visible again
+by choosing <b>Tutorial</b> in the <b>Help</b> menu.
+</p>
+
+<h3>The Global idea</h3>
+<p>
+Before delving into the possibilities of <i>Game Maker</i> it is good to
+get a feeling for the global idea behind the program. Games created
+with <i>Game Maker</i> take place in one or more <i>rooms</i>. (Rooms are
+flat, not 3D, but they can contain 3D-looking graphics.) In these rooms
+you place <i>objects</i>, which you can define in the program. Typical
+objects are the walls, moving balls, the main character, monsters, etc.
+Some objects, like walls, just sit there and don’t do anything. Other
+objects, like the main character, will move around and react to input
+from the player (keyboard, mouse, and joystick) and to each other. For
+example, when the main character meets a monster he might die. Objects
+are the most important ingredients of games made with <i>Game Maker</i>,
+so let us talk a bit more about them. 
+</p>
+
+<p>
+First of all, most objects need some image to make them visible on the
+screen. Such images are called <i>sprites</i>. A sprite is often not a
+single image but a set of images that are shown one after the other to
+create an animation. In this way it looks like the character walks, a
+ball rotates, a spaceship explodes, etc. During the game, the sprite for a
+particular object can change. (So the character can look different when
+it walks to the left or to the right.) You can create you own sprites in
+<i>Game Maker</i> or load them from files (e.g. PNG files or animated GIF’s).
+Many sprites come bundled with <i>Game Maker</i> that you can use free
+of charge in your games.
+</p>
+
+<p>
+Certain things will happen to objects. Such happenings are called <i>
+events</i>. Objects can take certain <i>actions</i> when events happen.
+There are a large number of different events that can take place and a
+large number of different actions that you can let your objects take. For
+example, there is a <i>creation event</i> when the object gets created.
+(To be more precise, when an instance of an object gets created; there
+can be multiple instances of the same object.) For example, when a ball
+object gets created you can give it some motion action so that it
+starts moving. When two objects meet, you get a <i>collision event</i>. In
+such a case you can make the ball stop or reverse direction. You can also
+play a sound effect. To this end <i>Game Maker</i> lets you define <i>
+sounds</i>. When the player presses a key on the keyboard there is a <i>
+keyboard event</i>, and the object can take an appropriate action, like
+moving in the direction indicated. We hope you get the idea. For each
+object you design, you can indicate actions for various events; in this
+way defining the behavior of the object.
+</p>
+
+<p>
+Once you have defined your objects it is time to define the <i>rooms</i>
+in which they will live. Rooms can be used for levels in your game or to
+check out different places. There are actions to move from one room to
+another. Rooms, first of all, have a <i>background</i>. This can be a
+simple color or an image. Such background images can be created in <i>
+Game Maker</i> or you can load them from files. (The background can do a
+lot of things but for the time being, just consider it as something that
+makes the rooms look nice.) Next, you can place the objects in the room.
+You can place multiple instances of the same object in a room. So, for
+example, you need to define just one wall object and can use it at many
+places. Also you can have multiple instances of the same monster objects,
+as long as they have the same behavior.
+</p>
+
+<p>
+Now you are ready to run the game. The first room will be shown and
+objects will come to life because of the actions in their creation
+events. They will start reacting to each other due to actions in
+collision events and they can react to the player using the actions in
+keyboard or mouse events.
+</p>
+
+<p>
+So in summary, the following things (often called resources) play a
+crucial role:
+</p>
+
+<ul>
+  <li><i>objects</i>: which are the true entities in the game</li>
+  <li><i>rooms</i>: the places (levels) in which the objects live</li>
+  <li><i>sprites</i>: (animated) images that are used to represent the objects</li>
+  <li><i>sounds</i>: these can be used in games, either as background music or as effects</li>
+  <li><i>backgrounds</i>: the images used as background for the rooms</li>
+</ul>
+
+<p>
+There are actually a number of other types of resources: paths, scripts,
+fonts, and time lines. These are only important for more complicated
+games. You will only see them when you run <i>Game Maker</i> in advanced
+mode. They will be treated in the advanced chapters later in this
+document.
+</p>
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+global idea
+resources
+tutorial
+-->

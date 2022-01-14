@@ -79,5 +79,8 @@
         <file>icons/event-create.png</file>
         <file>icons/event-destroy.png</file>
         <file>icons/event-step.png</file>
+        <file>icons/action.png</file>
+        <file>icons/code-action.png</file>
+        <file>icons/event-draw.png</file>
     </qresource>
 </RCC>

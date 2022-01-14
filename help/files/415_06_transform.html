@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Transformations</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+
+<!--START-->
+
+<h3>Transformations</h3>
+
+Transformation allow you to change the place where things are drawn in the world. For
+example, the function to draw blocks can only draw axis-parallel blocks. By first setting
+a rotation transformation you can create rotated blocks. Also sprites are always drawn
+parallel to the xy-plane. By setting a transformation you can change this. There are
+two types of functions: functions that set the transformation and functions that add
+transformations.
+
+
+<p>
+<blockquote>
+  <tt><b>d3d_transform_set_identity()</b></tt>
+	  Sets the transformation to the identity (no transformation).<br>
+  <tt><b>d3d_transform_set_translation(xt,yt,zt)</b></tt>
+	  Sets the transformation to a translation over the indicated vector.<br>
+  <tt><b>d3d_transform_set_scaling(xs,ys,zs)</b></tt>
+	  Sets the transformation to a scaling with the indicated amounts.<br>
+  <tt><b>d3d_transform_set_rotation_x(angle)</b></tt>
+	  Sets the transformation to a rotation around the x-axis with the indicated amount.<br>
+  <tt><b>d3d_transform_set_rotation_y(angle)</b></tt>
+	  Sets the transformation to a rotation around the y-axis with the indicated amount.<br>
+  <tt><b>d3d_transform_set_rotation_z(angle)</b></tt>
+	  Sets the transformation to a rotation around the z-axis with the indicated amount.<br>
+  <tt><b>d3d_transform_set_rotation_axis(xa,ya,za,angle)</b></tt>
+	  Sets the transformation to a rotation around the axis indicated by the vector
+	  with the indicated amount.<br>
+  <tt><b>d3d_transform_add_translation(xt,yt,zt)</b></tt>
+	  Adds a translation over the indicated vector.<br>
+  <tt><b>d3d_transform_add_scaling(xs,ys,zs)</b></tt>
+	  Adds a scaling with the indicated amounts.<br>
+  <tt><b>d3d_transform_add_rotation_x(angle)</b></tt>
+	  Adds a rotation around the x-axis with the indicated amount.<br>
+  <tt><b>d3d_transform_add_rotation_y(angle)</b></tt>
+	  Adds a rotation around the y-axis with the indicated amount.<br>
+  <tt><b>d3d_transform_add_rotation_z(angle)</b></tt>
+	  Adds a rotation around the z-axis with the indicated amount.<br>
+  <tt><b>d3d_transform_add_rotation_axis(xa,ya,za,angle)</b></tt>
+	  Adds a rotation around the axis indicated by the vector
+	  with the indicated amount.<br>
+</blockquote>
+
+Realize that rotation and scaling are with respect to the origin of the world, not with
+respect to the object that is to be drawn. If the object is not at the origin it will
+also move to a different place, which is not what we want. So to e.g. rotate an object over
+its own x-axis, we must first translate it to the origin, next rotate it, and finally
+translate it back to its position. This is what the functions to add transformations are
+for. 
+
+<p>
+The following examples might explain this better. Assume we have a sprite <tt>spr</tt> that we
+want to draw at position (100,100,10). We can use the following code to do this
+
+<p>
+<blockquote>
+<pre>
+{
+  d3d_transform_set_translation(100,100,10);
+  draw_sprite(spr,0,0,0);
+  d3d_transform_set_identity();
+}
+</pre>
+</blockquote>
+
+<p>
+Note that because we use a translation we should now draw the sprite at position (0,0). (This
+assumes the current instance has a depth of 0! If you are not sure, first set the depth.) If we
+would use this in our first person shooter we would not see the sprite. The reason is that it
+is still parallel to the xy-plane. We want to rotate it over 90 degrees along the x-axis
+(or y-axis). So we need to add a rotation. Remember the order: we must first rotate the
+sprite and then translate it. So we can use the following code.
+
+<p>
+<blockquote>
+<pre>
+{
+  d3d_transform_set_identity();
+  d3d_transform_add_rotation_x(90);
+  d3d_transform_add_translation(100,100,10);
+  draw_sprite(spr,0,0,0);
+  d3d_transform_set_identity();
+}
+</pre>
+</blockquote>
+
+<p>
+Sometimes you temporarily want to save the current transformation, for example to add
+an additional transformation and then restore the old one (this often happens when
+drawing hierarchical models). To this end you can push the current transformation on a
+stack and later pop it from the stack to make it the current transformation again. The
+following functions exist for this:
+
+<p>
+<blockquote>
+  <tt><b>d3d_transform_stack_clear()</b></tt>
+	  Clears the stack of transformations.<br>
+  <tt><b>d3d_transform_stack_empty()</b></tt>
+	  Returns whether the transformation stack is empty.<br>
+  <tt><b>d3d_transform_stack_push()</b></tt>
+	  Pushes the current transformation on the stack. Returns whether there was
+	  room on the stack to push it there (if you forget popping transformation
+	  you at some moment will run out of room on the stack).<br>
+  <tt><b>d3d_transform_stack_pop()</b></tt>
+	  Pops the top transformation from the stack and makes it the current one.
+	  Returns whether there was a transformation on the stack.<br>
+  <tt><b>d3d_transform_stack_top()</b></tt>
+	  Makes the top transformation the current one, but does not remove it from the stack.
+	  Returns whether there was a transformation on the stack.<br>
+  <tt><b>d3d_transform_stack_discard()</b></tt>
+	  Removes the top transformation from the stack but does not make it the current one.
+	  Returns whether there was a transformation on the stack.<br>
+</blockquote>
+
+<p>
+Using transformation is a powerful mechanism. But be careful and always set the transformation
+back to the identity once you are done.
+
+<!--END-->
+
+</body>
+</html>
+
+<!-- KEYWORDS
+transformations
+
+d3d_transform_set_identity()
+d3d_transform_set_translation()
+d3d_transform_set_scaling()
+d3d_transform_set_rotation_x()
+d3d_transform_set_rotation_y()
+d3d_transform_set_rotation_z()
+d3d_transform_set_rotation_axis()
+d3d_transform_add_translation()
+d3d_transform_add_scaling()
+d3d_transform_add_rotation_x()
+d3d_transform_add_rotation_y()
+d3d_transform_add_rotation_z()
+d3d_transform_add_rotation_axis()
+d3d_transform_stack_clear()
+d3d_transform_stack_empty()
+d3d_transform_stack_push()
+d3d_transform_stack_pop()
+d3d_transform_stack_top()
+d3d_transform_stack_discard()
+
+-->

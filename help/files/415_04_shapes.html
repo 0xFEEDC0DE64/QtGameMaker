@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Drawing basic shapes</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+
+<!--START-->
+
+<h3>Drawing basic shapes</h3>
+
+<p>
+A number of functions exist for drawing basic shapes, like blocks and walls.
+Note that these shapes also work correctly with backface culling on.
+
+<p>
+<blockquote>
+  <tt><b>d3d_draw_block(x1,y1,z1,x2,y2,z2,texid,hrepeat,vrepeat)</b></tt>
+	  Draws a block in the current color with the indicated opposite corners using the indicated
+	  texture. Use -1 to not use a texture. <tt>hrepeat</tt> indicates how often the texture must be
+	  repeated along the horizontal edge of each face. <tt>vrepeat</tt>
+	  does the same for the vertical edge.<br>
+  <tt><b>d3d_draw_cylinder(x1,y1,z1,x2,y2,z2,texid,hrepeat,vrepeat,closed,steps)</b></tt>
+	  Draws a vertical cylinder in the current color in the indicated bounding box using the indicated
+	  texture. Use -1 to not use a texture. <tt>hrepeat</tt> indicates how often the texture must be
+	  repeated along the horizontal edge of each face. <tt>vrepeat</tt>
+	  does the same for the vertical edge. <tt>closed</tt> indicates whether to
+	  close the top and bottom of the cylinder. <tt>steps</tt> indicates
+	  how many rotational steps must be taken. A typical value is 24.<br>
+  <tt><b>d3d_draw_cone(x1,y1,z1,x2,y2,z2,texid,hrepeat,vrepeat,closed,steps)</b></tt>
+	  Draws a vertical cone in the current color in the indicated bounding box using the indicated
+	  texture. Use -1 to not use a texture. <tt>hrepeat</tt> indicates how often the texture must be
+	  repeated along the horizontal edge of each face. <tt>vrepeat</tt>
+	  does the same for the vertical edge. <tt>closed</tt> indicates whether to
+	  close the top and bottom of the cylinder. <tt>steps</tt> indicates
+	  how many rotational steps must be taken. A typical value is 24.<br>
+  <tt><b>d3d_draw_ellipsoid(x1,y1,z1,x2,y2,z2,texid,hrepeat,vrepeat,steps)</b></tt>
+	  Draws an ellipsoid in the current color in the indicated bounding box using the indicated
+	  texture. Use -1 to not use a texture. <tt>hrepeat</tt> indicates how often the texture must be
+	  repeated along the horizontal edge of each face. <tt>vrepeat</tt>
+	  does the same for the vertical edge. <tt>steps</tt> indicates
+	  how many rotational steps must be taken. A typical value is 24.<br>
+  <tt><b>d3d_draw_wall(x1,y1,z1,x2,y2,z2,texid,hrepeat,vrepeat)</b></tt>
+	  Draws a vertical wall in the current color with the given corners using the indicated
+	  texture. Use -1 to not use a texture. <tt>hrepeat</tt> indicates how often the texture must be
+	  repeated along the horizontal edge of each face. <tt>vrepeat</tt>
+	  does the same for the vertical edge. <br>
+  <tt><b>d3d_draw_floor(x1,y1,z1,x2,y2,z2,texid,hrepeat,vrepeat)</b></tt>
+	  Draws a (slanted) floor in the current color with the given corners using the indicated
+	  texture. Use -1 to not use a texture. <tt>hrepeat</tt> indicates how often the texture must be
+	  repeated along the horizontal edge of each face. <tt>vrepeat</tt>
+	  does the same for the vertical edge. <br>
+</blockquote>
+
+<p>
+The following piece of code draws two blocks:
+
+<p>
+<blockquote>
+<pre>
+{
+  <b>var</b> ttt;
+  ttt = background_get_texture(back);
+  d3d_draw_block(20,20,20,80,40,200,ttt,1,1);  
+  d3d_draw_block(200,300,-10,240,340,100,ttt,1,1);  
+}
+</pre>
+</blockquote>
+<!--END-->
+
+</body>
+</html>
+
+<!-- KEYWORDS
+sphere
+cylinder
+cone
+ellipsoid
+block
+wall
+floor
+
+d3d_draw_block()
+d3d_draw_cylinder()
+d3d_draw_cone()
+d3d_draw_ellipsoid()
+d3d_draw_wall()
+d3d_draw_floor()
+
+-->

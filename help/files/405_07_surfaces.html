@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Drawing Surfaces</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+
+<h3>Drawing Surfaces</h3>
+
+<i><b>This functionality is only available in the Pro Edition of Game Maker.</b></i>
+
+<p>
+In certain situations you might want to paint not directly on the screen but on a canvas that
+can then later be used to paint things on the screen. Such a canvas is called a surface.
+For example, you want to let the user draw on the screen. The paint should not 
+be drawn on the screen (because it will be removed each next
+step), but instead you want to draw it on a separate surface that is copied onto the
+screen in each step. Or you want to use a texture that changes over time.
+
+<p>
+Surfaces make this all possible. They are actually rather simple to use. You first create a
+surface. Next you indicate that further drawing should happen on this surface. From that moment
+on all drawing functions operate on the surface. Once you are done you reset the drawing target
+and further drawing happens on the screen again. You can draw the surface on the screen in 
+many different ways or use it as a texture. There are though a few things you must be aware
+of. See the remarks at the end.
+
+<p>
+The following functions exist to deal with surfaces
+<p>
+<blockquote>
+  <tt><b>surface_create(w,h)</b></tt> 
+  	Creates a surface of the indicated width and height. Returns the id
+	of the surface, which must be used in all further calls. Note that
+	the surface will not be cleared. This is the responsibility of the
+	user. (Set it as a target and call the appropriate clear function.)<br>
+  <tt><b>surface_free(id)</b></tt> 
+  	Frees the memory used by the surface.<br>
+  <tt><b>surface_exists(id)</b></tt> 
+  	Returns whether the surface with the indicated id exists.<br>
+  <br>
+  <tt><b>surface_get_width(id)</b></tt> 
+  	Returns the width of the surface.<br>
+  <tt><b>surface_get_height(id)</b></tt> 
+  	Returns the height of the surface.<br>
+  <tt><b>surface_get_texture(id)</b></tt> 
+  	Returns the texture corresponding to the surface. This can be used to 
+	draw textured objects with the image of the surface.<br>
+  <br>
+  <tt><b>surface_set_target(id)</b></tt> 
+  	Sets the indicated surface as the drawing target. All subsequent drawing
+	happens on this surface. It resets the projection to simply cover the surface.<br>
+  <tt><b>surface_reset_target()</b></tt> 
+  	Resets the drawing target to the normal screen.<br>
+  <br>
+  <tt><b>surface_getpixel(id,x,y)</b></tt> 
+  	Returns the color of the pixel corresponding to position (x,y) in the surface. This is
+	not very fast, so use with care.<br> 
+  <tt><b>surface_save(id,fname)</b></tt> 
+    Saves a png image of the surface in the given 
+	filename. Useful for making screenshots.<br>
+  <tt><b>surface_save_part(id,fname,x,y,w,h)</b></tt> 
+  	Saves part of the surface in the given png filename.<br> 
+  <br>
+  <tt><b>draw_surface(id,x,y)</b></tt> 
+  	Draws the surface at position (x,y).
+	(Without color blending and no alpha transparency.)<br>
+  <tt><b>draw_surface_stretched(id,x,y,w,h)</b></tt>
+  	Draws the surface stretched to the indicated region.<br>
+  <tt><b>draw_surface_tiled(id,x,y)</b></tt> 
+  	Draws the surface tiled so that it fills the entire room.<br>
+  <tt><b>draw_surface_part(id,left,top,width,height,x,y)</b></tt> 
+  	Draws the indicated part of the surface with its origin at position (x,y).<br>
+  <tt><b>draw_surface_ext(id,x,y,xscale,yscale,rot,color,alpha)</b></tt> 
+  	Draws the surface scaled and rotated with blending color (use c_white for no blending)
+	and transparency alpha (0-1).<br>
+  <tt><b>draw_surface_stretched_ext(id,x,y,w,h,color,alpha)</b></tt> 
+  	Draws the surface stretched to the indicated region. color is 
+	the blending color and alpha indicates the transparency setting.<br>
+  <tt><b>draw_surface_tiled_ext(id,x,y,xscale,yscale,color,alpha)</b></tt> 
+  	Draws the surface tiled so that it fills the entire room but now 
+	with scale factors and a color and transparency setting.<br>
+  <tt><b>draw_surface_part_ext(id,left,top,width,height,x,y,xscale,yscale,color,alpha)</b></tt> 
+  	Draws the indicated part of the surface with its origin at position (x,y) but now 
+	with scale factors and a color and transparency setting.<br>
+  <tt><b>draw_surface_general(id,left,top,width,height,x,y,xscale,yscale,rot,c1,c2,c3,c4,alpha)</b></tt> 
+  	The most general drawing function. It draws the indicated part 
+	of the surface with its origin at position (x,y) but now with scale factors, a rotation angle,
+	a color for each of the four vertices (top-left, top-right, bottom-right, and bottom-left),
+	and an alpha transparency value.<br>
+  <br>
+  <tt><b>surface_copy(destination,x,y,source)</b></tt> 
+  	Copies the source surface at position (x,y) in the destination surface.
+	(Without any form of blending.)<br>
+  <tt><b>surface_copy_part(destination,x,y,source,xs,ys,ws,hs)</b></tt> 
+  	Copies the indicated part of the source surface at position (x,y) in the destination surface.
+	(Without any form of blending.)<br>
+</blockquote>
+
+<p>
+Note that there are no functions to copy part of the screen to a surface. (This is impossible due to
+possible format differences between the screen and the surfaces.) If this is required you must set
+a surface as render target and next draw the room. You can then use the surface copying routines to get
+parts of it.
+
+<p>
+Note that you can also create sprites and backgrounds from surfaces. See the section on changing resources
+for more information.
+
+<p>
+Some care must be taken when using these functions. In particular please notice the following:
+
+<ul>
+  <li>You should never change the drawing target while you are actually drawing
+      on the screen, that is, never use it in drawing events. This will cause serious
+	  problems with the projection and viewport.</li>
+  <li>Surfaces do not work correctly with 3D mode. You can use them while not in 3D mode (by calling d3d_end()
+      before using them), but once you start 3D mode again the surfaces will be destroyed.</li>
+  <li>For reasons of speed, the surface is maintained in videomemory only. 
+      As a result, you might loose the surface when e.g. the screen resolution 
+	  changes or the screensaver pops up.</li>
+  <li>Surfaces will not be saved when saving a game. </li>
+</ul>
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+surfaces
+drawing target
+drawing on a surface
+
+surface_create()
+surface_free()
+surface_exists()
+surface_get_width()
+surface_get_height()
+surface_get_texture()
+surface_set_target()
+surface_reset_target()
+surface_getpixel()
+surface_save() 
+surface_save_part() 
+draw_surface()
+draw_surface_stretched()
+draw_surface_tiled()
+draw_surface_part()
+draw_surface_ext()
+draw_surface_stretched_ext()
+draw_surface_tiled_ext()
+draw_surface_part_ext()
+draw_surface_general()
+surface_copy()
+surface_copy_part()
+
+-->

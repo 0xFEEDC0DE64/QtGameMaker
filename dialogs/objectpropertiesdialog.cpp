@@ -7,9 +7,8 @@
 
 #include <algorithm>
 
-#include "projecttreemodel.h"
-#include "objecteventsmodel.h"
-#include "objectactionsmodel.h"
+#include "models/projecttreemodel.h"
+#include "models/objecteventsmodel.h"
 #include "addeventdialog.h"
 
 ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel &projectModel, QWidget *parent) :
@@ -19,7 +18,6 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel 
     m_projectModel{projectModel},
     m_events{m_object.events},
     m_eventsModel{std::make_unique<ObjectEventsModel>(m_events)},
-    m_actionsModel{std::make_unique<ObjectActionsModel>()},
     m_spritesMenu{new QMenu{m_ui->toolButtonSprite}},
     m_spriteName{object.spriteName}
 {
@@ -55,6 +53,15 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel 
     connect(&m_projectModel, &ProjectTreeModel::objectNameChanged,
             this, &ObjectPropertiesDialog::objectNameChanged);
 
+    connect(m_eventsModel.get(), &QAbstractItemModel::modelReset,
+            this, &ObjectPropertiesDialog::changed);
+    connect(m_eventsModel.get(), &QAbstractItemModel::rowsInserted,
+            this, &ObjectPropertiesDialog::changed);
+    connect(m_eventsModel.get(), &QAbstractItemModel::dataChanged,
+            this, &ObjectPropertiesDialog::changed);
+    connect(m_eventsModel.get(), &QAbstractItemModel::rowsRemoved,
+            this, &ObjectPropertiesDialog::changed);
+
     connect(m_ui->pushButtonNewSprite, &QAbstractButton::clicked,
             this, &ObjectPropertiesDialog::newSprite);
     connect(m_ui->pushButtonEditSprite, &QAbstractButton::clicked,
@@ -81,6 +88,15 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel 
 
     connect(m_spritesMenu, &QMenu::aboutToShow,
             this, &ObjectPropertiesDialog::spritesMenuAboutToShow);
+
+    connect(m_ui->listViewEvents->selectionModel(), &QItemSelectionModel::currentChanged,
+            this, &ObjectPropertiesDialog::currentEventChanged);
+
+    connect(m_ui->listViewEvents, &QListView::customContextMenuRequested,
+            this, &ObjectPropertiesDialog::eventsContextMenuRequested);
+
+    connect(m_ui->actionsWidget, &ActionsContainerWidget::changed,
+            this, &ObjectPropertiesDialog::changed);
 }
 
 ObjectPropertiesDialog::~ObjectPropertiesDialog() = default;
@@ -162,22 +178,43 @@ void ObjectPropertiesDialog::addEvent()
     AddEventDialog dialog{this};
     if (dialog.exec() == QDialog::Accepted)
     {
-        if (!m_events.contains(dialog.eventType()))
-        {
-            m_eventsModel->beginResetModel();
-            m_events[dialog.eventType()];
-            m_eventsModel->endResetModel();
-            m_unsavedChanges = true;
-        }
+        if (!m_eventsModel->addEvent(dialog.eventType()))
+            QMessageBox::warning(this, tr("Could not add Event!"), tr("Could not add Event!"));
     }
 }
 
 void ObjectPropertiesDialog::deleteEvent()
 {
-    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+    const auto index = m_ui->listViewEvents->currentIndex();
+    if (!index.isValid())
+        return;
+
+    if (QMessageBox::question(this, tr("Confirm"), tr("Are you sure, that you really want to remove the event with all its actions?")) != QMessageBox::Yes)
+        return;
+
+    if (!m_eventsModel->removeRow(index.row()))
+        QMessageBox::warning(this, tr("Could not delete Event!"), tr("Could not delete Event!"));
 }
 
 void ObjectPropertiesDialog::replaceEvent()
+{
+    const auto index = m_ui->listViewEvents->currentIndex();
+    if (!index.isValid())
+        return;
+
+    const auto event = m_eventsModel->getEvent(index);
+    if (!event)
+        return;
+
+    AddEventDialog dialog{this};
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        if (!m_eventsModel->changeEvent(event->first, dialog.eventType()))
+            QMessageBox::warning(this, tr("Could not change Event!"), tr("Could not change Event!"));
+    }
+}
+
+void ObjectPropertiesDialog::duplicateEvent()
 {
     QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
 }
@@ -213,6 +250,35 @@ void ObjectPropertiesDialog::spritesMenuAboutToShow()
                                  sprite.name,
                                  this,
                                  [&sprite,this](){ setSprite(sprite); });
+}
+
+void ObjectPropertiesDialog::currentEventChanged(const QModelIndex &index)
+{
+    if (index.isValid())
+    {
+        if (auto event = m_eventsModel->getEvent(index))
+            m_ui->actionsWidget->setActionsContainer(&event->second);
+        else
+            goto none;
+    }
+    else
+    {
+none:
+        m_ui->actionsWidget->setActionsContainer(nullptr);
+}
+}
+
+void ObjectPropertiesDialog::eventsContextMenuRequested(const QPoint &pos)
+{
+    const auto index = m_ui->listViewEvents->indexAt(pos);
+    auto event = index.isValid() ? m_eventsModel->getEvent(index) : nullptr;
+
+    QMenu menu{this};
+    menu.addAction(tr("&Add Event"), this, &ObjectPropertiesDialog::addEvent);
+    menu.addAction(tr("&Change Event"), this, &ObjectPropertiesDialog::replaceEvent)->setEnabled(event);
+    menu.addAction(tr("&Duplicate Event"), this, &ObjectPropertiesDialog::duplicateEvent)->setEnabled(event);
+    menu.addAction(tr("D&elete Event"), this, &ObjectPropertiesDialog::deleteEvent)->setEnabled(event);
+    menu.exec(m_ui->listViewEvents->viewport()->mapToGlobal(pos));
 }
 
 void ObjectPropertiesDialog::clearSprite()

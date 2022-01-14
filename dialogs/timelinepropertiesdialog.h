@@ -4,11 +4,11 @@
 
 #include <memory>
 
+#include "projectcontainer.h"
+
 namespace Ui { class TimeLinePropertiesDialog; }
-struct TimeLine;
 class ProjectTreeModel;
 class TimelineMomentsModel;
-class TimelineActionsModel;
 
 class TimeLinePropertiesDialog : public QDialog
 {
@@ -26,15 +26,18 @@ private slots:
 
     void timeLineNameChanged(const TimeLine &timeLine);
 
-    void add();
-    void change();
-    void delete_();
-    void clear();
-    void shift();
-    void duplicate();
-    void spread();
-    void merge();
+    void addMoment();
+    void changeMoment();
+    void deleteMoments();
+    void clearMoments();
+    void shiftMoments();
+    void duplicateMoments();
+    void spreadMoments();
+    void mergeMoments();
     void showInformation();
+
+    void currentMomentChanged(const QModelIndex &index);
+    void momentsContextMenuRequested(const QPoint &pos);
 
 private:
     void updateTitle();
@@ -44,8 +47,9 @@ private:
     TimeLine &m_timeLine;
     ProjectTreeModel &m_projectModel;
 
+    TimeLine::moments_container_t m_moments;
+
     const std::unique_ptr<TimelineMomentsModel> m_momentsModel;
-    const std::unique_ptr<TimelineActionsModel> m_actionsModel;
 
     bool m_unsavedChanges{};
 };

@@ -1,0 +1,196 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Dealing with dates and time</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>Dealing with dates and time</h3>
+
+In <I>Game Maker</I> there are a number of functions to deal with dates and time. 
+A date-time combination is stored in a real number. The integral part of a date-time
+value is the number of days that have passed since 12/30/1899. The fractional part 
+of the date-time value is fraction of a 24 hour day that has elapsed. 
+The following functions exist:
+
+<p>
+<blockquote>
+	<tt><b>date_current_datetime()</b></tt>
+	  Returns the date-time value that corresponds to the current moment.<br>
+	<tt><b>date_current_date()</b></tt>
+	  Returns the date-time value that corresponds to the current date only (ignoring the time).<br>
+	<tt><b>date_current_time()</b></tt>
+	  Returns the date-time value that corresponds to the current time only (ignoring the date).<br>
+	<tt><b>date_create_datetime(year,month,day,hour,minute,second)</b></tt>
+	  Creates a date-time value corresponding to the indicated date and time.<br>
+	<tt><b>date_create_date(year,month,day)</b></tt>
+	  Creates a date-time value corresponding to the indicated date.<br>
+	<tt><b>date_create_time(hour,minute,second)</b></tt>
+	  Creates a date-time value corresponding to the indicated time.<br>
+	<tt><b>date_valid_datetime(year,month,day,hour,minute,second)</b></tt>
+	  Returns whether the indicated date and time are valid.<br>
+	<tt><b>date_valid_date(year,month,day)</b></tt>
+	  Returns whether the indicated date is valid.<br>
+	<tt><b>date_valid_time(hour,minute,second)</b></tt>
+	  Returns whether the indicated time is valid.<br>
+	<tt><b>date_inc_year(date,amount)</b></tt>
+	  Returns a new date that is amount years after the indicated date. 
+	  amount must be an integer number.<br>
+	<tt><b>date_inc_month(date,amount)</b></tt>
+	  Returns a new date that is amount months after the indicated date. 
+	  amount must be an integer number.<br>
+	<tt><b>date_inc_week(date,amount)</b></tt>
+	  Returns a new date that is amount weeks after the indicated date. 
+	  amount must be an integer number.<br>
+	<tt><b>date_inc_day(date,amount)</b></tt>
+	  Returns a new date that is amount days after the indicated date. 
+	  amount must be an integer number.<br>
+	<tt><b>date_inc_hour(date,amount)</b></tt>
+	  Returns a new date that is amount hours after the indicated date. 
+	  amount must be an integer number.<br>
+	<tt><b>date_inc_minute(date,amount)</b></tt>
+	  Returns a new date that is amount minutes after the indicated date. 
+	  amount must be an integer number.<br>
+	<tt><b>date_inc_second(date,amount)</b></tt>
+	  Returns a new date that is amount seconds after the indicated date. 
+	  amount must be an integer number.<br>
+	<tt><b>date_get_year(date)</b></tt>
+	  Returns the year corresponding to the date.<br>
+	<tt><b>date_get_month(date)</b></tt>
+	  Returns the month corresponding to the date.<br>
+	<tt><b>date_get_week(date)</b></tt>
+	  Returns the week of the year corresponding to the date.<br>
+	<tt><b>date_get_day(date)</b></tt>
+	  Returns the day of the month corresponding to the date.<br>
+	<tt><b>date_get_hour(date)</b></tt>
+	  Returns the hour corresponding to the date.<br>
+	<tt><b>date_get_minute(date)</b></tt>
+	  Returns the minute corresponding to the date.<br>
+	<tt><b>date_get_second(date)</b></tt>
+	  Returns the second corresponding to the date.<br>
+	<tt><b>date_get_weekday(date)</b></tt>
+	  Returns the day of the week corresponding to the date.<br>
+	<tt><b>date_get_day_of_year(date)</b></tt>
+	  Returns the day of the year corresponding to the date.<br>
+	<tt><b>date_get_hour_of_year(date)</b></tt>
+	  Returns the hour of the year corresponding to the date.<br>
+	<tt><b>date_get_minute_of_year(date)</b></tt>
+	  Returns the minute of the year corresponding to the date.<br>
+	<tt><b>date_get_second_of_year(date)</b></tt>
+	  Returns the second of the year corresponding to the date.<br>
+	<tt><b>date_year_span(date1,date2)</b></tt>
+	  Returns the number of years between the two dates. 
+	  It reports incomplete years as a fraction. <br>
+	<tt><b>date_month_span(date1,date2)</b></tt>
+	  Returns the number of months between the two dates. 
+	  It reports incomplete months as a fraction. <br>
+	<tt><b>date_week_span(date1,date2)</b></tt>
+	  Returns the number of weeks between the two dates. 
+	  It reports incomplete weeks as a fraction. <br>
+	<tt><b>date_day_span(date1,date2)</b></tt>
+	  Returns the number of days between the two dates. 
+	  It reports incomplete days as a fraction. <br>
+	<tt><b>date_hour_span(date1,date2)</b></tt>
+	  Returns the number of hours between the two dates. 
+	  It reports incomplete hours as a fraction. <br>
+	<tt><b>date_minute_span(date1,date2)</b></tt>
+	  Returns the number of minutes between the two dates. 
+	  It reports incomplete minutes as a fraction. <br>
+	<tt><b>date_second_span(date1,date2)</b></tt>
+	  Returns the number of seconds between the two dates. 
+	  It reports incomplete seconds as a fraction. <br>
+	<tt><b>date_compare_datetime(date1,date2)</b></tt>
+	  Compares the two date-time values. Returns -1, 0, or 1 depending on whether the first is 
+	  smaller, equal, or larger than the second value. <br>
+	<tt><b>date_compare_date(date1,date2)</b></tt>
+	  Compares the two date-time values only taking the date part into account. 
+	  Returns -1, 0, or 1 depending on whether the first is smaller, equal, or 
+	  larger than the second value. <br>
+	<tt><b>date_compare_time(date1,date2)</b></tt>
+	  Compares the two date-time values only taking the time part into account. 
+	  Returns -1, 0, or 1 depending on whether the first is smaller, equal, or 
+	  larger than the second value. <br>
+	<tt><b>date_date_of(date)</b></tt>
+	  Returns the date part of the indicated date-time value, 
+	  setting the time part to 0.<br>
+	<tt><b>date_time_of(date)</b></tt>
+	  Returns the time part of the indicated date-time value, 
+	  setting the date part to 0.<br>
+	<tt><b>date_datetime_string(date)</b></tt>
+	  Returns a string indicating the given date and time in the 
+	  default format for the system.<br>
+	<tt><b>date_date_string(date)</b></tt>
+	  Returns a string indicating the given date in the default format 
+	  for the system.<br>
+	<tt><b>date_time_string(date)</b></tt>
+	  Returns a string indicating the given time in the default format 
+	  for the system.<br>
+	<tt><b>date_days_in_month(date)</b></tt>
+	  Returns the number of days in the month indicated by the date-time value.<br>
+	<tt><b>date_days_in_year(date)</b></tt>
+	  Returns the number of days in the year indicated by the date-time value.<br>
+	<tt><b>date_leap_year(date)</b></tt>
+	  Returns whether the year indicated by the date-time value is a leap year.<br>
+	<tt><b>date_is_today(date)</b></tt>
+	  Returns whether the indicated date-time value is on today.<br>
+</blockquote>
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+date functions
+time functions
+
+date_current_datetime()
+date_current_date()
+date_current_time()
+date_create_datetime()
+date_create_date()
+date_create_time()
+date_valid_datetime()
+date_valid_date()
+date_valid_time()
+date_inc_year()
+date_inc_month()
+date_inc_week()
+date_inc_day()
+date_inc_hour()
+date_inc_minute()
+date_inc_second()
+date_get_year()
+date_get_month()
+date_get_week()
+date_get_day()
+date_get_hour()
+date_get_minute()
+date_get_second()
+date_get_weekday()
+date_get_day_of_year()
+date_get_hour_of_year()
+date_get_minute_of_year()
+date_get_second_of_year()
+date_year_span()
+date_month_span()
+date_week_span()
+date_day_span()
+date_hour_span()
+date_minute_span()
+date_second_span()
+date_compare_datetime()
+date_compare_date()
+date_compare_time()
+date_date_of()
+date_time_of()
+date_datetime_string()
+date_date_string()
+date_time_string()
+date_days_in_month()
+date_days_in_year()
+date_leap_year()
+date_is_today()
+-->

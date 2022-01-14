@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Messages</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>Messages</h3>
+
+The second communication mechanism that <i>Game Maker</i> supports 
+is the sending and receiving of messages. A player can send messages 
+to one or all other players. Players can see whether messages have 
+arrived and take action accordingly. Messages can be sent in a 
+guaranteed mode in which you are sure they arrive (but this can be 
+slow) or in a non-guaranteed mode, which is faster.
+
+<p>
+The following messaging routines exist:
+
+<p>
+<blockquote>
+  <tt><b>mplay_message_send(player,id,val)</b></tt> 
+    sends a message to the indicated player (either an identifier 
+	or a name; use 0 to send the message to all players). id is an 
+	integer message identifier and val is the value (either a real 
+	or a string). The message is sent in non-guaranteed mode. If val 
+	contains a string the maximal string length allowed is 30000 characters.<br>
+  <tt><b>mplay_message_send_guaranteed(player,id,val)</b></tt> 
+    sends a message to the indicated player (either an identifier 
+	or a name; use 0 to send the message to all players). id is an 
+	integer message identifier and val is the value (either a real 
+	or a string). This is a guaranteed send. If val contains a string 
+	the maximal string length allowed is 30000 characters.<br>
+  <tt><b>mplay_message_receive(player)</b></tt> 
+    receives the next message from the message queue that came from 
+	the indicated player (either an identifier or a name). Use 0 for 
+	messages from any player. The routine returns whether there was 
+	indeed a new message. If so you can use the following routines 
+	to get its contents:<br>
+  <tt><b>mplay_message_id()</b></tt> 
+    Returns the identifier of  the last received message.<br>
+  <tt><b>mplay_message_value()</b></tt> 
+    Returns the value of  the last received message.<br>
+  <tt><b>mplay_message_player()</b></tt> 
+    Returns the player who sent the last received message.<br>
+  <tt><b>mplay_message_name()</b></tt> 
+    Returns the name of the player who sent the last received message.<br>
+  <tt><b>mplay_message_count(player)</b></tt> 
+    Returns the number of messages left in the queue from the player (use 0 to count all message).<br>
+  <tt><b>mplay_message_clear(player)</b></tt> 
+    Removes all messages left in the queue from the player (use 0 to remove all message).<br>
+</blockquote>
+
+<p>
+A few remarks are pertinent here. First of all, if you want to send a message 
+to a particular player only, you will need to know the player's unique id. 
+As indicated earlier you can obtain this with the function <tt>mplay_player_id()</tt>. 
+This player identifier is also used when receiving messages from a particular 
+player. Alternatively, you can give the name of the player as a string. 
+If multiple players have the same name, only the first will get the message.
+
+<p>
+Secondly, you might wonder why each message has an integer identifier.
+The reason is that this helps your application to send different types of 
+messages. The receiver can check the type of message using the id and take 
+appropriate actions. (Because messages are not guaranteed to arrive, 
+sending id and value in different messages would cause serious problems.)
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+messages
+message passing
+
+mplay_message_send()
+mplay_message_send_guaranteed()
+mplay_message_receive()
+mplay_message_id()
+mplay_message_value()
+mplay_message_player()
+mplay_message_name()
+mplay_message_count()
+mplay_message_clear()
+-->

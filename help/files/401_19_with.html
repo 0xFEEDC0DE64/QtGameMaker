@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>With constructions</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>With constructions</h3>
+
+As indicated before, it is possible to read and change the value of
+variables in other instances. But in a number of cases you want to do a
+lot more with other instances. For example, imagine that you want to move
+all balls 8 pixels down. You might think that this is achieved by the
+following piece of code
+
+<p>
+<blockquote>
+<pre>ball.y = ball.y + 8;</pre>
+</blockquote>
+
+<p>
+But this is not correct. The right side of the assignment gets the value
+of the y-coordinate of the first ball and adds 8 to it. Next this new
+value is set as y-coordinate of all balls. So the result is that all balls
+get the same y-coordinate. The statement
+
+<p>
+<blockquote>
+<pre>ball.y += 8;</pre>
+</blockquote>
+
+<p>
+will have exactly the same effect because it is simply an abbreviation of
+the first statement. So how do we achieve this? For this purpose there is
+the <b>with</b> statement. Its global form is
+
+<p>
+<blockquote>
+<pre><b>with</b> (&lt;expression&gt;) &lt;statement&gt;</pre>
+</blockquote>
+
+<p>
+&lt;expression&gt; indicates one or more instances. For this you can use
+an instance id, the name of an object (to indicate all instances of this
+object) or one of the special objects (all, self, other, noone).
+&lt;statement&gt; is now executed for each of the indicated instances, as
+if that instance is the current (self) instance. So, to move all balls 8
+pixels down, you can type.
+
+<p>
+<blockquote>
+<pre><b>with</b> (ball) y += 8;</pre>
+</blockquote>
+
+<p>
+If you want to execute multiple statements, put curly brackets around
+them. So for example, to move all balls to a random position, you can use
+
+<p>
+<blockquote>
+<pre>
+<b>with</b> (ball)
+{
+  x = random(room_width);
+  y = random(room_height);
+}
+</pre>
+</blockquote>
+
+<p>
+Note that, within the statement(s), the indicated instance has become the
+self instance. Within the statements the original self instance has become
+the other instance. So for example, to move all balls to the position of
+the current instance, you can type
+
+<p>
+<blockquote>
+<pre>
+<b>with</b> (ball)
+{
+  x = other.x;
+  y = other.y;
+}
+</pre>
+</blockquote>
+
+<p>
+Use of the with statement is extremely powerful. Let me give a few more
+examples. To destroy all balls you type
+
+<p>
+<blockquote>
+<pre><b>with</b> (ball) instance_destroy();</pre>
+</blockquote>
+
+<p>
+If a bomb explodes and you want to destroy all instances close by you can
+use
+
+<p>
+<blockquote>
+<pre>
+<b>with</b> (all)
+{
+  <b>if</b> (distance_to_object(other) &lt; 50) instance_destroy();
+}
+</pre>
+</blockquote>
+
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+with construction
+applying code to instances
+-->

@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Drawing Sprites and Backgrounds</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>Drawing sprites and backgrounds</h3>
+
+Objects normally have a sprite associated to it that is drawn. But you can use 
+the draw event to draw other things. This section and the next couple give you 
+information on what is possible. First of all, there are functions to draw 
+sprites and backgrounds in different ways. These give you more control over 
+the appearance of the sprite. Also you can draw (parts of) backgrounds.
+
+<p>
+<blockquote>
+  <tt><b>draw_sprite(sprite,subimg,x,y)</b></tt> 
+  	Draws subimage subimg (-1 = current) of 
+	the sprite with its origin at position (x,y).
+	(Without color blending and no alpha transparency.)<br>
+  <tt><b>draw_sprite_stretched(sprite,subimg,x,y,w,h)</b></tt>
+    Draws the sprite stretched so that it fills the region with top-left 
+	corner (x,y) and width w and height h.<br>
+  <tt><b>draw_sprite_tiled(sprite,subimg,x,y)</b></tt> 
+  	Draws the sprite tiled so that it fills the entire room. 
+	(x,y) is the place where one of the sprites is drawn.<br>
+  <tt><b>draw_sprite_part(sprite,subimg,left,top,width,height,x,y)</b></tt> 
+  	Draws the indicated part of subimage subimg (-1 = current) of the sprite 
+	with the top-left corner of the part at position (x,y).<br>
+  <br>
+  <tt><b>draw_background(back,x,y)</b></tt> 
+  	Draws the background at position (x,y).
+	(Without color blending and no alpha transparency.)<br>
+  <tt><b>draw_background_stretched(back,x,y,w,h)</b></tt>
+  	Draws the background stretched to the indicated region.<br>
+  <tt><b>draw_background_tiled(back,x,y)</b></tt> 
+  	Draws the background tiled so that it fills the entire room.<br>
+  <tt><b>draw_background_part(back,left,top,width,height,x,y)</b></tt> 
+  	Draws the indicated part of the background with the top-left corner of the part at position (x,y).<br>
+</blockquote>
+
+<p>
+The following functions are extended functions of the ones indicated above. 
+<b><i>These extended versions can only be used in the Pro Edition!</i></b>
+
+<p>
+<blockquote>
+  <tt><b>draw_sprite_ext(sprite,subimg,x,y,xscale,yscale,rot,color,alpha)</b></tt> 
+    Draws the sprite scaled with factors xscale and yscale and 
+	rotated counterclockwise over rot degrees. color is the blending 
+	color (use c_white for no blending) and alpha indicates the transparency 
+	factor with which the images is merged with its background. A value 
+	of 0 makes the sprite completely transparent. A value of 1 makes it 
+	completely solid. This function can create great effect 
+	(for example partially transparent explosions).<br>
+  <tt><b>draw_sprite_stretched_ext(sprite,subimg,x,y,w,h,color,alpha)</b></tt> 
+  	Draws the sprite stretched so that it fills the region with 
+	top-left corner (x,y) and width w and height h. color is the blending 
+	color and alpha indicates the transparency setting.<br>
+  <tt><b>draw_sprite_tiled_ext(sprite,subimg,x,y,xscale,yscale,color,alpha)</b></tt> 
+  	Draws the sprite tiled so that it fills the entire room but now with scale factors and a 
+	color and transparency setting.<br>
+  <tt><b>draw_sprite_part_ext(sprite,subimg,left,top,width,height,x,y,xscale,yscale,color,alpha)</b></tt> 
+  	Draws the indicated part of subimage subimg (-1 = current) of the sprite with 
+	the top-left corner of the part at position (x,y) but now with scale factors and a color and transparency setting.<br>
+  <tt><b>draw_sprite_general(sprite,subimg,left,top,width,height,x,y,xscale,yscale,rot,c1,c2,c3,c4,alpha)</b></tt> 
+  	The most general drawing function. It draws the indicated part of subimage subimg (-1 = current) 
+	of the sprite with the top-left corner of the part at position (x,y) but now with scale factors, a rotation angle,
+	a color for each of the four vertices (top-left, top-right, bottom-right, and bottom-left),
+	and an alpha transparency value. Note that rotation takes place around the top-left corner of the part.<br>
+  <br>
+  <tt><b>draw_background_ext(back,x,y,xscale,yscale,rot,color,alpha)</b></tt> 
+  	Draws the background scaled and rotated with blending color (use c_white for no blending)
+	and transparency alpha (0-1).<br>
+  <tt><b>draw_background_stretched_ext(back,x,y,w,h,color,alpha)</b></tt> 
+  	Draws the background stretched to the indicated region. color is 
+	the blending color and alpha indicates the transparency setting.<br>
+  <tt><b>draw_background_tiled_ext(back,x,y,xscale,yscale,color,alpha)</b></tt> 
+  	Draws the background tiled so that it fills the entire room but now 
+	with scale factors and a color and transparency setting.<br>
+  <tt><b>draw_background_part_ext(back,left,top,width,height,x,y,xscale,yscale,color,alpha)</b></tt> 
+  	Draws the indicated part of the background with the top-left corner of the part at position (x,y) but now 
+	with scale factors and a color and transparency setting.<br>
+  <tt><b>draw_background_general(back,left,top,width,height,x,y,xscale,yscale,rot,c1,c2,c3,c4,alpha)</b></tt> 
+  	The most general drawing function. It draws the indicated part 
+	of the background with the top-left corner of the part at position (x,y) but now with scale factors, a rotation angle,
+	a color for each of the four vertices (top-left, top-right, bottom-right, and bottom-left),
+	and an alpha transparency value. Note that rotation takes place around the top-left corner of the part.<br>
+</blockquote>
+
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+drawing sprites
+drawing backgrounds
+
+draw_sprite() 
+draw_sprite_ext() 
+draw_sprite_stretched()
+draw_sprite_stretched_ext() 
+draw_sprite_tiled() 
+draw_sprite_tiled_ext() 
+draw_sprite_part() 
+draw_sprite_part_ext() 
+draw_sprite_general() 
+draw_background() 
+draw_background_ext() 
+draw_background_stretched()
+draw_background_stretched_ext() 
+draw_background_tiled() 
+draw_background_tiled_ext() 
+draw_background_part() 
+draw_background_part_ext() 
+draw_background_general() 
+
+-->

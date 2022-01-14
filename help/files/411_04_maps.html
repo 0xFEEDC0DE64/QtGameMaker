@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Maps</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<h3>Maps</h3>
+
+In quite a few situations you need to store pairs consisting of a key 
+and a value. For example, a character can have a number of different 
+items and for each item it has a particular number of those. In this 
+case the item is the key and the number is the value. Maps maintain 
+such pairs, sorted by key. You can add pairs to the map and search 
+for the value corresponding to certain keys. Because the keys are 
+sorted you can also find previous and next keys. Sometimes it is also 
+useful to use a map to just store keys without a corresponding value. 
+In that case you can simply use a value of 0. The following functions exist:
+
+<p>
+<blockquote>
+  <tt><b>ds_map_create()</b></tt> 
+    Creates a new map. The function returns an integer as an id that must be 
+	used in all other functions to access the particular map.<br>
+  <tt><b>ds_map_destroy(id)</b></tt> 
+    Destroys the map with the given id, freeing the memory used. Don't forget 
+	to call this function when you are ready with the structure.<br>
+  <tt><b>ds_map_clear(id)</b></tt> 
+    Clears the map with the given id, removing all data from it 
+	but not destroying it.<br>
+  <tt><b>ds_map_copy(id,source)</b></tt> 
+    Copies the map source into the map with the given id.<br>
+  <tt><b>ds_map_size(id)</b></tt> 
+    Returns the number of key-value pairs stored in the map.<br>
+  <tt><b>ds_map_empty(id)</b></tt> 
+    Returns whether the map is empty. This is the same as testing whether the size is 0.<br>
+  <tt><b>ds_map_add(id,key,val)</b></tt> 
+    Adds the key-value pair to the map.<br>
+  <tt><b>ds_map_replace(id,key,val)</b></tt> 
+    Replaces the value corresponding with the key with a new value.<br>
+  <tt><b>ds_map_delete(id,key)</b></tt> 
+    Deletes the key and the corresponding value from the map. (If there 
+	are multiple entries with the same key, only one is removed.)<br>
+  <tt><b>ds_map_exists(id,key)</b></tt> 
+    Returns whether the key exists in the map.<br>
+  <tt><b>ds_map_find_value(id,key)</b></tt> 
+    Returns the value corresponding to the key.<br>
+  <tt><b>ds_map_find_previous(id,key)</b></tt> 
+    Returns the largest key in the map smaller than the indicated key. (Note 
+	that the key is returned, not the value. You can use the previous 
+	routine to find the value.)<br>
+  <tt><b>ds_map_find_next(id,key)</b></tt> 
+    Returns the smallest key in the map larger than the indicated key.<br>
+  <tt><b>ds_map_find_first(id)</b></tt> 
+    Returns the smallest key in the map.<br>
+  <tt><b>ds_map_find_last(id)</b></tt> 
+    Returns the largest key in the map.<br>
+  <tt><b>ds_map_write(id)</b></tt> 
+    Turns the data structure into a string and returns this string. The string can then
+	be used to e.g. save it to a file. This provides an easy mechanism for saving data
+	structures.<br>
+  <tt><b>ds_map_read(id,str)</b></tt> 
+    Reads the data structure from the given string (as created by the previous call).<br>
+</blockquote>
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+maps data structure
+
+ds_map_create()
+ds_map_destroy()
+ds_map_clear()
+ds_map_copy()
+ds_map_size()
+ds_map_empty()
+ds_map_add()
+ds_map_replace()
+ds_map_delete()
+ds_map_exists()
+ds_map_find_value()
+ds_map_find_previous()
+ds_map_find_next()
+ds_map_find_first()
+ds_map_find_last()
+ds_map_write()
+ds_map_read()
+-->

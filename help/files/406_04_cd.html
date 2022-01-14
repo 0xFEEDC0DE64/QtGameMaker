@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>CD Music</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+
+<!--START-->
+
+
+<h3>CD music</h3>
+
+<i><b>This functionality is only available in the Pro Edition of Game Maker.</b></i>
+
+<p>
+There are also a number of functions dealing with playing music from a CD.
+
+<p>
+<blockquote>
+  <tt><b>cd_init()</b></tt> 
+    Must be called before using the other functions. Should also be called 
+	when a CD is changed (or simply from time to time).<br>
+  <tt><b>cd_present()</b></tt> 
+    Returns whether a CD is present in the default CD drive.<br>
+  <tt><b>cd_number()</b></tt> 
+    Returns the number of tracks on the CD.<br>
+  <tt><b>cd_playing()</b></tt> 
+    Returns whether the CD is playing.<br>
+  <tt><b>cd_paused()</b></tt> 
+    Returns whether the CD is paused or stopped.<br>
+  <tt><b>cd_track()</b></tt> 
+    Returns the number of the current track (1=the first).<br>
+  <tt><b>cd_length()</b></tt> 
+    Returns the length of the total CD in milliseconds.<br>
+  <tt><b>cd_track_length(n)</b></tt> 
+    Returns the length of track n of the CD in milliseconds.<br>
+  <tt><b>cd_position()</b></tt>
+    Returns the current position on the CD in milliseconds.<br>
+  <tt><b>cd_track_position()</b></tt> 
+    Returns the current position in the track being played in milliseconds.<br>
+  <tt><b>cd_play(first,last)</b></tt> 
+    Tells the CD to play tracks first until last. If you want to play the 
+	full CD give 1 and 1000 as arguments.<br>
+  <tt><b>cd_stop()</b></tt> 
+    Stops playing.<br>
+  <tt><b>cd_pause()</b></tt> 
+    Pauses the playing.<br>
+  <tt><b>cd_resume()</b></tt> 
+    Resumes the playing.<br>
+  <tt><b>cd_set_position(pos)</b></tt> 
+    Sets the position on the CD in milliseconds.<br>
+  <tt><b>cd_set_track_position(pos)</b></tt> 
+    Sets the position in the current track in milliseconds.<br>
+  <tt><b>cd_open_door()</b></tt> 
+    Opens the door of the CD player.<br>
+  <tt><b>cd_close_door()</b></tt> 
+    Closes the door of the CD player.<br>
+</blockquote>
+
+<p>
+There is one very general function to access the multimedia functionality of windows.
+
+<p>
+<blockquote>
+  <tt><b>MCI_command(str)</b></tt> 
+    This functions sends the command string to the Windows multimedia system 
+	using the Media Control Interface (MCI). It returns the return string. 
+	You can use this to control all sorts of multimedia devices. See the Windows 
+	documentation for information in how to use this command. For example 
+	<tt>MCI_command('play cdaudio from 1')</tt> plays a CD (after you have 
+	correctly initialized it using other commands). This function is only 
+	for advanced use!
+</blockquote>
+
+
+<!--END-->
+
+</body>
+</html>
+
+<!-- KEYWORDS
+CD music
+playing CDs
+
+cd_init()
+cd_present()
+cd_number()
+cd_playing()
+cd_paused()
+cd_track()
+cd_length()
+cd_track_length()
+cd_position()
+cd_track_position()
+cd_play()
+cd_stop()
+cd_pause()
+cd_resume()
+cd_set_position()
+cd_set_track_position()
+cd_open_door()
+cd_close_door()
+MCI_command()
+
+-->

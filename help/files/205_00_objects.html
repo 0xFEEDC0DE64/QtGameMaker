@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html><head>
+<title>More about objects</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+
+<h1>More about objects</h1>
+
+When you create an object in advanced mode, you can change some more
+advanced settings.
+
+<h3>Depth</h3>
+
+First of all, you can set the <b>Depth</b> of the instances of the object.
+When the instances are drawn on the screen they are drawn in order of depth.
+Instances with the largest depth are drawn first. Instances with the
+smallest depth are drawn last. When instances have the same depth, they are
+drawn in the order in which they were created. If you want to guarantee that
+an object lies in front of the others give it a negative depth. If you want
+to make sure it lies below other instances, give it a large positive depth.
+You can also change the depth of an instance during the game using the
+variable called depth.
+
+
+<h3>Persistent objects</h3>
+
+Secondly, you can make an object persistent. A persistent object will
+continue existing when you move from one room to the next. It only
+disappears when you explicitly destroy it. So you only need to put an
+instance of the object in the first room and then it will remain available
+in all rooms. This is great when you have a main character that moves
+from room to room. Using persistent objects is a powerful mechanism but also
+one that easily leads to errors.
+
+<h3>Parents</h3>
+
+Every object can have a parent object. When an object has a parent, it
+inherits the behavior of the parent. Stated differently, the object is a sort
+of special case of the parent object. For example, if you have 4 different
+balls, named ball1, ball2, ball3 and ball4, which all behave the same but
+have a different sprite, you can make ball1 the parent of the other three.
+Now you only need to specify events for ball1. The others will inherit the
+events and behave exactly the same way. Also, when you apply actions to
+instances of the parent object they will also be applied to the children.
+So, for example, if you destroy all ball1 instances the ball2, ball3,
+and ball4 instances will also be destroyed. This saves a lot of work.
+
+<p>
+Often, objects should behave almost identically but there will be
+some small differences. For example, one monster might move up and down and
+the other left and right. For the rest they have exactly the same behavior.
+In this case almost all events should have the same actions but one or two
+might be different. Again we can make one object the parent of the other.
+But in this case we also define certain events for the child object. These
+events &quot;override&quot; the parent events. So whenever an event for the
+child object contains actions, these are executed instead of the event of
+the parent. If you also want to execute the parent event you can call the
+so-called &quot;inherited&quot; event using the appropriate action.
+
+<p>
+It is actually good practice in such cases to create one base object.
+This base object contains all the default behavior
+but is never used in the game. All actual objects have this base object as parent.
+Parent objects can again have parents, and so on. (Obviously you are not
+allowed to create cycles.) In this way you can create an object hierarchy.
+This is extremely useful to keep your game structured and you are strongly
+advised to learn to use this mechanism.
+
+<p>
+There is also a second use of the parent object. It also inherits the
+collision behavior for other objects. Let us explain this with an example.
+Assume you have four different floor objects. When a ball hits the floor it
+must change direction. This has to be specified in the collision event of
+the ball with the floor. Because there are four different floors we need to
+put the code on four different collision events of the ball. But when you
+make one base floor object and make this one the parent of the four actual
+floor objects, you only need to specify the collision event with this base
+floor. The other collisions will perform the same event. Again, this saves a
+lot of copying.
+
+<p>
+As indicated, wherever you use an object, this also implies the descendants.
+This happens when, in an action, you indicate that the action must be
+applied to instances of a certain object. It also happens when you use the
+<tt>with()</tt> statement in code (see below). And it works when you call
+functions like <tt>instance_position</tt>, <tt>instance_number</tt>, etc.
+Finally, it works when you refer to variables in other objects. In the
+example above when you set <tt>ball1</tt>.speed to 10 this also applies to
+ball2, ball3 and ball4.
+
+<h3>Masks</h3>
+
+When two instances collide a collision event occurs. To decide whether two
+instances intersect, the sprites are used. This is fine in most cases, but
+sometimes you want to base collisions on a different shape. For example, if
+you make an isometric game, objects typically have a height (to give them a
+3D view). But for collisions you only want to use the ground part of the
+sprite. This can be achieved by creating a separate sprite that is used as
+collision mask for the object.
+
+<h3>Information</h3>
+
+The button <b>Show Information</b> gives an overview of all information for
+the object that can also be printed. This is particularly useful when you
+loose overview of all your actions and events.
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+depth
+persistent objects
+persistence, objects
+parent object
+inheritance
+masks
+object information
+-->

@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     parser.addPositionalArgument("project", "The project to open.");
     parser.process(app);
 
-    QApplication::setStyle(QStyleFactory::create("Windows"));
+    //QApplication::setStyle(QStyleFactory::create("Windows"));
 
     MainWindow mainWindow{parser.positionalArguments().value(0)};
     mainWindow.show();

@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html><head>
+<title>Fonts</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+
+<h1>Fonts</h1>
+
+When you want to draw text in your game this text is drawn in an Arial 12 points font. To make more fancy
+looking texts you probably want to use different fonts.  To use different fonts you must create font resources.
+In each font resource you specify a particular type of font which can then be used in your game using the
+action to set a font.
+
+<p>
+To create a font resource in your game, use the item <b>Create Font</b> in the <b>Resources</b> menu or use 
+the corresponding button on the toolbar. The following form will pop up.
+
+<p>
+<img src="images/form_font.jpg">
+
+<p>
+As always you should give your font resource a name. Next you can pick the name of the font. Also you can
+indicate its size and whether it should be bold and/or italic. Realize that large fonts take a lot of 
+memory to store. So you are strongly recommended not to use fonts with a size larger than say 32. (It
+is possible to scale the fonts while running the game.) An example of the indicated font is shown at the bottom.
+
+<p>
+A font typically consist of 256 characters, numbered from 0 to 255. 
+But in general you use only a small portion of
+these. So default in a font only the characters from 32 till 127 are stored in the font. The more characters you
+store in the font the more memory it will use. You can change the character range used. To see the index of
+each character you can use the Character Map that can be found in the 
+Windows Start menu under Accessories/System Tools.
+Some standard ranges can be indicated using the buttons: The <b>Normal</b> range from 32 till 127, the <b>All</b>
+range from 0 till 255, the <b>Digits</b> range that only contains the 10 digits, and the <b>Letters</b>
+range that contains all uppercase and lowercase letters. Other ranges can be used by typing in the 
+first and last character index. If a character does not lie in the range it is replaced by a space. 
+
+<p>
+Normally you have a large number of different fonts
+installed on your computer and there are websites where you can download hundreds more. The problem is that
+if you use them in your game and then give your game to somebody else to play there is a big chance that
+the other person does not have the same fonts installed on his or her computer. 
+To avoid this, <i>Game Maker</i> embeds all the fonts you want to use in the game file, but only in
+the stand-alone games. So if you give a stand-alone game to someone else you don't need to provide
+the font files. But if you give somebody the editable version of your game and you use fancy fonts, you
+better also provide the person with the correct font files.
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+fonts
+adding fonts
+creating fonts
+defining fonts
+font type
+character range
+bold
+italic
+-->

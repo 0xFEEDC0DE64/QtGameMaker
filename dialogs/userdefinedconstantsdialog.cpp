@@ -5,7 +5,7 @@
 #include <QMessageBox>
 
 #include "projectcontainer.h"
-#include "constantsmodel.h"
+#include "models/constantsmodel.h"
 
 UserDefinedConstantsDialog::UserDefinedConstantsDialog(ProjectContainer &project, QWidget *parent) :
     QDialog{parent},

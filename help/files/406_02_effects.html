@@ -1,0 +1,181 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Sound Effects</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+
+<!--START-->
+
+<h3>Sound effects</h3>
+
+<i><b>This functionality is only available in the Pro Edition of Game Maker.</b></i>
+
+<p>
+Sound effects can be used to change the way sounds and background music sounds. Realize that
+sound effects only apply to wave files and midi files, not to mp3 files. This section describes
+the functions that exist for using and changing sound effects. Realize that to use these 
+functions you need to have a good understanding of how sound and synthesizers work. No explanation
+of the different parameters is given here. Search the web or books for further informations.
+
+
+<p>
+To apply a sound effect to a particular sound you can either indicate this when defining the
+sound resource or you can use the following function
+
+<p>
+<blockquote>
+  <tt><b>sound_effect_set(snd,effect)</b></tt> 
+    Sets a (combination of) sound effect(s) for the indicated sound. <tt>effect</tt> can
+	be any of the following values: 
+	<blockquote>
+      <tt><b>se_none</b></tt><br> 
+      <tt><b>se_chorus</b></tt><br> 
+      <tt><b>se_echo</b></tt><br> 
+      <tt><b>se_flanger</b></tt><br> 
+      <tt><b>se_gargle</b></tt><br> 
+      <tt><b>se_reverb</b></tt><br> 
+      <tt><b>se_compressor</b></tt><br> 
+      <tt><b>se_equalizer</b></tt><br> 
+	</blockquote>
+	You can set a combination of effects by adding up the values. So e.g. you can use 
+<p>
+<pre>
+sound_effect_set(snd,se_echo+se_reverb);
+</pre>
+	<p>
+	to get a combination of echo and reverb effects.<br>
+</blockquote>
+
+<p>
+All effects have some default settings. You can change these settings once an effect has been applied
+to a sound. The order here is crucial. You first apply the effect to the sound and next set the
+parameters for it. Once you reapply effects to the sound, the settings are gone and you have to
+set them again. Note that all parameters must lie in a particular range, which is indicated
+below. The following functions exist for changing effect parameters:
+
+<p>
+<blockquote>
+  <tt><b>sound_effect_chorus(snd,wetdry,depth,feedback,frequency,wave,delay,phase)</b></tt> 
+    Sets the parameters for the chorus effect for the indicated sound. The following
+	parameters can be set: 
+		<blockquote>
+		<tt>wetdry</tt> Ratio of wet (processed) signal to dry (unprocessed) signal. 
+		  (range: 0 to 100, default 50)<br>
+		<tt>depth</tt> Percentage by which the delay time is modulated by the low-frequency oscillator, 
+		  in hundredths of a percentage point. (range: 0 to 100, default 25)<br>
+		<tt>feedback</tt> Percentage of output signal to feed back into the effect's input.
+		  (range: -99 to 99, default 0)<br>
+		<tt>frequency</tt> Frequency of the LFO. (range: 0 to 10, default 0)<br>
+		<tt>wave</tt> Waveform of the LFO. (0 = triangle, 1 = wave, default 1)<br>
+		<tt>delay</tt> Number of milliseconds the input is delayed before it is played back.
+		  (range: 0 to 20, default 0)<br>
+		<tt>phase</tt> Phase differential between left and right LFOs.
+		  (range: 0 to 4, default 2)<br>
+		</blockquote> 
+  <tt><b>sound_effect_echo(snd,wetdry,feedback,leftdelay,rightdelay,pandelay)</b></tt> 
+    Sets the parameters for the echo effect for the indicated sound. The following
+	parameters can be set: 
+		<blockquote>
+		<tt>wetdry</tt> Ratio of wet (processed) signal to dry (unprocessed) signal. 
+		  (range: 0 to 100, default 50)<br>
+		<tt>feedback</tt> Percentage fed back into input (range: 0 to 100, default 0)<br>
+		<tt>leftdelay</tt> Delay for left channel, in milliseconds. (range: 1 to 2000, default 333)<br>
+		<tt>rightdelay</tt> Delay for right channel, in milliseconds. (range: 1 to 2000, default 333)<br>
+		<tt>pandelay</tt> Whether to swap left and right delays with each successive echo. 
+		  (0 = don't swap, 1 = swap, default 0)<br>
+		</blockquote> 
+  <tt><b>sound_effect_flanger(snd,wetdry,depth,feedback,frequency,wave,delay,phase)</b></tt> 
+    Sets the parameters for the flanger effect for the indicated sound. The following
+	parameters can be set: 
+		<blockquote>
+		<tt>wetdry</tt> Ratio of wet (processed) signal to dry (unprocessed) signal. 
+		  (range: 0 to 100, default 50)<br>
+		<tt>depth</tt> Percentage by which the delay time is modulated by the low-frequency oscillator, 
+		  in hundredths of a percentage point. (range: 0 to 100, default 25)<br>
+		<tt>feedback</tt> Percentage of output signal to feed back into the effect's input.
+		  (range: -99 to 99, default 0)<br>
+		<tt>frequency</tt> Frequency of the LFO. (range: 0 to 10, default 0)<br>
+		<tt>wave</tt> Waveform of the LFO. (0 = triangle, 1 = wave, default 1)<br>
+		<tt>delay</tt> Number of milliseconds the input is delayed before it is played back.
+		  (range: 0 to 20, default 0)<br>
+		<tt>phase</tt> Phase differential between left and right LFOs.
+		  (range: 0 to 4, default 2)<br>
+		</blockquote> 
+  <tt><b>sound_effect_gargle(snd,rate,wave)</b></tt> 
+    Sets the parameters for the gargle effect for the indicated sound. The following
+	parameters can be set: 
+		<blockquote>
+		<tt>rate</tt> Rate of modulation, in Hertz. 
+		  (range: 1 to 1000, default 1)<br>
+		<tt>wave</tt> Shape of the modulation wave. (0 = triangle, 1 = square, default 0)<br>
+		</blockquote> 
+  <tt><b>sound_effect_reverb(snd,gain,mix,time,ratio)</b></tt> 
+    Sets the parameters for the reverb effect for the indicated sound. The following
+	parameters can be set: 
+		<blockquote>
+		<tt>gain</tt> Input gain of signal, in decibels (dB). (range: -96 to 0, default 0)<br>
+		<tt>mix</tt> Reverb mix, in dB. (range: -96 to 0, default 0)<br>
+		<tt>time</tt> Reverb time, in milliseconds. (range: 0.001 to 3000, default 1000)<br>
+		<tt>ratio</tt> Frequency ratio. (range: 0.001 to 0.999, default 0.001)<br>
+		</blockquote> 
+  <tt><b>sound_effect_compressor(snd,gain,attack,release,threshold,ratio,delay)</b></tt> 
+    Sets the parameters for the compressor effect for the indicated sound. The following
+	parameters can be set: 
+		<blockquote>
+		<tt>gain</tt> Output gain of signal after compression. (range: -60 to 60, default 0)<br>
+		<tt>attack</tt> Time before compression reaches its full value. 
+		  (range: 0.01 to 500, default 0.01)<br>
+		<tt>release</tt> Speed at which compression is stopped after input drops below threshold. 
+		  (range: 50 to 3000, default 50)<br>
+		<tt>threshold</tt> Point at which compression begins, in decibels. 
+		  (range: -60 to 0, default -10)<br>
+		<tt>ratio</tt> Compression ratio. (range: 1 to 100, default 10)<br>
+		<tt>delay</tt> Time after threshold is reached before attack phase is started, 
+		  in milliseconds. (range: 0 to 4, default 0)<br>
+		</blockquote> 
+  <tt><b>sound_effect_equalizer(snd,center,bandwidth,gain)</b></tt> 
+    Sets the parameters for the equalizer effect for the indicated sound. The following
+	parameters can be set: 
+		<blockquote>
+		<tt>center</tt> Center frequency, in hertz. (range: 80 to 16000)<br>		
+		<tt>bandwidth</tt> Bandwidth, in semitones. (range: 1 to 36)<br>
+		<tt>gain</tt> Gain. (range: -15 to 15)<br>
+		</blockquote> 
+</blockquote>
+  
+<!--END-->
+
+</body>
+</html>
+
+<!-- KEYWORDS
+sound effects
+chorus
+flanger
+echo
+gargle
+reverb
+compressor
+equalizer
+
+se_none
+se_chorus
+se_echo
+se_flanger
+se_gargle
+se_reverb
+se_compressor
+se_equalizer
+sound_effect_set()
+sound_effect_chorus()
+sound_effect_echo()
+sound_effect_flanger()
+sound_effect_gargle()
+sound_effect_reverb()
+sound_effect_compressor()
+sound_effect_equalizer()
+
+-->

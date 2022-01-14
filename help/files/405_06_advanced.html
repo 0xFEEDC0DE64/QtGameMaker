@@ -1,0 +1,313 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+<title>Advanced Drawing Functions</title>
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body background="images/back.gif">
+<!--START-->
+
+<H3>Advanced drawing functions</H3>
+
+<i><b>This functionality is only available in the Pro Edition of Game Maker.</b></i>
+
+<p>
+Above, a number of basic drawing functions have been described. Here you find a number of additional 
+functions that offer you a lot more possibilities. First of all there are functions to draw shapes 
+with gradient colors. Secondly there are functions to draw more general polygons, and finally there 
+is the possibility to draw texture mapped polygons.
+
+<P>
+The following extended versions of the basic drawing functions exist. each of them gets extra color 
+parameters that are used the determine the color at different vertices. The standard drawing color is 
+not used in these functions.
+
+<p>
+<blockquote>
+  <tt><b>draw_point_color(x,y,col1)</b></tt>
+    Draws a point at (x,y) in the given color.<br>
+  <tt><b>draw_line_color(x1,y1,x2,y2,col1,col2)</b></tt>
+	  Draws a line from (x1,y1) to (x2,y2), interpolating the color
+		between col1 and col2.<br>
+  <tt><b>draw_line_width_color(x1,y1,x2,y2,w,col1,col2)</b></tt> 
+    Draws a line from (x1,y1) to (x2,y2) with width w interpolating the color
+		between col1 and col2.<br>
+  <tt><b>draw_rectangle_color(x1,y1,x2,y2,col1,col2,col3,col4,outline)</b></tt>
+	  Draws a rectangle. The four colors
+		indicated the colors at the top-left, top-right, bottom-right, and bottom-left vertex. outline
+		indicates whether only the outline must be drawn (true) or it should be filled (false).<br>
+	<tt><b>draw_roundrect_color(x1,y1,x2,y2,col1,col2,outline)</b></tt>
+	  Draws a rounded rectangle. col1 is the color in the
+		middle and col2 the color at the boundary. outline indicates whether only the outline must be drawn
+		(true) or it should be filled (false).<br>
+  <tt><b>draw_triangle_color(x1,y1,x2,y2,x3,y3,col1,col2,col3,outline)</b></tt>
+	  Draws a triangle. The three colors are
+		the colors of the three vertices which is interpolated over the triangle. outline indicates whether
+		only the outline must be drawn (true) or it should be filled (false).<br>
+  <tt><b>draw_circle_color(x,y,r,col1,col2,outline)</b></tt>
+	  Draws a circle at (x,y) with radius r. col1 is the color in
+		the middle and col2 the color at the boundary. outline indicates whether only the outline must be
+		drawn (true) or it should be filled (false).<br>
+  <tt><b>draw_ellipse_color(x1,y1,x2,y2,col1,col2,outline)</b></tt>
+	  Draws an ellipse. col1 is the color in the middle and
+		col2 the color at the boundary. outline indicates whether only the outline must be drawn (true) or it
+		should be filled (false).<br>
+</blockquote>
+
+<p>
+
+You can also draw larger primitives. This works slightly different. You begin by specifying the 
+primitive you want to draw. Next you specify the vertices for it, and finally you end the primitive, 
+at which moment it is drawn. There are six types of primitives:
+
+<p>
+<blockquote>
+  <tt><b>pr_pointlist</b></tt>
+	  The vertices are a set of points.<br>
+  <tt><b>pr_linelist</b></tt>
+	  The vertices are a set of line segments. Each pair of vertices forms a line segment. So
+		there must be an even set of vertices.<br>
+  <tt><b>pr_linestrip</b></tt>
+	  The vertices form a polyline with the first connected to the second, the second to the
+		third, etc. The last one is not connected to the first one. You have to specify an extra copy of the
+		first vertex for this.<br>
+  <tt><b>pr_trianglelist</b></tt>
+	  The vertices are a set of triangles. Each triple of vertices forms a triangle. So the
+		number of vertices must be a multiple of 3.<br>
+  <tt><b>pr_trianglestrip</b></tt>
+	  The vertices again form triangles but this time it works slightly different. The
+		first three form the first triangle. The last two of these vertices, together with the next vertex,
+		form the second triangle, etc. So each new vertex specifies a new triangle, connected to the previous
+		one.<br>
+  <tt><b>pr_trianglefan</b></tt>
+	  Similar to a triangle list but this time the first vertex is part of all the
+		triangles. Again, each new vertex specifies a new triangle, connected to the previous vertex and the
+		first vertex.<br>
+</blockquote>
+
+<p>
+
+The following functions exist for drawing primitives
+
+<p>
+<blockquote>
+  <tt><b>draw_primitive_begin(kind)</b></tt>
+	  Start a primitive of the indicated kind.<br>
+  <tt><b>draw_vertex(x,y)</b></tt>
+	  Add vertex (x,y) to the primitive, using the color and alpha value set before.<br>
+  <tt><b>draw_vertex_color(x,y,col,alpha)</b></tt>
+	  Add vertex (x,y) to the primitive, with its own color and alpha
+		value. This allows you to create primitives with smoothly changing color and alpha values.<br>
+  <tt><b>draw_primitive_end()</b></tt>
+	  End the description of the primitive. This function actually draws it.<br>
+</blockquote>
+
+<p>
+
+Finally, it is possible to draw primitives using sprites or backgrounds as textures. When using a 
+texture the image is placed on the primitive, reshaping it to fit the primitive. Textures are used to 
+add detail to primitives, e.g. a brick wall. To use textures you first must obtain the id of the 
+texture you want to use. For this the following functions exist:
+
+<p>
+<blockquote>
+  <tt><b>sprite_get_texture(spr,subimg)</b></tt>
+	  Returns the id of the texture corresponding to subimage subimg of the
+		indicated sprite.<br>
+  <tt><b>background_get_texture(back)</b></tt>
+	  Returns the id of the texture corresponding to the indicated background.<br>
+</blockquote>
+
+<p>
+
+A selected texture might not yet be in video memory. The system will put it there once you need it 
+but sometimes you want to decide this yourself. For this the following two functions exist:
+
+<p>
+<blockquote>
+  <tt><b>texture_preload(texid)</b></tt>
+	  Puts the texture immediately into video memory.<br>
+  <tt><b>texture_set_priority(texid,prio)</b></tt>
+	  When there is too little video memory some will be removed
+		temporarily to make room for others that are needed. The ones with lowest priority are removed first.
+		Default, all have priority 0 but you can change the priority here. (Use positive values!)<br>
+</blockquote>
+
+<p>
+
+To add textures to primitives you must specify which parts of the textures must be put where on the 
+primitive. Positions in the texture are indicated with values between 0 and 1 but there is a problem 
+here. Sizes of textures must be powers of 2 (so e.g. 32x32 or 64x64). If you want to use sprites or 
+background as textures you better make sure they have such a size. If not, the test will be blank. To 
+find out which part of the texture is actually used you can use the following two functions. They 
+return a value between 0 and 1 that indicates the width or height of the actual part of the texture 
+being used. Specifying this value as texture coordinate will indicate the right or bottom side of the 
+texture.
+
+<p>
+<blockquote>
+  <tt><b>texture_get_width(texid)</b></tt>
+	  Returns the width of the texture with the given id. The width lies in the
+		range 0-1.<br>
+  <tt><b>texture_get_height(texid)</b></tt>
+	  Returns the height of the texture with the given id. The height lies in the
+		range 0-1.<br>
+</blockquote>
+
+<p>
+
+To draw textured primitives you use the following functions:
+
+<p>
+<blockquote>
+  <tt><b>draw_primitive_begin_texture(kind,texid)</b></tt>
+	  Start a primitive of the indicated kind with the given texture.<br>
+  <tt><b>draw_vertex_texture(x,y,xtex,ytex)</b></tt>
+	  Add vertex (x,y) to the primitive with position (xtex,ytex) in the
+		texture, blending with the color and alpha value set before. xtex and ytex
+		should normally lie between 0 and 1 but also larger values can be used,
+		leading to a repetition of the texture (see below).<br>
+  <tt><b>draw_vertex_texture_color(x,y,xtex,ytex,col,alpha)</b></tt>
+	  Add vertex (x,y) to the primitive with position
+		(xtex,ytex) in the texture, blending with its own color and alpha value.<br>
+  <tt><b>draw_primitive_end()</b></tt>
+	  End the description of the primitive. This function actually draws it.<br>
+</blockquote>
+
+<p>
+There are three functions that influence how textures are drawn:
+
+<p>
+<blockquote>
+  <tt><b>texture_set_interpolation(linear)</b></tt>
+	  Indicates whether to use linear interpolation (true) or pick the
+		nearest pixel (false). Linear interpolation gives smoother textures but can also be a bit blurry and
+		sometimes costs extra time. This setting also influence the drawing of sprites and background.
+		Default is false. (This can also be changed in the global game settings.)<br>
+  <tt><b>texture_set_blending(blend)</b></tt>
+	  Indicates whether to use blending with colors and alpha values. Switching
+		this off might be faster on old hardware. This setting also influence the drawing of sprites and
+		background. Default is true.<br>
+  <tt><b>texture_set_repeat(repeat)</b></tt>
+	  Indicates whether to use repeat the texture. This works as follows. As
+		indicated above texture coordinates lie in the range 0-1. If you specify a value larger than 1,
+		default the rest is not drawn. By setting repeat to true the texture is repeated. Note that sprites
+		and backgrounds are always drawn without repeating. So once you draw a sprite of background this
+		value is reset to false. Default is false.<br>
+</blockquote>
+
+<p>
+There are two more function that are not only useful for drawing textures. Normally primitives are
+blended with the background using the alpha value. You can actually indicate how this must happen.
+Besides the normal mode it is possible to indicate that the new color must be added to the 
+existing color or subtracted from the existing color. This can be used to create e.g. spot
+lights or shadows. Also it is possible to sort of take the maximum of the new and existing color.
+This can avoid certain saturation effects that you can get with adding. 
+Note that both subtracting and maximum do not take the alpha value fully into
+account. (DirectX does not allow this.) So you better make sure the outside area is black. 
+There are two functions. The first one only gives you the four options described
+above. The second function gives you a lot more possibilities. You should
+experiment a bit with the settings. If used effectively they
+can be used to create e.g. interesting explosion or halo effects.
+
+<p>
+<blockquote>
+  <tt><b>draw_set_blend_mode(mode)</b></tt>
+	  Indicates what blend mode to use. The following values are possible: <tt>bm_normal</tt>,
+	  <tt>bm_add</tt>, <tt>bm_subtract</tt>, and <tt>bm_max</tt>. Don't forget to reset the 
+	  mode to normal after use because otherwise also other sprites and even the backgrounds
+	  are drawn with the new blend mode.<br>
+  <tt><b>draw_set_blend_mode_ext(src,dest)</b></tt>
+	  Indicates what blend mode to use for both the source and destination color. The new color
+	  is some factor times the source and another factor times the destination. These factors
+	  are set with this function. To understand this, the source and destination both have
+	  a red, green, blue, and alpha component. So the source is (Rs, Gs, Bs, As) and
+	  the destination is (Rd, Gd, Bd, Ad). All are considered to lie between 0 and 1. The blend
+	  factors you can choose for source and destination are:  
+	  <ul>
+	  <li>bm_zero: Blend factor is (0, 0, 0, 0). 
+	  <li>bm_one: Blend factor is (1, 1, 1, 1). 
+	  <li>bm_src_color: Blend factor is (Rs, Gs, Bs, As). 
+	  <li>bm_inv_src_color: Blend factor is (1–Rs, 1–Gs, 1–Bs, 1–As). 
+	  <li>bm_src_alpha: Blend factor is (As, As, As, As). 
+	  <li>bm_inv_src_alpha: Blend factor is (1–As, 1–As, 1–As, 1–As). 
+	  <li>bm_dest_alpha: Blend factor is (Ad, Ad, Ad, Ad). 
+	  <li>bm_inv_dest_alpha: Blend factor is (1–Ad, 1–Ad, 1–Ad, 1–Ad). 
+	  <li>bm_dest_color: Blend factor is (Rd, Gd, Bd, Ad). 
+	  <li>bm_inv_dest_color: Blend factor is (1–Rd, 1–Gd, 1–Bd, 1–Ad). 
+	  <li>bm_src_alpha_sat: Blend factor is (f, f, f, 1); f = min(As, 1–Ad). 
+	  </ul>
+	  For example, the normal blending mode sets the source blending to bm_src_alpha and
+	  the destination blending to bm_inv_src_alpha. Don't forget to reset the 
+	  mode to normal after use because otherwise also other sprites and even the backgrounds
+	  are drawn with the new blend mode.<br>
+</blockquote>
+
+
+<p>
+Drawing texture primitives is a bit of work but can lead to great results. You can even use it to 
+make fake 3D games.
+
+
+<!--END-->
+</body>
+</html>
+
+<!-- KEYWORDS
+advanced drawing
+textures
+textured polygons
+drawing primitives
+texture blending
+gradient colors
+blend mode
+
+draw_point_color()
+draw_line_color()
+draw_line_width_color()
+draw_rectangle_color()
+draw_roundrect_color()
+draw_triangle_color()
+draw_circle_color()
+draw_ellipse_color()
+pr_pointlist
+pr_linelist
+pr_linestrip
+pr_trianglelist
+pr_trianglestrip
+pr_trianglefan
+draw_primitive_begin()
+draw_vertex()
+draw_vertex_color()
+draw_primitive_end()
+sprite_get_texture()
+background_get_texture()
+texture_preload()
+texture_set_priority()
+texture_get_width()
+texture_get_height()
+draw_primitive_begin_texture()
+draw_vertex_texture()
+draw_vertex_texture_color()
+texture_set_interpolation()
+texture_set_blending()
+texture_set_repeat()
+draw_set_blend_mode()
+draw_set_blend_mode_ext()
+bm_normal
+bm_add
+bm_max
+bm_subtract
+bm_zero
+bm_one
+bm_src_color
+bm_inv_src_color
+bm_src_alpha
+bm_inv_src_alpha
+bm_dest_alpha
+bm_inv_dest_alpha
+bm_dest_color
+bm_inv_dest_color
+bm_src_alpha_sat
+-->
