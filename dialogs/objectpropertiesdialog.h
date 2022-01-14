@@ -35,6 +35,9 @@ private slots:
     void changed();
 
     void objectNameChanged(const Object &object);
+    void spriteNameChanged(const Sprite &sprite, const QString &oldName);
+    void spriteAboutToBeRemoved(const Sprite &sprite);
+    void spritePixmapsChanged(const Sprite &sprite);
 
     void spritesMenuAboutToShow();
     void currentEventChanged(const QModelIndex &index);
@@ -45,6 +48,8 @@ private slots:
 
 private:
     void updateTitle();
+    void updateSpritePreview();
+    void updateSpritePreview(const std::vector<QPixmap> &pixmaps);
 
     const std::unique_ptr<Ui::ObjectPropertiesDialog> m_ui;
 

@@ -2,6 +2,7 @@
 
 #include <QDebug>
 #include <QPixmap>
+#include <QIcon>
 
 #include <utility>
 #include <algorithm>
@@ -228,10 +229,10 @@ QVariant ProjectTreeModel::data(const QModelIndex &index, int role) const
             case RowFonts:
             case RowTimeLines:
             case RowObjects:
-            case RowRooms:              return QPixmap{":/qtgameengine/icons/folder.png"}.scaled(16, 16);
-            case RowGameInformation:    return QPixmap{":/qtgameengine/icons/game-information-file.png"}.scaled(16, 16);
-            case RowGlobalGameSettings: return QPixmap{":/qtgameengine/icons/global-game-settings-file.png"}.scaled(16, 16);
-            case RowExtensionPackages:  return QPixmap{":/qtgameengine/icons/extension-packages-file.png"}.scaled(16, 16);
+            case RowRooms:              return QIcon{":/qtgameengine/icons/folder.png"};
+            case RowGameInformation:    return QIcon{":/qtgameengine/icons/game-information-file.png"};
+            case RowGlobalGameSettings: return QIcon{":/qtgameengine/icons/global-game-settings-file.png"};
+            case RowExtensionPackages:  return QIcon{":/qtgameengine/icons/extension-packages-file.png"};
             default:
                 qWarning() << "unexpected root row" << index.row();
                 return {};
@@ -494,8 +495,55 @@ template Room *ProjectTreeModel::get<Room>(const QModelIndex &index);
 template const Room *ProjectTreeModel::get<Room>(const QModelIndex &index) const;
 
 template<typename T>
+bool ProjectTreeModel::remove(const T &entry)
+{
+    if (!m_project)
+    {
+        qWarning() << "unexpected null project";
+        return false;
+    }
+
+    auto &container = m_project->containerFor<T>();
+    const auto iter = std::find_if(std::begin(container), std::end(container),
+                                   [&entry](const auto &otherEntry){ return &entry == &otherEntry; });
+    if (iter == std::cend(container))
+    {
+        qWarning() << "entry not from this project!";
+        return false;
+    }
+
+    const auto row = std::distance(std::begin(container), iter);
+
+    onBeforeRemove<T>(*iter);
+
+    emitAboutToBeRemoved<T>(*iter);
+
+    beginRemoveRows(rootFor<T>(), row, row);
+    container.erase(iter);
+    endRemoveRows();
+
+    return true;
+}
+
+template bool ProjectTreeModel::remove<Sprite>(const Sprite &entry);
+template bool ProjectTreeModel::remove<Sound>(const Sound &entry);
+template bool ProjectTreeModel::remove<Background>(const Background &entry);
+template bool ProjectTreeModel::remove<Path>(const Path &entry);
+template bool ProjectTreeModel::remove<Script>(const Script &entry);
+template bool ProjectTreeModel::remove<Font>(const Font &entry);
+template bool ProjectTreeModel::remove<TimeLine>(const TimeLine &entry);
+template bool ProjectTreeModel::remove<Object>(const Object &entry);
+template bool ProjectTreeModel::remove<Room>(const Room &entry);
+
+template<typename T>
 bool ProjectTreeModel::rename(const T &entry, const QString &newName)
 {
+    if (!m_project)
+    {
+        qWarning() << "unexpected null project";
+        return false;
+    }
+
     auto &container = m_project->containerFor<T>();
     const auto iter = std::find_if(std::begin(container), std::end(container),
                                    [&entry](const auto &otherEntry){ return &entry == &otherEntry; });
@@ -515,11 +563,16 @@ bool ProjectTreeModel::rename(const T &entry, const QString &newName)
         return false;
     }
 
-    iter->name = newName;
+    onBeforeRename<T>(*iter, newName);
 
-    emitNameChanged<T>(*iter);
+    auto oldName = std::move(iter->name);
+    iter->name = std::move(newName);
+
+    emitNameChanged<T>(*iter, oldName);
     const auto index = this->index(std::distance(std::begin(container), iter), 0, rootFor<T>());
     emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+
+    onAfterRename<T>(*iter, std::move(oldName));
 
     return true;
 }
@@ -533,6 +586,44 @@ template bool ProjectTreeModel::rename<Font>(const Font &entry, const QString &n
 template bool ProjectTreeModel::rename<TimeLine>(const TimeLine &entry, const QString &newName);
 template bool ProjectTreeModel::rename<Object>(const Object &entry, const QString &newName);
 template bool ProjectTreeModel::rename<Room>(const Room &entry, const QString &newName);
+
+bool ProjectTreeModel::setSpritePixmaps(const Sprite &sprite, std::vector<QPixmap> &&pixmaps)
+{
+    if (!m_project)
+    {
+        qWarning() << "unexpected null project";
+        return false;
+    }
+
+    {
+        auto &container = m_project->sprites;
+        const auto iter = std::find_if(std::begin(container), std::end(container),
+                                       [&sprite](const auto &otherEntry){ return &sprite == &otherEntry; });
+        if (iter == std::cend(container))
+        {
+            qWarning() << "entry not from this project!";
+            return false;
+        }
+
+        iter->pixmaps = std::move(pixmaps);
+
+        const auto index = this->index(std::distance(std::begin(container), iter), 0, rootFor<Sprite>());
+        emit dataChanged(index, index, { Qt::DecorationRole });
+
+        emit spritePixmapsChanged(*iter);
+    }
+
+    for (auto iter = std::cbegin(m_project->objects); iter != std::cend(m_project->objects); iter++)
+    {
+        if (iter->spriteName != sprite.name)
+            continue;
+
+        const auto index = this->index(std::distance(std::cbegin(m_project->objects), iter), 0, rootFor<Object>());
+        emit dataChanged(index, index, {Qt::DecorationRole});
+    }
+
+    return true;
+}
 
 template<typename T>
 QVariant ProjectTreeModel::dataFor(const QModelIndex &index, int role) const
@@ -574,7 +665,7 @@ QVariant ProjectTreeModel::iconFor<Sprite>(const Sprite &entry) const
         pixmap.fill(Qt::white);
         return pixmap;
     }
-    return entry.pixmaps.front().scaled(16, 16, Qt::IgnoreAspectRatio /*KeepAspectRatio*/);
+    return QIcon{entry.pixmaps.front()};
 }
 
 template<>
@@ -583,9 +674,9 @@ QVariant ProjectTreeModel::iconFor<Sound>(const Sound &entry) const
     switch (entry.type)
     {
     case Sound::Type::Sound:
-        return QPixmap{":/qtgameengine/icons/sound-file.png"}.scaled(16, 16);
+        return QIcon{":/qtgameengine/icons/sound-file.png"};
     case Sound::Type::Music:
-        return QPixmap{":/qtgameengine/icons/music-file.png"}.scaled(16, 16);
+        return QIcon{":/qtgameengine/icons/music-file.png"};
     default:
         qWarning() << "unexpected sound type" << std::to_underlying(entry.type);
         return {};
@@ -597,39 +688,39 @@ QVariant ProjectTreeModel::iconFor<Background>(const Background &entry) const
 {
     if (entry.pixmap.isNull())
     {
-        QPixmap pixmap{16, 16};
+        QPixmap pixmap{64, 64};
         pixmap.fill(Qt::white);
-        return pixmap;
+        return QIcon{pixmap};
     }
-    return entry.pixmap.scaled(16, 16, Qt::KeepAspectRatio);
+    return QIcon{entry.pixmap};
 }
 
 template<>
 QVariant ProjectTreeModel::iconFor<Path>(const Path &entry) const
 {
     Q_UNUSED(entry)
-    return QPixmap{":/qtgameengine/icons/path-file.png"}.scaled(16, 16);
+    return QIcon{":/qtgameengine/icons/path-file.png"};
 }
 
 template<>
 QVariant ProjectTreeModel::iconFor<Script>(const Script &entry) const
 {
     Q_UNUSED(entry)
-    return QPixmap{":/qtgameengine/icons/script-file.png"}.scaled(16, 16);
+    return QIcon{":/qtgameengine/icons/script-file.png"};
 }
 
 template<>
 QVariant ProjectTreeModel::iconFor<Font>(const Font &entry) const
 {
     Q_UNUSED(entry)
-    return QPixmap{":/qtgameengine/icons/font-file.png"}.scaled(16, 16);
+    return QIcon{":/qtgameengine/icons/font-file.png"};
 }
 
 template<>
 QVariant ProjectTreeModel::iconFor<TimeLine>(const TimeLine &entry) const
 {
     Q_UNUSED(entry)
-    return QPixmap{":/qtgameengine/icons/timeline-file.png"}.scaled(16, 16);
+    return QIcon{":/qtgameengine/icons/timeline-file.png"};
 }
 
 template<>
@@ -642,19 +733,19 @@ QVariant ProjectTreeModel::iconFor<Object>(const Object &entry) const
         if (iter == std::cend(m_project->sprites))
             qWarning() << "sprite" << entry.spriteName << "not found";
         else if (!iter->pixmaps.empty() && !iter->pixmaps.front().isNull())
-            return iter->pixmaps.front().scaled(16, 16, Qt::KeepAspectRatio);
+            return QIcon{iter->pixmaps.front()};
     }
 
-    QPixmap pixmap{16, 16};
+    QPixmap pixmap{64, 64};
     pixmap.fill(Qt::white);
-    return pixmap;
+    return QIcon{pixmap};
 }
 
 template<>
 QVariant ProjectTreeModel::iconFor<Room>(const Room &entry) const
 {
     Q_UNUSED(entry)
-    return QPixmap{":/qtgameengine/icons/room-file.png"}.scaled(16, 16);
+    return QIcon{":/qtgameengine/icons/room-file.png"};
 }
 
 template<typename T>
@@ -686,9 +777,12 @@ bool ProjectTreeModel::setDataFor(const QModelIndex &index, const QVariant &valu
                 emit errorOccured(tr("A Sprite with the name \"%0\" is already existing").arg(name));
                 return false;
             }
+            onBeforeRename<T>(*iter, name);
+            auto oldName = std::move(iter->name);
             iter->name = std::move(name);
-            emitNameChanged<T>(*iter);
+            emitNameChanged<T>(*iter, oldName);
             emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+            onAfterRename<T>(*iter, std::move(oldName));
         }
         return true;
     default:
@@ -759,9 +853,16 @@ std::optional<bool> ProjectTreeModel::removeRowsFor(int row, int count, const QM
             return false;
         }
 
-        emit beginRemoveRows(parent, row, row + count - 1);
         auto begin = std::next(std::begin(container), row);
         auto end = std::next(begin, count);
+
+        for (auto iter = begin; iter != end; iter++)
+            onBeforeRemove<T>(*iter);
+
+        for (auto iter = begin; iter != end; iter++)
+            emitAboutToBeRemoved(*iter);
+
+        emit beginRemoveRows(parent, row, row + count - 1);
         container.erase(begin, end);
         emit endRemoveRows();
 
@@ -771,110 +872,69 @@ std::optional<bool> ProjectTreeModel::removeRowsFor(int row, int count, const QM
     return std::nullopt;
 }
 
-template<>
-void ProjectTreeModel::emitNameChanged<Sprite>(const Sprite &entry)
+template<typename T> void ProjectTreeModel::onBeforeRemove(const T &entry) {}
+template<> void ProjectTreeModel::onBeforeRemove<Sprite>(const Sprite &sprite)
 {
-    emit spriteNameChanged(entry);
+    for (auto iter = std::begin(m_project->objects); iter != std::end(m_project->objects); iter++)
+    {
+        if (iter->spriteName != sprite.name)
+            continue;
+
+        auto oldSpriteName = std::move(iter->spriteName);
+        iter->spriteName.clear();
+
+        const auto index = this->index(std::distance(std::begin(m_project->objects), iter), 0, rootFor<Object>());
+        emit dataChanged(index, index, {Qt::DecorationRole});
+
+        emit objectSpriteNameChanged(*iter, std::move(oldSpriteName));
+    }
 }
 
-template<>
-void ProjectTreeModel::emitNameChanged<Sound>(const Sound &entry)
+template<typename T> void ProjectTreeModel::onBeforeRename(const T &entry, const QString &newName) {}
+
+template<typename T> void ProjectTreeModel::onAfterRename(const T &entry, const QString &oldName) {}
+template<> void ProjectTreeModel::onAfterRename<Sprite>(const Sprite &sprite, const QString &oldName)
 {
-    emit soundNameChanged(entry);
+    for (auto iter = std::begin(m_project->objects); iter != std::end(m_project->objects); iter++)
+    {
+        if (iter->spriteName != oldName)
+            continue;
+
+        auto oldSpriteName = std::move(iter->spriteName);
+
+        iter->spriteName = sprite.name;
+
+//        const auto index = this->index(std::distance(std::begin(m_project->objects), iter), 0, rootFor<Object>());
+//        emit dataChanged(index, index, {Qt::DecorationRole});
+
+        emit objectSpriteNameChanged(*iter, std::move(oldSpriteName));
+    }
 }
 
-template<>
-void ProjectTreeModel::emitNameChanged<Background>(const Background &entry)
-{
-    emit backgroundNameChanged(entry);
-}
-
-template<>
-void ProjectTreeModel::emitNameChanged<Path>(const Path &entry)
-{
-    emit pathNameChanged(entry);
-}
-
-template<>
-void ProjectTreeModel::emitNameChanged<Script>(const Script &entry)
-{
-    emit scriptNameChanged(entry);
-}
-
-template<>
-void ProjectTreeModel::emitNameChanged<Font>(const Font &entry)
-{
-    emit fontNameChanged(entry);
-}
-
-template<>
-void ProjectTreeModel::emitNameChanged<TimeLine>(const TimeLine &entry)
-{
-    emit timeLineNameChanged(entry);
-}
-
-template<>
-void ProjectTreeModel::emitNameChanged<Object>(const Object &entry)
-{
-    emit objectNameChanged(entry);
-}
-
-template<>
-void ProjectTreeModel::emitNameChanged<Room>(const Room &entry)
-{
-    emit roomNameChanged(entry);
-}
-
-template<>
-QString ProjectTreeModel::nameTempateFor<Sprite>()
-{
-    return QStringLiteral("sprite%0");
-}
-
-template<>
-QString ProjectTreeModel::nameTempateFor<Sound>()
-{
-    return QStringLiteral("sound%0");
-}
-
-template<>
-QString ProjectTreeModel::nameTempateFor<Background>()
-{
-    return QStringLiteral("background%0");
-}
-
-template<>
-QString ProjectTreeModel::nameTempateFor<Path>()
-{
-    return QStringLiteral("path%0");
-}
-
-template<>
-QString ProjectTreeModel::nameTempateFor<Script>()
-{
-    return QStringLiteral("script%0");
-}
-
-template<>
-QString ProjectTreeModel::nameTempateFor<Font>()
-{
-    return QStringLiteral("font%0");
-}
-
-template<>
-QString ProjectTreeModel::nameTempateFor<TimeLine>()
-{
-    return QStringLiteral("timeline%0");
-}
-
-template<>
-QString ProjectTreeModel::nameTempateFor<Object>()
-{
-    return QStringLiteral("object%0");
-}
-
-template<>
-QString ProjectTreeModel::nameTempateFor<Room>()
-{
-    return QStringLiteral("room%0");
-}
+template<> void ProjectTreeModel::emitAboutToBeRemoved<Sprite>(const Sprite &entry) { emit spriteAboutToBeRemoved(entry); }
+template<> void ProjectTreeModel::emitAboutToBeRemoved<Sound>(const Sound &entry) { emit soundAboutToBeRemoved(entry);  }
+template<> void ProjectTreeModel::emitAboutToBeRemoved<Background>(const Background &entry) { emit backgroundAboutToBeRemoved(entry); }
+template<> void ProjectTreeModel::emitAboutToBeRemoved<Path>(const Path &entry) { emit pathAboutToBeRemoved(entry); }
+template<> void ProjectTreeModel::emitAboutToBeRemoved<Script>(const Script &entry) { emit scriptAboutToBeRemoved(entry); }
+template<> void ProjectTreeModel::emitAboutToBeRemoved<Font>(const Font &entry) { emit fontAboutToBeRemoved(entry); }
+template<> void ProjectTreeModel::emitAboutToBeRemoved<TimeLine>(const TimeLine &entry) { emit timeLineAboutToBeRemoved(entry); }
+template<> void ProjectTreeModel::emitAboutToBeRemoved<Object>(const Object &entry) { emit objectAboutToBeRemoved(entry); }
+template<> void ProjectTreeModel::emitAboutToBeRemoved<Room>(const Room &entry) { emit roomAboutToBeRemoved(entry); }
+template<> void ProjectTreeModel::emitNameChanged<Sprite>(const Sprite &entry, const QString &oldName) { emit spriteNameChanged(entry, oldName); }
+template<> void ProjectTreeModel::emitNameChanged<Sound>(const Sound &entry, const QString &oldName) { emit soundNameChanged(entry, oldName); }
+template<> void ProjectTreeModel::emitNameChanged<Background>(const Background &entry, const QString &oldName) { emit backgroundNameChanged(entry, oldName); }
+template<> void ProjectTreeModel::emitNameChanged<Path>(const Path &entry, const QString &oldName) { emit pathNameChanged(entry, oldName); }
+template<> void ProjectTreeModel::emitNameChanged<Script>(const Script &entry, const QString &oldName) { emit scriptNameChanged(entry, oldName); }
+template<> void ProjectTreeModel::emitNameChanged<Font>(const Font &entry, const QString &oldName) { emit fontNameChanged(entry, oldName); }
+template<> void ProjectTreeModel::emitNameChanged<TimeLine>(const TimeLine &entry, const QString &oldName) { emit timeLineNameChanged(entry, oldName); }
+template<> void ProjectTreeModel::emitNameChanged<Object>(const Object &entry, const QString &oldName) { emit objectNameChanged(entry, oldName); }
+template<> void ProjectTreeModel::emitNameChanged<Room>(const Room &entry, const QString &oldName) { emit roomNameChanged(entry, oldName); }
+template<> QString ProjectTreeModel::nameTempateFor<Sprite>() { return QStringLiteral("sprite%0"); }
+template<> QString ProjectTreeModel::nameTempateFor<Sound>() { return QStringLiteral("sound%0"); }
+template<> QString ProjectTreeModel::nameTempateFor<Background>() { return QStringLiteral("background%0"); }
+template<> QString ProjectTreeModel::nameTempateFor<Path>() { return QStringLiteral("path%0"); }
+template<> QString ProjectTreeModel::nameTempateFor<Script>() { return QStringLiteral("script%0"); }
+template<> QString ProjectTreeModel::nameTempateFor<Font>() { return QStringLiteral("font%0"); }
+template<> QString ProjectTreeModel::nameTempateFor<TimeLine>() { return QStringLiteral("timeline%0"); }
+template<> QString ProjectTreeModel::nameTempateFor<Object>() { return QStringLiteral("object%0"); }
+template<> QString ProjectTreeModel::nameTempateFor<Room>() { return QStringLiteral("room%0"); }

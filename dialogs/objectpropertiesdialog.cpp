@@ -32,16 +32,7 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel 
 
     m_ui->lineEditName->setText(m_object.name);
     m_ui->lineEditSprite->setText(m_spriteName.isEmpty() ? tr("<no sprite>") : m_spriteName);
-    if (!m_spriteName.isEmpty())
-    {
-        const auto &sprites = m_projectModel.project()->sprites;
-        const auto iter = std::find_if(std::cbegin(sprites), std::cend(sprites),
-                                       [&](const Sprite &sprite){ return sprite.name == m_spriteName; });
-        if (iter == std::cend(sprites))
-            qWarning() << "sprite" << m_spriteName << "not found";
-        else
-            m_ui->labelSpritePreview->setPixmap(iter->pixmaps.empty() ? QPixmap{} : iter->pixmaps.front().scaled(m_ui->labelSpritePreview->size(), Qt::KeepAspectRatio));
-    }
+    updateSpritePreview();
     m_ui->toolButtonSprite->setMenu(m_spritesMenu);
     m_ui->checkBoxVisible->setChecked(m_object.visible);
     m_ui->checkBoxSolid->setChecked(m_object.solid);
@@ -52,6 +43,12 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel 
 
     connect(&m_projectModel, &ProjectTreeModel::objectNameChanged,
             this, &ObjectPropertiesDialog::objectNameChanged);
+    connect(&m_projectModel, &ProjectTreeModel::spriteNameChanged,
+            this, &ObjectPropertiesDialog::spriteNameChanged);
+    connect(&m_projectModel, &ProjectTreeModel::spriteAboutToBeRemoved,
+            this, &ObjectPropertiesDialog::spriteAboutToBeRemoved);
+    connect(&m_projectModel, &ProjectTreeModel::spritePixmapsChanged,
+            this, &ObjectPropertiesDialog::spritePixmapsChanged);
 
     connect(m_eventsModel.get(), &QAbstractItemModel::modelReset,
             this, &ObjectPropertiesDialog::changed);
@@ -241,6 +238,49 @@ void ObjectPropertiesDialog::objectNameChanged(const Object &object)
     updateTitle();
 }
 
+void ObjectPropertiesDialog::spriteNameChanged(const Sprite &sprite, const QString &oldName)
+{
+    if (m_spriteName.isEmpty())
+        return;
+
+    if (m_spriteName != oldName)
+        return;
+
+    m_spriteName = sprite.name;
+    {
+        QSignalBlocker blocker{m_ui->lineEditSprite};
+        m_ui->lineEditSprite->setText(sprite.name);
+    }
+    updateSpritePreview();
+}
+
+void ObjectPropertiesDialog::spriteAboutToBeRemoved(const Sprite &sprite)
+{
+    if (m_spriteName.isEmpty())
+        return;
+
+    if (m_spriteName != sprite.name)
+        return;
+
+    m_spriteName.clear();
+    {
+        QSignalBlocker blocker{m_ui->lineEditSprite};
+        m_ui->lineEditSprite->setText(tr("<no sprite>"));
+    }
+    m_ui->labelSpritePreview->setPixmap(QPixmap{});
+}
+
+void ObjectPropertiesDialog::spritePixmapsChanged(const Sprite &sprite)
+{
+    if (m_spriteName.isEmpty())
+        return;
+
+    if (m_spriteName != sprite.name)
+        return;
+
+    updateSpritePreview(sprite.pixmaps);
+}
+
 void ObjectPropertiesDialog::spritesMenuAboutToShow()
 {
     m_spritesMenu->clear();
@@ -283,17 +323,17 @@ void ObjectPropertiesDialog::eventsContextMenuRequested(const QPoint &pos)
 
 void ObjectPropertiesDialog::clearSprite()
 {
+    m_spriteName.clear();
     m_ui->labelSpritePreview->setPixmap(QPixmap{});
     m_ui->lineEditSprite->setText(tr("<no sprite>"));
-    m_spriteName = QString{};
     changed();
 }
 
 void ObjectPropertiesDialog::setSprite(const Sprite &sprite)
 {
-    m_ui->labelSpritePreview->setPixmap(sprite.pixmaps.empty() ? QPixmap{} : sprite.pixmaps.front().scaled(m_ui->labelSpritePreview->size(), Qt::KeepAspectRatio));
-    m_ui->lineEditSprite->setText(sprite.name);
     m_spriteName = sprite.name;
+    updateSpritePreview(sprite.pixmaps);
+    m_ui->lineEditSprite->setText(sprite.name);
     changed();
 }
 
@@ -303,4 +343,25 @@ void ObjectPropertiesDialog::updateTitle()
                        .arg(m_object.name)
                        .arg(m_unsavedChanges ? tr("*") : QString{})
                    );
+}
+
+void ObjectPropertiesDialog::updateSpritePreview()
+{
+    if (m_spriteName.isEmpty())
+        m_ui->labelSpritePreview->setPixmap(QPixmap{});
+    else
+    {
+        const auto &sprites = m_projectModel.project()->sprites;
+        const auto iter = std::find_if(std::cbegin(sprites), std::cend(sprites),
+                                       [&](const Sprite &sprite){ return sprite.name == m_spriteName; });
+        if (iter == std::cend(sprites))
+            qWarning() << "sprite" << m_spriteName << "not found";
+        else
+            updateSpritePreview(iter->pixmaps);
+    }
+}
+
+void ObjectPropertiesDialog::updateSpritePreview(const std::vector<QPixmap> &pixmaps)
+{
+    m_ui->labelSpritePreview->setPixmap(pixmaps.empty() ? QPixmap{} : pixmaps.front().scaled(32, m_ui->labelSpritePreview->height(), Qt::KeepAspectRatio));
 }

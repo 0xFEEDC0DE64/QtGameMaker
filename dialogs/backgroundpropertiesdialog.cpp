@@ -102,7 +102,14 @@ void BackgroundPropertiesDialog::reject()
 
 void BackgroundPropertiesDialog::loadBackground()
 {
-    const auto path = QFileDialog::getOpenFileName(this, tr("Open a Background Image..."), {}, tr("BMP Files (*.bmp), PNG Files (*png)"));
+    const auto path = QFileDialog::getOpenFileName(this, tr("Open a Background Image..."), {},
+                                                   QStringLiteral("%0 (*.png);;%1 (*.bmp);;%2 (*.tiff);;%3 (*.jpg *.jpeg);;%4 (*)")
+                                                       .arg(tr("PNG Files"))
+                                                       .arg(tr("BMP Files"))
+                                                       .arg(tr("TIFF Files"))
+                                                       .arg(tr("JPEG Files"))
+                                                       .arg(tr("All Files"))
+                                                   );
     if (path.isEmpty())
         return;
 
@@ -126,7 +133,14 @@ void BackgroundPropertiesDialog::saveBackground()
         return;
     }
 
-    const auto path = QFileDialog::getSaveFileName(this, tr("Save a Background Image..."), m_background.name + ".png", tr("PNG Files (*.png)"));
+    const auto path = QFileDialog::getSaveFileName(this, tr("Save a Background Image..."), m_background.name + ".png",
+                                                   QStringLiteral("%0 (*.png);;%1 (*.bmp);;%2 (*.tiff);;%3 (*.jpg *.jpeg);;%4 (*)")
+                                                       .arg(tr("PNG Files"))
+                                                       .arg(tr("BMP Files"))
+                                                       .arg(tr("TIFF Files"))
+                                                       .arg(tr("JPEG Files"))
+                                                       .arg(tr("All Files"))
+                                                   );
     if (path.isEmpty())
         return;
 

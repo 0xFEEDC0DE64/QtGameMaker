@@ -79,7 +79,12 @@ void SpritePropertiesDialog::accept()
         }
     }
 
-    m_sprite.pixmaps = std::move(m_pixmaps);
+    if (!m_projectModel.setSpritePixmaps(m_sprite, std::move(m_pixmaps)))
+    {
+        QMessageBox::critical(this, tr("Setting Sprite pixmaps failed!"), tr("Setting Sprite pixmaps failed!"));
+        return;
+    }
+
     m_sprite.origin.x = m_ui->spinBoxOriginX->value();
     m_sprite.origin.y = m_ui->spinBoxOriginY->value();
     m_sprite.preciseCollisionChecking = m_ui->checkBoxPreciseCollisionChecking->isChecked();
@@ -120,7 +125,14 @@ void SpritePropertiesDialog::reject()
 
 void SpritePropertiesDialog::loadSprite()
 {
-    const auto path = QFileDialog::getOpenFileName(this, tr("Open a Sprite Image..."), {}, tr("BMP Files (*.bmp), PNG Files (*png)"));
+    const auto path = QFileDialog::getOpenFileName(this, tr("Open a Sprite Image..."), {},
+                                                   QStringLiteral("%0 (*.png);;%1 (*.bmp);;%2 (*.tiff);;%3 (*.jpg *.jpeg);;%4 (*)")
+                                                       .arg(tr("PNG Files"))
+                                                       .arg(tr("BMP Files"))
+                                                       .arg(tr("TIFF Files"))
+                                                       .arg(tr("JPEG Files"))
+                                                       .arg(tr("All Files"))
+                                                   );
     if (path.isEmpty())
         return;
 
@@ -144,7 +156,14 @@ void SpritePropertiesDialog::saveSprite()
         return;
     }
 
-    const auto path = QFileDialog::getSaveFileName(this, tr("Save a Sprite Image..."), m_sprite.name + ".png", tr("PNG Files (*.png)"));
+    const auto path = QFileDialog::getSaveFileName(this, tr("Save a Sprite Image..."), m_sprite.name + ".png",
+                                                   QStringLiteral("%0 (*.png);;%1 (*.bmp);;%2 (*.tiff);;%3 (*.jpg *.jpeg);;%4 (*)")
+                                                       .arg(tr("PNG Files"))
+                                                       .arg(tr("BMP Files"))
+                                                       .arg(tr("TIFF Files"))
+                                                       .arg(tr("JPEG Files"))
+                                                       .arg(tr("All Files"))
+                                                   );
     if (path.isEmpty())
         return;
 

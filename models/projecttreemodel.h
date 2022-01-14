@@ -64,9 +64,13 @@ public:
     template<typename T> T *get(const QModelIndex &index);
     template<typename T> const T *get(const QModelIndex &index) const;
 
-    template<typename T> bool rename(const T &sprite, const QString &newName);
+    template<typename T> bool remove(const T &entry);
+
+    template<typename T> bool rename(const T &entry, const QString &newName);
 
     template<typename T> static constexpr ProjectTreeModel::NodeType nodeTypeFor() = delete;
+
+    bool setSpritePixmaps(const Sprite &sprite, std::vector<QPixmap> &&pixmaps);
 
 signals:
     void errorOccured(const QString &message);
@@ -81,15 +85,19 @@ signals:
     void objectAboutToBeRemoved(const Object &font);
     void roomAboutToBeRemoved(const Room &font);
 
-    void spriteNameChanged(const Sprite &sprite);
-    void soundNameChanged(const Sound &sound);
-    void backgroundNameChanged(const Background &background);
-    void pathNameChanged(const Path &path);
-    void scriptNameChanged(const Script &script);
-    void fontNameChanged(const Font &font);
-    void timeLineNameChanged(const TimeLine &font);
-    void objectNameChanged(const Object &font);
-    void roomNameChanged(const Room &font);
+    void spriteNameChanged(const Sprite &sprite, const QString &oldName);
+    void soundNameChanged(const Sound &sound, const QString &oldName);
+    void backgroundNameChanged(const Background &background, const QString &oldName);
+    void pathNameChanged(const Path &path, const QString &oldName);
+    void scriptNameChanged(const Script &script, const QString &oldName);
+    void fontNameChanged(const Font &font, const QString &oldName);
+    void timeLineNameChanged(const TimeLine &font, const QString &oldName);
+    void objectNameChanged(const Object &font, const QString &oldName);
+    void roomNameChanged(const Room &font, const QString &oldName);
+
+    void spritePixmapsChanged(const Sprite &sprite);
+
+    void objectSpriteNameChanged(const Object &object, const QString &oldSpriteName);
 
 private:
     template<typename T> QVariant dataFor(const QModelIndex &index, int role) const;
@@ -97,7 +105,11 @@ private:
     template<typename T> bool setDataFor(const QModelIndex &index, const QVariant &value, int role);
     template<typename T> std::optional<bool> insertRowsFor(int row, int count, const QModelIndex &parent);
     template<typename T> std::optional<bool> removeRowsFor(int row, int count, const QModelIndex &parent);
-    template<typename T> void emitNameChanged(const T &entry);
+    template<typename T> void onBeforeRemove(const T &entry);
+    template<typename T> void emitAboutToBeRemoved(const T &entry);
+    template<typename T> void onBeforeRename(const T &entry, const QString &newName);
+    template<typename T> void onAfterRename(const T &entry, const QString &oldName);
+    template<typename T> void emitNameChanged(const T &entry, const QString &oldName);
     template<typename T> static QString nameTempateFor();
 
     ProjectContainer *m_project{};
