@@ -6,7 +6,7 @@
 
 #include "projectcontainer.h"
 #include "models/triggersmodel.h"
-#include "triggerconditiondialog.h"
+#include "genericcodeeditordialog.h"
 
 TriggersDialog::TriggersDialog(ProjectContainer &project, QWidget *parent) :
     QDialog{parent},
@@ -66,7 +66,7 @@ TriggersDialog::~TriggersDialog() = default;
 
 void TriggersDialog::openCodeEditor()
 {
-    TriggerConditionDialog dialog{this};
+    GenericCodeEditorDialog dialog{tr("Trigger condition"), this};
     dialog.setScript(m_ui->plainTextEdit->toPlainText());
     if (dialog.exec() == QDialog::Accepted)
     {

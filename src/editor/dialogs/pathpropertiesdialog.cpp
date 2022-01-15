@@ -3,6 +3,8 @@
 
 #include <QSpinBox>
 #include <QLabel>
+#include <QMenu>
+#include <QToolButton>
 #include <QDebug>
 #include <QMessageBox>
 #include <QSignalBlocker>
@@ -16,39 +18,60 @@ PathPropertiesDialog::PathPropertiesDialog(Path &path, ProjectTreeModel &project
     m_ui{std::make_unique<Ui::PathPropertiesDialog>()},
     m_path{path},
     m_projectModel{projectModel},
-    m_points{path.points},
+    m_points{m_path.points},
     m_pointsModel{std::make_unique<PathPointsModel>(m_points, this)},
     m_spinBoxSnapX{new QSpinBox{this}},
     m_spinBoxSnapY{new QSpinBox{this}},
+    m_menuRooms{new QMenu{this}},
     m_labelX{new QLabel{tr("x: %0").arg(0)}},
     m_labelY{new QLabel{tr("y: %0").arg(0)}},
     m_labelArea{new QLabel{tr("Area: (%0,%1)->(%2,%3)").arg(0).arg(0).arg(0).arg(0)}}
 {
     m_ui->setupUi(this);
 
-    m_ui->widget->setPoints(&m_points);
+    m_ui->pathPointsWidget->setPoints(&m_points);
+    m_ui->pathPointsWidget->setSnapX(m_path.snapX);
+    m_ui->pathPointsWidget->setSnapY(m_path.snapY);
+    m_ui->pathPointsWidget->setGridEnabled(m_path.gridEnabled);
 
     updateTitle();
 
     {
-        auto label = new QLabel{tr("Snap X:"), this};
-        label->setBuddy(m_spinBoxSnapX);
-        m_ui->toolBar->insertWidget(m_ui->toolBar->actions().at(18), label);
+        int index{18};
+
+        {
+            auto label = new QLabel{tr("Snap &X:"), this};
+            label->setBuddy(m_spinBoxSnapX);
+            m_ui->toolBar->insertWidget(m_ui->toolBar->actions().at(index++), label);
+        }
+        m_spinBoxSnapX->setValue(m_ui->pathPointsWidget->snapX());
+        m_spinBoxSnapX->setMaximumWidth(50);
+        m_ui->toolBar->insertWidget(m_ui->toolBar->actions().at(index++), m_spinBoxSnapX);
+
+        {
+            auto label = new QLabel{tr("Snap &Y:"), this};
+            label->setBuddy(m_spinBoxSnapY);
+            m_ui->toolBar->insertWidget(m_ui->toolBar->actions().at(index++), label);
+        }
+        m_spinBoxSnapY->setValue(m_ui->pathPointsWidget->snapY());
+        m_spinBoxSnapY->setMaximumWidth(50);
+        m_ui->toolBar->insertWidget(m_ui->toolBar->actions().at(index++), m_spinBoxSnapY);
     }
-    m_spinBoxSnapX->setValue(m_ui->widget->gridX());
-    m_spinBoxSnapX->setMaximumWidth(50);
-    m_ui->toolBar->insertWidget(m_ui->toolBar->actions().at(19), m_spinBoxSnapX);
+
+    m_ui->actionGridEnabled->setChecked(m_ui->pathPointsWidget->gridEnabled());
 
     {
-        auto label = new QLabel{tr("Snap Y:"), this};
-        label->setBuddy(m_spinBoxSnapY);
-        m_ui->toolBar->insertWidget(m_ui->toolBar->actions().at(20), label);
+        auto toolButton = new QToolButton{this};
+        toolButton->setText(tr("Show"));
+        toolButton->setWhatsThis(tr("Indicate the room to show as background"));
+        toolButton->setIcon(QIcon{":/qtgameengine/icons/room.png"});
+        toolButton->setPopupMode(QToolButton::InstantPopup);
+        toolButton->setMenu(m_menuRooms);
+        m_ui->toolBar->addWidget(toolButton);
     }
-    m_spinBoxSnapY->setValue(m_ui->widget->gridY());
-    m_spinBoxSnapY->setMaximumWidth(50);
-    m_ui->toolBar->insertWidget(m_ui->toolBar->actions().at(21), m_spinBoxSnapY);
 
-    m_ui->actionGrid->setChecked(m_ui->widget->showGrid());
+    connect(m_menuRooms, &QMenu::aboutToShow,
+            this, &PathPropertiesDialog::roomsMenuAboutToShow);
 
     m_ui->treeView->setModel(m_pointsModel.get());
 
@@ -57,7 +80,7 @@ PathPropertiesDialog::PathPropertiesDialog(Path &path, ProjectTreeModel &project
     m_ui->checkBoxClosed->setChecked(m_path.closed);
     m_ui->spinBoxPrecision->setValue(m_path.precision);
 
-    m_ui->widget->setClosed(m_path.closed);
+    m_ui->pathPointsWidget->setClosed(m_path.closed);
 
     m_labelX->setFrameStyle(QFrame::Sunken);
     m_ui->statusbar->addWidget(m_labelX, 1);
@@ -76,9 +99,9 @@ PathPropertiesDialog::PathPropertiesDialog(Path &path, ProjectTreeModel &project
 
     m_ui->treeView->setColumnWidth(1, 75);
 
-    connect(m_ui->widget, &PathPointsWidget::pointInserted,
+    connect(m_ui->pathPointsWidget, &PathPointsWidget::pointInserted,
             m_pointsModel.get(), &PathPointsModel::pointInserted);
-    connect(m_ui->widget, &PathPointsWidget::pointMoved,
+    connect(m_ui->pathPointsWidget, &PathPointsWidget::pointMoved,
             m_pointsModel.get(), &PathPointsModel::pointMoved);
 
     connect(&m_projectModel, &ProjectTreeModel::pathNameChanged,
@@ -87,27 +110,61 @@ PathPropertiesDialog::PathPropertiesDialog(Path &path, ProjectTreeModel &project
     connect(m_ui->treeView->selectionModel(), &QItemSelectionModel::currentChanged,
             this, &PathPropertiesDialog::selectionChanged);
 
-    connect(m_ui->widget, &PathPointsWidget::gridXChanged,
+    connect(m_ui->actionUndo, &QAction::triggered,
+            this, &PathPropertiesDialog::undo);
+    connect(m_ui->actionClear, &QAction::triggered,
+            this, &PathPropertiesDialog::clearPath);
+    connect(m_ui->actionReverse, &QAction::triggered,
+            this, &PathPropertiesDialog::reversePath);
+    connect(m_ui->actionShift, &QAction::triggered,
+            this, &PathPropertiesDialog::shiftPath);
+    connect(m_ui->actionMirrorHorizontally, &QAction::triggered,
+            this, &PathPropertiesDialog::mirrorPathHorizontally);
+    connect(m_ui->actionMirrorVertically, &QAction::triggered,
+            this, &PathPropertiesDialog::mirrorPathVertically);
+    connect(m_ui->actionRotate, &QAction::triggered,
+            this, &PathPropertiesDialog::rotatePath);
+    connect(m_ui->actionScale, &QAction::triggered,
+            this, &PathPropertiesDialog::scalePath);
+    connect(m_ui->actionShiftLeft, &QAction::triggered,
+            this, &PathPropertiesDialog::shiftViewLeft);
+    connect(m_ui->actionShiftRight, &QAction::triggered,
+            this, &PathPropertiesDialog::shiftViewRight);
+    connect(m_ui->actionShiftUp, &QAction::triggered,
+            this, &PathPropertiesDialog::shiftViewUp);
+    connect(m_ui->actionShiftDown, &QAction::triggered,
+            this, &PathPropertiesDialog::shiftViewDown);
+    connect(m_ui->actionCenterView, &QAction::triggered,
+            this, &PathPropertiesDialog::centerView);
+
+    connect(m_ui->pathPointsWidget, &PathPointsWidget::snapXChanged,
             m_spinBoxSnapX, &QSpinBox::setValue);
-    connect(m_ui->widget, &PathPointsWidget::gridYChanged,
+    connect(m_ui->pathPointsWidget, &PathPointsWidget::snapYChanged,
             m_spinBoxSnapY, &QSpinBox::setValue);
-    connect(m_ui->widget, &PathPointsWidget::showGridChanged,
-            m_ui->actionGrid, &QAction::setChecked);
-    connect(m_ui->widget, &PathPointsWidget::closedChanged,
+    connect(m_ui->pathPointsWidget, &PathPointsWidget::gridEnabledChanged,
+            m_ui->actionGridEnabled, &QAction::setChecked);
+    connect(m_ui->pathPointsWidget, &PathPointsWidget::closedChanged,
             m_ui->checkBoxClosed, &QCheckBox::setChecked);
-    connect(m_ui->widget, &PathPointsWidget::cursorMoved,
+    connect(m_ui->pathPointsWidget, &PathPointsWidget::cursorMoved,
             this, &PathPropertiesDialog::cursorMoved);
-    connect(m_ui->widget, &PathPointsWidget::selectedIndexChanged,
+    connect(m_ui->pathPointsWidget, &PathPointsWidget::selectedIndexChanged,
             this, &PathPropertiesDialog::selectedPointChanged);
 
     connect(m_spinBoxSnapX, &QSpinBox::valueChanged,
-            m_ui->widget, &PathPointsWidget::setGridX);
+            m_ui->pathPointsWidget, &PathPointsWidget::setSnapX);
     connect(m_spinBoxSnapY, &QSpinBox::valueChanged,
-            m_ui->widget, &PathPointsWidget::setGridY);
-    connect(m_ui->actionGrid, &QAction::toggled,
-            m_ui->widget, &PathPointsWidget::setShowGrid);
+            m_ui->pathPointsWidget, &PathPointsWidget::setSnapY);
+    connect(m_ui->actionGridEnabled, &QAction::toggled,
+            m_ui->pathPointsWidget, &PathPointsWidget::setGridEnabled);
     connect(m_ui->checkBoxClosed, &QCheckBox::toggled,
-            m_ui->widget, &PathPointsWidget::setClosed);
+            m_ui->pathPointsWidget, &PathPointsWidget::setClosed);
+
+    connect(m_spinBoxSnapX, &QSpinBox::valueChanged,
+            this, &PathPropertiesDialog::changed);
+    connect(m_spinBoxSnapY, &QSpinBox::valueChanged,
+            this, &PathPropertiesDialog::changed);
+    connect(m_ui->actionGridEnabled, &QAction::toggled,
+            this, &PathPropertiesDialog::changed);
 
     connect(m_ui->spinBoxX, &QSpinBox::valueChanged,
             this, &PathPropertiesDialog::pointFieldsChanged);
@@ -129,17 +186,17 @@ PathPropertiesDialog::PathPropertiesDialog(Path &path, ProjectTreeModel &project
     connect(m_pointsModel.get(), &QAbstractTableModel::rowsInserted,
             this, &PathPropertiesDialog::changed);
     connect(m_pointsModel.get(), &QAbstractTableModel::rowsInserted,
-            m_ui->widget, qOverload<>(&PathPointsWidget::update));
+            m_ui->pathPointsWidget, qOverload<>(&PathPointsWidget::update));
     connect(m_pointsModel.get(), &QAbstractTableModel::rowsRemoved,
             this, &PathPropertiesDialog::changed);
     connect(m_pointsModel.get(), &QAbstractTableModel::rowsRemoved,
-            m_ui->widget, qOverload<>(&PathPointsWidget::update));
+            m_ui->pathPointsWidget, qOverload<>(&PathPointsWidget::update));
     connect(m_pointsModel.get(), &QAbstractTableModel::dataChanged,
             this, &PathPropertiesDialog::dataChanged);
     connect(m_pointsModel.get(), &QAbstractTableModel::dataChanged,
             this, &PathPropertiesDialog::changed);
     connect(m_pointsModel.get(), &QAbstractTableModel::dataChanged,
-            m_ui->widget, qOverload<>(&PathPointsWidget::update));
+            m_ui->pathPointsWidget, qOverload<>(&PathPointsWidget::update));
     connect(m_ui->radioButtonStraight, &QRadioButton::toggled,
             this, &PathPropertiesDialog::changed);
     connect(m_ui->radioButtonSmooth, &QRadioButton::toggled,
@@ -183,8 +240,9 @@ void PathPropertiesDialog::accept()
 
     m_path.closed = m_ui->checkBoxClosed->isChecked();
     m_path.precision = m_ui->spinBoxPrecision->value();
-
-    // TODO update points
+    m_path.snapX = m_spinBoxSnapX->value();
+    m_path.snapY = m_spinBoxSnapY->value();
+    m_path.gridEnabled = m_ui->actionGridEnabled->isChecked();
 
     QDialog::accept();
 }
@@ -223,11 +281,11 @@ void PathPropertiesDialog::selectionChanged(const QModelIndex &index)
 {
     if (!index.isValid())
     {
-        m_ui->widget->setSelectedIndex(std::nullopt);
+        m_ui->pathPointsWidget->setSelectedIndex(std::nullopt);
         return;
     }
 
-    m_ui->widget->setSelectedIndex(index.row());
+    m_ui->pathPointsWidget->setSelectedIndex(index.row());
 
     updatePointFields();
 }
@@ -284,6 +342,71 @@ void PathPropertiesDialog::deletePoint()
     }
 }
 
+void PathPropertiesDialog::undo()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void PathPropertiesDialog::clearPath()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void PathPropertiesDialog::reversePath()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void PathPropertiesDialog::shiftPath()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void PathPropertiesDialog::mirrorPathHorizontally()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void PathPropertiesDialog::mirrorPathVertically()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void PathPropertiesDialog::rotatePath()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void PathPropertiesDialog::scalePath()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void PathPropertiesDialog::shiftViewLeft()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void PathPropertiesDialog::shiftViewRight()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void PathPropertiesDialog::shiftViewUp()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void PathPropertiesDialog::shiftViewDown()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void PathPropertiesDialog::centerView()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
 void PathPropertiesDialog::pointFieldsChanged()
 {
     const auto index = m_ui->treeView->currentIndex();
@@ -319,6 +442,18 @@ void PathPropertiesDialog::pathNameChanged(const Path &path)
     }
 
     updateTitle();
+}
+
+void PathPropertiesDialog::roomsMenuAboutToShow()
+{
+    m_menuRooms->clear();
+    qDebug() << "called" << tr("No Room");
+    m_menuRooms->addAction(tr("No Room"));
+    for (const auto &room : m_projectModel.project()->rooms)
+    {
+        qDebug() << "called" << room.name;
+        m_menuRooms->addAction(room.name);
+    }
 }
 
 void PathPropertiesDialog::updateTitle()

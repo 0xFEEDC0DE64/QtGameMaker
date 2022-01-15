@@ -18,7 +18,7 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel 
     m_projectModel{projectModel},
     m_events{m_object.events},
     m_eventsModel{std::make_unique<ObjectEventsModel>(m_events)},
-    m_spritesMenu{new QMenu{m_ui->toolButtonSprite}},
+    m_menuSprites{new QMenu{this}},
     m_spriteName{object.spriteName}
 {
     m_ui->setupUi(this);
@@ -33,7 +33,8 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel 
     m_ui->lineEditName->setText(m_object.name);
     m_ui->lineEditSprite->setText(m_spriteName.isEmpty() ? tr("<no sprite>") : m_spriteName);
     updateSpritePreview();
-    m_ui->toolButtonSprite->setMenu(m_spritesMenu);
+    m_menuSprites->setParent(m_ui->toolButtonSprite);
+    m_ui->toolButtonSprite->setMenu(m_menuSprites);
     m_ui->checkBoxVisible->setChecked(m_object.visible);
     m_ui->checkBoxSolid->setChecked(m_object.solid);
     m_ui->spinBoxDepth->setValue(m_object.depth);
@@ -83,7 +84,7 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel 
     connect(m_ui->checkBoxPersistent, &QCheckBox::toggled,
             this, &ObjectPropertiesDialog::changed);
 
-    connect(m_spritesMenu, &QMenu::aboutToShow,
+    connect(m_menuSprites, &QMenu::aboutToShow,
             this, &ObjectPropertiesDialog::spritesMenuAboutToShow);
 
     connect(m_ui->listViewEvents->selectionModel(), &QItemSelectionModel::currentChanged,
@@ -289,10 +290,10 @@ void ObjectPropertiesDialog::spritePixmapsChanged(const Sprite &sprite)
 
 void ObjectPropertiesDialog::spritesMenuAboutToShow()
 {
-    m_spritesMenu->clear();
-    m_spritesMenu->addAction(tr("<no sprite>"), this, &ObjectPropertiesDialog::clearSprite);
+    m_menuSprites->clear();
+    m_menuSprites->addAction(tr("<no sprite>"), this, &ObjectPropertiesDialog::clearSprite);
     for (const auto &sprite : m_projectModel.project()->sprites)
-        m_spritesMenu->addAction(sprite.pixmaps.empty() ? QPixmap{} : sprite.pixmaps.front(),
+        m_menuSprites->addAction(sprite.pixmaps.empty() ? QPixmap{} : sprite.pixmaps.front(),
                                  sprite.name,
                                  this,
                                  [&sprite,this](){ setSprite(sprite); });

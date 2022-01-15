@@ -9,6 +9,7 @@
 
 class QSpinBox;
 class QLabel;
+class QMenu;
 namespace Ui { class PathPropertiesDialog; }
 class ProjectTreeModel;
 class PathPointsModel;
@@ -34,10 +35,26 @@ private slots:
     void insertPoint();
     void deletePoint();
 
+    void undo();
+    void clearPath();
+    void reversePath();
+    void shiftPath();
+    void mirrorPathHorizontally();
+    void mirrorPathVertically();
+    void rotatePath();
+    void scalePath();
+    void shiftViewLeft();
+    void shiftViewRight();
+    void shiftViewUp();
+    void shiftViewDown();
+    void centerView();
+
     void pointFieldsChanged();
     void changed();
 
     void pathNameChanged(const Path &path);
+
+    void roomsMenuAboutToShow();
 
 private:
     void updateTitle();
@@ -58,6 +75,8 @@ private:
 
     QSpinBox * const m_spinBoxSnapX;
     QSpinBox * const m_spinBoxSnapY;
+
+    QMenu * const m_menuRooms;
 
     QLabel * const m_labelX;
     QLabel * const m_labelY;

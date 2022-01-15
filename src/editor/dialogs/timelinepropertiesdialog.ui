@@ -14,7 +14,7 @@
    <string>Time Line Properties</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../resources.qrc">
+   <iconset resource="../../../resources.qrc">
     <normaloff>:/qtgameengine/icons/timeline-file.png</normaloff>:/qtgameengine/icons/timeline-file.png</iconset>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,1">
@@ -61,7 +61,7 @@
           <string>&amp;Add</string>
          </property>
          <property name="icon">
-          <iconset resource="../resources.qrc">
+          <iconset resource="../../../resources.qrc">
            <normaloff>:/qtgameengine/icons/add.png</normaloff>:/qtgameengine/icons/add.png</iconset>
          </property>
         </widget>
@@ -75,7 +75,7 @@
           <string>&amp;Change</string>
          </property>
          <property name="icon">
-          <iconset resource="../resources.qrc">
+          <iconset resource="../../../resources.qrc">
            <normaloff>:/qtgameengine/icons/replace.png</normaloff>:/qtgameengine/icons/replace.png</iconset>
          </property>
         </widget>
@@ -89,7 +89,7 @@
           <string>&amp;Delete</string>
          </property>
          <property name="icon">
-          <iconset resource="../resources.qrc">
+          <iconset resource="../../../resources.qrc">
            <normaloff>:/qtgameengine/icons/delete.png</normaloff>:/qtgameengine/icons/delete.png</iconset>
          </property>
         </widget>
@@ -103,7 +103,7 @@
           <string>&amp;Shift</string>
          </property>
          <property name="icon">
-          <iconset resource="../resources.qrc">
+          <iconset resource="../../../resources.qrc">
            <normaloff>:/qtgameengine/icons/arrow-right.png</normaloff>:/qtgameengine/icons/arrow-right.png</iconset>
          </property>
         </widget>
@@ -117,7 +117,7 @@
           <string>C&amp;lear</string>
          </property>
          <property name="icon">
-          <iconset resource="../resources.qrc">
+          <iconset resource="../../../resources.qrc">
            <normaloff>:/qtgameengine/icons/new.png</normaloff>:/qtgameengine/icons/new.png</iconset>
          </property>
         </widget>
@@ -131,7 +131,7 @@
           <string>D&amp;uplicate</string>
          </property>
          <property name="icon">
-          <iconset resource="../resources.qrc">
+          <iconset resource="../../../resources.qrc">
            <normaloff>:/qtgameengine/icons/copy.png</normaloff>:/qtgameengine/icons/copy.png</iconset>
          </property>
         </widget>
@@ -158,7 +158,7 @@
           <string>S&amp;pread</string>
          </property>
          <property name="icon">
-          <iconset resource="../resources.qrc">
+          <iconset resource="../../../resources.qrc">
            <normaloff>:/qtgameengine/icons/scale.png</normaloff>:/qtgameengine/icons/scale.png</iconset>
          </property>
         </widget>
@@ -172,7 +172,7 @@
           <string>&amp;Merge</string>
          </property>
          <property name="icon">
-          <iconset resource="../resources.qrc">
+          <iconset resource="../../../resources.qrc">
            <normaloff>:/qtgameengine/icons/merge.png</normaloff>:/qtgameengine/icons/merge.png</iconset>
          </property>
         </widget>
@@ -201,7 +201,7 @@
         <string>Show &amp;Information</string>
        </property>
        <property name="icon">
-        <iconset resource="../resources.qrc">
+        <iconset resource="../../../resources.qrc">
          <normaloff>:/qtgameengine/icons/info.png</normaloff>:/qtgameengine/icons/info.png</iconset>
        </property>
       </widget>
@@ -278,7 +278,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../resources.qrc"/>
+  <include location="../../../resources.qrc"/>
  </resources>
  <connections>
   <connection>

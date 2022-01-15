@@ -3,24 +3,18 @@
 #include <QWidget>
 #include <QPalette>
 
-#include <vector>
 #include <optional>
 
-#include "projectcontainer.h"
-
-class PathPointsWidget : public QWidget
+class RoomEditWidget : public QWidget
 {
     Q_OBJECT
     Q_PROPERTY(int snapX READ snapX WRITE setSnapX NOTIFY snapXChanged)
     Q_PROPERTY(int snapY READ snapY WRITE setSnapY NOTIFY snapYChanged)
     Q_PROPERTY(bool gridEnabled READ gridEnabled WRITE setGridEnabled NOTIFY gridEnabledChanged)
-    Q_PROPERTY(bool closed READ closed WRITE setClosed NOTIFY closedChanged)
+    Q_PROPERTY(bool isometricGrid READ isometricGrid WRITE setIsometricGrid NOTIFY isometricGridChanged)
 
 public:
-    explicit PathPointsWidget(QWidget *parent = nullptr);
-    explicit PathPointsWidget(std::vector<Path::Point> *points, QWidget *parent = nullptr);
-
-    void setPoints(std::vector<Path::Point> *points);
+    explicit RoomEditWidget(QWidget *parent = nullptr);
 
     int snapX() const { return m_snapX; }
     void setSnapX(int snapX);
@@ -31,11 +25,8 @@ public:
     bool gridEnabled() const { return m_gridEnabled; }
     void setGridEnabled(bool gridEnabled);
 
-    bool closed() const { return m_closed; }
-    void setClosed(bool closed);
-
-    const std::optional<std::size_t> &selectedIndex() const { return m_selectedIndex; }
-    void setSelectedIndex(const std::optional<std::size_t> &selectedIndex);
+    bool isometricGrid() const { return m_isometricGrid; }
+    void setIsometricGrid(bool isometricGrid);
 
     QPalette::ColorRole gridRole() const { return m_gridRole; }
     void setGridRole(QPalette::ColorRole gridRole);
@@ -44,13 +35,9 @@ signals:
     void snapXChanged(int snapX);
     void snapYChanged(int snapY);
     void gridEnabledChanged(bool gridEnabled);
-    void closedChanged(bool closed);
-    void selectedIndexChanged(const std::optional<std::size_t> &selectedIndex);
+    void isometricGridChanged(bool isometricGrid);
 
     void cursorMoved(const QPoint &point);
-
-    void pointInserted(std::size_t index);
-    void pointMoved(std::size_t index);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -61,16 +48,10 @@ protected:
 private:
     QPoint snapPoint(const QPoint &point) const;
 
-    std::vector<Path::Point> *m_points{};
-
     int m_snapX{16};
     int m_snapY{16};
     bool m_gridEnabled{true};
-
-    bool m_closed{true};
-
-    std::optional<std::size_t> m_selectedIndex;
-    std::optional<std::size_t> m_dragIndex;
+    bool m_isometricGrid{false};
 
     struct GridBrush {
         int snapX;

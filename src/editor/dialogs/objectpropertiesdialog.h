@@ -60,7 +60,7 @@ private:
 
     const std::unique_ptr<ObjectEventsModel> m_eventsModel;
 
-    QMenu * const m_spritesMenu;
+    QMenu * const m_menuSprites;
 
     QString m_spriteName;
 

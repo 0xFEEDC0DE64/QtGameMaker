@@ -1,7 +1,7 @@
-#include "triggerconditiondialog.h"
+#include "genericcodeeditordialog.h"
 
-TriggerConditionDialog::TriggerConditionDialog(QWidget *parent) :
-    CodeEditorDialog{tr("Trigger condition"), parent}
+GenericCodeEditorDialog::GenericCodeEditorDialog(const QString &title, QWidget *parent) :
+    CodeEditorDialog{title, parent}
 {
 #ifdef Q_OS_LINUX
     setWindowFlags((windowFlags() & ~Qt::Dialog) | Qt::Window);

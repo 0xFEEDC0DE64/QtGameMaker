@@ -6,20 +6,532 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>921</width>
+    <height>576</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Room Properties</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../resources.qrc">
+   <iconset resource="../../../resources.qrc">
     <normaloff>:/qtgameengine/icons/room-file.png</normaloff>:/qtgameengine/icons/room-file.png</iconset>
   </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QFrame" name="frame">
+     <property name="frameShape">
+      <enum>QFrame::Panel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QToolBar" name="toolBar">
+        <property name="windowTitle">
+         <string>toolBar</string>
+        </property>
+        <property name="movable">
+         <bool>false</bool>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+        <addaction name="actionOk"/>
+        <addaction name="separator"/>
+        <addaction name="actionUndo"/>
+        <addaction name="separator"/>
+        <addaction name="actionClear"/>
+        <addaction name="actionShift"/>
+        <addaction name="actionSortX"/>
+        <addaction name="actionSortY"/>
+        <addaction name="actionLock"/>
+        <addaction name="actionUnlock"/>
+        <addaction name="separator"/>
+        <addaction name="separator"/>
+        <addaction name="actionGridEnabled"/>
+        <addaction name="actionIsometricGrid"/>
+        <addaction name="separator"/>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
+     <item>
+      <widget class="QTabWidget" name="tabWidget">
+       <property name="tabPosition">
+        <enum>QTabWidget::West</enum>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="tabObjects">
+        <attribute name="title">
+         <string>&amp;Objects</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="leftMargin">
+          <number>10</number>
+         </property>
+         <property name="topMargin">
+          <number>10</number>
+         </property>
+         <property name="rightMargin">
+          <number>10</number>
+         </property>
+         <property name="bottomMargin">
+          <number>10</number>
+         </property>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tabSettings">
+        <attribute name="title">
+         <string>&amp;Settings</string>
+        </attribute>
+        <layout class="QVBoxLayout">
+         <item>
+          <layout class="QFormLayout" name="formLayout">
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelName">
+             <property name="text">
+              <string>&amp;Name:</string>
+             </property>
+             <property name="buddy">
+              <cstring>lineEditName</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="lineEditName"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QLabel" name="labelCaption">
+           <property name="text">
+            <string>&amp;Caption for the room:</string>
+           </property>
+           <property name="buddy">
+            <cstring>lineEditCaption</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEditCaption"/>
+         </item>
+         <item>
+          <layout class="QFormLayout" name="formLayout2">
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelWidth">
+             <property name="text">
+              <string>&amp;Width:</string>
+             </property>
+             <property name="buddy">
+              <cstring>spinBoxWidth</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QSpinBox" name="spinBoxWidth">
+             <property name="maximum">
+              <number>2147483647</number>
+             </property>
+             <property name="value">
+              <number>640</number>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="labelHeight">
+             <property name="text">
+              <string>&amp;Height:</string>
+             </property>
+             <property name="buddy">
+              <cstring>spinBoxHeight</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QSpinBox" name="spinBoxHeight">
+             <property name="maximum">
+              <number>2147483647</number>
+             </property>
+             <property name="value">
+              <number>480</number>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="labelSpeed">
+             <property name="text">
+              <string>S&amp;peed:</string>
+             </property>
+             <property name="buddy">
+              <cstring>spinBoxSpeed</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QSpinBox" name="spinBoxSpeed">
+             <property name="maximum">
+              <number>2147483647</number>
+             </property>
+             <property name="value">
+              <number>30</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkBoxPersistent">
+           <property name="text">
+            <string>P&amp;ersistent</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButtonCreationCode">
+             <property name="text">
+              <string>CreationCode</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../../../resources.qrc">
+               <normaloff>:/qtgameengine/icons/script.png</normaloff>:/qtgameengine/icons/script.png</iconset>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tabTiles">
+        <attribute name="title">
+         <string>&amp;Tiles</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tabBackgrounds">
+        <attribute name="title">
+         <string>&amp;Backgrounds</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tabViews">
+        <attribute name="title">
+         <string>&amp;Views</string>
+        </attribute>
+       </widget>
+      </widget>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_7" stretch="1,0">
+       <item>
+        <widget class="QScrollArea" name="scrollArea">
+         <widget class="RoomEditWidget" name="roomEditWidget">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>0</width>
+            <height>0</height>
+           </rect>
+          </property>
+         </widget>
+        </widget>
+       </item>
+       <item>
+        <widget class="QStatusBar" name="statusbar"/>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+  </layout>
+  <action name="actionOk">
+   <property name="icon">
+    <iconset resource="../../../resources.qrc">
+     <normaloff>:/qtgameengine/icons/ok.png</normaloff>:/qtgameengine/icons/ok.png</iconset>
+   </property>
+   <property name="text">
+    <string>OK</string>
+   </property>
+   <property name="toolTip">
+    <string>Close the form, saving the changes</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="icon">
+    <iconset resource="../../../resources.qrc">
+     <normaloff>:/qtgameengine/icons/undo.png</normaloff>:/qtgameengine/icons/undo.png</iconset>
+   </property>
+   <property name="text">
+    <string>Undo</string>
+   </property>
+   <property name="toolTip">
+    <string>Undo the last changes in the room</string>
+   </property>
+  </action>
+  <action name="actionClear">
+   <property name="icon">
+    <iconset resource="../../../resources.qrc">
+     <normaloff>:/qtgameengine/icons/new.png</normaloff>:/qtgameengine/icons/new.png</iconset>
+   </property>
+   <property name="text">
+    <string>Clear</string>
+   </property>
+   <property name="toolTip">
+    <string>Clear all instances from the room</string>
+   </property>
+  </action>
+  <action name="actionShift">
+   <property name="icon">
+    <iconset resource="../../../resources.qrc">
+     <normaloff>:/qtgameengine/icons/arrow-right.png</normaloff>:/qtgameengine/icons/arrow-right.png</iconset>
+   </property>
+   <property name="text">
+    <string>Shift</string>
+   </property>
+   <property name="toolTip">
+    <string>Shift all instances by a given amount</string>
+   </property>
+  </action>
+  <action name="actionSortX">
+   <property name="icon">
+    <iconset resource="../../../resources.qrc">
+     <normaloff>:/qtgameengine/icons/sort-x.png</normaloff>:/qtgameengine/icons/sort-x.png</iconset>
+   </property>
+   <property name="text">
+    <string>Sort X</string>
+   </property>
+   <property name="toolTip">
+    <string>Sort all instances by x-coordinate</string>
+   </property>
+  </action>
+  <action name="actionSortY">
+   <property name="icon">
+    <iconset resource="../../../resources.qrc">
+     <normaloff>:/qtgameengine/icons/sort-y.png</normaloff>:/qtgameengine/icons/sort-y.png</iconset>
+   </property>
+   <property name="text">
+    <string>Sort Y</string>
+   </property>
+   <property name="toolTip">
+    <string>Sort all instances by y-coordinate</string>
+   </property>
+  </action>
+  <action name="actionLock">
+   <property name="icon">
+    <iconset resource="../../../resources.qrc">
+     <normaloff>:/qtgameengine/icons/lock.png</normaloff>:/qtgameengine/icons/lock.png</iconset>
+   </property>
+   <property name="text">
+    <string>Lock</string>
+   </property>
+   <property name="toolTip">
+    <string>Lock all instances</string>
+   </property>
+  </action>
+  <action name="actionUnlock">
+   <property name="icon">
+    <iconset resource="../../../resources.qrc">
+     <normaloff>:/qtgameengine/icons/unlock.png</normaloff>:/qtgameengine/icons/unlock.png</iconset>
+   </property>
+   <property name="text">
+    <string>Unlock</string>
+   </property>
+   <property name="toolTip">
+    <string>Unlock all instances</string>
+   </property>
+  </action>
+  <action name="actionGridEnabled">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../../resources.qrc">
+     <normaloff>:/qtgameengine/icons/grid.png</normaloff>:/qtgameengine/icons/grid.png</iconset>
+   </property>
+   <property name="text">
+    <string>Grid</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle the showing of the grid</string>
+   </property>
+  </action>
+  <action name="actionIsometricGrid">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../../resources.qrc">
+     <normaloff>:/qtgameengine/icons/isometric.png</normaloff>:/qtgameengine/icons/isometric.png</iconset>
+   </property>
+   <property name="text">
+    <string>Isometric</string>
+   </property>
+   <property name="toolTip">
+    <string>Turn the grid into an isometric grid</string>
+   </property>
+  </action>
+  <action name="actionShowObjects">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Objects</string>
+   </property>
+  </action>
+  <action name="actionShowTiles">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Tiles</string>
+   </property>
+  </action>
+  <action name="actionShowBackgrounds">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Backgrounds</string>
+   </property>
+  </action>
+  <action name="actionShowForegrounds">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Foregrounds</string>
+   </property>
+  </action>
+  <action name="actionShowViews">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Views</string>
+   </property>
+  </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>RoomEditWidget</class>
+   <extends>QWidget</extends>
+   <header>widgets/roomeditwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
-  <include location="../resources.qrc"/>
+  <include location="../../../resources.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>actionOk</sender>
+   <signal>triggered()</signal>
+   <receiver>RoomPropertiesDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>363</x>
+     <y>224</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

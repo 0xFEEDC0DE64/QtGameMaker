@@ -168,7 +168,7 @@
   </layout>
   <action name="actionNew">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset resource="../../../resources.qrc">
      <normaloff>:/qtgameengine/icons/new.png</normaloff>:/qtgameengine/icons/new.png</iconset>
    </property>
    <property name="text">
@@ -177,7 +177,7 @@
   </action>
   <action name="actionCreateFromFile">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset resource="../../../resources.qrc">
      <normaloff>:/qtgameengine/icons/open.png</normaloff>:/qtgameengine/icons/open.png</iconset>
    </property>
    <property name="text">
@@ -186,7 +186,7 @@
   </action>
   <action name="actionAddFromFile">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset resource="../../../resources.qrc">
      <normaloff>:/qtgameengine/icons/create-group.png</normaloff>:/qtgameengine/icons/create-group.png</iconset>
    </property>
    <property name="text">
@@ -198,7 +198,7 @@
   </action>
   <action name="actionSaveAsPngFile">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset resource="../../../resources.qrc">
      <normaloff>:/qtgameengine/icons/save.png</normaloff>:/qtgameengine/icons/save.png</iconset>
    </property>
    <property name="text">
@@ -223,7 +223,7 @@
   </action>
   <action name="actionCloseSavingChanges">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset resource="../../../resources.qrc">
      <normaloff>:/qtgameengine/icons/ok.png</normaloff>:/qtgameengine/icons/ok.png</iconset>
    </property>
    <property name="text">
@@ -232,7 +232,7 @@
   </action>
  </widget>
  <resources>
-  <include location="../resources.qrc"/>
+  <include location="../../../resources.qrc"/>
  </resources>
  <connections>
   <connection>

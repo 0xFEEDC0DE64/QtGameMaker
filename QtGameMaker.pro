@@ -22,6 +22,8 @@ INCLUDEPATH += \
 
 HEADERS += \
     src/closeeventfilter.h \
+    src/editor/dialogs/genericcodeeditordialog.h \
+    src/editor/widgets/roomeditwidget.h \
     src/futurecpp.h \
     src/projectcontainer.h \
     src/editor/jshighlighter.h \
@@ -50,7 +52,6 @@ HEADERS += \
     src/editor/dialogs/soundpropertiesdialog.h \
     src/editor/dialogs/spritepropertiesdialog.h \
     src/editor/dialogs/timelinepropertiesdialog.h \
-    src/editor/dialogs/triggerconditiondialog.h \
     src/editor/dialogs/triggersdialog.h \
     src/editor/dialogs/userdefinedconstantsdialog.h \
     src/editor/models/actionscontainermodel.h \
@@ -70,6 +71,8 @@ HEADERS += \
 
 SOURCES += \
     src/closeeventfilter.cpp \
+    src/editor/dialogs/genericcodeeditordialog.cpp \
+    src/editor/widgets/roomeditwidget.cpp \
     src/main.cpp \
     src/projectcontainer.cpp \
     src/editor/jshighlighter.cpp \
@@ -98,7 +101,6 @@ SOURCES += \
     src/editor/dialogs/soundpropertiesdialog.cpp \
     src/editor/dialogs/spritepropertiesdialog.cpp \
     src/editor/dialogs/timelinepropertiesdialog.cpp \
-    src/editor/dialogs/triggerconditiondialog.cpp \
     src/editor/dialogs/triggersdialog.cpp \
     src/editor/dialogs/userdefinedconstantsdialog.cpp \
     src/editor/models/actionscontainermodel.cpp \

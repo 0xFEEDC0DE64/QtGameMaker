@@ -14,7 +14,7 @@
    <string>Sprite Properties</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../resources.qrc">
+   <iconset resource="../../../resources.qrc">
     <normaloff>:/qtgameengine/icons/sprite-file.png</normaloff>:/qtgameengine/icons/sprite-file.png</iconset>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,1">
@@ -67,7 +67,7 @@
             <string>&amp;Load Sprite</string>
            </property>
            <property name="icon">
-            <iconset resource="../resources.qrc">
+            <iconset resource="../../../resources.qrc">
              <normaloff>:/qtgameengine/icons/open.png</normaloff>:/qtgameengine/icons/open.png</iconset>
            </property>
           </widget>
@@ -81,7 +81,7 @@
             <string>&amp;Save Sprite</string>
            </property>
            <property name="icon">
-            <iconset resource="../resources.qrc">
+            <iconset resource="../../../resources.qrc">
              <normaloff>:/qtgameengine/icons/save.png</normaloff>:/qtgameengine/icons/save.png</iconset>
            </property>
           </widget>
@@ -95,7 +95,7 @@
             <string>&amp;Edit Sprite</string>
            </property>
            <property name="icon">
-            <iconset resource="../resources.qrc">
+            <iconset resource="../../../resources.qrc">
              <normaloff>:/qtgameengine/icons/edit.png</normaloff>:/qtgameengine/icons/edit.png</iconset>
            </property>
           </widget>
@@ -339,7 +339,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../resources.qrc"/>
+  <include location="../../../resources.qrc"/>
  </resources>
  <connections>
   <connection>

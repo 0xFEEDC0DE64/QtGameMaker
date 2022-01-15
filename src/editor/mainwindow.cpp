@@ -55,12 +55,10 @@ MainWindow::MainWindow(const QString &filePath, QWidget *parent) :
 {
     m_ui->setupUi(this);
 
-    {
-        QList<int> sizes;
-        sizes.append(0.5 * m_ui->splitter->width());
-        sizes.append(0.5 * m_ui->splitter->width());
-        m_ui->splitter->setSizes(sizes);
-    }
+    m_ui->splitter->setSizes({
+        m_ui->splitter->width() / 2,
+        m_ui->splitter->width() / 2
+    });
 
     m_ui->actionNew->setShortcut(QKeySequence::New);
     m_ui->actionOpen->setShortcut(QKeySequence::Open);

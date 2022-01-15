@@ -14,7 +14,7 @@
    <string>Path Properties</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../resources.qrc">
+   <iconset resource="../../../resources.qrc">
     <normaloff>:/qtgameengine/icons/path-file.png</normaloff>:/qtgameengine/icons/path-file.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -79,19 +79,18 @@
         <addaction name="actionReverse"/>
         <addaction name="actionShift"/>
         <addaction name="actionMirrorHorizontally"/>
-        <addaction name="actionFlipVertically"/>
+        <addaction name="actionMirrorVertically"/>
         <addaction name="actionRotate"/>
         <addaction name="actionScale"/>
         <addaction name="separator"/>
         <addaction name="actionShiftLeft"/>
         <addaction name="actionShiftRight"/>
-        <addaction name="actionShiftTop"/>
-        <addaction name="actionShift_bottom"/>
+        <addaction name="actionShiftUp"/>
+        <addaction name="actionShiftDown"/>
         <addaction name="actionCenterView"/>
         <addaction name="separator"/>
         <addaction name="separator"/>
-        <addaction name="actionGrid"/>
-        <addaction name="actionRoom"/>
+        <addaction name="actionGridEnabled"/>
        </widget>
       </item>
      </layout>
@@ -158,6 +157,9 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="headerHidden">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item>
@@ -196,7 +198,7 @@
               <string>X-coordinate of the point</string>
              </property>
              <property name="maximum">
-              <number>16384</number>
+              <number>2147483647</number>
              </property>
             </widget>
            </item>
@@ -216,7 +218,7 @@
               <string>Y-coordinate of the point</string>
              </property>
              <property name="maximum">
-              <number>16384</number>
+              <number>2147483647</number>
              </property>
             </widget>
            </item>
@@ -236,7 +238,7 @@
               <string>Relative speed at this point (100 = default)</string>
              </property>
              <property name="maximum">
-              <number>16384</number>
+              <number>2147483647</number>
              </property>
             </widget>
            </item>
@@ -391,7 +393,7 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_7" stretch="1,0">
        <item>
-        <widget class="PathPointsWidget" name="widget" native="true">
+        <widget class="PathPointsWidget" name="pathPointsWidget" native="true">
          <property name="minimumSize">
           <size>
            <width>300</width>
@@ -410,7 +412,7 @@
   </layout>
   <action name="actionOk">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset resource="../../../resources.qrc">
      <normaloff>:/qtgameengine/icons/ok.png</normaloff>:/qtgameengine/icons/ok.png</iconset>
    </property>
    <property name="text">
@@ -422,7 +424,7 @@
   </action>
   <action name="actionUndo">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset resource="../../../resources.qrc">
      <normaloff>:/qtgameengine/icons/undo.png</normaloff>:/qtgameengine/icons/undo.png</iconset>
    </property>
    <property name="text">
@@ -434,7 +436,7 @@
   </action>
   <action name="actionClear">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset resource="../../../resources.qrc">
      <normaloff>:/qtgameengine/icons/new.png</normaloff>:/qtgameengine/icons/new.png</iconset>
    </property>
    <property name="text">
@@ -446,7 +448,7 @@
   </action>
   <action name="actionReverse">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset resource="../../../resources.qrc">
      <normaloff>:/qtgameengine/icons/rotate.png</normaloff>:/qtgameengine/icons/rotate.png</iconset>
    </property>
    <property name="text">
@@ -458,7 +460,7 @@
   </action>
   <action name="actionShift">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset resource="../../../resources.qrc">
      <normaloff>:/qtgameengine/icons/move.png</normaloff>:/qtgameengine/icons/move.png</iconset>
    </property>
    <property name="text">
@@ -470,7 +472,7 @@
   </action>
   <action name="actionMirrorHorizontally">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset resource="../../../resources.qrc">
      <normaloff>:/qtgameengine/icons/flip-horizontal.png</normaloff>:/qtgameengine/icons/flip-horizontal.png</iconset>
    </property>
    <property name="text">
@@ -480,9 +482,9 @@
     <string>Mirror the path horizontally</string>
    </property>
   </action>
-  <action name="actionFlipVertically">
+  <action name="actionMirrorVertically">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset resource="../../../resources.qrc">
      <normaloff>:/qtgameengine/icons/flip-vertical.png</normaloff>:/qtgameengine/icons/flip-vertical.png</iconset>
    </property>
    <property name="text">
@@ -494,7 +496,7 @@
   </action>
   <action name="actionRotate">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset resource="../../../resources.qrc">
      <normaloff>:/qtgameengine/icons/rotate.png</normaloff>:/qtgameengine/icons/rotate.png</iconset>
    </property>
    <property name="text">
@@ -506,7 +508,7 @@
   </action>
   <action name="actionScale">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset resource="../../../resources.qrc">
      <normaloff>:/qtgameengine/icons/scale.png</normaloff>:/qtgameengine/icons/scale.png</iconset>
    </property>
    <property name="text">
@@ -518,7 +520,7 @@
   </action>
   <action name="actionShiftLeft">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset resource="../../../resources.qrc">
      <normaloff>:/qtgameengine/icons/arrow-left.png</normaloff>:/qtgameengine/icons/arrow-left.png</iconset>
    </property>
    <property name="text">
@@ -530,7 +532,7 @@
   </action>
   <action name="actionShiftRight">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset resource="../../../resources.qrc">
      <normaloff>:/qtgameengine/icons/arrow-right.png</normaloff>:/qtgameengine/icons/arrow-right.png</iconset>
    </property>
    <property name="text">
@@ -540,9 +542,9 @@
     <string>Shift the view to the right</string>
    </property>
   </action>
-  <action name="actionShiftTop">
+  <action name="actionShiftUp">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset resource="../../../resources.qrc">
      <normaloff>:/qtgameengine/icons/arrow-up.png</normaloff>:/qtgameengine/icons/arrow-up.png</iconset>
    </property>
    <property name="text">
@@ -552,9 +554,9 @@
     <string>Shift the view to the top</string>
    </property>
   </action>
-  <action name="actionShift_bottom">
+  <action name="actionShiftDown">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset resource="../../../resources.qrc">
      <normaloff>:/qtgameengine/icons/arrow-down.png</normaloff>:/qtgameengine/icons/arrow-down.png</iconset>
    </property>
    <property name="text">
@@ -566,7 +568,7 @@
   </action>
   <action name="actionCenterView">
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset resource="../../../resources.qrc">
      <normaloff>:/qtgameengine/icons/center.png</normaloff>:/qtgameengine/icons/center.png</iconset>
    </property>
    <property name="text">
@@ -576,7 +578,7 @@
     <string>Center view around the path</string>
    </property>
   </action>
-  <action name="actionGrid">
+  <action name="actionGridEnabled">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -584,7 +586,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../resources.qrc">
+    <iconset resource="../../../resources.qrc">
      <normaloff>:/qtgameengine/icons/grid.png</normaloff>:/qtgameengine/icons/grid.png</iconset>
    </property>
    <property name="text">
@@ -592,18 +594,6 @@
    </property>
    <property name="toolTip">
     <string>Toggle the showing of the grid</string>
-   </property>
-  </action>
-  <action name="actionRoom">
-   <property name="icon">
-    <iconset resource="../resources.qrc">
-     <normaloff>:/qtgameengine/icons/room.png</normaloff>:/qtgameengine/icons/room.png</iconset>
-   </property>
-   <property name="text">
-    <string>Room</string>
-   </property>
-   <property name="toolTip">
-    <string>Indicate the room to show as background</string>
    </property>
   </action>
  </widget>
@@ -616,7 +606,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../resources.qrc"/>
+  <include location="../../../resources.qrc"/>
  </resources>
  <connections>
   <connection>

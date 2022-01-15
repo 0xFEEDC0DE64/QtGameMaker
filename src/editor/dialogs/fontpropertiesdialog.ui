@@ -14,7 +14,7 @@
    <string>Font Properties</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../resources.qrc">
+   <iconset resource="../../../resources.qrc">
     <normaloff>:/qtgameengine/icons/font-file.png</normaloff>:/qtgameengine/icons/font-file.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -220,7 +220,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../resources.qrc"/>
+  <include location="../../../resources.qrc"/>
  </resources>
  <connections>
   <connection>

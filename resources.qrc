@@ -82,5 +82,10 @@
         <file>icons/action.png</file>
         <file>icons/code-action.png</file>
         <file>icons/event-draw.png</file>
+        <file>icons/lock.png</file>
+        <file>icons/unlock.png</file>
+        <file>icons/sort-x.png</file>
+        <file>icons/sort-y.png</file>
+        <file>icons/isometric.png</file>
     </qresource>
 </RCC>

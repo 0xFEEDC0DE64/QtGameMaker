@@ -63,6 +63,9 @@ struct Path
     Type type{Type::Straight};
     bool closed{true};
     int precision{4};
+    int snapX{16};
+    int snapY{16};
+    bool gridEnabled{true};
 };
 
 struct Script
@@ -127,6 +130,16 @@ struct Object
 struct Room
 {
     QString name;
+    QString caption;
+    int width{640};
+    int height{480};
+    int speed{30};
+    bool persistent{};
+    QString creationCode;
+    int snapX{16};
+    int snapY{16};
+    bool gridEnabled{true};
+    bool isometricGrid{};
 };
 
 struct ProjectContainer

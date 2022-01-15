@@ -14,7 +14,7 @@
    <string>Object Properties</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../resources.qrc">
+   <iconset resource="../../../resources.qrc">
     <normaloff>:/qtgameengine/icons/object-file.png</normaloff>:/qtgameengine/icons/object-file.png</iconset>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,0,1">
@@ -305,7 +305,7 @@
         <string>Show Information</string>
        </property>
        <property name="icon">
-        <iconset resource="../resources.qrc">
+        <iconset resource="../../../resources.qrc">
          <normaloff>:/qtgameengine/icons/info.png</normaloff>:/qtgameengine/icons/info.png</iconset>
        </property>
       </widget>
@@ -416,7 +416,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../resources.qrc"/>
+  <include location="../../../resources.qrc"/>
  </resources>
  <connections>
   <connection>

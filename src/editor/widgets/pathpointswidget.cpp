@@ -2,6 +2,7 @@
 
 #include <QDebug>
 #include <QPainter>
+#include <QPaintEvent>
 #include <QMouseEvent>
 
 #include <algorithm>
@@ -24,27 +25,27 @@ void PathPointsWidget::setPoints(std::vector<Path::Point> *points)
     update();
 }
 
-void PathPointsWidget::setShowGrid(bool showGrid)
+void PathPointsWidget::setSnapX(int snapX)
 {
-    if (m_showGrid == showGrid)
+    if (m_snapX == snapX)
         return;
-    emit showGridChanged(m_showGrid = showGrid);
+    emit snapXChanged(m_snapX = snapX);
     update();
 }
 
-void PathPointsWidget::setGridX(int gridX)
+void PathPointsWidget::setSnapY(int snapY)
 {
-    if (m_gridX == gridX)
+    if (m_snapY == snapY)
         return;
-    emit gridXChanged(m_gridX = gridX);
+    emit snapYChanged(m_snapY = snapY);
     update();
 }
 
-void PathPointsWidget::setGridY(int gridY)
+void PathPointsWidget::setGridEnabled(bool gridEnabled)
 {
-    if (m_gridY == gridY)
+    if (m_gridEnabled == gridEnabled)
         return;
-    emit gridYChanged(m_gridY = gridY);
+    emit gridEnabledChanged(m_gridEnabled = gridEnabled);
     update();
 }
 
@@ -64,28 +65,36 @@ void PathPointsWidget::setSelectedIndex(const std::optional<std::size_t> &select
     update();
 }
 
+void PathPointsWidget::setGridRole(QPalette::ColorRole gridRole)
+{
+    if (gridRole == m_gridRole)
+        return;
+    m_gridRole = gridRole;
+    update();
+}
+
 void PathPointsWidget::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)
 
-    if (m_showGrid)
+    if (m_gridEnabled)
     {
-        if (!m_gridBrush || m_gridBrush->gridX != m_gridX || m_gridBrush->gridY != m_gridY)
+        if (!m_gridBrush || m_gridBrush->snapX != m_snapX || m_gridBrush->snapY != m_snapY)
         {
-            QPixmap pixmap{m_gridX, m_gridY};
+            QPixmap pixmap{m_snapX, m_snapY};
 
             {
                 QPainter painter{&pixmap};
                 painter.setPen(palette().color(m_gridRole));
-                painter.drawLine(0, 0, m_gridX, 0);
-                painter.drawLine(0, 0, 0, m_gridY);
+                painter.drawLine(0, 0, m_snapX, 0);
+                painter.drawLine(0, 0, 0, m_snapY);
 
-                painter.fillRect(1, 1, m_gridX - 1, m_gridY - 1, palette().color(backgroundRole()));
+                painter.fillRect(1, 1, m_snapX - 1, m_snapY - 1, palette().color(backgroundRole()));
             }
 
             m_gridBrush = GridBrush {
-                .gridX = m_gridX,
-                .gridY = m_gridY,
+                .snapX = m_snapX,
+                .snapY = m_snapY,
                 .brush = QBrush{std::   move(pixmap)}
             };
         }
@@ -216,10 +225,8 @@ void PathPointsWidget::mouseMoveEvent(QMouseEvent *event)
 
 QPoint PathPointsWidget::snapPoint(const QPoint &point) const
 {
-    if (!m_showGrid)
-        return point;
     return QPoint{
-        (point.x() + (m_gridX / 2)) / m_gridX * m_gridX,
-        (point.y() + (m_gridY / 2)) / m_gridY * m_gridY,
+        m_snapX > 1 ? ((point.x() + (m_snapX / 2)) / m_snapX * m_snapX) : point.x(),
+        m_snapY > 1 ? ((point.y() + (m_snapY / 2)) / m_snapY * m_snapY) : point.y(),
     };
 }

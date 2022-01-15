@@ -222,7 +222,10 @@ QDataStream &operator<<(QDataStream &ds, const Path &path)
        << path.points
        << path.type
        << path.closed
-       << path.precision;
+       << path.precision
+       << path.snapX
+       << path.snapY
+       << path.gridEnabled;
     return ds;
 }
 
@@ -232,7 +235,10 @@ QDataStream &operator>>(QDataStream &ds, Path &path)
        >> path.points
        >> path.type
        >> path.closed
-       >> path.precision;
+       >> path.precision
+       >> path.snapX
+       >> path.snapY
+       >> path.gridEnabled;
     return ds;
 }
 
@@ -318,13 +324,33 @@ QDataStream &operator>>(QDataStream &ds, Object &object)
 
 QDataStream &operator<<(QDataStream &ds, const Room &room)
 {
-    ds << room.name;
+    ds << room.name
+       << room.caption
+       << room.width
+       << room.height
+       << room.speed
+       << room.persistent
+       << room.creationCode
+       << room.snapX
+       << room.snapY
+       << room.gridEnabled
+       << room.isometricGrid;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, Room &room)
 {
-    ds >> room.name;
+    ds >> room.name
+       >> room.caption
+       >> room.width
+       >> room.height
+       >> room.speed
+       >> room.persistent
+       >> room.creationCode
+       >> room.snapX
+       >> room.snapY
+       >> room.gridEnabled
+       >> room.isometricGrid;
     return ds;
 }
 
