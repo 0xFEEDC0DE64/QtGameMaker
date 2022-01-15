@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GlobalGameSettingsDialog</class>
+ <widget class="QDialog" name="GlobalGameSettingsDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>426</width>
+    <height>556</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Global Game Settings</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0">
+   <item>
+    <widget class="QTabWidget" name="tabWidgetResolution">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tabGraphics">
+      <attribute name="title">
+       <string>Graphics</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QCheckBox" name="checkBoxFullscreen">
+         <property name="text">
+          <string>Start in full-screen mode</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,1">
+         <item>
+          <widget class="QGroupBox" name="groupBoxScaling">
+           <property name="title">
+            <string>Scaling</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <widget class="QRadioButton" name="radioButtonFixedScale">
+                <property name="text">
+                 <string>Fixed scale (in %)</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="spinBox">
+                <property name="maximum">
+                 <number>100</number>
+                </property>
+                <property name="value">
+                 <number>100</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="radioButtonKeepAspectRatio">
+              <property name="text">
+               <string>Keep aspect ratio</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="radioButtonFullScale">
+              <property name="text">
+               <string>Full scale</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBoxInterpolateColors">
+         <property name="text">
+          <string>Interpolate colors between pixels</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLabel" name="labelColorOutsideRoom">
+           <property name="text">
+            <string>Color outside the room region:</string>
+           </property>
+           <property name="buddy">
+            <cstring>toolButtonColorOutside</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="toolButtonColorOutside">
+           <property name="text">
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBoxAllowResize">
+         <property name="text">
+          <string>Allow the player to resize the game window</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBoxAlwaysOntop">
+         <property name="text">
+          <string>Let the game window always stay on top</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBoxNoBorder">
+         <property name="text">
+          <string>Don't draw a border in windowed mode</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBoxNoWindowButtons">
+         <property name="text">
+          <string>Don't show the buttons in the window caption</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBoxDisplayCursor">
+         <property name="text">
+          <string>Display the cursor</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBoxFreezeOnFocusLost">
+         <property name="text">
+          <string>Freeze the game when the form loses focus</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBoxDisableScreensavers">
+         <property name="text">
+          <string>Disable screensavers and power saving actions</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabResolution">
+      <attribute name="title">
+       <string>Resolution</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="tabOther">
+      <attribute name="title">
+       <string>Other</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QGroupBox" name="groupBoxDefaultKeys">
+         <property name="title">
+          <string>Default Keys</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QCheckBox" name="checkBoxEscEndGame">
+            <property name="text">
+             <string>Let &lt;Esc&gt; end the game</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxTreatCloseAsEsc">
+            <property name="text">
+             <string>Treat the close button as &lt;Esc&gt; key</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxF1ShowGameInfo">
+            <property name="text">
+             <string>Let &lt;F1&gt; show the game information</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxF4SwitchScreenMode">
+            <property name="text">
+             <string>Let &lt;F4&gt; switch between screen modes</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxEnableSavestates">
+            <property name="text">
+             <string>Let &lt;F5&gt; save the game and &lt;F6&gt; load a game</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxF9Screenshot">
+            <property name="text">
+             <string>Let &lt;F9&gt; take a screenshot of the game</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBoxGameProcessPriority">
+         <property name="title">
+          <string>Game Process Priority</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QRadioButton" name="radioButtonPriorityNormal">
+            <property name="text">
+             <string>Normal</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="radioButtonPriorityHigh">
+            <property name="text">
+             <string>High</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="radioButtonPriorityHighest">
+            <property name="text">
+             <string>Highest</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBoxVersionInformation">
+         <property name="title">
+          <string>Version Information</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <widget class="QLabel" name="labelMajor">
+              <property name="text">
+               <string>Major</string>
+              </property>
+              <property name="buddy">
+               <cstring>spinBoxMajor</cstring>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="spinBoxMajor"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelMinor">
+              <property name="text">
+               <string>Minor</string>
+              </property>
+              <property name="buddy">
+               <cstring>spinBoxMinor</cstring>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="spinBoxMinor"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelRelease">
+              <property name="text">
+               <string>Release</string>
+              </property>
+              <property name="buddy">
+               <cstring>spinBoxRelease</cstring>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="spinBoxRelease"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelBuild">
+              <property name="text">
+               <string>Build</string>
+              </property>
+              <property name="buddy">
+               <cstring>spinBoxBuild</cstring>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="spinBoxBuild"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QFormLayout" name="formLayout">
+            <item row="0" column="0">
+             <widget class="QLabel" name="labelCompany">
+              <property name="text">
+               <string>Company</string>
+              </property>
+              <property name="buddy">
+               <cstring>lineEditCompany</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="lineEditCompany"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="labelProduct">
+              <property name="text">
+               <string>Product</string>
+              </property>
+              <property name="buddy">
+               <cstring>lineEditProduct</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="lineEditProduct"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="labelCopyright">
+              <property name="text">
+               <string>Copyright</string>
+              </property>
+              <property name="buddy">
+               <cstring>lineEditCopyright</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="lineEditCopyright"/>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="labelDescription">
+              <property name="text">
+               <string>Description</string>
+              </property>
+              <property name="buddy">
+               <cstring>lineEditDescription</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLineEdit" name="lineEditDescription"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabLoading">
+      <attribute name="title">
+       <string>Loading</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="tabErrors">
+      <attribute name="title">
+       <string>Errors</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="tabInfo">
+      <attribute name="title">
+       <string>Info</string>
+      </attribute>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>GlobalGameSettingsDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>184</x>
+     <y>506</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>184</x>
+     <y>263</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>GlobalGameSettingsDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>184</x>
+     <y>506</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>184</x>
+     <y>263</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
