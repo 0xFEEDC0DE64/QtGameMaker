@@ -8,13 +8,13 @@ class QOpenGLPaintDevice;
 class QOpenGLShaderProgram;
 struct ProjectContainer;
 
-class GameWindow : public QWindow, protected QOpenGLFunctions
+class GlGameWindow : public QWindow, protected QOpenGLFunctions
 {
     Q_OBJECT
 
 public:
-    explicit GameWindow(const ProjectContainer &project, QWindow *parent = nullptr);
-    ~GameWindow();
+    explicit GlGameWindow(const ProjectContainer &project, QWindow *parent = nullptr);
+    ~GlGameWindow();
 
     void initialize();
     void render();

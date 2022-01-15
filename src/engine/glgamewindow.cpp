@@ -1,4 +1,4 @@
-#include "gamewindow.h"
+#include "glgamewindow.h"
 
 #include <QOpenGLContext>
 #include <QOpenGLPaintDevice>
@@ -8,7 +8,7 @@
 #include <QKeyEvent>
 #include <QDebug>
 
-GameWindow::GameWindow(const ProjectContainer &project, QWindow *parent) :
+GlGameWindow::GlGameWindow(const ProjectContainer &project, QWindow *parent) :
     QWindow{parent},
     m_project{project}
 {
@@ -20,9 +20,9 @@ GameWindow::GameWindow(const ProjectContainer &project, QWindow *parent) :
     setMaximumHeight(480);
 }
 
-GameWindow::~GameWindow() = default;
+GlGameWindow::~GlGameWindow() = default;
 
-void GameWindow::initialize()
+void GlGameWindow::initialize()
 {
     m_program = new QOpenGLShaderProgram{this};
 
@@ -56,7 +56,7 @@ void GameWindow::initialize()
     Q_ASSERT(m_matrixUniform != -1);
 }
 
-void GameWindow::render()
+void GlGameWindow::render()
 {
     const qreal retinaScale = devicePixelRatio();
     glViewport(0, 0, width() * retinaScale, height() * retinaScale);
@@ -100,12 +100,12 @@ void GameWindow::render()
     ++m_frame;
 }
 
-void GameWindow::renderLater()
+void GlGameWindow::renderLater()
 {
     requestUpdate();
 }
 
-void GameWindow::renderNow()
+void GlGameWindow::renderNow()
 {
     if (!isExposed())
         return;
@@ -136,7 +136,7 @@ void GameWindow::renderNow()
     renderLater();
 }
 
-bool GameWindow::event(QEvent *event)
+bool GlGameWindow::event(QEvent *event)
 {
     switch (event->type())
     {
@@ -148,21 +148,21 @@ bool GameWindow::event(QEvent *event)
     }
 }
 
-void GameWindow::keyPressEvent(QKeyEvent *event)
+void GlGameWindow::keyPressEvent(QKeyEvent *event)
 {
     QWindow::keyPressEvent(event);
 
     qDebug() << (event->key() == Qt::Key_Escape);
 }
 
-void GameWindow::keyReleaseEvent(QKeyEvent *event)
+void GlGameWindow::keyReleaseEvent(QKeyEvent *event)
 {
     QWindow::keyReleaseEvent(event);
 
     qDebug() << (event->key() == Qt::Key_Escape);
 }
 
-void GameWindow::exposeEvent(QExposeEvent *event)
+void GlGameWindow::exposeEvent(QExposeEvent *event)
 {
     Q_UNUSED(event);
 

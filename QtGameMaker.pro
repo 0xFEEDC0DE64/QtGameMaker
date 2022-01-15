@@ -30,6 +30,10 @@ HEADERS += \
     src/editor/widgets/qlineeditwithmenu.h \
     src/editor/widgets/qscrollareawithmenu.h \
     src/editor/widgets/roomeditwidget.h \
+    src/engine/gameengine.h \
+    src/engine/glgamewindow.h \
+    src/engine/vulkangamerenderer.h \
+    src/engine/vulkangamewindow.h \
     src/futurecpp.h \
     src/projectcontainer.h \
     src/editor/jshighlighter.h \
@@ -72,8 +76,7 @@ HEADERS += \
     src/editor/widgets/actionscontainerwidget.h \
     src/editor/widgets/codeeditorwidget.h \
     src/editor/widgets/drawingcanvaswidget.h \
-    src/editor/widgets/pathpointswidget.h \
-    src/engine/gamewindow.h
+    src/editor/widgets/pathpointswidget.h
 
 SOURCES += \
     src/closeeventfilter.cpp \
@@ -81,6 +84,10 @@ SOURCES += \
     src/editor/widgets/qlineeditwithmenu.cpp \
     src/editor/widgets/qscrollareawithmenu.cpp \
     src/editor/widgets/roomeditwidget.cpp \
+    src/engine/gameengine.cpp \
+    src/engine/glgamewindow.cpp \
+    src/engine/vulkangamerenderer.cpp \
+    src/engine/vulkangamewindow.cpp \
     src/main.cpp \
     src/projectcontainer.cpp \
     src/editor/jshighlighter.cpp \
@@ -123,8 +130,7 @@ SOURCES += \
     src/editor/widgets/actionscontainerwidget.cpp \
     src/editor/widgets/codeeditorwidget.cpp \
     src/editor/widgets/drawingcanvaswidget.cpp \
-    src/editor/widgets/pathpointswidget.cpp \
-    src/engine/gamewindow.cpp
+    src/editor/widgets/pathpointswidget.cpp
 
 FORMS += \
     src/editor/mainwindow.ui \
@@ -155,4 +161,5 @@ FORMS += \
     src/editor/widgets/actionscontainerwidget.ui
 
 RESOURCES += \
-    resources.qrc
+    resources_editor.qrc \
+    resources_engine.qrc

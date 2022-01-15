@@ -16,7 +16,8 @@ int main(int argc, char *argv[])
                                       "%{function}(): "
                                       "%{message}"));
 
-    Q_INIT_RESOURCE(resources);
+    Q_INIT_RESOURCE(resources_editor);
+    Q_INIT_RESOURCE(resources_engine);
 
     QApplication app(argc, argv);
 

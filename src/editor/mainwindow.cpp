@@ -10,7 +10,6 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QDebug>
-#include <QEventLoop>
 
 #include "models/projecttreemodel.h"
 #include "dialogs/preferencesdialog.h"
@@ -30,8 +29,7 @@
 #include "dialogs/userdefinedconstantsdialog.h"
 #include "dialogs/triggersdialog.h"
 #include "dialogs/includedfilesdialog.h"
-#include "engine/gamewindow.h"
-#include "closeeventfilter.h"
+#include "engine/gameengine.h"
 
 namespace {
 template<typename T> struct PropertiesDialogForDetail;
@@ -659,20 +657,11 @@ void MainWindow::showIncludedFiles()
 
 void MainWindow::runGame()
 {
-    GameWindow window{m_project};
-    window.setTitle(tr("%0 - Game Window")
-                        .arg(m_filePath.isEmpty() ? "<new-game>" : QFileInfo{m_filePath}.fileName()));
-    window.setModality(Qt::ApplicationModal);
+    GameEngine engine{m_project};
 
-    CloseEventFilter closeEventFilter;
-    window.installEventFilter(&closeEventFilter);
-
-    QEventLoop eventLoop;
-    connect(&closeEventFilter, &CloseEventFilter::closeEventReceived,
-            &eventLoop, &QEventLoop::quit);
-
-    window.show();
-    eventLoop.exec();
+    setEnabled(false);
+    engine.run();
+    setEnabled(true);
 }
 
 void MainWindow::debugGame()
