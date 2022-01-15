@@ -2,6 +2,7 @@
 #include "ui_editspritedialog.h"
 
 #include <QMessageBox>
+#include <QDebug>
 
 #include "projectcontainer.h"
 #include "models/spritesmodel.h"

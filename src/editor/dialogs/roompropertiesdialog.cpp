@@ -4,6 +4,7 @@
 #include <QSpinBox>
 #include <QLabel>
 #include <QToolButton>
+#include <QMenu>
 #include <QMessageBox>
 #include <QDebug>
 
@@ -19,6 +20,7 @@ RoomPropertiesDialog::RoomPropertiesDialog(Room &room, ProjectTreeModel &project
     m_creationCode{m_room.creationCode},
     m_spinBoxSnapX{new QSpinBox{this}},
     m_spinBoxSnapY{new QSpinBox{this}},
+    m_menuObjects{new QMenu{this}},
     m_labelX{new QLabel{tr("x: %0").arg(0)}},
     m_labelY{new QLabel{tr("y: %0").arg(0)}}
 {
@@ -71,7 +73,13 @@ RoomPropertiesDialog::RoomPropertiesDialog(Room &room, ProjectTreeModel &project
         m_ui->toolBar->addWidget(toolButton);
     }
 
-    m_ui->scrollArea->setBackgroundRole(QPalette::Dark);
+    m_ui->toolButtonObject->setMenu(m_menuObjects);
+
+    m_ui->lineEditObject->setMenu(m_menuObjects);
+
+    m_ui->scrollAreaObject->setMenu(m_menuObjects);
+
+    m_ui->scrollAreaRoom->setBackgroundRole(QPalette::Dark);
 
     m_labelX->setFrameStyle(QFrame::Sunken);
     m_ui->statusbar->addWidget(m_labelX, 1);
@@ -93,6 +101,14 @@ RoomPropertiesDialog::RoomPropertiesDialog(Room &room, ProjectTreeModel &project
 
     connect(&m_projectModel, &ProjectTreeModel::roomNameChanged,
             this, &RoomPropertiesDialog::roomNameChanged);
+    connect(&m_projectModel, &ProjectTreeModel::spritePixmapsChanged,
+            this, &RoomPropertiesDialog::spritePixmapsChanged);
+    connect(&m_projectModel, &ProjectTreeModel::objectNameChanged,
+            this, &RoomPropertiesDialog::objectNameChanged);
+    connect(&m_projectModel, &ProjectTreeModel::objectAboutToBeRemoved,
+            this, &RoomPropertiesDialog::objectAboutToBeRemoved);
+    connect(&m_projectModel, &ProjectTreeModel::objectSpriteNameChanged,
+            this, &RoomPropertiesDialog::objectSpriteNameChanged);
 
     connect(m_ui->actionUndo, &QAction::triggered,
             this, &RoomPropertiesDialog::undo);
@@ -158,6 +174,12 @@ RoomPropertiesDialog::RoomPropertiesDialog(Room &room, ProjectTreeModel &project
             m_ui->actionIsometricGrid, &QAction::setChecked);
     connect(m_ui->roomEditWidget, &RoomEditWidget::cursorMoved,
             this, &RoomPropertiesDialog::cursorMoved);
+
+    connect(m_menuObjects, &QMenu::aboutToShow,
+            this, &RoomPropertiesDialog::objectsMenuAboutToShow);
+
+    if (!m_projectModel.project()->objects.empty())
+        setObject(m_projectModel.project()->objects.back());
 }
 
 RoomPropertiesDialog::~RoomPropertiesDialog() = default;
@@ -291,10 +313,109 @@ void RoomPropertiesDialog::roomNameChanged(const Room &room)
     updateTitle();
 }
 
+void RoomPropertiesDialog::spritePixmapsChanged(const Sprite &sprite)
+{
+    if (!m_selectedObject)
+        return;
+
+    if (m_selectedObject->spriteName.isEmpty())
+        return;
+
+    if (m_selectedObject->spriteName != sprite.name)
+        return;
+
+    QPixmap pixmap;
+    if (!sprite.pixmaps.empty() && !sprite.pixmaps.front().isNull())
+        pixmap = sprite.pixmaps.front();
+    m_ui->labelObjectPreview->setPixmap(std::move(pixmap));
+}
+
+void RoomPropertiesDialog::objectNameChanged(const Object &object)
+{
+    if (!m_selectedObject)
+        return;
+
+    if (&object != m_selectedObject)
+        return;
+
+    m_ui->lineEditObject->setText(object.name);
+}
+
+void RoomPropertiesDialog::objectAboutToBeRemoved(const Object &object)
+{
+    if (!m_selectedObject)
+        return;
+
+    if (&object != m_selectedObject)
+        return;
+
+    m_selectedObject = nullptr;
+    m_ui->lineEditObject->clear();
+    m_ui->labelObjectPreview->setPixmap({});
+}
+
+void RoomPropertiesDialog::objectSpriteNameChanged(const Object &object)
+{
+    if (!m_selectedObject)
+        return;
+
+    if (&object != m_selectedObject)
+        return;
+
+    QPixmap pixmap;
+    if (!object.spriteName.isEmpty())
+    {
+        const auto iter = std::find_if(std::cbegin(m_projectModel.project()->sprites), std::cend(m_projectModel.project()->sprites),
+                                       [&object](const auto &sprite){ return object.spriteName == sprite.name; });
+        if (iter == std::cend(m_projectModel.project()->sprites))
+            qWarning() << "invalid sprite" << object.spriteName;
+        else if (!iter->pixmaps.empty() && !iter->pixmaps.front().isNull())
+            pixmap = iter->pixmaps.front();
+    }
+    m_ui->labelObjectPreview->setPixmap(std::move(pixmap));
+}
+
+void RoomPropertiesDialog::objectsMenuAboutToShow()
+{
+    m_menuObjects->clear();
+    for (const auto &object : m_projectModel.project()->objects)
+    {
+        QIcon icon;
+        if (!object.spriteName.isEmpty())
+        {
+            const auto iter = std::find_if(std::cbegin(m_projectModel.project()->sprites), std::cend(m_projectModel.project()->sprites),
+                                           [&object](const auto &sprite){ return object.spriteName == sprite.name; });
+            if (iter == std::cend(m_projectModel.project()->sprites))
+                qWarning() << "invalid sprite" << object.spriteName;
+            else if (!iter->pixmaps.empty() && !iter->pixmaps.front().isNull())
+                icon = iter->pixmaps.front();
+        }
+        m_menuObjects->addAction(icon, object.name, this,
+                                 [&object,this](){ setObject(object); });
+    }
+}
+
 void RoomPropertiesDialog::cursorMoved(const QPoint &point)
 {
     m_labelX->setText(tr("X: %0").arg(point.x()));
     m_labelY->setText(tr("Y: %0").arg(point.y()));
+}
+
+void RoomPropertiesDialog::setObject(const Object &object)
+{
+    m_selectedObject = &object;
+    QPixmap pixmap;
+    if (!object.spriteName.isEmpty())
+    {
+        const auto iter = std::find_if(std::cbegin(m_projectModel.project()->sprites), std::cend(m_projectModel.project()->sprites),
+                                       [&object](const auto &sprite){ return object.spriteName == sprite.name; });
+        if (iter == std::cend(m_projectModel.project()->sprites))
+            qWarning() << "invalid sprite" << object.spriteName;
+        else if (!iter->pixmaps.empty() && !iter->pixmaps.front().isNull())
+            pixmap = iter->pixmaps.front();
+    }
+    m_ui->labelObjectPreview->setPixmap(std::move(pixmap));
+    m_ui->lineEditObject->setText(object.name);
 }
 
 void RoomPropertiesDialog::updateTitle()

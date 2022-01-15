@@ -6,8 +6,11 @@
 
 class QSpinBox;
 class QLabel;
+class QMenu;
 namespace Ui { class RoomPropertiesDialog; }
 struct Room;
+struct Sprite;
+struct Object;
 class ProjectTreeModel;
 
 class RoomPropertiesDialog : public QDialog
@@ -34,10 +37,17 @@ private slots:
     void changed();
 
     void roomNameChanged(const Room &room);
+    void spritePixmapsChanged(const Sprite &sprite);
+    void objectNameChanged(const Object &object);
+    void objectAboutToBeRemoved(const Object &object);
+    void objectSpriteNameChanged(const Object &object);
+
+    void objectsMenuAboutToShow();
 
     void cursorMoved(const QPoint &point);
 
 private:
+    void setObject(const Object &object);
     void updateTitle();
 
     const std::unique_ptr<Ui::RoomPropertiesDialog> m_ui;
@@ -52,6 +62,10 @@ private:
     QSpinBox * const m_spinBoxSnapX;
     QSpinBox * const m_spinBoxSnapY;
 
+    QMenu * const m_menuObjects;
+
     QLabel * const m_labelX;
     QLabel * const m_labelY;
+
+    const Object *m_selectedObject{};
 };

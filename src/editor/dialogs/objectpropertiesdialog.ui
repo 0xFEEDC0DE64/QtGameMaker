@@ -77,7 +77,7 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_7">
             <item>
-             <widget class="QLineEdit" name="lineEditSprite">
+             <widget class="QLineEditWithMenu" name="lineEditSprite">
               <property name="toolTip">
                <string>The sprite used to represent the object</string>
               </property>
@@ -413,6 +413,11 @@
    <extends>QWidget</extends>
    <header>widgets/actionscontainerwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QLineEditWithMenu</class>
+   <extends>QLineEdit</extends>
+   <header>widgets/qlineeditwithmenu.h</header>
   </customwidget>
  </customwidgets>
  <resources>

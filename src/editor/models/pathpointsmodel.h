@@ -3,6 +3,7 @@
 #include <QAbstractTableModel>
 
 #include <vector>
+#include <optional>
 
 #include "projectcontainer.h"
 

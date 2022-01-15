@@ -137,36 +137,38 @@
    <item>
     <layout class="QHBoxLayout">
      <item>
-      <widget class="QWidget">
-       <layout class="QVBoxLayout">
-        <item>
-         <widget class="QPushButton" />
-        </item>
-       </layout>
+      <layout class="QVBoxLayout">
+       <item>
+        <widget class="QPushButton" name="pushButton"/>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QScrollArea" name="scrollArea">
+       <property name="widgetResizable">
+        <bool>true</bool>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+       </property>
+       <widget class="DrawingCanvasWidget" name="canvas">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>470</width>
+          <height>375</height>
+         </rect>
+        </property>
+       </widget>
       </widget>
      </item>
      <item>
-    <widget class="QScrollArea" name="scrollArea">
-     <widget class="DrawingCanvasWidget" name="canvas">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>0</width>
-        <height>0</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-     </item>
-     <item>
-      <widget class="QWidget">
-       <layout class="QVBoxLayout">
-        <item>
-         <widget class="QPushButton" />
-        </item>
-       </layout>
-      </widget>
+      <layout class="QVBoxLayout">
+       <item>
+        <widget class="QPushButton" name="pushButton"/>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>

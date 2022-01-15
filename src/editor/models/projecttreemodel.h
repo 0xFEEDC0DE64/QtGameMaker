@@ -73,6 +73,8 @@ public:
 
     bool setBackgroundPixmap(const Background &background, QPixmap &&pixmap);
 
+    bool setObjectSpriteName(const Object &object, QString &&spriteName);
+
 signals:
     void errorOccured(const QString &message);
 
@@ -82,9 +84,9 @@ signals:
     void pathCreated(const Path &path);
     void scriptCreated(const Script &script);
     void fontCreated(const Font &font);
-    void timeLineCreated(const TimeLine &font);
-    void objectCreated(const Object &font);
-    void roomCreated(const Room &font);
+    void timeLineCreated(const TimeLine &timeLine);
+    void objectCreated(const Object &object);
+    void roomCreated(const Room &room);
 
     void spriteAboutToBeRemoved(const Sprite &sprite);
     void soundAboutToBeRemoved(const Sound &sound);
@@ -92,9 +94,9 @@ signals:
     void pathAboutToBeRemoved(const Path &path);
     void scriptAboutToBeRemoved(const Script &script);
     void fontAboutToBeRemoved(const Font &font);
-    void timeLineAboutToBeRemoved(const TimeLine &font);
-    void objectAboutToBeRemoved(const Object &font);
-    void roomAboutToBeRemoved(const Room &font);
+    void timeLineAboutToBeRemoved(const TimeLine &timeLine);
+    void objectAboutToBeRemoved(const Object &object);
+    void roomAboutToBeRemoved(const Room &room);
 
     void spriteNameChanged(const Sprite &sprite, const QString &oldName);
     void soundNameChanged(const Sound &sound, const QString &oldName);
@@ -102,9 +104,9 @@ signals:
     void pathNameChanged(const Path &path, const QString &oldName);
     void scriptNameChanged(const Script &script, const QString &oldName);
     void fontNameChanged(const Font &font, const QString &oldName);
-    void timeLineNameChanged(const TimeLine &font, const QString &oldName);
-    void objectNameChanged(const Object &font, const QString &oldName);
-    void roomNameChanged(const Room &font, const QString &oldName);
+    void timeLineNameChanged(const TimeLine &timeLine, const QString &oldName);
+    void objectNameChanged(const Object &object, const QString &oldName);
+    void roomNameChanged(const Room &room, const QString &oldName);
 
     void spritePixmapsChanged(const Sprite &sprite);
 

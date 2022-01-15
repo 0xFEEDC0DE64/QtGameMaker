@@ -42,6 +42,7 @@ private slots:
     void spritesMenuAboutToShow();
     void currentEventChanged(const QModelIndex &index);
     void eventsContextMenuRequested(const QPoint &pos);
+    void rowsInserted(const QModelIndex &parent, int first);
 
     void clearSprite();
     void setSprite(const Sprite &sprite);

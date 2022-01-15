@@ -660,6 +660,37 @@ bool ProjectTreeModel::setBackgroundPixmap(const Background &background, QPixmap
     return true;
 }
 
+bool ProjectTreeModel::setObjectSpriteName(const Object &object, QString &&spriteName)
+{
+    if (!m_project)
+    {
+        qWarning() << "unexpected null project";
+        return false;
+    }
+
+    auto &container = m_project->objects;
+    const auto iter = std::find_if(std::begin(container), std::end(container),
+                                   [&object](const auto &otherEntry){ return &object == &otherEntry; });
+    if (iter == std::cend(container))
+    {
+        qWarning() << "object not from this project!";
+        return false;
+    }
+
+    if (iter->spriteName == spriteName)
+        return true;
+
+    auto oldSpriteName = std::move(iter->spriteName);
+    iter->spriteName = std::move(spriteName);
+
+    const auto index = this->index(std::distance(std::begin(container), iter), 0, rootFor<Object>());
+    emit dataChanged(index, index, { Qt::DecorationRole });
+
+    emit objectSpriteNameChanged(object, std::move(oldSpriteName));
+
+    return true;
+}
+
 template<typename T>
 QVariant ProjectTreeModel::dataFor(const QModelIndex &index, int role) const
 {

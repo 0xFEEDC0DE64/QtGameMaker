@@ -3,6 +3,7 @@
 
 #include <QPushButton>
 #include <QMessageBox>
+#include <QDebug>
 
 GlobalGameSettingsDialog::GlobalGameSettingsDialog(QWidget *parent) :
     QDialog{parent},

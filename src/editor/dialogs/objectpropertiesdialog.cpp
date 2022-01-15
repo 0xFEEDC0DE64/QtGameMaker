@@ -33,12 +33,13 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel 
     m_ui->lineEditName->setText(m_object.name);
     m_ui->lineEditSprite->setText(m_spriteName.isEmpty() ? tr("<no sprite>") : m_spriteName);
     updateSpritePreview();
-    m_menuSprites->setParent(m_ui->toolButtonSprite);
     m_ui->toolButtonSprite->setMenu(m_menuSprites);
     m_ui->checkBoxVisible->setChecked(m_object.visible);
     m_ui->checkBoxSolid->setChecked(m_object.solid);
     m_ui->spinBoxDepth->setValue(m_object.depth);
     m_ui->checkBoxPersistent->setChecked(m_object.persistent);
+
+    m_ui->lineEditSprite->setMenu(m_menuSprites);
 
     m_ui->listViewEvents->setModel(m_eventsModel.get());
 
@@ -53,6 +54,8 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel 
 
     connect(m_eventsModel.get(), &QAbstractItemModel::modelReset,
             this, &ObjectPropertiesDialog::changed);
+    connect(m_eventsModel.get(), &QAbstractItemModel::rowsInserted,
+            this, &ObjectPropertiesDialog::rowsInserted);
     connect(m_eventsModel.get(), &QAbstractItemModel::rowsInserted,
             this, &ObjectPropertiesDialog::changed);
     connect(m_eventsModel.get(), &QAbstractItemModel::dataChanged,
@@ -116,7 +119,12 @@ void ObjectPropertiesDialog::accept()
         }
     }
 
-    m_object.spriteName = m_spriteName;
+    if (!m_projectModel.setObjectSpriteName(m_object, std::move(m_spriteName)))
+    {
+        QMessageBox::critical(this, tr("Setting Object Sprite failed!"), tr("Setting Object Sprite failed!"));
+        return;
+    }
+
     m_object.visible = m_ui->checkBoxVisible->isChecked();
     m_object.solid = m_ui->checkBoxSolid->isChecked();
     m_object.depth = m_ui->spinBoxDepth->value();
@@ -326,6 +334,11 @@ void ObjectPropertiesDialog::eventsContextMenuRequested(const QPoint &pos)
     menu.addAction(tr("&Duplicate Event"), this, &ObjectPropertiesDialog::duplicateEvent)->setEnabled(event);
     menu.addAction(tr("D&elete Event"), this, &ObjectPropertiesDialog::deleteEvent)->setEnabled(event);
     menu.exec(m_ui->listViewEvents->viewport()->mapToGlobal(pos));
+}
+
+void ObjectPropertiesDialog::rowsInserted(const QModelIndex &parent, int first)
+{
+    m_ui->listViewEvents->setCurrentIndex(m_eventsModel->index(first, 0, parent));
 }
 
 void ObjectPropertiesDialog::clearSprite()

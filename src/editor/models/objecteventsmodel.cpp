@@ -92,9 +92,32 @@ bool ObjectEventsModel::addEvent(Object::EventType eventType)
         return false;
     }
 
-    beginResetModel();
-    m_events[eventType];
-    endResetModel();
+    // temporary copy to find row before inserting, as its needed for beginInsertRows()
+    auto tempevents = m_events;
+
+    const auto &tempInsertResult = tempevents.insert(std::make_pair(eventType, ActionsContainer{}));
+    if (!tempInsertResult.second)
+    {
+        qWarning() << "temp inserting failed!";
+        return false;
+    }
+
+    const auto tempNewRow = std::distance(std::begin(tempevents), tempInsertResult.first);
+
+
+    beginInsertRows({}, tempNewRow, tempNewRow);
+
+    const auto &insertResult = m_events.insert(std::make_pair(eventType, ActionsContainer{}));
+    if (!insertResult.second)
+    {
+        qWarning() << "inserting failed!";
+        return false;
+    }
+
+    const auto newRow = std::distance(std::begin(m_events), insertResult.first);
+    Q_ASSERT(tempNewRow == newRow);
+
+    endInsertRows();
 
     return true;
 }
@@ -108,11 +131,46 @@ bool ObjectEventsModel::changeEvent(Object::EventType eventType, Object::EventTy
         return false;
     }
 
-    beginResetModel();
-    auto value = std::move(iter->second);
+    if (eventType == newEventType)
+    {
+        qWarning() << "same event again";
+        return true;
+    }
+
+    auto container = std::move(iter->second);
+
+    const auto oldRow = std::distance(std::begin(m_events), iter);
+
+    beginRemoveRows({}, oldRow, oldRow);
     m_events.erase(iter);
-    m_events[newEventType] = std::move(value);
-    endResetModel();
+    endRemoveRows();
+
+    // temporary copy to find row before inserting, as its needed for beginInsertRows()
+    auto tempevents = m_events;
+
+    const auto &tempInsertResult = tempevents.insert(std::make_pair(newEventType, ActionsContainer{}));
+    if (!tempInsertResult.second)
+    {
+        qWarning() << "temp inserting failed!";
+        return false;
+    }
+
+    const auto tempNewRow = std::distance(std::begin(tempevents), tempInsertResult.first);
+
+
+    beginInsertRows({}, tempNewRow, tempNewRow);
+
+    const auto &insertResult = m_events.insert(std::make_pair(newEventType, std::move(container)));
+    if (!insertResult.second)
+    {
+        qWarning() << "inserting failed!";
+        return false;
+    }
+
+    const auto newRow = std::distance(std::begin(m_events), insertResult.first);
+    Q_ASSERT(tempNewRow == newRow);
+
+    endInsertRows();
 
     return true;
 }
@@ -126,9 +184,11 @@ bool ObjectEventsModel::removeEvent(Object::EventType eventType)
         return false;
     }
 
-    beginResetModel();
+    const auto row = std::distance(std::begin(m_events), iter);
+
+    beginRemoveRows({}, row, row);
     m_events.erase(iter);
-    endResetModel();
+    endRemoveRows();
 
     return true;
 }

@@ -14,6 +14,10 @@ QMAKE_CXXFLAGS += \
     -Wpedantic \
     -Werror
 
+!greaterThan(QT_MAJOR_VERSION, 5) {
+    QMAKE_CXXFLAGS += -Wno-deprecated-enum-enum-conversion
+}
+
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 
 INCLUDEPATH += \
@@ -23,6 +27,8 @@ INCLUDEPATH += \
 HEADERS += \
     src/closeeventfilter.h \
     src/editor/dialogs/genericcodeeditordialog.h \
+    src/editor/widgets/qlineeditwithmenu.h \
+    src/editor/widgets/qscrollareawithmenu.h \
     src/editor/widgets/roomeditwidget.h \
     src/futurecpp.h \
     src/projectcontainer.h \
@@ -72,6 +78,8 @@ HEADERS += \
 SOURCES += \
     src/closeeventfilter.cpp \
     src/editor/dialogs/genericcodeeditordialog.cpp \
+    src/editor/widgets/qlineeditwithmenu.cpp \
+    src/editor/widgets/qscrollareawithmenu.cpp \
     src/editor/widgets/roomeditwidget.cpp \
     src/main.cpp \
     src/projectcontainer.cpp \

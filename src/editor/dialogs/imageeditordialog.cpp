@@ -2,6 +2,7 @@
 #include "ui_imageeditordialog.h"
 
 #include <QMessageBox>
+#include <QDebug>
 
 ImageEditorDialog::ImageEditorDialog(const QPixmap &pixmap, const QString &title, QWidget *parent) :
     QDialog{parent},

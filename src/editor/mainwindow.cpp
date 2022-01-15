@@ -740,7 +740,13 @@ void MainWindow::setupStylesMenu()
                 return QString{};
             }
 
-            return style->name();
+            return style->
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+                name
+#else
+                objectName
+#endif
+                ();
         }();
 
         if (name.isEmpty())
@@ -754,11 +760,16 @@ void MainWindow::setupStylesMenu()
                 return;
             }
             QApplication::setStyle(style);
-            qDebug() << style->name();
         });
         m_actionGroupStyles->addAction(action);
         action->setCheckable(true);
-        action->setChecked(currentStyle && currentStyle->name() == name);
+        action->setChecked(currentStyle && currentStyle->
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+                           name
+#else
+                           objectName
+#endif
+                           () == name);
     }
 }
 
