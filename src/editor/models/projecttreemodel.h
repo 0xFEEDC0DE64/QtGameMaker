@@ -42,8 +42,10 @@ public:
     int columnCount(const QModelIndex &parent) const override;
     QVariant data(const QModelIndex &index, int role) const override;
     Qt::ItemFlags flags(const QModelIndex &index) const override;
+    Qt::DropActions supportedDropActions() const override;
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     bool insertRows(int row, int count, const QModelIndex &parent) override;
+    bool moveRows(const QModelIndex &sourceParent, int sourceRow, int count, const QModelIndex &destinationParent, int destinationChild) override;
     bool removeRows(int row, int count, const QModelIndex &parent) override;
 
     ProjectContainer *project() { return m_project; }

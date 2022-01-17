@@ -10,6 +10,8 @@
 
 #include "projectcontainer.h"
 #include "models/projecttreemodel.h"
+#include "roomscene.h"
+#include "editorguiutils.h"
 #include "genericcodeeditordialog.h"
 
 RoomPropertiesDialog::RoomPropertiesDialog(Room &room, ProjectTreeModel &projectModel, QWidget *parent) :
@@ -17,6 +19,7 @@ RoomPropertiesDialog::RoomPropertiesDialog(Room &room, ProjectTreeModel &project
     m_ui{std::make_unique<Ui::RoomPropertiesDialog>()},
     m_room{room},
     m_projectModel{projectModel},
+    m_scene{std::make_unique<RoomScene>(this)},
     m_creationCode{m_room.creationCode},
     m_spinBoxSnapX{new QSpinBox{this}},
     m_spinBoxSnapY{new QSpinBox{this}},
@@ -34,6 +37,10 @@ RoomPropertiesDialog::RoomPropertiesDialog(Room &room, ProjectTreeModel &project
     m_ui->roomEditWidget->setSnapY(m_room.snapY);
     m_ui->roomEditWidget->setGridEnabled(m_room.gridEnabled);
     m_ui->roomEditWidget->setIsometricGrid(m_room.isometricGrid);
+    m_ui->roomEditWidget->setProjectTreeModel(&m_projectModel);
+
+    m_ui->graphicsView->setScene(m_scene.get());
+    m_ui->graphicsView->setBackgroundBrush(makeGridBrush(16, 16, QPen{Qt::black}, Qt::white));
 
     {
         int index{11};
@@ -352,6 +359,7 @@ void RoomPropertiesDialog::objectAboutToBeRemoved(const Object &object)
     m_selectedObject = nullptr;
     m_ui->lineEditObject->clear();
     m_ui->labelObjectPreview->setPixmap({});
+    m_ui->roomEditWidget->setSelectedObject(nullptr);
 }
 
 void RoomPropertiesDialog::objectSpriteNameChanged(const Object &object)
@@ -416,6 +424,7 @@ void RoomPropertiesDialog::setObject(const Object &object)
     }
     m_ui->labelObjectPreview->setPixmap(std::move(pixmap));
     m_ui->lineEditObject->setText(object.name);
+    m_ui->roomEditWidget->setSelectedObject(&object);
 }
 
 void RoomPropertiesDialog::updateTitle()

@@ -27,6 +27,9 @@ INCLUDEPATH += \
 HEADERS += \
     src/closeeventfilter.h \
     src/editor/dialogs/genericcodeeditordialog.h \
+    src/editor/editorguiutils.h \
+    src/editor/roomscene.h \
+    src/editor/widgets/draggabletreeview.h \
     src/editor/widgets/qlineeditwithmenu.h \
     src/editor/widgets/qscrollareawithmenu.h \
     src/editor/widgets/roomeditwidget.h \
@@ -81,6 +84,9 @@ HEADERS += \
 SOURCES += \
     src/closeeventfilter.cpp \
     src/editor/dialogs/genericcodeeditordialog.cpp \
+    src/editor/editorguiutils.cpp \
+    src/editor/roomscene.cpp \
+    src/editor/widgets/draggabletreeview.cpp \
     src/editor/widgets/qlineeditwithmenu.cpp \
     src/editor/widgets/qscrollareawithmenu.cpp \
     src/editor/widgets/roomeditwidget.cpp \

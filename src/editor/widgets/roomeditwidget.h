@@ -6,6 +6,7 @@
 #include <optional>
 
 struct Object;
+class ProjectTreeModel;
 
 class RoomEditWidget : public QWidget
 {
@@ -33,8 +34,12 @@ public:
     QPalette::ColorRole gridRole() const { return m_gridRole; }
     void setGridRole(QPalette::ColorRole gridRole);
 
+    ProjectTreeModel *projectTreeModel() { return m_projectTreeModel; }
+    const ProjectTreeModel *projectTreeModel() const { return m_projectTreeModel; }
+    void setProjectTreeModel(ProjectTreeModel *projectTreeModel) { m_projectTreeModel = projectTreeModel; update(); }
+
     const Object *selectedObject() const { return m_selectedObject; }
-    void setSelectedObject(const Object *object) { m_selectedObject = object; update(); }
+    void setSelectedObject(const Object *selectedObject);
 
 signals:
     void snapXChanged(int snapX);
@@ -69,4 +74,12 @@ private:
     std::optional<GridBrush> m_gridBrush;
 
     QPalette::ColorRole m_gridRole{QPalette::Dark};
+
+    ProjectTreeModel *m_projectTreeModel{};
+
+    struct DraggedObject {
+        std::reference_wrapper<const Object> object;
+        QPoint pos;
+    };
+    std::optional<DraggedObject> m_draggedObject;
 };

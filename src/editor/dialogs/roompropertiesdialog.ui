@@ -133,7 +133,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>683</width>
+             <width>419</width>
              <height>333</height>
             </rect>
            </property>
@@ -383,19 +383,35 @@
      <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout">
        <item>
-        <widget class="QScrollArea" name="scrollAreaRoom">
-         <property name="alignment">
-          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        <widget class="QTabWidget" name="tabWidget_2">
+         <property name="currentIndex">
+          <number>0</number>
          </property>
-         <widget class="RoomEditWidget" name="roomEditWidget">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>0</width>
-            <height>0</height>
-           </rect>
+         <widget class="QScrollArea" name="scrollAreaRoom">
+          <property name="widgetResizable">
+           <bool>true</bool>
           </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+          </property>
+          <attribute name="title">
+           <string>Custom Widget</string>
+          </attribute>
+          <widget class="RoomEditWidget" name="roomEditWidget">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>459</width>
+             <height>482</height>
+            </rect>
+           </property>
+          </widget>
+         </widget>
+         <widget class="QGraphicsView" name="graphicsView">
+          <attribute name="title">
+           <string>QGraphicsView</string>
+          </attribute>
          </widget>
         </widget>
        </item>

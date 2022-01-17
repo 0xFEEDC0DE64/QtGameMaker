@@ -7,6 +7,8 @@
 
 #include <algorithm>
 
+#include "editorguiutils.h"
+
 PathPointsWidget::PathPointsWidget(QWidget *parent) :
     QWidget{parent}
 {
@@ -81,21 +83,10 @@ void PathPointsWidget::paintEvent(QPaintEvent *event)
     {
         if (!m_gridBrush || m_gridBrush->snapX != m_snapX || m_gridBrush->snapY != m_snapY)
         {
-            QPixmap pixmap{m_snapX, m_snapY};
-
-            {
-                QPainter painter{&pixmap};
-                painter.setPen(palette().color(m_gridRole));
-                painter.drawLine(0, 0, m_snapX, 0);
-                painter.drawLine(0, 0, 0, m_snapY);
-
-                painter.fillRect(1, 1, m_snapX - 1, m_snapY - 1, palette().color(backgroundRole()));
-            }
-
             m_gridBrush = GridBrush {
                 .snapX = m_snapX,
                 .snapY = m_snapY,
-                .brush = QBrush{std::   move(pixmap)}
+                .brush = makeGridBrush(m_snapX, m_snapY, palette().color(m_gridRole), palette().color(backgroundRole()))
             };
         }
     }

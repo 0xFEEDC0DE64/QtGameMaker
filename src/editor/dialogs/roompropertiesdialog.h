@@ -12,6 +12,7 @@ struct Room;
 struct Sprite;
 struct Object;
 class ProjectTreeModel;
+class RoomScene;
 
 class RoomPropertiesDialog : public QDialog
 {
@@ -54,6 +55,8 @@ private:
 
     Room &m_room;
     ProjectTreeModel &m_projectModel;
+
+    const std::unique_ptr<RoomScene> m_scene;
 
     QString m_creationCode;
 

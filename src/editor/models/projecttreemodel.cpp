@@ -273,10 +273,15 @@ Qt::ItemFlags ProjectTreeModel::flags(const QModelIndex &index) const
     case NodeType::TimeLine:
     case NodeType::Object:
     case NodeType::Room:
-        flags |= Qt::ItemIsEditable;
+        flags |= Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
     }
 
     return flags;
+}
+
+Qt::DropActions ProjectTreeModel::supportedDropActions() const
+{
+    return QAbstractItemModel::supportedDropActions() | Qt::MoveAction;
 }
 
 bool ProjectTreeModel::setData(const QModelIndex &index, const QVariant &value, int role)
@@ -311,6 +316,12 @@ bool ProjectTreeModel::insertRows(int row, int count, const QModelIndex &parent)
     if (auto result = insertRowsFor<Room>(row, count, parent))       return *result;
 
     qWarning() << "unexpected parent" << parent;
+    return false;
+}
+
+bool ProjectTreeModel::moveRows(const QModelIndex &sourceParent, int sourceRow, int count, const QModelIndex &destinationParent, int destinationChild)
+{
+    qDebug() << "called" << sourceParent << sourceRow << count << destinationParent << destinationChild;
     return false;
 }
 
