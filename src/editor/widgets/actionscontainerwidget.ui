@@ -60,34 +60,98 @@
     </layout>
    </item>
    <item>
-    <widget class="QToolBox" name="toolBox">
-     <property name="currentIndex">
-      <number>0</number>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="tabPosition">
+      <enum>QTabWidget::East</enum>
      </property>
-     <widget class="QWidget" name="page">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>136</width>
-        <height>242</height>
-       </rect>
-      </property>
-      <attribute name="label">
-       <string>Page 1</string>
+     <widget class="QWidget" name="tabWidgetMove">
+      <attribute name="title">
+       <string>Move</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QToolButton" name="toolButton">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="toolButton_2">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="toolButton_3">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="toolButton_4">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabWidgetMain1">
+      <attribute name="title">
+       <string>Main1</string>
       </attribute>
      </widget>
-     <widget class="QWidget" name="page_2">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>136</width>
-        <height>242</height>
-       </rect>
-      </property>
-      <attribute name="label">
-       <string>Page 2</string>
+     <widget class="QWidget" name="tabWidgetMain2">
+      <attribute name="title">
+       <string>Main2</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="tabWidgetControl">
+      <attribute name="title">
+       <string>Control</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="tabWidgetScore">
+      <attribute name="title">
+       <string>Score</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="tabWidgetExtra">
+      <attribute name="title">
+       <string>Extra</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="tabWidgetDraw">
+      <attribute name="title">
+       <string>Draw</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="tabWidgetMoveAndRoom">
+      <attribute name="title">
+       <string>Move and Room</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="tabWidgetSaveLoadAndMouse">
+      <attribute name="title">
+       <string>Save, Load, and Mouse</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="tabWidgetDrawSpriteBackground">
+      <attribute name="title">
+       <string>Draw+Sprite+Background</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="tabWidgetDate">
+      <attribute name="title">
+       <string>Date</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="tabWidgetBreakout">
+      <attribute name="title">
+       <string>Breakout</string>
       </attribute>
      </widget>
     </widget>

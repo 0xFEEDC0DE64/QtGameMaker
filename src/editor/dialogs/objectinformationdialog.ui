@@ -14,7 +14,7 @@
    <string>Information about all Objects</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../../resources.qrc">
+   <iconset resource="../resources_editor.qrc">
     <normaloff>:/qtgameengine/icons/object-file.png</normaloff>:/qtgameengine/icons/object-file.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1">
@@ -58,7 +58,7 @@
   </layout>
   <action name="actionOk">
    <property name="icon">
-    <iconset resource="../../../resources.qrc">
+    <iconset resource="../resources_editor.qrc">
      <normaloff>:/qtgameengine/icons/ok.png</normaloff>:/qtgameengine/icons/ok.png</iconset>
    </property>
    <property name="text">
@@ -70,7 +70,7 @@
   </action>
   <action name="actionSave">
    <property name="icon">
-    <iconset resource="../../../resources.qrc">
+    <iconset resource="../resources_editor.qrc">
      <normaloff>:/qtgameengine/icons/save.png</normaloff>:/qtgameengine/icons/save.png</iconset>
    </property>
    <property name="text">
@@ -82,7 +82,7 @@
   </action>
   <action name="actionPrint">
    <property name="icon">
-    <iconset resource="../../../resources.qrc">
+    <iconset resource="../resources_editor.qrc">
      <normaloff>:/qtgameengine/icons/print.png</normaloff>:/qtgameengine/icons/print.png</iconset>
    </property>
    <property name="text">
@@ -94,7 +94,7 @@
   </action>
  </widget>
  <resources>
-  <include location="../../../resources.qrc"/>
+  <include location="../resources_editor.qrc"/>
  </resources>
  <connections>
   <connection>

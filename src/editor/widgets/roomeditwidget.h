@@ -5,6 +5,8 @@
 
 #include <optional>
 
+struct Object;
+
 class RoomEditWidget : public QWidget
 {
     Q_OBJECT
@@ -31,6 +33,9 @@ public:
     QPalette::ColorRole gridRole() const { return m_gridRole; }
     void setGridRole(QPalette::ColorRole gridRole);
 
+    const Object *selectedObject() const { return m_selectedObject; }
+    void setSelectedObject(const Object *object) { m_selectedObject = object; update(); }
+
 signals:
     void snapXChanged(int snapX);
     void snapYChanged(int snapY);
@@ -52,6 +57,8 @@ private:
     int m_snapY{16};
     bool m_gridEnabled{true};
     bool m_isometricGrid{false};
+
+    const Object *m_selectedObject{};
 
     struct GridBrush {
         int snapX;

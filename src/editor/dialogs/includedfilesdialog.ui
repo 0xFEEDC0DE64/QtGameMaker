@@ -42,7 +42,7 @@
            <string>&amp;Add</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../resources.qrc">
+           <iconset resource="../resources_editor.qrc">
             <normaloff>:/qtgameengine/icons/add.png</normaloff>:/qtgameengine/icons/add.png</iconset>
           </property>
          </widget>
@@ -56,7 +56,7 @@
            <string>&amp;Change</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../resources.qrc">
+           <iconset resource="../resources_editor.qrc">
             <normaloff>:/qtgameengine/icons/replace.png</normaloff>:/qtgameengine/icons/replace.png</iconset>
           </property>
          </widget>
@@ -70,7 +70,7 @@
            <string>&amp;Delete</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../resources.qrc">
+           <iconset resource="../resources_editor.qrc">
             <normaloff>:/qtgameengine/icons/delete.png</normaloff>:/qtgameengine/icons/delete.png</iconset>
           </property>
          </widget>
@@ -84,7 +84,7 @@
            <string>&amp;Clear</string>
           </property>
           <property name="icon">
-           <iconset resource="../../../resources.qrc">
+           <iconset resource="../resources_editor.qrc">
             <normaloff>:/qtgameengine/icons/new.png</normaloff>:/qtgameengine/icons/new.png</iconset>
           </property>
          </widget>
@@ -107,7 +107,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../../../resources.qrc"/>
+  <include location="../resources_editor.qrc"/>
  </resources>
  <connections>
   <connection>

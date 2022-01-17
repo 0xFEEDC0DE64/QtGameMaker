@@ -14,7 +14,7 @@
    <string>Dialog</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../../resources.qrc">
+   <iconset resource="../resources_editor.qrc">
     <normaloff>:/qtgameengine/icons/background-file.png</normaloff>:/qtgameengine/icons/background-file.png</iconset>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
@@ -69,7 +69,7 @@
         <string>&amp;Load Background</string>
        </property>
        <property name="icon">
-        <iconset resource="../../../resources.qrc">
+        <iconset resource="../resources_editor.qrc">
          <normaloff>:/qtgameengine/icons/open.png</normaloff>:/qtgameengine/icons/open.png</iconset>
        </property>
       </widget>
@@ -83,7 +83,7 @@
         <string>&amp;Save Background</string>
        </property>
        <property name="icon">
-        <iconset resource="../../../resources.qrc">
+        <iconset resource="../resources_editor.qrc">
          <normaloff>:/qtgameengine/icons/save.png</normaloff>:/qtgameengine/icons/save.png</iconset>
        </property>
       </widget>
@@ -97,7 +97,7 @@
         <string>&amp;Edit Background</string>
        </property>
        <property name="icon">
-        <iconset resource="../../../resources.qrc">
+        <iconset resource="../resources_editor.qrc">
          <normaloff>:/qtgameengine/icons/edit.png</normaloff>:/qtgameengine/icons/edit.png</iconset>
        </property>
       </widget>
@@ -178,7 +178,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../../../resources.qrc"/>
+  <include location="../resources_editor.qrc"/>
  </resources>
  <connections>
   <connection>

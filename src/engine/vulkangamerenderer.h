@@ -2,10 +2,12 @@
 
 #include <QVulkanWindow>
 
+struct ProjectContainer;
+
 class VulkanGameRenderer : public QVulkanWindowRenderer
 {
 public:
-    VulkanGameRenderer(QVulkanWindow *w, bool msaa = false);
+    VulkanGameRenderer(const ProjectContainer &project, QVulkanWindow *w, bool msaa = false);
 
     void initResources() override;
     void initSwapChainResources() override;
@@ -31,6 +33,8 @@ protected:
     VkPipelineCache m_pipelineCache = VK_NULL_HANDLE;
     VkPipelineLayout m_pipelineLayout = VK_NULL_HANDLE;
     VkPipeline m_pipeline = VK_NULL_HANDLE;
+
+    const ProjectContainer &m_project;
 
     QMatrix4x4 m_proj;
     float m_rotation = 0.0f;

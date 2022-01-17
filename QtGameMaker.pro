@@ -161,5 +161,9 @@ FORMS += \
     src/editor/widgets/actionscontainerwidget.ui
 
 RESOURCES += \
-    resources_editor.qrc \
-    resources_engine.qrc
+    src/editor/resources_editor.qrc \
+    src/engine/resources_engine.qrc
+
+OTHER_FILES += \
+    src/engine/vulkan_shader_modules/color.frag \
+    src/engine/vulkan_shader_modules/color.vert

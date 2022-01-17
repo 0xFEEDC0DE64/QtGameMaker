@@ -14,7 +14,7 @@
    <string>Sound Properties</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../../resources.qrc">
+   <iconset resource="../resources_editor.qrc">
     <normaloff>:/qtgameengine/icons/sound-file.png</normaloff>:/qtgameengine/icons/sound-file.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -50,7 +50,7 @@
         <string>&amp;Load Sound</string>
        </property>
        <property name="icon">
-        <iconset resource="../../../resources.qrc">
+        <iconset resource="../resources_editor.qrc">
          <normaloff>:/qtgameengine/icons/open.png</normaloff>:/qtgameengine/icons/open.png</iconset>
        </property>
       </widget>
@@ -64,7 +64,7 @@
         <string notr="true"/>
        </property>
        <property name="icon">
-        <iconset resource="../../../resources.qrc">
+        <iconset resource="../resources_editor.qrc">
          <normaloff>:/qtgameengine/icons/run.png</normaloff>:/qtgameengine/icons/run.png</iconset>
        </property>
       </widget>
@@ -78,7 +78,7 @@
         <string notr="true"/>
        </property>
        <property name="icon">
-        <iconset resource="../../../resources.qrc">
+        <iconset resource="../resources_editor.qrc">
          <normaloff>:/qtgameengine/icons/exit.png</normaloff>:/qtgameengine/icons/exit.png</iconset>
        </property>
       </widget>
@@ -94,7 +94,7 @@
       <string>Sa&amp;ve Sound</string>
      </property>
      <property name="icon">
-      <iconset resource="../../../resources.qrc">
+      <iconset resource="../resources_editor.qrc">
        <normaloff>:/qtgameengine/icons/save.png</normaloff>:/qtgameengine/icons/save.png</iconset>
      </property>
     </widget>
@@ -292,7 +292,7 @@
         <string>&amp;Edit Sound</string>
        </property>
        <property name="icon">
-        <iconset resource="../../../resources.qrc">
+        <iconset resource="../resources_editor.qrc">
          <normaloff>:/qtgameengine/icons/sound.png</normaloff>:/qtgameengine/icons/sound.png</iconset>
        </property>
       </widget>
@@ -325,7 +325,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../../../resources.qrc"/>
+  <include location="../resources_editor.qrc"/>
  </resources>
  <connections>
   <connection>

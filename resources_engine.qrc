@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/qtgameengine">
-        <file>shader_modules/color_frag.spv</file>
-        <file>shader_modules/color_vert.spv</file>
-    </qresource>
-</RCC>

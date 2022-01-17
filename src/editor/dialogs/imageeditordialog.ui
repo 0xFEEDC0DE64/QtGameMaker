@@ -178,7 +178,7 @@
   </layout>
   <action name="actionNew">
    <property name="icon">
-    <iconset resource="../../../resources.qrc">
+    <iconset resource="../resources_editor.qrc">
      <normaloff>:/qtgameengine/icons/new.png</normaloff>:/qtgameengine/icons/new.png</iconset>
    </property>
    <property name="text">
@@ -190,7 +190,7 @@
   </action>
   <action name="actionSaveAsPngFile">
    <property name="icon">
-    <iconset resource="../../../resources.qrc">
+    <iconset resource="../resources_editor.qrc">
      <normaloff>:/qtgameengine/icons/save.png</normaloff>:/qtgameengine/icons/save.png</iconset>
    </property>
    <property name="text">
@@ -202,7 +202,7 @@
   </action>
   <action name="actionPreviousImage">
    <property name="icon">
-    <iconset resource="../../../resources.qrc">
+    <iconset resource="../resources_editor.qrc">
      <normaloff>:/qtgameengine/icons/arrow-left.png</normaloff>:/qtgameengine/icons/arrow-left.png</iconset>
    </property>
    <property name="text">
@@ -214,7 +214,7 @@
   </action>
   <action name="actionNextImage">
    <property name="icon">
-    <iconset resource="../../../resources.qrc">
+    <iconset resource="../resources_editor.qrc">
      <normaloff>:/qtgameengine/icons/arrow-right.png</normaloff>:/qtgameengine/icons/arrow-right.png</iconset>
    </property>
    <property name="text">
@@ -226,7 +226,7 @@
   </action>
   <action name="actionCloseSavingChanges">
    <property name="icon">
-    <iconset resource="../../../resources.qrc">
+    <iconset resource="../resources_editor.qrc">
      <normaloff>:/qtgameengine/icons/ok.png</normaloff>:/qtgameengine/icons/ok.png</iconset>
    </property>
    <property name="text">
@@ -238,7 +238,7 @@
   </action>
   <action name="actionLoad">
    <property name="icon">
-    <iconset resource="../../../resources.qrc">
+    <iconset resource="../resources_editor.qrc">
      <normaloff>:/qtgameengine/icons/open.png</normaloff>:/qtgameengine/icons/open.png</iconset>
    </property>
    <property name="text">
@@ -247,7 +247,7 @@
   </action>
   <action name="actionUndo">
    <property name="icon">
-    <iconset resource="../../../resources.qrc">
+    <iconset resource="../resources_editor.qrc">
      <normaloff>:/qtgameengine/icons/undo.png</normaloff>:/qtgameengine/icons/undo.png</iconset>
    </property>
    <property name="text">
@@ -256,7 +256,7 @@
   </action>
   <action name="actionRedo">
    <property name="icon">
-    <iconset resource="../../../resources.qrc">
+    <iconset resource="../resources_editor.qrc">
      <normaloff>:/qtgameengine/icons/redo.png</normaloff>:/qtgameengine/icons/redo.png</iconset>
    </property>
    <property name="text">
@@ -307,7 +307,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../../resources.qrc"/>
+  <include location="../resources_editor.qrc"/>
  </resources>
  <connections>
   <connection>

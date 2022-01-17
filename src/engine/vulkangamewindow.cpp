@@ -14,5 +14,5 @@ VulkanGameWindow::VulkanGameWindow(const ProjectContainer &project, QWindow *par
 
 QVulkanWindowRenderer *VulkanGameWindow::createRenderer()
 {
-    return new VulkanGameRenderer(this, true); // try MSAA, when available
+    return new VulkanGameRenderer{m_project, this, true}; // try MSAA, when available
 }

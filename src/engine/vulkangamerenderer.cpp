@@ -20,14 +20,18 @@ static inline VkDeviceSize aligned(VkDeviceSize v, VkDeviceSize byteAlign)
     return (v + byteAlign - 1) & ~(byteAlign - 1);
 }
 
-VulkanGameRenderer::VulkanGameRenderer(QVulkanWindow *w, bool msaa) :
-    m_window(w)
+VulkanGameRenderer::VulkanGameRenderer(const ProjectContainer &project, QVulkanWindow *w, bool msaa) :
+    m_window{w},
+    m_project{project}
 {
-    if (msaa) {
+    if (msaa)
+    {
         const QVector<int> counts = w->supportedSampleCounts();
         qDebug() << "Supported sample counts:" << counts;
-        for (int s = 16; s >= 4; s /= 2) {
-            if (counts.contains(s)) {
+        for (int s = 16; s >= 4; s /= 2)
+        {
+            if (counts.contains(s))
+            {
                 qDebug("Requesting sample count %d", s);
                 m_window->setSampleCount(s);
                 break;
@@ -38,13 +42,16 @@ VulkanGameRenderer::VulkanGameRenderer(QVulkanWindow *w, bool msaa) :
 
 VkShaderModule VulkanGameRenderer::createShader(const QString &name)
 {
-    QFile file(name);
-    if (!file.open(QIODevice::ReadOnly)) {
-        qWarning("Failed to read shader %s", qPrintable(name));
-        return VK_NULL_HANDLE;
+    QByteArray blob;
+    {
+        QFile file(name);
+        if (!file.open(QIODevice::ReadOnly))
+        {
+            qWarning("Failed to read shader %s", qPrintable(name));
+            return VK_NULL_HANDLE;
+        }
+        blob = file.readAll();
     }
-    QByteArray blob = file.readAll();
-    file.close();
 
     VkShaderModuleCreateInfo shaderInfo;
     memset(&shaderInfo, 0, sizeof(shaderInfo));
@@ -53,7 +60,8 @@ VkShaderModule VulkanGameRenderer::createShader(const QString &name)
     shaderInfo.pCode = reinterpret_cast<const uint32_t *>(blob.constData());
     VkShaderModule shaderModule;
     VkResult err = m_devFuncs->vkCreateShaderModule(m_window->device(), &shaderInfo, nullptr, &shaderModule);
-    if (err != VK_SUCCESS) {
+    if (err != VK_SUCCESS)
+    {
         qWarning("Failed to create shader module: %d", err);
         return VK_NULL_HANDLE;
     }
@@ -104,7 +112,7 @@ void VulkanGameRenderer::initResources()
     VkMemoryRequirements memReq;
     m_devFuncs->vkGetBufferMemoryRequirements(dev, m_buf, &memReq);
 
-    VkMemoryAllocateInfo memAllocInfo = {
+    VkMemoryAllocateInfo memAllocInfo {
         VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
         nullptr,
         memReq.size,
@@ -126,7 +134,8 @@ void VulkanGameRenderer::initResources()
     memcpy(p, vertexData, sizeof(vertexData));
     QMatrix4x4 ident;
     memset(m_uniformBufInfo, 0, sizeof(m_uniformBufInfo));
-    for (int i = 0; i < concurrentFrameCount; ++i) {
+    for (int i = 0; i < concurrentFrameCount; ++i)
+    {
         const VkDeviceSize offset = vertexAllocSize + i * uniformAllocSize;
         memcpy(p + offset, ident.constData(), 16 * sizeof(float));
         m_uniformBufInfo[i].buffer = m_buf;
@@ -135,12 +144,12 @@ void VulkanGameRenderer::initResources()
     }
     m_devFuncs->vkUnmapMemory(dev, m_bufMem);
 
-    VkVertexInputBindingDescription vertexBindingDesc = {
+    VkVertexInputBindingDescription vertexBindingDesc {
         0, // binding
         5 * sizeof(float),
         VK_VERTEX_INPUT_RATE_VERTEX
     };
-    VkVertexInputAttributeDescription vertexAttrDesc[] = {
+    VkVertexInputAttributeDescription vertexAttrDesc[] {
         { // position
             0, // location
             0, // binding
@@ -176,14 +185,14 @@ void VulkanGameRenderer::initResources()
     if (err != VK_SUCCESS)
         qFatal("Failed to create descriptor pool: %d", err);
 
-    VkDescriptorSetLayoutBinding layoutBinding = {
+    VkDescriptorSetLayoutBinding layoutBinding {
         0, // binding
         VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
         1,
         VK_SHADER_STAGE_VERTEX_BIT,
         nullptr
     };
-    VkDescriptorSetLayoutCreateInfo descLayoutInfo = {
+    VkDescriptorSetLayoutCreateInfo descLayoutInfo {
         VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
         nullptr,
         0,
@@ -194,8 +203,9 @@ void VulkanGameRenderer::initResources()
     if (err != VK_SUCCESS)
         qFatal("Failed to create descriptor set layout: %d", err);
 
-    for (int i = 0; i < concurrentFrameCount; ++i) {
-        VkDescriptorSetAllocateInfo descSetAllocInfo = {
+    for (int i = 0; i < concurrentFrameCount; ++i)
+    {
+        VkDescriptorSetAllocateInfo descSetAllocInfo {
             VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
             nullptr,
             m_descPool,
@@ -235,15 +245,15 @@ void VulkanGameRenderer::initResources()
         qFatal("Failed to create pipeline layout: %d", err);
 
     // Shaders
-    VkShaderModule vertShaderModule = createShader(QStringLiteral(":/qtgameengine/shader_modules/color_vert.spv"));
-    VkShaderModule fragShaderModule = createShader(QStringLiteral(":/qtgameengine/shader_modules/color_frag.spv"));
+    VkShaderModule vertShaderModule = createShader(QStringLiteral(":/qtgameengine/vulkan_shader_modules/color_vert.spv"));
+    VkShaderModule fragShaderModule = createShader(QStringLiteral(":/qtgameengine/vulkan_shader_modules/color_frag.spv"));
 
     // Graphics pipeline
     VkGraphicsPipelineCreateInfo pipelineInfo;
     memset(&pipelineInfo, 0, sizeof(pipelineInfo));
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 
-    VkPipelineShaderStageCreateInfo shaderStages[2] = {
+    VkPipelineShaderStageCreateInfo shaderStages[2] {
         {
             VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
             nullptr,
@@ -361,37 +371,44 @@ void VulkanGameRenderer::releaseResources()
 
     VkDevice dev = m_window->device();
 
-    if (m_pipeline) {
+    if (m_pipeline)
+    {
         m_devFuncs->vkDestroyPipeline(dev, m_pipeline, nullptr);
         m_pipeline = VK_NULL_HANDLE;
     }
 
-    if (m_pipelineLayout) {
+    if (m_pipelineLayout)
+    {
         m_devFuncs->vkDestroyPipelineLayout(dev, m_pipelineLayout, nullptr);
         m_pipelineLayout = VK_NULL_HANDLE;
     }
 
-    if (m_pipelineCache) {
+    if (m_pipelineCache)
+    {
         m_devFuncs->vkDestroyPipelineCache(dev, m_pipelineCache, nullptr);
         m_pipelineCache = VK_NULL_HANDLE;
     }
 
-    if (m_descSetLayout) {
+    if (m_descSetLayout)
+    {
         m_devFuncs->vkDestroyDescriptorSetLayout(dev, m_descSetLayout, nullptr);
         m_descSetLayout = VK_NULL_HANDLE;
     }
 
-    if (m_descPool) {
+    if (m_descPool)
+    {
         m_devFuncs->vkDestroyDescriptorPool(dev, m_descPool, nullptr);
         m_descPool = VK_NULL_HANDLE;
     }
 
-    if (m_buf) {
+    if (m_buf)
+    {
         m_devFuncs->vkDestroyBuffer(dev, m_buf, nullptr);
         m_buf = VK_NULL_HANDLE;
     }
 
-    if (m_bufMem) {
+    if (m_bufMem)
+    {
         m_devFuncs->vkFreeMemory(dev, m_bufMem, nullptr);
         m_bufMem = VK_NULL_HANDLE;
     }
