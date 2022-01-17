@@ -138,14 +138,17 @@ void GlGameWindow::keyPressEvent(QKeyEvent *event)
 {
     QWindow::keyPressEvent(event);
 
-    qDebug() << (event->key() == Qt::Key_Escape);
+    switch (event->key())
+    {
+    case Qt::Key_Escape:
+        close();
+        break;
+    }
 }
 
 void GlGameWindow::keyReleaseEvent(QKeyEvent *event)
 {
     QWindow::keyReleaseEvent(event);
-
-    qDebug() << (event->key() == Qt::Key_Escape);
 }
 
 void GlGameWindow::exposeEvent(QExposeEvent *event)
