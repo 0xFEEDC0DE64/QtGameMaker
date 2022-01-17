@@ -1,8 +1,10 @@
 <RCC>
     <qresource prefix="/qtgameengine">
-        <file>vulkan_shader_modules/color_frag.spv</file>
-        <file>vulkan_shader_modules/color_vert.spv</file>
         <file>opengl_shaders/color.frag</file>
         <file>opengl_shaders/color.vert</file>
+        <file>vulkan_shader_modules/color_frag.spv</file>
+        <file>vulkan_shader_modules/color_vert.spv</file>
+        <file>vulkan_shader_modules/texture_frag.spv</file>
+        <file>vulkan_shader_modules/texture_vert.spv</file>
     </qresource>
 </RCC>

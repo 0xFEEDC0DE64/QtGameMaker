@@ -8,9 +8,10 @@
 #include <QKeyEvent>
 #include <QDebug>
 
-GlGameWindow::GlGameWindow(const ProjectContainer &project, QWindow *parent) :
+GlGameWindow::GlGameWindow(const ProjectContainer &project, const float &rotation, QWindow *parent) :
     QWindow{parent},
-    m_project{project}
+    m_project{project},
+    m_rotation{rotation}
 {
     setSurfaceType(QWindow::OpenGLSurface);
 
@@ -18,6 +19,7 @@ GlGameWindow::GlGameWindow(const ProjectContainer &project, QWindow *parent) :
     setMaximumWidth(640);
     setMinimumHeight(480);
     setMaximumHeight(480);
+    resize(640, 480);
 }
 
 GlGameWindow::~GlGameWindow() = default;
@@ -54,7 +56,7 @@ void GlGameWindow::render()
     QMatrix4x4 matrix;
     matrix.perspective(60.0f, 4.0f / 3.0f, 0.1f, 100.0f);
     matrix.translate(0, 0, -2);
-    matrix.rotate(100.0f * m_frame / screen()->refreshRate(), 0, 1, 0);
+    matrix.rotate(m_rotation, 0, 1, 0);
 
     m_program->setUniformValue(m_matrixUniform, matrix);
 
@@ -82,8 +84,6 @@ void GlGameWindow::render()
     glDisableVertexAttribArray(m_posAttr);
 
     m_program->release();
-
-    ++m_frame;
 }
 
 void GlGameWindow::renderLater()

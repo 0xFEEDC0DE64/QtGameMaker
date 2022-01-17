@@ -13,7 +13,7 @@ class GlGameWindow : public QWindow, protected QOpenGLFunctions
     Q_OBJECT
 
 public:
-    explicit GlGameWindow(const ProjectContainer &project, QWindow *parent = nullptr);
+    explicit GlGameWindow(const ProjectContainer &project, const float &m_rotation, QWindow *parent = nullptr);
     ~GlGameWindow();
 
     void initialize();
@@ -41,5 +41,5 @@ private:
     GLint m_matrixUniform = 0;
 
     QOpenGLShaderProgram *m_program{};
-    int m_frame{};
+    const float &m_rotation;
 };

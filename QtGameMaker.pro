@@ -166,4 +166,6 @@ RESOURCES += \
 
 OTHER_FILES += \
     src/engine/vulkan_shader_modules/color.frag \
-    src/engine/vulkan_shader_modules/color.vert
+    src/engine/vulkan_shader_modules/color.vert \
+    src/engine/vulkan_shader_modules/texture.frag \
+    src/engine/vulkan_shader_modules/texture.vert

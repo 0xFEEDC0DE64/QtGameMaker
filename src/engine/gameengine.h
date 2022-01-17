@@ -16,11 +16,18 @@ public:
 
     void run();
 
+protected:
+    void timerEvent(QTimerEvent *event) override;
+
 private:
     const ProjectContainer &m_project;
 
     QVulkanInstance m_vulkanInstance;
 
+    float m_rotation{};
+
     GlGameWindow m_glGameWindow;
     VulkanGameWindow m_vulkanGameWindow;
+
+    const int m_timerId;
 };

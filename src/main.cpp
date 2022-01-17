@@ -1,7 +1,10 @@
 #include <QApplication>
 #include <QCommandLineParser>
+#include <QLoggingCategory>
 
 #include "mainwindow.h"
+
+Q_LOGGING_CATEGORY(lcVk, "qt.vulkan")
 
 int main(int argc, char *argv[])
 {
@@ -15,6 +18,8 @@ int main(int argc, char *argv[])
                                       "] "
                                       "%{function}(): "
                                       "%{message}"));
+
+    QLoggingCategory::setFilterRules(QStringLiteral("qt.vulkan=true"));
 
     Q_INIT_RESOURCE(resources_editor);
     Q_INIT_RESOURCE(resources_engine);
