@@ -140,6 +140,13 @@ struct Room
     int snapY{16};
     bool gridEnabled{true};
     bool isometricGrid{};
+
+    struct Object {
+        QString objectName;
+        QPoint pos;
+    };
+
+    std::vector<Object> objects;
 };
 
 struct ProjectContainer

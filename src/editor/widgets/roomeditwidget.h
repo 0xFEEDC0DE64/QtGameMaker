@@ -5,6 +5,8 @@
 
 #include <optional>
 
+#include "projectcontainer.h"
+
 struct Object;
 class ProjectTreeModel;
 
@@ -18,6 +20,10 @@ class RoomEditWidget : public QWidget
 
 public:
     explicit RoomEditWidget(QWidget *parent = nullptr);
+
+    std::vector<Room::Object> *objects() { return m_objects; }
+    const std::vector<Room::Object> *objects() const { return m_objects; }
+    void setObjects(std::vector<Room::Object> *objects);
 
     int snapX() const { return m_snapX; }
     void setSnapX(int snapX);
@@ -49,6 +55,8 @@ signals:
 
     void cursorMoved(const QPoint &point);
 
+    void changed();
+
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
@@ -57,6 +65,10 @@ protected:
 
 private:
     QPoint snapPoint(const QPoint &point) const;
+    void paintObjects(QPainter &painter);
+    void paintDraggedObject(QPainter &painter);
+
+    std::vector<Room::Object> *m_objects{};
 
     int m_snapX{16};
     int m_snapY{16};

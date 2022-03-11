@@ -322,6 +322,20 @@ QDataStream &operator>>(QDataStream &ds, Object &object)
     return ds;
 }
 
+QDataStream &operator<<(QDataStream &ds, const Room::Object &object)
+{
+    ds << object.objectName
+       << object.pos;
+    return ds;
+}
+
+QDataStream &operator>>(QDataStream &ds, Room::Object &object)
+{
+    ds >> object.objectName
+       >> object.pos;
+    return ds;
+}
+
 QDataStream &operator<<(QDataStream &ds, const Room &room)
 {
     ds << room.name
@@ -334,7 +348,8 @@ QDataStream &operator<<(QDataStream &ds, const Room &room)
        << room.snapX
        << room.snapY
        << room.gridEnabled
-       << room.isometricGrid;
+       << room.isometricGrid
+       << room.objects;
     return ds;
 }
 
@@ -350,7 +365,8 @@ QDataStream &operator>>(QDataStream &ds, Room &room)
        >> room.snapX
        >> room.snapY
        >> room.gridEnabled
-       >> room.isometricGrid;
+       >> room.isometricGrid
+       >> room.objects;
     return ds;
 }
 

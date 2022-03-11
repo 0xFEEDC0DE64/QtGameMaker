@@ -19,6 +19,7 @@ RoomPropertiesDialog::RoomPropertiesDialog(Room &room, ProjectTreeModel &project
     m_ui{std::make_unique<Ui::RoomPropertiesDialog>()},
     m_room{room},
     m_projectModel{projectModel},
+    m_objects{m_room.objects},
     m_scene{std::make_unique<RoomScene>(this)},
     m_creationCode{m_room.creationCode},
     m_spinBoxSnapX{new QSpinBox{this}},
@@ -31,6 +32,7 @@ RoomPropertiesDialog::RoomPropertiesDialog(Room &room, ProjectTreeModel &project
 
     updateTitle();
 
+    m_ui->roomEditWidget->setObjects(&m_objects);
     m_ui->roomEditWidget->setFixedWidth(m_room.width);
     m_ui->roomEditWidget->setFixedHeight(m_room.height);
     m_ui->roomEditWidget->setSnapX(m_room.snapX);
@@ -181,6 +183,8 @@ RoomPropertiesDialog::RoomPropertiesDialog(Room &room, ProjectTreeModel &project
             m_ui->actionIsometricGrid, &QAction::setChecked);
     connect(m_ui->roomEditWidget, &RoomEditWidget::cursorMoved,
             this, &RoomPropertiesDialog::cursorMoved);
+    connect(m_ui->roomEditWidget, &RoomEditWidget::changed,
+            this, &RoomPropertiesDialog::changed);
 
     connect(m_menuObjects, &QMenu::aboutToShow,
             this, &RoomPropertiesDialog::objectsMenuAboutToShow);
@@ -218,6 +222,8 @@ void RoomPropertiesDialog::accept()
     m_room.snapY = m_spinBoxSnapY->value();
     m_room.gridEnabled = m_ui->actionGridEnabled->isChecked();
     m_room.isometricGrid = m_ui->actionIsometricGrid->isChecked();
+
+    m_room.objects = m_objects;
 
     QDialog::accept();
 }

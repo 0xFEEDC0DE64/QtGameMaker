@@ -4,6 +4,8 @@
 
 #include <memory>
 
+#include "projectcontainer.h"
+
 class QSpinBox;
 class QLabel;
 class QMenu;
@@ -55,6 +57,8 @@ private:
 
     Room &m_room;
     ProjectTreeModel &m_projectModel;
+
+    std::vector<Room::Object> m_objects;
 
     const std::unique_ptr<RoomScene> m_scene;
 
