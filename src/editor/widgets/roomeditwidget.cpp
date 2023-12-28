@@ -1,5 +1,7 @@
 #include "roomeditwidget.h"
 
+#include <iterator>
+
 #include <QDebug>
 #include <QPainter>
 #include <QPaintEvent>
@@ -108,13 +110,71 @@ void RoomEditWidget::mousePressEvent(QMouseEvent *event)
 {
     QWidget::mousePressEvent(event);
 
-    if (m_selectedObject)
+    switch (event->button())
     {
-        m_draggedObject = DraggedObject {
-            .object = *m_selectedObject,
-            .pos = snapPoint(event->pos())
-        };
-        update();
+    case Qt::MouseButton::LeftButton:
+        if (m_selectedObject)
+        {
+            m_draggedObject = DraggedObject {
+                .object = *m_selectedObject,
+                .pos = snapPoint(event->pos())
+            };
+            update();
+        }
+        break;
+    case Qt::MouseButton::RightButton:
+    {
+        if (m_projectTreeModel && m_objects)
+        {
+            auto iter = std::find_if(std::rbegin(*m_objects), std::rend(*m_objects),
+                                     [&](const Room::Object &obj){
+
+                const auto &objectName = obj.objectName;
+
+                const auto &objects = m_projectTreeModel->project()->objects;
+                const auto iter = std::find_if(std::cbegin(objects), std::cend(objects),
+                                               [&](const Object &obj){ return obj.name == objectName; });
+                if (iter == std::cend(objects))
+                {
+                    qWarning() << "object" << obj.objectName << "not found";
+                    return false;
+                }
+                else
+                {
+                    const Object &object = *iter;
+                    const auto &spriteName = object.spriteName;
+
+                    const auto &sprites = m_projectTreeModel->project()->sprites;
+                    const auto iter = std::find_if(std::cbegin(sprites), std::cend(sprites),
+                                                   [&](const Sprite &sprite){ return sprite.name == spriteName; });
+                    if (iter == std::cend(sprites))
+                    {
+                        qWarning() << "sprite" << spriteName << "not found";
+                        return false;
+                    }
+                    else
+                    {
+                        const Sprite &sprite = *iter;
+
+                        if (sprite.pixmaps.empty())
+                            return false;
+
+                        return QRect(obj.pos, sprite.pixmaps.front().size()).contains(event->pos());
+                    }
+                }
+            });
+            if (iter != std::rend(*m_objects))
+            {
+                m_objects->erase(std::next(iter).base());
+
+                emit changed();
+
+                update();
+            }
+        }
+        break;
+    }
+    default:;
     }
 }
 
@@ -122,20 +182,25 @@ void RoomEditWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     QWidget::mouseReleaseEvent(event);
 
-    if (m_draggedObject)
+    switch (event->button())
     {
-        if (m_objects)
+    case Qt::MouseButton::LeftButton:
+        if (m_draggedObject)
         {
-            m_objects->emplace_back(Room::Object{
-                .objectName = m_draggedObject->object.get().name,
-                .pos = snapPoint(event->pos())
-            });
+            if (m_objects)
+            {
+                m_objects->emplace_back(Room::Object{
+                    .objectName = m_draggedObject->object.get().name,
+                    .pos = snapPoint(event->pos())
+                });
 
-            emit changed();
+                emit changed();
+            }
+
+            m_draggedObject = std::nullopt;
+            update();
         }
-
-        m_draggedObject = std::nullopt;
-        update();
+    default:;
     }
 }
 
