@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>265</width>
-    <height>221</height>
+    <height>238</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -81,6 +81,10 @@
       <widget class="QPushButton" name="pushButtonCollision">
        <property name="text">
         <string>C&amp;ollision</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources_editor.qrc">
+         <normaloff>:/qtgameengine/icons/event-collision.png</normaloff>:/qtgameengine/icons/event-collision.png</iconset>
        </property>
       </widget>
      </item>

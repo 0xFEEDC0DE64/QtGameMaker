@@ -60,6 +60,7 @@ private:
     MainWindow * const m_mainWindow;
 
     Object::events_container_t m_events;
+    Object::collision_events_container_t m_collisionEvents;
 
     const std::unique_ptr<ObjectEventsModel> m_eventsModel;
 

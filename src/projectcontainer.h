@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <list>
+#include <map>
 
 #include <QString>
 #include <QPixmap>
@@ -117,6 +118,7 @@ struct Object
     };
 
     using events_container_t = std::map<EventType, ActionsContainer>;
+    using collision_events_container_t = std::map<QString, ActionsContainer>;
 
     QString name;
     QString spriteName;
@@ -125,6 +127,7 @@ struct Object
     int depth{};
     bool persistent{};
     events_container_t events;
+    collision_events_container_t collisionEvents;
 };
 
 struct Room

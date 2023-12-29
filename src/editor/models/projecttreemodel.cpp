@@ -959,6 +959,16 @@ template<> void ProjectTreeModel::onBeforeRemove<Sprite>(const Sprite &sprite)
     }
 }
 
+template<> void ProjectTreeModel::onBeforeRemove<Object>(const Object &object)
+{
+    for (auto &room : m_project->rooms)
+        for (auto iter = std::begin(room.objects); iter != std::end(room.objects); )
+            if (iter->objectName == object.name)
+                iter = room.objects.erase(iter);
+            else
+                iter++;
+}
+
 template<typename T> void ProjectTreeModel::onBeforeRename(const T &entry, const QString &newName)
 {
     Q_UNUSED(entry)
@@ -973,20 +983,36 @@ template<typename T> void ProjectTreeModel::onAfterRename(const T &entry, const 
 
 template<> void ProjectTreeModel::onAfterRename<Sprite>(const Sprite &sprite, const QString &oldName)
 {
-    for (auto iter = std::begin(m_project->objects); iter != std::end(m_project->objects); iter++)
+    for (auto &object : m_project->objects)
     {
-        if (iter->spriteName != oldName)
+        if (object.spriteName != oldName)
             continue;
 
-        auto oldSpriteName = std::move(iter->spriteName);
+        auto oldSpriteName = std::move(object.spriteName);
 
-        iter->spriteName = sprite.name;
+        object.spriteName = sprite.name;
 
 //        const auto index = this->index(std::distance(std::begin(m_project->objects), iter), 0, rootFor<Object>());
 //        emit dataChanged(index, index, {Qt::DecorationRole});
 
-        emit objectSpriteNameChanged(*iter, std::move(oldSpriteName));
+        emit objectSpriteNameChanged(object, std::move(oldSpriteName));
     }
+}
+
+template<> void ProjectTreeModel::onAfterRename<Object>(const Object &object, const QString &oldName)
+{
+    for (auto &room : m_project->rooms)
+    {
+        for (auto &obj : room.objects)
+        {
+            if (obj.objectName != oldName)
+                continue;
+
+            obj.objectName = object.name;
+        }
+    }
+
+    // TODO object collision events
 }
 
 template<typename T>

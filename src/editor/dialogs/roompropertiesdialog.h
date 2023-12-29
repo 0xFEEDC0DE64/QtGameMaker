@@ -41,7 +41,7 @@ private slots:
 
     void roomNameChanged(const Room &room);
     void spritePixmapsChanged(const Sprite &sprite);
-    void objectNameChanged(const Object &object);
+    void objectNameChanged(const Object &object, const QString &oldName);
     void objectAboutToBeRemoved(const Object &object);
     void objectSpriteNameChanged(const Object &object);
 

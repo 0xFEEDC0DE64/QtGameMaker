@@ -19,7 +19,8 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel 
     m_projectModel{projectModel},
     m_mainWindow{mainWindow},
     m_events{m_object.events},
-    m_eventsModel{std::make_unique<ObjectEventsModel>(m_events)},
+    m_collisionEvents{m_object.collisionEvents},
+    m_eventsModel{std::make_unique<ObjectEventsModel>(m_events, m_collisionEvents)},
     m_menuSprites{new QMenu{this}},
     m_spriteName{object.spriteName}
 {
@@ -132,6 +133,7 @@ void ObjectPropertiesDialog::accept()
     m_object.depth = m_ui->spinBoxDepth->value();
     m_object.persistent = m_ui->checkBoxPersistent->isChecked();
     m_object.events = std::move(m_events);
+    m_object.collisionEvents = std::move(m_collisionEvents);
 
     QDialog::accept();
 }
@@ -204,12 +206,11 @@ void ObjectPropertiesDialog::showInformation()
 
 void ObjectPropertiesDialog::addEvent()
 {
-    AddEventDialog dialog{this};
+    AddEventDialog dialog{m_projectModel, this};
     if (dialog.exec() == QDialog::Accepted)
-    {
-        if (!m_eventsModel->addEvent(dialog.eventType()))
-            QMessageBox::warning(this, tr("Could not add Event!"), tr("Could not add Event!"));
-    }
+        if (const auto &eventType = dialog.eventType())
+            if (!m_eventsModel->addEvent(*eventType))
+                QMessageBox::warning(this, tr("Could not add Event!"), tr("Could not add Event!"));
 }
 
 void ObjectPropertiesDialog::deleteEvent()
@@ -235,12 +236,13 @@ void ObjectPropertiesDialog::replaceEvent()
     if (!event)
         return;
 
-    AddEventDialog dialog{this};
+    std::variant<Object::EventType, QString> x = event->first;
+
+    AddEventDialog dialog{m_projectModel, this};
     if (dialog.exec() == QDialog::Accepted)
-    {
-        if (!m_eventsModel->changeEvent(event->first, dialog.eventType()))
+        if (const auto &eventType = dialog.eventType())
+        if (!m_eventsModel->changeEvent(event->first, *eventType))
             QMessageBox::warning(this, tr("Could not change Event!"), tr("Could not change Event!"));
-    }
 }
 
 void ObjectPropertiesDialog::duplicateEvent()
@@ -329,7 +331,7 @@ void ObjectPropertiesDialog::currentEventChanged(const QModelIndex &index)
     if (index.isValid())
     {
         if (auto event = m_eventsModel->getEvent(index))
-            m_ui->actionsWidget->setActionsContainer(&event->second);
+            m_ui->actionsWidget->setActionsContainer(&event->second.get());
         else
             goto none;
     }
@@ -343,13 +345,13 @@ none:
 void ObjectPropertiesDialog::eventsContextMenuRequested(const QPoint &pos)
 {
     const auto index = m_ui->listViewEvents->indexAt(pos);
-    auto event = index.isValid() ? m_eventsModel->getEvent(index) : nullptr;
+    auto event = index.isValid() ? m_eventsModel->getEvent(index) : std::nullopt;
 
     QMenu menu{this};
     menu.addAction(tr("&Add Event"), this, &ObjectPropertiesDialog::addEvent);
-    menu.addAction(tr("&Change Event"), this, &ObjectPropertiesDialog::replaceEvent)->setEnabled(event);
-    menu.addAction(tr("&Duplicate Event"), this, &ObjectPropertiesDialog::duplicateEvent)->setEnabled(event);
-    menu.addAction(tr("D&elete Event"), this, &ObjectPropertiesDialog::deleteEvent)->setEnabled(event);
+    menu.addAction(tr("&Change Event"), this, &ObjectPropertiesDialog::replaceEvent)->setEnabled(event.has_value());
+    menu.addAction(tr("&Duplicate Event"), this, &ObjectPropertiesDialog::duplicateEvent)->setEnabled(event.has_value());
+    menu.addAction(tr("D&elete Event"), this, &ObjectPropertiesDialog::deleteEvent)->setEnabled(event.has_value());
     menu.exec(m_ui->listViewEvents->viewport()->mapToGlobal(pos));
 }
 

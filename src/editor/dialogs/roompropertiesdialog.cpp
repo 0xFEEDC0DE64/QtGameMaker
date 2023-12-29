@@ -343,29 +343,35 @@ void RoomPropertiesDialog::spritePixmapsChanged(const Sprite &sprite)
     m_ui->labelObjectPreview->setPixmap(std::move(pixmap));
 }
 
-void RoomPropertiesDialog::objectNameChanged(const Object &object)
+void RoomPropertiesDialog::objectNameChanged(const Object &object, const QString &oldName)
 {
-    if (!m_selectedObject)
-        return;
+    if (m_selectedObject && &object == m_selectedObject)
+        m_ui->lineEditObject->setText(object.name);
 
-    if (&object != m_selectedObject)
-        return;
+    for (auto &obj : m_objects)
+    {
+        if (obj.objectName != oldName)
+            continue;
 
-    m_ui->lineEditObject->setText(object.name);
+        obj.objectName = object.name;
+    }
 }
 
 void RoomPropertiesDialog::objectAboutToBeRemoved(const Object &object)
 {
-    if (!m_selectedObject)
-        return;
+    if (m_selectedObject && &object == m_selectedObject)
+    {
+        m_selectedObject = nullptr;
+        m_ui->lineEditObject->clear();
+        m_ui->labelObjectPreview->setPixmap({});
+        m_ui->roomEditWidget->setSelectedObject(nullptr);
+    }
 
-    if (&object != m_selectedObject)
-        return;
-
-    m_selectedObject = nullptr;
-    m_ui->lineEditObject->clear();
-    m_ui->labelObjectPreview->setPixmap({});
-    m_ui->roomEditWidget->setSelectedObject(nullptr);
+    for (auto iter = std::begin(m_objects); iter != std::end(m_objects);)
+        if (iter->objectName == object.name)
+            iter = m_objects.erase(iter);
+        else
+            iter++;
 }
 
 void RoomPropertiesDialog::objectSpriteNameChanged(const Object &object)

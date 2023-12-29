@@ -306,7 +306,8 @@ QDataStream &operator<<(QDataStream &ds, const Object &object)
        << object.solid
        << object.depth
        << object.persistent
-       << object.events;
+       << object.events
+       << object.collisionEvents;
     return ds;
 }
 
@@ -318,7 +319,8 @@ QDataStream &operator>>(QDataStream &ds, Object &object)
        >> object.solid
        >> object.depth
        >> object.persistent
-       >> object.events;
+       >> object.events
+       >> object.collisionEvents;
     return ds;
 }
 
