@@ -961,10 +961,15 @@ template<> void ProjectTreeModel::onBeforeRemove<Sprite>(const Sprite &sprite)
 
 template<> void ProjectTreeModel::onBeforeRemove<Object>(const Object &object)
 {
-    for (auto &object : m_project->objects)
-        object.collisionEvents.erase(object.name);
+    for (Object &obj : m_project->objects)
+    {
+        if (!obj.parentName.isEmpty() && obj.parentName == object.name)
+            obj.parentName.clear();
 
-    for (auto &room : m_project->rooms)
+        obj.collisionEvents.erase(object.name);
+    }
+
+    for (Room &room : m_project->rooms)
         for (auto iter = std::begin(room.objects); iter != std::end(room.objects); )
             if (iter->objectName == object.name)
                 iter = room.objects.erase(iter);
@@ -1004,13 +1009,16 @@ template<> void ProjectTreeModel::onAfterRename<Sprite>(const Sprite &sprite, co
 
 template<> void ProjectTreeModel::onBeforeRename<Object>(const Object &object, const QString &newName)
 {
-    for (auto &object : m_project->objects)
+    for (Object &obj : m_project->objects)
     {
-        if (const auto iter = object.collisionEvents.find(object.name); iter != std::end(object.collisionEvents))
+        if (!obj.parentName.isEmpty() && obj.parentName == object.name)
+            obj.parentName = newName;
+
+        if (const auto iter = obj.collisionEvents.find(object.name); iter != std::end(obj.collisionEvents))
         {
-            auto node = object.collisionEvents.extract(iter);
+            auto node = obj.collisionEvents.extract(iter);
             node.key() = newName;
-            object.collisionEvents.insert(std::move(node));
+            obj.collisionEvents.insert(std::move(node));
         }
     }
 

@@ -126,6 +126,7 @@ struct Object
     bool solid{};
     int depth{};
     bool persistent{};
+    QString parentName;
     events_container_t events;
     collision_events_container_t collisionEvents;
 };

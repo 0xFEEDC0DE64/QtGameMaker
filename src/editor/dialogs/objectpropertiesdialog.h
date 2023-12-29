@@ -35,18 +35,23 @@ private slots:
 
     void changed();
 
-    void objectNameChanged(const Object &object);
+    void objectNameChanged(const Object &object, const QString &oldName);
     void spriteNameChanged(const Sprite &sprite, const QString &oldName);
+    void objectAboutToBeRemoved(const Object &object);
     void spriteAboutToBeRemoved(const Sprite &sprite);
     void spritePixmapsChanged(const Sprite &sprite);
 
     void spritesMenuAboutToShow();
+    void parentsMenuAboutToShow();
     void currentEventChanged(const QModelIndex &index);
     void eventsContextMenuRequested(const QPoint &pos);
     void rowsInserted(const QModelIndex &parent, int first);
 
     void clearSprite();
     void setSprite(const Sprite &sprite);
+
+    void clearParent();
+    void setParent(const Object &object);
 
 private:
     void updateTitle();
@@ -65,8 +70,10 @@ private:
     const std::unique_ptr<ObjectEventsModel> m_eventsModel;
 
     QMenu * const m_menuSprites;
+    QMenu * const m_menuParents;
 
     QString m_spriteName;
+    QString m_parentName;
 
     bool m_unsavedChanges{};
 };

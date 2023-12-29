@@ -22,7 +22,9 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel 
     m_collisionEvents{m_object.collisionEvents},
     m_eventsModel{std::make_unique<ObjectEventsModel>(m_events, m_collisionEvents)},
     m_menuSprites{new QMenu{this}},
-    m_spriteName{object.spriteName}
+    m_menuParents{new QMenu{this}},
+    m_spriteName{object.spriteName},
+    m_parentName{object.parentName}
 {
     m_ui->setupUi(this);
 
@@ -35,14 +37,17 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel 
 
     m_ui->lineEditName->setText(m_object.name);
     m_ui->lineEditSprite->setText(m_spriteName.isEmpty() ? tr("<no sprite>") : m_spriteName);
+    m_ui->lineEditParent->setText(m_parentName.isEmpty() ? tr("<no parent>") : m_parentName);
     updateSpritePreview();
     m_ui->toolButtonSprite->setMenu(m_menuSprites);
+    m_ui->toolButtonParent->setMenu(m_menuParents);
     m_ui->checkBoxVisible->setChecked(m_object.visible);
     m_ui->checkBoxSolid->setChecked(m_object.solid);
     m_ui->spinBoxDepth->setValue(m_object.depth);
     m_ui->checkBoxPersistent->setChecked(m_object.persistent);
 
     m_ui->lineEditSprite->setMenu(m_menuSprites);
+    m_ui->lineEditParent->setMenu(m_menuParents);
 
     m_ui->listViewEvents->setModel(m_eventsModel.get());
 
@@ -50,6 +55,8 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel 
             this, &ObjectPropertiesDialog::objectNameChanged);
     connect(&m_projectModel, &ProjectTreeModel::spriteNameChanged,
             this, &ObjectPropertiesDialog::spriteNameChanged);
+    connect(&m_projectModel, &ProjectTreeModel::objectAboutToBeRemoved,
+            this, &ObjectPropertiesDialog::objectAboutToBeRemoved);
     connect(&m_projectModel, &ProjectTreeModel::spriteAboutToBeRemoved,
             this, &ObjectPropertiesDialog::spriteAboutToBeRemoved);
     connect(&m_projectModel, &ProjectTreeModel::spritePixmapsChanged,
@@ -92,6 +99,8 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel 
 
     connect(m_menuSprites, &QMenu::aboutToShow,
             this, &ObjectPropertiesDialog::spritesMenuAboutToShow);
+    connect(m_menuParents, &QMenu::aboutToShow,
+            this, &ObjectPropertiesDialog::parentsMenuAboutToShow);
 
     connect(m_ui->listViewEvents->selectionModel(), &QItemSelectionModel::currentChanged,
             this, &ObjectPropertiesDialog::currentEventChanged);
@@ -132,6 +141,7 @@ void ObjectPropertiesDialog::accept()
     m_object.solid = m_ui->checkBoxSolid->isChecked();
     m_object.depth = m_ui->spinBoxDepth->value();
     m_object.persistent = m_ui->checkBoxPersistent->isChecked();
+    m_object.parentName = m_parentName;
     m_object.events = std::move(m_events);
     m_object.collisionEvents = std::move(m_collisionEvents);
 
@@ -259,17 +269,23 @@ void ObjectPropertiesDialog::changed()
     }
 }
 
-void ObjectPropertiesDialog::objectNameChanged(const Object &object)
+void ObjectPropertiesDialog::objectNameChanged(const Object &object, const QString &oldName)
 {
-    if (&object != &m_object)
-        return;
-
+    if (&object == &m_object)
     {
-        QSignalBlocker blocker{m_ui->lineEditName};
-        m_ui->lineEditName->setText(object.name);
+        {
+            QSignalBlocker blocker{m_ui->lineEditName};
+            m_ui->lineEditName->setText(object.name);
+        }
+
+        updateTitle();
     }
 
-    updateTitle();
+    if (!m_parentName.isEmpty() && m_parentName == oldName)
+    {
+        m_parentName = object.name;
+        m_ui->lineEditParent->setText(object.name);
+    }
 }
 
 void ObjectPropertiesDialog::spriteNameChanged(const Sprite &sprite, const QString &oldName)
@@ -288,20 +304,26 @@ void ObjectPropertiesDialog::spriteNameChanged(const Sprite &sprite, const QStri
     updateSpritePreview();
 }
 
+void ObjectPropertiesDialog::objectAboutToBeRemoved(const Object &object)
+{
+    if (!m_parentName.isEmpty() && m_parentName == object.name)
+    {
+        m_parentName.clear();
+        m_ui->lineEditParent->setText(tr("<no parent>"));
+    }
+}
+
 void ObjectPropertiesDialog::spriteAboutToBeRemoved(const Sprite &sprite)
 {
-    if (m_spriteName.isEmpty())
-        return;
-
-    if (m_spriteName != sprite.name)
-        return;
-
-    m_spriteName.clear();
+    if (!m_spriteName.isEmpty() && m_spriteName == sprite.name)
     {
-        QSignalBlocker blocker{m_ui->lineEditSprite};
-        m_ui->lineEditSprite->setText(tr("<no sprite>"));
+        m_spriteName.clear();
+        {
+            QSignalBlocker blocker{m_ui->lineEditSprite};
+            m_ui->lineEditSprite->setText(tr("<no sprite>"));
+        }
+        m_ui->labelSpritePreview->setPixmap(QPixmap{});
     }
-    m_ui->labelSpritePreview->setPixmap(QPixmap{});
 }
 
 void ObjectPropertiesDialog::spritePixmapsChanged(const Sprite &sprite)
@@ -326,6 +348,29 @@ void ObjectPropertiesDialog::spritesMenuAboutToShow()
                                  [&sprite,this](){ setSprite(sprite); });
 }
 
+void ObjectPropertiesDialog::parentsMenuAboutToShow()
+{
+    m_menuParents->clear();
+    m_menuParents->addAction(tr("<no parent>"), this, &ObjectPropertiesDialog::clearParent);
+    for (const Object &object : m_projectModel.project()->objects)
+    {
+        QIcon icon;
+        if (!object.spriteName.isEmpty())
+        {
+            const auto &sprites = m_projectModel.project()->sprites;
+            const auto iter = std::find_if(std::cbegin(sprites), std::cend(sprites),
+                                           [&](const Sprite &sprite){ return sprite.name == object.spriteName; });
+            if (iter != std::cend(sprites))
+            {
+                if (!iter->pixmaps.empty())
+                    icon = iter->pixmaps.front();
+            }
+        }
+        m_menuParents->addAction(icon, object.name, this,
+                                 [&object,this](){ setParent(object); });
+    }
+}
+
 void ObjectPropertiesDialog::currentEventChanged(const QModelIndex &index)
 {
     if (index.isValid())
@@ -339,7 +384,7 @@ void ObjectPropertiesDialog::currentEventChanged(const QModelIndex &index)
     {
 none:
         m_ui->actionsWidget->setActionsContainer(nullptr);
-}
+    }
 }
 
 void ObjectPropertiesDialog::eventsContextMenuRequested(const QPoint &pos)
@@ -373,6 +418,26 @@ void ObjectPropertiesDialog::setSprite(const Sprite &sprite)
     m_spriteName = sprite.name;
     updateSpritePreview(sprite.pixmaps);
     m_ui->lineEditSprite->setText(sprite.name);
+    changed();
+}
+
+void ObjectPropertiesDialog::clearParent()
+{
+    m_parentName.clear();
+    m_ui->lineEditParent->setText(tr("<no parent>"));
+    changed();
+}
+
+void ObjectPropertiesDialog::setParent(const Object &object)
+{
+    if (&m_object == &object)
+    {
+        QMessageBox::warning(m_mainWindow, tr("This will create a loop in parents."), tr("This will create a loop in parents."));
+        return;
+    }
+
+    m_parentName = object.name;
+    m_ui->lineEditParent->setText(object.name);
     changed();
 }
 
