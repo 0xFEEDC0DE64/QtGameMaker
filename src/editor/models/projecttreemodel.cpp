@@ -961,6 +961,9 @@ template<> void ProjectTreeModel::onBeforeRemove<Sprite>(const Sprite &sprite)
 
 template<> void ProjectTreeModel::onBeforeRemove<Object>(const Object &object)
 {
+    for (auto &object : m_project->objects)
+        object.collisionEvents.erase(object.name);
+
     for (auto &room : m_project->rooms)
         for (auto iter = std::begin(room.objects); iter != std::end(room.objects); )
             if (iter->objectName == object.name)
@@ -999,20 +1002,28 @@ template<> void ProjectTreeModel::onAfterRename<Sprite>(const Sprite &sprite, co
     }
 }
 
-template<> void ProjectTreeModel::onAfterRename<Object>(const Object &object, const QString &oldName)
+template<> void ProjectTreeModel::onBeforeRename<Object>(const Object &object, const QString &newName)
 {
+    for (auto &object : m_project->objects)
+    {
+        if (const auto iter = object.collisionEvents.find(object.name); iter != std::end(object.collisionEvents))
+        {
+            auto node = object.collisionEvents.extract(iter);
+            node.key() = newName;
+            object.collisionEvents.insert(std::move(node));
+        }
+    }
+
     for (auto &room : m_project->rooms)
     {
         for (auto &obj : room.objects)
         {
-            if (obj.objectName != oldName)
+            if (obj.objectName != object.name)
                 continue;
 
             obj.objectName = object.name;
         }
     }
-
-    // TODO object collision events
 }
 
 template<typename T>
