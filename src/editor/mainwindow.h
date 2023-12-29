@@ -20,6 +20,9 @@ public:
     explicit MainWindow(const QString &filePath, QWidget *parent = nullptr);
     ~MainWindow();
 
+    template<typename T>
+    void openPropertiesWindowFor(T &entry);
+
 protected:
     void closeEvent(QCloseEvent *event) override;
 

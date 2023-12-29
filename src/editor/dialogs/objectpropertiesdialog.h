@@ -11,13 +11,14 @@ class QMenu;
 namespace Ui { class ObjectPropertiesDialog; }
 class ProjectTreeModel;
 class ObjectEventsModel;
+class MainWindow;
 
 class ObjectPropertiesDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit ObjectPropertiesDialog(Object &object, ProjectTreeModel &projectModel, QWidget *parent = nullptr);
+    explicit ObjectPropertiesDialog(Object &object, ProjectTreeModel &projectModel, MainWindow *mainWindow);
     ~ObjectPropertiesDialog();
 
     void accept() override;
@@ -56,6 +57,7 @@ private:
 
     Object &m_object;
     ProjectTreeModel &m_projectModel;
+    MainWindow * const m_mainWindow;
 
     Object::events_container_t m_events;
 

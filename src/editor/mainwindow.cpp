@@ -165,6 +165,62 @@ MainWindow::MainWindow(const QString &filePath, QWidget *parent) :
         loadFile(m_filePath);
 }
 
+template<typename T>
+void MainWindow::openPropertiesWindowFor(T &entry)
+{
+    auto &propertyWindows = propertyWindowsFor<T>();
+    if (const auto iter = propertyWindows.find(&entry); iter != std::cend(propertyWindows))
+    {
+        m_ui->mdiArea->setActiveSubWindow(iter->second);
+        return;
+    }
+
+    auto dialog = new PropertiesDialogFor<T>{entry, *m_projectTreeModel, this};
+    auto subwindow = m_ui->mdiArea->addSubWindow(dialog);
+    auto action = m_ui->menuWindow->addAction(dialog->windowTitle());
+    m_actionGroupWindows->addAction(action);
+    action->setCheckable(true);
+    connect(action, &QAction::triggered,
+            m_ui->mdiArea, [mdiArea=m_ui->mdiArea,subwindow,action](){
+                mdiArea->setActiveSubWindow(subwindow);
+                action->setChecked(subwindow->windowState().testFlag(Qt::WindowActive));
+            });
+    connect(subwindow, &QMdiSubWindow::windowStateChanged,
+            action, [action](Qt::WindowStates oldState, Qt::WindowStates newState){
+                Q_UNUSED(oldState)
+                action->setChecked(newState.testFlag(Qt::WindowActive));
+            });
+    connect(dialog, &QWidget::windowTitleChanged, action, &QAction::setText);
+    connect(dialog, &QDialog::finished,
+            this, [this,&propertyWindows,subwindow](int result){
+                if (result == QDialog::Accepted)
+                    changed();
+                for (auto iter = std::begin(propertyWindows); iter != std::end(propertyWindows); )
+                {
+                    if (iter->second == subwindow)
+                        iter = propertyWindows.erase(iter);
+                    else
+                        iter++;
+                }
+            });
+    connect(dialog, &QDialog::finished,
+            subwindow, &QObject::deleteLater);
+    connect(dialog, &QDialog::finished,
+            action, &QObject::deleteLater);
+    propertyWindows[&entry] = subwindow;
+    dialog->show();
+}
+
+template void MainWindow::openPropertiesWindowFor<Sprite>(Sprite &entry);
+template void MainWindow::openPropertiesWindowFor<Sound>(Sound &entry);
+template void MainWindow::openPropertiesWindowFor<Background>(Background &entry);
+template void MainWindow::openPropertiesWindowFor<Path>(Path &entry);
+template void MainWindow::openPropertiesWindowFor<Script>(Script &entry);
+template void MainWindow::openPropertiesWindowFor<Font>(Font &entry);
+template void MainWindow::openPropertiesWindowFor<TimeLine>(TimeLine &entry);
+template void MainWindow::openPropertiesWindowFor<Object>(Object &entry);
+template void MainWindow::openPropertiesWindowFor<Room>(Room &entry);
+
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     m_ui->mdiArea->closeAllSubWindows();
@@ -871,48 +927,7 @@ bool MainWindow::doubleClickedFor(const QModelIndex &index)
     if (!entry)
         return true;
 
-    auto &propertyWindows = propertyWindowsFor<T>();
-    if (const auto iter = propertyWindows.find(entry); iter != std::cend(propertyWindows))
-    {
-        m_ui->mdiArea->setActiveSubWindow(iter->second);
-    }
-    else
-    {
-        auto dialog = new PropertiesDialogFor<T>{*entry, *m_projectTreeModel};
-        auto subwindow = m_ui->mdiArea->addSubWindow(dialog);
-        auto action = m_ui->menuWindow->addAction(dialog->windowTitle());
-        m_actionGroupWindows->addAction(action);
-        action->setCheckable(true);
-        connect(action, &QAction::triggered,
-                m_ui->mdiArea, [mdiArea=m_ui->mdiArea,subwindow,action](){
-                    mdiArea->setActiveSubWindow(subwindow);
-                    action->setChecked(subwindow->windowState().testFlag(Qt::WindowActive));
-                });
-        connect(subwindow, &QMdiSubWindow::windowStateChanged,
-                action, [action](Qt::WindowStates oldState, Qt::WindowStates newState){
-                    Q_UNUSED(oldState)
-                    action->setChecked(newState.testFlag(Qt::WindowActive));
-                });
-        connect(dialog, &QWidget::windowTitleChanged, action, &QAction::setText);
-        connect(dialog, &QDialog::finished,
-                this, [this,&propertyWindows,subwindow](int result){
-                    if (result == QDialog::Accepted)
-                        changed();
-                    for (auto iter = std::begin(propertyWindows); iter != std::end(propertyWindows); )
-                    {
-                        if (iter->second == subwindow)
-                            iter = propertyWindows.erase(iter);
-                        else
-                            iter++;
-                    }
-                });
-        connect(dialog, &QDialog::finished,
-                subwindow, &QObject::deleteLater);
-        connect(dialog, &QDialog::finished,
-                action, &QObject::deleteLater);
-        propertyWindows[entry] = subwindow;
-        dialog->show();
-    }
+    openPropertiesWindowFor(*entry);
 
     return true;
 }

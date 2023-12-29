@@ -7,15 +7,17 @@
 
 #include <algorithm>
 
+#include "mainwindow.h"
 #include "models/projecttreemodel.h"
 #include "models/objecteventsmodel.h"
 #include "addeventdialog.h"
 
-ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel &projectModel, QWidget *parent) :
-    QDialog{parent},
+ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel &projectModel, MainWindow *mainWindow) :
+    QDialog{mainWindow},
     m_ui{std::make_unique<Ui::ObjectPropertiesDialog>()},
     m_object{object},
     m_projectModel{projectModel},
+    m_mainWindow{mainWindow},
     m_events{m_object.events},
     m_eventsModel{std::make_unique<ObjectEventsModel>(m_events)},
     m_menuSprites{new QMenu{this}},
@@ -177,7 +179,22 @@ void ObjectPropertiesDialog::newSprite()
 
 void ObjectPropertiesDialog::editSprite()
 {
-    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+    if (!m_mainWindow)
+    {
+        qCritical() << "no mainWindow available";
+        return;
+    }
+
+    auto &sprites = m_projectModel.project()->sprites;
+    const auto iter = std::find_if(std::begin(sprites), std::end(sprites),
+                                   [&](const Sprite &sprite){ return sprite.name == m_spriteName; });
+    if (iter == std::end(sprites))
+    {
+        qCritical() << "sprite" << m_spriteName << "not found";
+        return;
+    }
+
+    m_mainWindow->openPropertiesWindowFor(*iter);
 }
 
 void ObjectPropertiesDialog::showInformation()
