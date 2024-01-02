@@ -126,6 +126,8 @@ struct Object
         Alarm10,
         Alarm11,
         Step,
+        BeginStep,
+        EndStep,
         Draw,
     };
 

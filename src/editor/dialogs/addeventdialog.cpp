@@ -29,24 +29,30 @@ AddEventDialog::AddEventDialog(ProjectTreeModel &projectModel, QWidget *parent) 
             this, [this](){ m_eventType = Object::EventType::Destroy; accept(); });
     connect(m_ui->pushButtonDraw, &QAbstractButton::clicked,
             this, [this](){ m_eventType = Object::EventType::Draw; accept(); });
-    connect(m_ui->pushButtonStep, &QAbstractButton::clicked,
-            this, [this](){ m_eventType = Object::EventType::Step; accept(); });
 
     {
         auto menu = new QMenu;
-        menu->addAction(tr("Alarm 0"), this, [this](){ m_eventType = Object::EventType::Alarm0; accept(); });
-        menu->addAction(tr("Alarm 1"), this, [this](){ m_eventType = Object::EventType::Alarm1; accept(); });
-        menu->addAction(tr("Alarm 2"), this, [this](){ m_eventType = Object::EventType::Alarm2; accept(); });
-        menu->addAction(tr("Alarm 3"), this, [this](){ m_eventType = Object::EventType::Alarm3; accept(); });
-        menu->addAction(tr("Alarm 4"), this, [this](){ m_eventType = Object::EventType::Alarm4; accept(); });
-        menu->addAction(tr("Alarm 5"), this, [this](){ m_eventType = Object::EventType::Alarm5; accept(); });
-        menu->addAction(tr("Alarm 6"), this, [this](){ m_eventType = Object::EventType::Alarm6; accept(); });
-        menu->addAction(tr("Alarm 7"), this, [this](){ m_eventType = Object::EventType::Alarm7; accept(); });
-        menu->addAction(tr("Alarm 8"), this, [this](){ m_eventType = Object::EventType::Alarm8; accept(); });
-        menu->addAction(tr("Alarm 9"), this, [this](){ m_eventType = Object::EventType::Alarm9; accept(); });
+        menu->addAction(tr("Alarm 0"),  this, [this](){ m_eventType = Object::EventType::Alarm0; accept(); });
+        menu->addAction(tr("Alarm 1"),  this, [this](){ m_eventType = Object::EventType::Alarm1; accept(); });
+        menu->addAction(tr("Alarm 2"),  this, [this](){ m_eventType = Object::EventType::Alarm2; accept(); });
+        menu->addAction(tr("Alarm 3"),  this, [this](){ m_eventType = Object::EventType::Alarm3; accept(); });
+        menu->addAction(tr("Alarm 4"),  this, [this](){ m_eventType = Object::EventType::Alarm4; accept(); });
+        menu->addAction(tr("Alarm 5"),  this, [this](){ m_eventType = Object::EventType::Alarm5; accept(); });
+        menu->addAction(tr("Alarm 6"),  this, [this](){ m_eventType = Object::EventType::Alarm6; accept(); });
+        menu->addAction(tr("Alarm 7"),  this, [this](){ m_eventType = Object::EventType::Alarm7; accept(); });
+        menu->addAction(tr("Alarm 8"),  this, [this](){ m_eventType = Object::EventType::Alarm8; accept(); });
+        menu->addAction(tr("Alarm 9"),  this, [this](){ m_eventType = Object::EventType::Alarm9; accept(); });
         menu->addAction(tr("Alarm 10"), this, [this](){ m_eventType = Object::EventType::Alarm10; accept(); });
         menu->addAction(tr("Alarm 11"), this, [this](){ m_eventType = Object::EventType::Alarm11; accept(); });
         m_ui->pushButtonAlarm->setMenu(menu);
+    }
+
+    {
+        auto menu = new QMenu;
+        menu->addAction(tr("Step"),       this, [this](){ m_eventType = Object::EventType::Step; accept(); });
+        menu->addAction(tr("Begin Step"), this, [this](){ m_eventType = Object::EventType::BeginStep; accept(); });
+        menu->addAction(tr("End Step"),   this, [this](){ m_eventType = Object::EventType::EndStep; accept(); });
+        m_ui->pushButtonStep->setMenu(menu);
     }
 
     {
