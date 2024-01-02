@@ -36,6 +36,23 @@ public:
     explicit ProjectTreeModel(QObject *parent = nullptr);
     explicit ProjectTreeModel(ProjectContainer &project, QObject *parent = nullptr);
 
+private:
+    template<typename T> QVariant dataFor(const QModelIndex &index, int role) const;
+    template<typename T> QVariant iconFor(const T &entry) const;
+    template<typename T> bool setDataFor(const QModelIndex &index, const QVariant &value, int role);
+    template<typename T> std::optional<bool> insertRowsFor(int row, int count, const QModelIndex &parent);
+    template<typename T> std::optional<bool> removeRowsFor(int row, int count, const QModelIndex &parent);
+    template<typename T> static QString getFreeNameFor(const std::list<T> &container);
+
+    template<typename T> void emitCreated(const T &entry);
+    template<typename T> void onBeforeRemove(const T &entry);
+    template<typename T> void emitAboutToBeRemoved(const T &entry);
+    template<typename T> void onBeforeRename(const T &entry, const QString &newName);
+    template<typename T> void onAfterRename(const T &entry, const QString &oldName);
+    template<typename T> void emitNameChanged(const T &entry, const QString &oldName);
+    template<typename T> static QString nameTempateFor();
+
+public:
     QModelIndex index(int row, int column, const QModelIndex &parent) const override;
     QModelIndex parent(const QModelIndex &child) const override;
     int rowCount(const QModelIndex &parent) const override;
@@ -117,21 +134,6 @@ signals:
     void objectSpriteNameChanged(const Object &object, const QString &oldSpriteName);
 
 private:
-    template<typename T> QVariant dataFor(const QModelIndex &index, int role) const;
-    template<typename T> QVariant iconFor(const T &entry) const;
-    template<typename T> bool setDataFor(const QModelIndex &index, const QVariant &value, int role);
-    template<typename T> std::optional<bool> insertRowsFor(int row, int count, const QModelIndex &parent);
-    template<typename T> std::optional<bool> removeRowsFor(int row, int count, const QModelIndex &parent);
-    template<typename T> static QString getFreeNameFor(const std::list<T> &container);
-
-    template<typename T> void emitCreated(const T &entry);
-    template<typename T> void onBeforeRemove(const T &entry);
-    template<typename T> void emitAboutToBeRemoved(const T &entry);
-    template<typename T> void onBeforeRename(const T &entry, const QString &newName);
-    template<typename T> void onAfterRename(const T &entry, const QString &oldName);
-    template<typename T> void emitNameChanged(const T &entry, const QString &oldName);
-    template<typename T> static QString nameTempateFor();
-
     ProjectContainer *m_project{};
 };
 

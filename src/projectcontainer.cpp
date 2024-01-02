@@ -118,6 +118,43 @@ QDataStream &operator>>(QDataStream &ds, std::map<Tkey, Tvalue> &map)
     return ds;
 }
 
+template<typename ...T>
+QDataStream &operator<<(QDataStream &ds, const std::variant<T...> &variant)
+{
+    int index = variant.index();
+    ds << index;
+
+    using func_t = void(QDataStream&, const std::variant<T...> &);
+    static constexpr func_t *funcs[] = {
+        [](QDataStream& ds, const std::variant<T...> &variant) {
+            ds << std::get<T>(variant);
+        }...
+    };
+
+    funcs[index](ds, variant);
+
+    return ds;
+}
+
+template<typename ...T>
+QDataStream &operator>>(QDataStream &ds, std::variant<T...> &variant)
+{
+    int index;
+    ds >> index;
+
+    using func_t = std::variant<T...> (QDataStream&);
+    static constexpr func_t *funcs[] = {
+        [](QDataStream& ds) -> std::variant<T...> {
+            T value;
+            ds >> value;
+            return value;
+        }...
+    };
+    variant = funcs[index](ds);
+
+    return ds;
+}
+
 QDataStream &operator<<(QDataStream &ds, const GlobalGameSettings &globalGameSettings)
 {
     Q_UNUSED(globalGameSettings);

@@ -165,6 +165,60 @@ MainWindow::MainWindow(const QString &filePath, QWidget *parent) :
         loadFile(m_filePath);
 }
 
+template<>
+std::map<Sprite*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<Sprite>()
+{
+    return m_spritePropertiesWindows;
+}
+
+template<>
+std::map<Sound*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<Sound>()
+{
+    return m_soundPropertiesWindows;
+}
+
+template<>
+std::map<Background*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<Background>()
+{
+    return m_backgroundPropertiesWindows;
+}
+
+template<>
+std::map<Path*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<Path>()
+{
+    return m_pathPropertiesWindows;
+}
+
+template<>
+std::map<Script*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<Script>()
+{
+    return m_scriptPropertiesWindows;
+}
+
+template<>
+std::map<Font*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<Font>()
+{
+    return m_fontPropertiesWindows;
+}
+
+template<>
+std::map<TimeLine*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<TimeLine>()
+{
+    return m_timeLinePropertiesWindows;
+}
+
+template<>
+std::map<Object*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<Object>()
+{
+    return m_objectPropertiesWindows;
+}
+
+template<>
+std::map<Room*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<Room>()
+{
+    return m_roomPropertiesWindows;
+}
+
 template<typename T>
 void MainWindow::openPropertiesWindowFor(T &entry)
 {
@@ -961,58 +1015,4 @@ void MainWindow::modelAboutToBeResetFor()
     for (const auto &pair : propertyWindows)
         delete pair.second;
     propertyWindows.clear();
-}
-
-template<>
-std::map<Sprite*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<Sprite>()
-{
-    return m_spritePropertiesWindows;
-}
-
-template<>
-std::map<Sound*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<Sound>()
-{
-    return m_soundPropertiesWindows;
-}
-
-template<>
-std::map<Background*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<Background>()
-{
-    return m_backgroundPropertiesWindows;
-}
-
-template<>
-std::map<Path*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<Path>()
-{
-    return m_pathPropertiesWindows;
-}
-
-template<>
-std::map<Script*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<Script>()
-{
-    return m_scriptPropertiesWindows;
-}
-
-template<>
-std::map<Font*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<Font>()
-{
-    return m_fontPropertiesWindows;
-}
-
-template<>
-std::map<TimeLine*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<TimeLine>()
-{
-    return m_timeLinePropertiesWindows;
-}
-
-template<>
-std::map<Object*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<Object>()
-{
-    return m_objectPropertiesWindows;
-}
-
-template<>
-std::map<Room*, QMdiSubWindow*> &MainWindow::propertyWindowsFor<Room>()
-{
-    return m_roomPropertiesWindows;
 }

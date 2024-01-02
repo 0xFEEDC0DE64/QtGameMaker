@@ -20,6 +20,11 @@ public:
     explicit MainWindow(const QString &filePath, QWidget *parent = nullptr);
     ~MainWindow();
 
+private:
+    template<typename T>
+    std::map<T*, QMdiSubWindow*> &propertyWindowsFor();
+
+public:
     template<typename T>
     void openPropertiesWindowFor(T &entry);
 
@@ -76,9 +81,6 @@ private:
 
     template<typename T, typename ...Targs>
     void openOrActivateWindow(QMdiSubWindow * &ptr, Targs &&...args);
-
-    template<typename T>
-    std::map<T*, QMdiSubWindow*> &propertyWindowsFor();
 
     template<typename T>
     bool doubleClickedFor(const QModelIndex &index);

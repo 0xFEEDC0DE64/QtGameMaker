@@ -34,7 +34,7 @@ QVariant ActionsContainerModel::data(const QModelIndex &index, int role) const
         return {};
     }
 
-    const auto &action = m_actionsContainer->at(index.row());
+    //const auto &action = m_actionsContainer->at(index.row());
 
     switch (role)
     {
