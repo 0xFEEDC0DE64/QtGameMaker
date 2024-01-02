@@ -136,6 +136,16 @@ QDataStream &operator<<(QDataStream &ds, const std::variant<T...> &variant)
     return ds;
 }
 
+// for idiotic GCC we cannot use the usual lambda syntax but instead
+// have to provide a template method, GCC sucks
+template<typename T, typename ...Tvariant>
+std::variant<Tvariant...> variantUnpacker(QDataStream& ds)
+{
+    T value;
+    ds >> value;
+    return value;
+}
+
 template<typename ...T>
 QDataStream &operator>>(QDataStream &ds, std::variant<T...> &variant)
 {
@@ -144,11 +154,7 @@ QDataStream &operator>>(QDataStream &ds, std::variant<T...> &variant)
 
     using func_t = std::variant<T...> (QDataStream&);
     static constexpr func_t *funcs[] = {
-        [](QDataStream& ds) -> std::variant<T...> {
-            T value;
-            ds >> value;
-            return value;
-        }...
+        variantUnpacker<T, T...>...
     };
     variant = funcs[index](ds);
 

@@ -32,28 +32,48 @@ AddEventDialog::AddEventDialog(ProjectTreeModel &projectModel, QWidget *parent) 
     connect(m_ui->pushButtonStep, &QAbstractButton::clicked,
             this, [this](){ m_eventType = Object::EventType::Step; accept(); });
 
-    auto menu = new QMenu;
-    connect(menu, &QMenu::aboutToShow, menu, [this,menu](){
-        for (const Object &object : m_projectModel.project()->objects)
-        {
-            QIcon icon;
-            if (!object.spriteName.isEmpty())
+    {
+        auto menu = new QMenu;
+        menu->addAction(tr("Alarm 0"), this, [this](){ m_eventType = Object::EventType::Alarm0; accept(); });
+        menu->addAction(tr("Alarm 1"), this, [this](){ m_eventType = Object::EventType::Alarm1; accept(); });
+        menu->addAction(tr("Alarm 2"), this, [this](){ m_eventType = Object::EventType::Alarm2; accept(); });
+        menu->addAction(tr("Alarm 3"), this, [this](){ m_eventType = Object::EventType::Alarm3; accept(); });
+        menu->addAction(tr("Alarm 4"), this, [this](){ m_eventType = Object::EventType::Alarm4; accept(); });
+        menu->addAction(tr("Alarm 5"), this, [this](){ m_eventType = Object::EventType::Alarm5; accept(); });
+        menu->addAction(tr("Alarm 6"), this, [this](){ m_eventType = Object::EventType::Alarm6; accept(); });
+        menu->addAction(tr("Alarm 7"), this, [this](){ m_eventType = Object::EventType::Alarm7; accept(); });
+        menu->addAction(tr("Alarm 8"), this, [this](){ m_eventType = Object::EventType::Alarm8; accept(); });
+        menu->addAction(tr("Alarm 9"), this, [this](){ m_eventType = Object::EventType::Alarm9; accept(); });
+        menu->addAction(tr("Alarm 10"), this, [this](){ m_eventType = Object::EventType::Alarm10; accept(); });
+        menu->addAction(tr("Alarm 11"), this, [this](){ m_eventType = Object::EventType::Alarm11; accept(); });
+        m_ui->pushButtonAlarm->setMenu(menu);
+    }
+
+    {
+        auto menu = new QMenu;
+        connect(menu, &QMenu::aboutToShow, menu, [this,menu](){
+            menu->clear();
+            for (const Object &object : m_projectModel.project()->objects)
             {
-                const auto &sprites = m_projectModel.project()->sprites;
-                const auto iter = std::find_if(std::cbegin(sprites), std::cend(sprites),
-                                               [&](const Sprite &sprite){ return sprite.name == object.spriteName; });
-                if (iter != std::cend(sprites))
+                QIcon icon;
+                if (!object.spriteName.isEmpty())
                 {
-                    if (!iter->pixmaps.empty())
-                        icon = iter->pixmaps.front();
+                    const auto &sprites = m_projectModel.project()->sprites;
+                    const auto iter = std::find_if(std::cbegin(sprites), std::cend(sprites),
+                                                   [&](const Sprite &sprite){ return sprite.name == object.spriteName; });
+                    if (iter != std::cend(sprites))
+                    {
+                        if (!iter->pixmaps.empty())
+                            icon = iter->pixmaps.front();
+                    }
                 }
+                menu->addAction(icon, object.name, this, [this,&object](){
+                    m_eventType = object.name; accept();
+                });
             }
-            menu->addAction(icon, object.name, this, [this,&object](){
-                m_eventType = object.name; accept();
-            });
-        }
-    }, Qt::SingleShotConnection);
-    m_ui->pushButtonCollision->setMenu(menu);
+        });
+        m_ui->pushButtonCollision->setMenu(menu);
+    }
 }
 
 AddEventDialog::~AddEventDialog() = default;

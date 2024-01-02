@@ -40,23 +40,47 @@ QVariant ObjectEventsModel::data(const QModelIndex &index, int role) const
             {
             case Object::EventType::Create:  return tr("Create");
             case Object::EventType::Destroy: return tr("Destroy");
+            case Object::EventType::Alarm0:  return tr("Alarm 0");
+            case Object::EventType::Alarm1:  return tr("Alarm 1");
+            case Object::EventType::Alarm2:  return tr("Alarm 2");
+            case Object::EventType::Alarm3:  return tr("Alarm 3");
+            case Object::EventType::Alarm4:  return tr("Alarm 4");
+            case Object::EventType::Alarm5:  return tr("Alarm 5");
+            case Object::EventType::Alarm6:  return tr("Alarm 6");
+            case Object::EventType::Alarm7:  return tr("Alarm 7");
+            case Object::EventType::Alarm8:  return tr("Alarm 8");
+            case Object::EventType::Alarm9:  return tr("Alarm 9");
+            case Object::EventType::Alarm10: return tr("Alarm 10");
+            case Object::EventType::Alarm11: return tr("Alarm 11");
             case Object::EventType::Step:    return tr("Step");
             case Object::EventType::Draw:    return tr("Draw");
-            default:
-                qWarning() << "unknown event type" << std::to_underlying(pair.first);
-                return QString::number(std::to_underlying(pair.first));
             }
+
+            qWarning() << "unknown event type" << std::to_underlying(pair.first);
+            return QString::number(std::to_underlying(pair.first));
         case Qt::DecorationRole:
             switch (pair.first)
             {
             case Object::EventType::Create:  return QIcon{":/qtgameengine/icons/event-create.png"};
             case Object::EventType::Destroy: return QIcon{":/qtgameengine/icons/event-destroy.png"};
+            case Object::EventType::Alarm0:
+            case Object::EventType::Alarm1:
+            case Object::EventType::Alarm2:
+            case Object::EventType::Alarm3:
+            case Object::EventType::Alarm4:
+            case Object::EventType::Alarm5:
+            case Object::EventType::Alarm6:
+            case Object::EventType::Alarm7:
+            case Object::EventType::Alarm8:
+            case Object::EventType::Alarm9:
+            case Object::EventType::Alarm10:
+            case Object::EventType::Alarm11: return QIcon{":/qtgameengine/icons/event-alarm.png"};
             case Object::EventType::Step:    return QIcon{":/qtgameengine/icons/event-step.png"};
             case Object::EventType::Draw:    return QIcon{":/qtgameengine/icons/event-draw.png"};
-            default:
-                qWarning() << "unknown event type" << std::to_underlying(pair.first);
-                return {};
             }
+
+            qWarning() << "unknown event type" << std::to_underlying(pair.first);
+            return {};
         }
     }
     else if (std::size_t(index.row()) < m_collisionEvents.size() + m_events.size())

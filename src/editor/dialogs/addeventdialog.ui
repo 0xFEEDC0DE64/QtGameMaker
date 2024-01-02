@@ -46,6 +46,10 @@
        <property name="text">
         <string>&amp;Alarm</string>
        </property>
+       <property name="icon">
+        <iconset resource="../resources_editor.qrc">
+         <normaloff>:/qtgameengine/icons/event-alarm.png</normaloff>:/qtgameengine/icons/event-alarm.png</iconset>
+       </property>
       </widget>
      </item>
      <item row="3" column="0">
