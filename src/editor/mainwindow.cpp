@@ -11,6 +11,7 @@
 #include <QInputDialog>
 #include <QDebug>
 
+#include "projectserialization.h"
 #include "models/projecttreemodel.h"
 #include "dialogs/preferencesdialog.h"
 #include "dialogs/spritepropertiesdialog.h"

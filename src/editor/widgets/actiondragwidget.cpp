@@ -5,6 +5,10 @@
 #include <QDrag>
 #include <QMimeData>
 
+#include "projectcontainer.h"
+#include "projectserialization.h"
+#include "stdserialization.h"
+
 ActionDragWidget::ActionDragWidget(QWidget *parent) :
     QToolButton{parent}
 {
@@ -33,8 +37,12 @@ void ActionDragWidget::mouseMoveEvent(QMouseEvent *event)
     drag->setPixmap(this->icon().pixmap(QSize{32, 32}));
 
     QMimeData *mimeData = new QMimeData;
-    mimeData->setData("custom", QByteArray{"aaaaaa"});
+    QByteArray encoded;
+    QDataStream stream(&encoded, QDataStream::WriteOnly);
+    stream << Action{ExecuteCodeAction{ .script = "hatschi" }};
+    mimeData->setData("custom", encoded);
     drag->setMimeData(mimeData);
 
-    Qt::DropAction dropAction = drag->exec(Qt::CopyAction | Qt::MoveAction);
+    Qt::DropAction dropAction = drag->exec(Qt::CopyAction);
+    qDebug() << dropAction;
 }

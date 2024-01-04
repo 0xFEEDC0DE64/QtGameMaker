@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QMenu>
+#include <QKeySequence>
 
 #include "models/actionscontainermodel.h"
 #include "dialogs/codeactiondialog.h"
@@ -84,16 +85,55 @@ void ActionsContainerWidget::actionsContextMenuRequested(const QPoint &pos)
     auto action = index.isValid() ? m_actionsModel->getAction(index) : nullptr;
 
     QMenu menu{this};
-    menu.addAction(tr("&Edit Values"), this, [this,index](){ actionDoubleClicked(index); })->setEnabled(action);
+    if (auto action = menu.addAction(tr("&Edit Values"), this, [this,index](){
+        actionDoubleClicked(index);
+    }))
+        action->setEnabled(action);
     menu.addSeparator();
-    menu.addAction(tr("C&ut"))->setEnabled(false);
-    menu.addAction(tr("&Copy"))->setEnabled(false);
-    menu.addAction(tr("&Paste"))->setEnabled(false);
+    if (auto action = menu.addAction(tr("C&ut"), this, [this](){
+        QMessageBox::information(this, tr("Not implemented!"), tr("Not implemented!"));
+    }))
+    {
+        action->setEnabled(action);
+        action->setShortcut(QKeySequence::Cut);
+    }
+    if (auto action = menu.addAction(tr("&Copy"), this, [this](){
+        QMessageBox::information(this, tr("Not implemented!"), tr("Not implemented!"));
+    }))
+    {
+        action->setEnabled(action);
+        action->setShortcut(QKeySequence::Copy);
+    }
+    if (auto action = menu.addAction(tr("&Paste"), this, [this](){
+        QMessageBox::information(this, tr("Not implemented!"), tr("Not implemented!"));
+    }))
+    {
+        action->setEnabled(action);
+        action->setShortcut(QKeySequence::Paste);
+    }
     menu.addSeparator();
-    menu.addAction(tr("&Delete"))->setEnabled(false);
+    if (auto action = menu.addAction(tr("&Delete"), this, [this,index](){
+        if (!m_actionsModel->removeRow(index.row()))
+            QMessageBox::warning(this, tr("Could not remove action!"), tr("Could not remove action!"));
+    }))
+    {
+        action->setEnabled(action);
+        action->setShortcut(QKeySequence::Delete);
+    }
     menu.addSeparator();
-    menu.addAction(tr("Select &All"))->setEnabled(false);
+    if (auto action = menu.addAction(tr("Select &All"), this, [this](){
+        QMessageBox::information(this, tr("Not implemented!"), tr("Not implemented!"));
+    }))
+    {
+        action->setEnabled(m_actionsModel->actionsContainer() && !m_actionsModel->actionsContainer()->empty());
+        action->setShortcut(QKeySequence::SelectAll);
+    }
     menu.addSeparator();
-    menu.addAction(tr("C&lear"))->setEnabled(false);
+    if (auto action = menu.addAction(tr("C&lear"), this, [this](){
+        QMessageBox::information(this, tr("Not implemented!"), tr("Not implemented!"));
+    }))
+    {
+        action->setEnabled(m_actionsModel->actionsContainer() && !m_actionsModel->actionsContainer()->empty());
+    }
     menu.exec(m_ui->listViewActions->viewport()->mapToGlobal(pos));
 }

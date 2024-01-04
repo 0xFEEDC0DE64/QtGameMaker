@@ -81,7 +81,9 @@ HEADERS += \
     src/editor/widgets/actionscontainerwidget.h \
     src/editor/widgets/codeeditorwidget.h \
     src/editor/widgets/drawingcanvaswidget.h \
-    src/editor/widgets/pathpointswidget.h
+    src/editor/widgets/pathpointswidget.h \
+    src/projectserialization.h \
+    src/stdserialization.h
 
 SOURCES += \
     src/closeeventfilter.cpp \
@@ -140,7 +142,8 @@ SOURCES += \
     src/editor/widgets/actionscontainerwidget.cpp \
     src/editor/widgets/codeeditorwidget.cpp \
     src/editor/widgets/drawingcanvaswidget.cpp \
-    src/editor/widgets/pathpointswidget.cpp
+    src/editor/widgets/pathpointswidget.cpp \
+    src/projectserialization.cpp
 
 FORMS += \
     src/editor/mainwindow.ui \

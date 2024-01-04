@@ -8,7 +8,6 @@
 #include <QString>
 #include <QPixmap>
 #include <QFont>
-#include <QDataStream>
 #include <QPoint>
 
 struct GlobalGameSettings
@@ -222,6 +221,3 @@ struct ProjectContainer
     template<typename T> std::list<T> &containerFor();
     template<typename T> const std::list<T> &containerFor() const;
 };
-
-QDataStream &operator<<(QDataStream &ds, const ProjectContainer &project);
-QDataStream &operator>>(QDataStream &ds, ProjectContainer &project);

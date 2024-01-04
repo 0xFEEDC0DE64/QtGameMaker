@@ -10,6 +10,9 @@
     <height>667</height>
    </rect>
   </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::CustomContextMenu</enum>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -56,7 +59,7 @@
         <bool>true</bool>
        </property>
        <property name="dragDropMode">
-        <enum>QAbstractItemView::InternalMove</enum>
+        <enum>QAbstractItemView::DragDrop</enum>
        </property>
        <property name="defaultDropAction">
         <enum>Qt::MoveAction</enum>
