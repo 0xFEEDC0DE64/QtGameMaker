@@ -7,6 +7,7 @@
 
 #include "models/actionscontainermodel.h"
 #include "dialogs/codeactiondialog.h"
+#include "dialogs/actions/movefixeddialog.h"
 
 ActionsContainerWidget::ActionsContainerWidget(QWidget *parent) :
     QWidget{parent},
@@ -26,6 +27,17 @@ ActionsContainerWidget::ActionsContainerWidget(QWidget *parent) :
     connect(m_actionsModel.get(), &QAbstractItemModel::modelAboutToBeReset,
             m_ui->listViewActions, [listView=m_ui->listViewActions](){
                 listView->setCurrentIndex(QModelIndex{});
+    });
+
+    connect(m_ui->toolButtonMoveFixed, &QAbstractButton::clicked,
+            this, [this](){
+        MoveFixedAction action;
+        MoveFixedDialog dialog{action, this};
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            // TODO insert into model
+            emit changed();
+        }
     });
 }
 
@@ -50,9 +62,20 @@ void ActionsContainerWidget::actionDoubleClicked(const QModelIndex &index)
     if (!action)
         return;
 
-    CodeActionDialog dialog{*action, this};
-    if (dialog.exec() == QDialog::Accepted)
-        emit changed();
+    if (auto ptr = std::get_if<MoveFixedAction>(action))
+    {
+        MoveFixedDialog dialog{*ptr, this};
+        if (dialog.exec() == QDialog::Accepted)
+            emit changed();
+    }
+    else if (auto ptr = std::get_if<ExecuteCodeAction>(action))
+    {
+        CodeActionDialog dialog{*ptr, this};
+        if (dialog.exec() == QDialog::Accepted)
+            emit changed();
+    }
+    else
+        QMessageBox::information(this, tr("Not implemented!"), tr("Not implemented!"));
 }
 
 void ActionsContainerWidget::actionsContextMenuRequested(const QPoint &pos)

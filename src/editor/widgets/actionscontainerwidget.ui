@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>678</width>
+    <height>667</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -49,6 +49,18 @@
        <property name="contextMenuPolicy">
         <enum>Qt::CustomContextMenu</enum>
        </property>
+       <property name="acceptDrops">
+        <bool>true</bool>
+       </property>
+       <property name="dragEnabled">
+        <bool>true</bool>
+       </property>
+       <property name="dragDropMode">
+        <enum>QAbstractItemView::InternalMove</enum>
+       </property>
+       <property name="defaultDropAction">
+        <enum>Qt::MoveAction</enum>
+       </property>
        <property name="iconSize">
         <size>
          <width>32</width>
@@ -64,38 +76,398 @@
      <property name="tabPosition">
       <enum>QTabWidget::East</enum>
      </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
      <widget class="QWidget" name="tabWidgetMove">
       <attribute name="title">
        <string>Move</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QToolButton" name="toolButton">
-         <property name="text">
-          <string>...</string>
+      <layout class="QGridLayout" name="gridLayoutMove">
+       <item row="12" column="0">
+        <widget class="QToolButton" name="toolButton_19">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QToolButton" name="toolButton_2">
-         <property name="text">
-          <string>...</string>
+       <item row="5" column="1">
+        <widget class="QToolButton" name="toolButtonReverseVertical">
+         <property name="toolTip">
+          <string>Reverse Vertical</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QToolButton" name="toolButton_3">
-         <property name="text">
-          <string>...</string>
+       <item row="5" column="2">
+        <widget class="QToolButton" name="toolButtonSetFriction">
+         <property name="toolTip">
+          <string>Set Friction</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QToolButton" name="toolButton_4">
-         <property name="text">
-          <string>...</string>
+       <item row="11" column="0">
+        <widget class="QToolButton" name="toolButton_17">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
          </property>
         </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QToolButton" name="toolButtonJumpToStart">
+         <property name="toolTip">
+          <string>Jump To Start</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="ActionDragWidget" name="toolButtonMoveTowards">
+         <property name="toolTip">
+          <string>Move Towards</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action-move-towards.png</normaloff>:/qtgameengine/icons/action-move-towards.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="2">
+        <widget class="QToolButton" name="toolButton_12">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="1">
+        <widget class="QToolButton" name="toolButton_20">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QToolButton" name="toolButton_13">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="1">
+        <widget class="QToolButton" name="toolButton_18">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QToolButton" name="toolButtonSpeedVertical">
+         <property name="toolTip">
+          <string>Speed Vertical</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="QToolButton" name="toolButtonSetGravity">
+         <property name="toolTip">
+          <string>Set Gravity</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <widget class="QToolButton" name="toolButton_16">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="ActionDragWidget" name="toolButtonMoveFree">
+         <property name="toolTip">
+          <string>Move Free</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action-move-free.png</normaloff>:/qtgameengine/icons/action-move-free.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0" colspan="3">
+        <widget class="QLabel" name="labelJump">
+         <property name="text">
+          <string>Jump</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QToolButton" name="toolButtonReverseHorizontal">
+         <property name="toolTip">
+          <string>Reverse Horizontal</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" colspan="3">
+        <widget class="QLabel" name="labelMove">
+         <property name="text">
+          <string>Move</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QToolButton" name="toolButtonSpeedHorizontal">
+         <property name="toolTip">
+          <string>Speed Horizontal</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <widget class="QToolButton" name="toolButton_14">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="ActionDragWidget" name="toolButtonMoveFixed">
+         <property name="acceptDrops">
+          <bool>true</bool>
+         </property>
+         <property name="toolTip">
+          <string>Move Fixed</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action-move-fixed.png</normaloff>:/qtgameengine/icons/action-move-fixed.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <widget class="QToolButton" name="toolButtonJumpToPosition">
+         <property name="toolTip">
+          <string>Jump To Position</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="0">
+        <widget class="QToolButton" name="toolButton_15">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="14" column="0">
+        <widget class="QToolButton" name="toolButton_21">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="14" column="1">
+        <widget class="QToolButton" name="toolButton_22">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="0" colspan="3">
+        <widget class="QLabel" name="labelPaths">
+         <property name="text">
+          <string>Paths</string>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="0" colspan="3">
+        <widget class="QLabel" name="labelSteps">
+         <property name="text">
+          <string>Steps</string>
+         </property>
+        </widget>
+       </item>
+       <item row="15" column="0" colspan="3">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -103,61 +475,1078 @@
       <attribute name="title">
        <string>Main1</string>
       </attribute>
+      <layout class="QGridLayout" name="gridLayoutMain1">
+       <item row="2" column="1">
+        <widget class="QToolButton" name="toolButton_27">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QToolButton" name="toolButton_30">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0" colspan="3">
+        <widget class="QLabel" name="labelRooms">
+         <property name="text">
+          <string>Rooms</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QToolButton" name="toolButton_26">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="2">
+        <widget class="QToolButton" name="toolButton_37">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QToolButton" name="toolButton_32">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="2">
+        <widget class="QToolButton" name="toolButton_34">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QToolButton" name="toolButton_29">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QToolButton" name="toolButton_33">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QToolButton" name="toolButton_23">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="QToolButton" name="toolButton_31">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QToolButton" name="toolButton_25">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" colspan="3">
+        <widget class="QLabel" name="labelObjects">
+         <property name="text">
+          <string>Objects</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QToolButton" name="toolButton_35">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QToolButton" name="toolButton_28">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QToolButton" name="toolButton_24">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0" colspan="3">
+        <widget class="QLabel" name="labelSounds">
+         <property name="text">
+          <string>Sounds</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <widget class="QToolButton" name="toolButton_36">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="3">
+        <widget class="QLabel" name="labelSprite">
+         <property name="text">
+          <string>Sprite</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="0">
+        <widget class="QToolButton" name="toolButton_38">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <widget class="QToolButton" name="toolButton_39">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="2">
+        <widget class="QToolButton" name="toolButton_40">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="0" colspan="3">
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="tabWidgetMain2">
       <attribute name="title">
        <string>Main2</string>
       </attribute>
+      <layout class="QGridLayout" name="gridLayoutMain2">
+       <item row="6" column="1">
+        <widget class="QToolButton" name="toolButton_41">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" colspan="3">
+        <widget class="QLabel" name="labelInfo">
+         <property name="text">
+          <string>Info</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="0" colspan="3">
+        <widget class="QLabel" name="labelResources">
+         <property name="text">
+          <string>Resources</string>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="0">
+        <widget class="QToolButton" name="toolButton_50">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QToolButton" name="toolButton_4">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" colspan="3">
+        <widget class="QLabel" name="labelTiming">
+         <property name="text">
+          <string>Timing</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="2">
+        <widget class="QToolButton" name="toolButton_42">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="0">
+        <widget class="QToolButton" name="toolButton_46">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QToolButton" name="toolButton_6">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QToolButton" name="toolButton_11">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <widget class="QToolButton" name="toolButton_47">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QToolButton" name="toolButton_5">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="2">
+        <widget class="QToolButton" name="toolButton_8">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QToolButton" name="toolButton_9">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QToolButton" name="toolButton_2">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <widget class="QToolButton" name="toolButton_43">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="2">
+        <widget class="QToolButton" name="toolButton_45">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0" colspan="3">
+        <widget class="QLabel" name="labelGame">
+         <property name="text">
+          <string>Game</string>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="2">
+        <widget class="QToolButton" name="toolButton_52">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QToolButton" name="toolButton_3">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QToolButton" name="toolButton_44">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="1">
+        <widget class="QToolButton" name="toolButton_49">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QToolButton" name="toolButton_10">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="0">
+        <widget class="QToolButton" name="toolButton_48">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QToolButton" name="toolButton">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QToolButton" name="toolButton_7">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="1">
+        <widget class="QToolButton" name="toolButton_51">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="0" colspan="3">
+        <spacer name="verticalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="tabWidgetControl">
       <attribute name="title">
        <string>Control</string>
       </attribute>
+      <layout class="QGridLayout" name="gridLayoutControl">
+       <item row="3" column="2">
+        <widget class="QToolButton" name="toolButton_61">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="0" colspan="3">
+        <widget class="QLabel" name="labelVariables">
+         <property name="text">
+          <string>Variables</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QToolButton" name="toolButton_55">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="0">
+        <widget class="QToolButton" name="toolButton_71">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QToolButton" name="toolButton_66">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="2">
+        <widget class="QToolButton" name="toolButton_64">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QToolButton" name="toolButton_53">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" colspan="3">
+        <widget class="QLabel" name="labelQuestions">
+         <property name="text">
+          <string>Questions</string>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="2">
+        <widget class="QToolButton" name="toolButton_73">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" colspan="3">
+        <widget class="QLabel" name="labelOther">
+         <property name="text">
+          <string>Other</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QToolButton" name="toolButton_56">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <widget class="QToolButton" name="toolButton_69">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="2">
+        <widget class="QToolButton" name="toolButton_67">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QToolButton" name="toolButton_54">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QToolButton" name="toolButton_58">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QToolButton" name="toolButton_65">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QToolButton" name="toolButton_57">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QToolButton" name="toolButton_60">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="1">
+        <widget class="QToolButton" name="toolButton_72">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0" colspan="3">
+        <widget class="QLabel" name="labelCode">
+         <property name="text">
+          <string>Code</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QToolButton" name="toolButton_59">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QToolButton" name="toolButton_62">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="2">
+        <widget class="QToolButton" name="toolButton_70">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="ActionDragWidget" name="toolButtonExecuteCode">
+         <property name="toolTip">
+          <string>Execute Code</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action-code.png</normaloff>:/qtgameengine/icons/action-code.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QToolButton" name="toolButton_63">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="0" colspan="3">
+        <spacer name="verticalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="tabWidgetScore">
       <attribute name="title">
        <string>Score</string>
       </attribute>
+      <layout class="QGridLayout" name="gridLayoutScore"/>
      </widget>
      <widget class="QWidget" name="tabWidgetExtra">
       <attribute name="title">
        <string>Extra</string>
       </attribute>
+      <layout class="QGridLayout" name="gridLayoutExtra"/>
      </widget>
      <widget class="QWidget" name="tabWidgetDraw">
       <attribute name="title">
        <string>Draw</string>
       </attribute>
+      <layout class="QGridLayout" name="gridLayoutDraw"/>
      </widget>
      <widget class="QWidget" name="tabWidgetMoveAndRoom">
       <attribute name="title">
        <string>Move and Room</string>
       </attribute>
+      <layout class="QGridLayout" name="gridLayoutMoveAndRoom"/>
      </widget>
      <widget class="QWidget" name="tabWidgetSaveLoadAndMouse">
       <attribute name="title">
        <string>Save, Load, and Mouse</string>
       </attribute>
+      <layout class="QGridLayout" name="gridLayoutLoadAndMouse"/>
      </widget>
      <widget class="QWidget" name="tabWidgetDrawSpriteBackground">
       <attribute name="title">
        <string>Draw+Sprite+Background</string>
       </attribute>
+      <layout class="QGridLayout" name="gridLayoutDrawSpriteBackground"/>
      </widget>
      <widget class="QWidget" name="tabWidgetDate">
       <attribute name="title">
        <string>Date</string>
       </attribute>
+      <layout class="QGridLayout" name="gridLayoutDate"/>
      </widget>
      <widget class="QWidget" name="tabWidgetBreakout">
       <attribute name="title">
        <string>Breakout</string>
       </attribute>
+      <layout class="QGridLayout" name="gridLayoutBreakout"/>
      </widget>
     </widget>
    </item>
   </layout>
  </widget>
- <resources/>
+ <customwidgets>
+  <customwidget>
+   <class>ActionDragWidget</class>
+   <extends>QToolButton</extends>
+   <header>widgets/actiondragwidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../resources_editor.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -6,7 +6,7 @@
 
 #include "projectcontainer.h"
 
-CodeActionDialog::CodeActionDialog(Action &action, QWidget *parent) :
+CodeActionDialog::CodeActionDialog(ExecuteCodeAction &action, QWidget *parent) :
     CodeEditorDialog{tr("Execute Code"), parent},
     m_action{action},
     m_radioButtonSelf{new QRadioButton{tr("Self"), this}},
@@ -23,9 +23,9 @@ CodeActionDialog::CodeActionDialog(Action &action, QWidget *parent) :
     addToolbarWidget(m_radioButtonOther);
     addToolbarWidget(m_radioButtonObject);
 
-    m_radioButtonSelf->setChecked(m_action.appliesTo == Action::AppliesTo::Self);
-    m_radioButtonOther->setChecked(m_action.appliesTo == Action::AppliesTo::Other);
-    m_radioButtonObject->setChecked(m_action.appliesTo == Action::AppliesTo::Object);
+    m_radioButtonSelf->setChecked(m_action.appliesTo == ExecuteCodeAction::AppliesTo::Self);
+    m_radioButtonOther->setChecked(m_action.appliesTo == ExecuteCodeAction::AppliesTo::Other);
+    m_radioButtonObject->setChecked(m_action.appliesTo == ExecuteCodeAction::AppliesTo::Object);
 
     setScript(m_action.script);
 
@@ -46,11 +46,11 @@ void CodeActionDialog::accept()
     }
 
     if (m_radioButtonSelf->isChecked())
-        m_action.appliesTo = Action::AppliesTo::Self;
+        m_action.appliesTo = ExecuteCodeAction::AppliesTo::Self;
     else if (m_radioButtonOther->isChecked())
-        m_action.appliesTo = Action::AppliesTo::Other;
+        m_action.appliesTo = ExecuteCodeAction::AppliesTo::Other;
     else if (m_radioButtonObject->isChecked())
-        m_action.appliesTo = Action::AppliesTo::Object;
+        m_action.appliesTo = ExecuteCodeAction::AppliesTo::Object;
     else
     {
         QMessageBox::warning(this, tr("No Applies To selected!"), tr("No Applies To selected!"));

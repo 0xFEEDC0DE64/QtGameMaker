@@ -34,20 +34,68 @@ QVariant ActionsContainerModel::data(const QModelIndex &index, int role) const
         return {};
     }
 
-    //const auto &action = m_actionsContainer->at(index.row());
+    const auto &action = *std::next(m_actionsContainer->cbegin(), index.row());
 
     switch (role)
     {
     case Qt::DisplayRole:
     case Qt::EditRole:
-        return tr("Execute a piece of code");
+        if (std::holds_alternative<MoveFixedAction>(action))
+            return tr("Start moving in a direction");
+        else if (std::holds_alternative<MoveFreeAction>(action))
+            return tr("Set direction and speed of motion");
+        else if (std::holds_alternative<MoveTowardsAction>(action))
+            return tr("Move towards point (99, 99)");
+        else if (std::holds_alternative<ExecuteCodeAction>(action))
+            return tr("Execute a piece of code");
+        else
+        {
+            qWarning() << "unknown action type";
+            return tr("ERROR: Unknown action type");
+        }
     case Qt::DecorationRole:
-        return QIcon{":/qtgameengine/icons/code-action.png"};
+        if (std::holds_alternative<MoveFixedAction>(action))
+            return QIcon{":/qtgameengine/icons/action-move-fixed.png"};
+        else if (std::holds_alternative<MoveFreeAction>(action))
+            return QIcon{":/qtgameengine/icons/action-move-free.png"};
+        else if (std::holds_alternative<MoveTowardsAction>(action))
+            return QIcon{":/qtgameengine/icons/action-move-towards.png"};
+        else if (std::holds_alternative<ExecuteCodeAction>(action))
+            return QIcon{":/qtgameengine/icons/action-code.png"};
+        else
+        {
+            qWarning() << "unknown action type";
+            return QIcon{":/qtgameengine/icons/action.png"};
+        }
     default:
         return {};
     }
 
     return {};
+}
+
+Qt::ItemFlags ActionsContainerModel::flags(const QModelIndex &index) const
+{
+    auto flags = QAbstractListModel::flags(index);
+    flags |= Qt::ItemIsDragEnabled;
+    flags |= Qt::ItemIsDropEnabled;
+    return flags;
+}
+
+Qt::DropActions ActionsContainerModel::supportedDropActions() const
+{
+    auto actions = QAbstractListModel::supportedDropActions();
+    actions |= Qt::MoveAction;
+    actions |= Qt::TargetMoveAction;
+    return actions;
+}
+
+Qt::DropActions ActionsContainerModel::supportedDragActions() const
+{
+    auto actions = QAbstractListModel::supportedDragActions();
+    actions |= Qt::MoveAction;
+    actions |= Qt::TargetMoveAction;
+    return actions;
 }
 
 void ActionsContainerModel::setActionsContainer(ActionsContainer *actionsContainer)

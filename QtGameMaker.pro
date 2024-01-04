@@ -29,6 +29,7 @@ HEADERS += \
     src/editor/dialogs/genericcodeeditordialog.h \
     src/editor/editorguiutils.h \
     src/editor/roomscene.h \
+    src/editor/widgets/actiondragwidget.h \
     src/editor/widgets/draggabletreeview.h \
     src/editor/widgets/qlineeditwithmenu.h \
     src/editor/widgets/qscrollareawithmenu.h \
@@ -67,6 +68,7 @@ HEADERS += \
     src/editor/dialogs/timelinepropertiesdialog.h \
     src/editor/dialogs/triggersdialog.h \
     src/editor/dialogs/userdefinedconstantsdialog.h \
+    src/editor/dialogs/actions/movefixeddialog.h \
     src/editor/models/actionscontainermodel.h \
     src/editor/models/constantsmodel.h \
     src/editor/models/includedfilesmodel.h \
@@ -86,6 +88,7 @@ SOURCES += \
     src/editor/dialogs/genericcodeeditordialog.cpp \
     src/editor/editorguiutils.cpp \
     src/editor/roomscene.cpp \
+    src/editor/widgets/actiondragwidget.cpp \
     src/editor/widgets/draggabletreeview.cpp \
     src/editor/widgets/qlineeditwithmenu.cpp \
     src/editor/widgets/qscrollareawithmenu.cpp \
@@ -124,6 +127,7 @@ SOURCES += \
     src/editor/dialogs/timelinepropertiesdialog.cpp \
     src/editor/dialogs/triggersdialog.cpp \
     src/editor/dialogs/userdefinedconstantsdialog.cpp \
+    src/editor/dialogs/actions/movefixeddialog.cpp \
     src/editor/models/actionscontainermodel.cpp \
     src/editor/models/constantsmodel.cpp \
     src/editor/models/includedfilesmodel.cpp \
@@ -164,7 +168,8 @@ FORMS += \
     src/editor/dialogs/timelinepropertiesdialog.ui \
     src/editor/dialogs/triggersdialog.ui \
     src/editor/dialogs/userdefinedconstantsdialog.ui \
-    src/editor/widgets/actionscontainerwidget.ui
+    src/editor/widgets/actionscontainerwidget.ui\
+    src/editor/dialogs/actions/movefixeddialog.ui
 
 RESOURCES += \
     src/editor/resources_editor.qrc \

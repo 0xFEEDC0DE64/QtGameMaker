@@ -3,6 +3,7 @@
 #include <vector>
 #include <list>
 #include <map>
+#include <variant>
 
 #include <QString>
 #include <QPixmap>
@@ -85,7 +86,19 @@ struct Font
     } range;
 };
 
-struct Action {
+struct MoveFixedAction {
+
+};
+
+struct MoveFreeAction {
+
+};
+
+struct MoveTowardsAction {
+
+};
+
+struct ExecuteCodeAction {
     enum class AppliesTo {
         Self,
         Other,
@@ -96,7 +109,14 @@ struct Action {
     AppliesTo appliesTo{AppliesTo::Self};
 };
 
-using ActionsContainer = std::array<Action, 1>;
+using Action = std::variant<
+    MoveFixedAction,
+    MoveFreeAction,
+    MoveTowardsAction,
+    ExecuteCodeAction
+>;
+
+using ActionsContainer = std::list<Action>;
 
 struct TimeLine
 {
@@ -141,7 +161,26 @@ struct Object
     int depth{};
     bool persistent{};
     QString parentName;
-    events_container_t events;
+    events_container_t events {
+        {
+            EventType::Create,
+            ActionsContainer {
+                Action { MoveFixedAction{} },
+                Action { MoveFreeAction{} },
+                Action { MoveTowardsAction{} },
+                Action { ExecuteCodeAction{} }
+            }
+        },
+        {
+            EventType::Destroy,
+            ActionsContainer {
+                Action { ExecuteCodeAction{} },
+                Action { MoveTowardsAction{} },
+                Action { MoveFreeAction{} },
+                Action { MoveFixedAction{} }
+            }
+        }
+    };
     collision_events_container_t collisionEvents;
 };
 

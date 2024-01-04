@@ -3,19 +3,19 @@
 #include "codeeditordialog.h"
 
 class QRadioButton;
-struct Action;
+struct ExecuteCodeAction;
 
 class CodeActionDialog : public CodeEditorDialog
 {
     Q_OBJECT
 
 public:
-    explicit CodeActionDialog(Action &action, QWidget *parent = nullptr);
+    explicit CodeActionDialog(ExecuteCodeAction &action, QWidget *parent = nullptr);
 
     void accept() override;
 
 private:
-    Action &m_action;
+    ExecuteCodeAction &m_action;
 
     QRadioButton * const m_radioButtonSelf;
     QRadioButton * const m_radioButtonOther;

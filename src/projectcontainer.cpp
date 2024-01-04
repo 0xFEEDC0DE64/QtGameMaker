@@ -313,14 +313,56 @@ QDataStream &operator>>(QDataStream &ds, Font &font)
     return ds;
 }
 
-QDataStream &operator<<(QDataStream &ds, const Action &action)
+QDataStream &operator<<(QDataStream &ds, const MoveFixedAction &action)
+{
+    Q_UNUSED(action);
+//   ds << action.;
+    return ds;
+}
+
+QDataStream &operator>>(QDataStream &ds, MoveFixedAction &action)
+{
+    Q_UNUSED(action);
+//    ds >> action.;
+    return ds;
+}
+
+QDataStream &operator<<(QDataStream &ds, const MoveFreeAction &action)
+{
+    Q_UNUSED(action);
+//   ds << action.;
+    return ds;
+}
+
+QDataStream &operator>>(QDataStream &ds, MoveFreeAction &action)
+{
+    Q_UNUSED(action);
+//    ds >> action.;
+    return ds;
+}
+
+QDataStream &operator<<(QDataStream &ds, const MoveTowardsAction &action)
+{
+    Q_UNUSED(action);
+//   ds << action.;
+    return ds;
+}
+
+QDataStream &operator>>(QDataStream &ds, MoveTowardsAction &action)
+{
+    Q_UNUSED(action);
+//    ds >> action.;
+    return ds;
+}
+
+QDataStream &operator<<(QDataStream &ds, const ExecuteCodeAction &action)
 {
     ds << action.script;
     ds << action.appliesTo;
     return ds;
 }
 
-QDataStream &operator>>(QDataStream &ds, Action &action)
+QDataStream &operator>>(QDataStream &ds, ExecuteCodeAction &action)
 {
     ds >> action.script;
     ds >> action.appliesTo;
