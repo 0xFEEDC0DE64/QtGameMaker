@@ -740,7 +740,7 @@ void MainWindow::showGameInformation()
 
 void MainWindow::showGlobalGameSettings()
 {
-    GlobalGameSettingsDialog dialog{this};
+    GlobalGameSettingsDialog dialog{m_project.globalGameSettings, this};
     if (dialog.exec() == QDialog::Accepted)
         changed();
 }

@@ -5,9 +5,10 @@
 #include <QMessageBox>
 #include <QDebug>
 
-GlobalGameSettingsDialog::GlobalGameSettingsDialog(QWidget *parent) :
+GlobalGameSettingsDialog::GlobalGameSettingsDialog(GlobalGameSettings &globalGameSettings, QWidget *parent) :
     QDialog{parent},
-    m_ui{std::make_unique<Ui::GlobalGameSettingsDialog>()}
+    m_ui{std::make_unique<Ui::GlobalGameSettingsDialog>()},
+    m_globalGameSettings{globalGameSettings}
 {
     m_ui->setupUi(this);
 
@@ -17,6 +18,14 @@ GlobalGameSettingsDialog::GlobalGameSettingsDialog(QWidget *parent) :
     setWindowFlag(Qt::WindowCloseButtonHint);
 
     updateTitle();
+
+    QWidget* widgets[]{ m_ui->widgetResolution, m_ui->widgetCustomProgressBar };
+    for (QWidget *widget : widgets)
+    {
+        QSizePolicy sp_retain = widget->sizePolicy();
+        sp_retain.setRetainSizeWhenHidden(true);
+        widget->setSizePolicy(sp_retain);
+    }
 
     if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Ok))
         button->setIcon(QIcon{":/qtgameengine/icons/ok.png"});

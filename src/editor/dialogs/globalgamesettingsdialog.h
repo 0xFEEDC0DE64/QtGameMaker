@@ -5,13 +5,14 @@
 #include <memory>
 
 namespace Ui { class GlobalGameSettingsDialog; }
+class GlobalGameSettings;
 
 class GlobalGameSettingsDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit GlobalGameSettingsDialog(QWidget *parent = nullptr);
+    explicit GlobalGameSettingsDialog(GlobalGameSettings &globalGameSettings, QWidget *parent = nullptr);
     ~GlobalGameSettingsDialog();
 
     void accept() override;
@@ -24,6 +25,8 @@ private:
     void updateTitle();
 
     const std::unique_ptr<Ui::GlobalGameSettingsDialog> m_ui;
+
+    GlobalGameSettings &m_globalGameSettings;
 
     bool m_unsavedChanges{};
 };

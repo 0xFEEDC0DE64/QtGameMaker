@@ -4,15 +4,91 @@
 
 QDataStream &operator<<(QDataStream &ds, const GlobalGameSettings &globalGameSettings)
 {
-    Q_UNUSED(globalGameSettings);
-    //ds << globalGameSettings.;
+    ds << globalGameSettings.startInFullscreenMode
+       << globalGameSettings.scaling
+       << globalGameSettings.interpolateBetweenColors
+       << globalGameSettings.colorOutsideRoomRegion
+       << globalGameSettings.resizable
+       << globalGameSettings.topMost
+       << globalGameSettings.noBorder
+       << globalGameSettings.noButtons
+       << globalGameSettings.displayCursor
+       << globalGameSettings.freezeWhenFocusLost
+       << globalGameSettings.disableScreensaver
+       << globalGameSettings.resolution
+       << globalGameSettings.vsync;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, GlobalGameSettings &globalGameSettings)
 {
-    Q_UNUSED(globalGameSettings);
-    //ds >> globalGameSettings.;
+    ds >> globalGameSettings.startInFullscreenMode
+       >> globalGameSettings.scaling
+       >> globalGameSettings.interpolateBetweenColors
+       >> globalGameSettings.colorOutsideRoomRegion
+       >> globalGameSettings.resizable
+       >> globalGameSettings.topMost
+       >> globalGameSettings.noBorder
+       >> globalGameSettings.noButtons
+       >> globalGameSettings.displayCursor
+       >> globalGameSettings.freezeWhenFocusLost
+       >> globalGameSettings.disableScreensaver
+       >> globalGameSettings.resolution
+       >> globalGameSettings.vsync;
+    return ds;
+}
+
+QDataStream &operator<<(QDataStream &ds, const GlobalGameSettings::FixedScale &fixedScale)
+{
+    ds << fixedScale.percent;
+    return ds;
+}
+
+QDataStream &operator>>(QDataStream &ds, GlobalGameSettings::FixedScale &fixedScale)
+{
+    ds >> fixedScale.percent;
+    return ds;
+}
+
+QDataStream &operator<<(QDataStream &ds, const GlobalGameSettings::KeepAspectRatio &keepAspectRatio)
+{
+    Q_UNUSED(keepAspectRatio);
+    //ds << keepAspectRatio.;
+    return ds;
+}
+
+QDataStream &operator>>(QDataStream &ds, GlobalGameSettings::KeepAspectRatio &keepAspectRatio)
+{
+    Q_UNUSED(keepAspectRatio);
+    //ds >> keepAspectRatio.;
+    return ds;
+}
+
+QDataStream &operator<<(QDataStream &ds, const GlobalGameSettings::FullScale &fullScale)
+{
+    Q_UNUSED(fullScale);
+    //ds << fullScale.;
+    return ds;
+}
+
+QDataStream &operator>>(QDataStream &ds, GlobalGameSettings::FullScale &fullScale)
+{
+    Q_UNUSED(fullScale);
+    //ds >> fullScale.;
+    return ds;
+}
+
+QDataStream &operator<<(QDataStream &ds, const GlobalGameSettings::Resolution &resolution)
+{
+    Q_UNUSED(resolution);
+    //ds << resolution.;
+    return ds;
+}
+
+QDataStream &operator>>(QDataStream &ds, GlobalGameSettings::Resolution &resolution)
+{
+    Q_UNUSED(resolution);
+    //ds >> resolution.;
     return ds;
 }
 

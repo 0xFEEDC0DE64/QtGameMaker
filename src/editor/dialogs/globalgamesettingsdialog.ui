@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>426</width>
-    <height>556</height>
+    <width>511</width>
+    <height>608</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,13 +21,13 @@
      </property>
      <widget class="QWidget" name="tabGraphics">
       <attribute name="title">
-       <string>Graphics</string>
+       <string>&amp;Graphics</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <widget class="QCheckBox" name="checkBoxFullscreen">
          <property name="text">
-          <string>Start in full-screen mode</string>
+          <string>Start in &amp;full-screen mode</string>
          </property>
         </widget>
        </item>
@@ -65,6 +65,9 @@
               <property name="text">
                <string>Keep aspect ratio</string>
               </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
              </widget>
             </item>
             <item>
@@ -95,7 +98,7 @@
        <item>
         <widget class="QCheckBox" name="checkBoxInterpolateColors">
          <property name="text">
-          <string>Interpolate colors between pixels</string>
+          <string>&amp;Interpolate colors between pixels</string>
          </property>
         </widget>
        </item>
@@ -136,49 +139,55 @@
        <item>
         <widget class="QCheckBox" name="checkBoxAllowResize">
          <property name="text">
-          <string>Allow the player to resize the game window</string>
+          <string>&amp;Allow the player to resize the game window</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QCheckBox" name="checkBoxAlwaysOntop">
          <property name="text">
-          <string>Let the game window always stay on top</string>
+          <string>Le&amp;t the game window always stay on top</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QCheckBox" name="checkBoxNoBorder">
          <property name="text">
-          <string>Don't draw a border in windowed mode</string>
+          <string>Don't draw a &amp;border in windowed mode</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QCheckBox" name="checkBoxNoWindowButtons">
          <property name="text">
-          <string>Don't show the buttons in the window caption</string>
+          <string>Don't &amp;show the buttons in the window caption</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QCheckBox" name="checkBoxDisplayCursor">
          <property name="text">
-          <string>Display the cursor</string>
+          <string>Display the c&amp;ursor</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QCheckBox" name="checkBoxFreezeOnFocusLost">
          <property name="text">
-          <string>Freeze the game when the form loses focus</string>
+          <string>&amp;Freeze the game when the form loses focus</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QCheckBox" name="checkBoxDisableScreensavers">
          <property name="text">
-          <string>Disable screensavers and power saving actions</string>
+          <string>&amp;Disable screensavers and power saving actions</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -199,12 +208,249 @@
      </widget>
      <widget class="QWidget" name="tabResolution">
       <attribute name="title">
-       <string>Resolution</string>
+       <string>&amp;Resolution</string>
       </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_7">
+       <item>
+        <widget class="QCheckBox" name="checkBoxResolution">
+         <property name="text">
+          <string>Set the &amp;resolution of the screen</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="widgetResolution" native="true">
+         <property name="visible">
+          <bool>false</bool>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayoutResolution">
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayoutColorDepth">
+            <item>
+             <widget class="QGroupBox" name="groupBoxColorDepth">
+              <property name="title">
+               <string>Color Depth</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_8">
+               <item>
+                <widget class="QRadioButton" name="radioButtonColorDepthNoChange">
+                 <property name="text">
+                  <string>No Change</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioButtonColorDepth16Bit">
+                 <property name="text">
+                  <string>16-bit</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioButtonColorDepth32Bit">
+                 <property name="text">
+                  <string>32-bit</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacerColorDepth">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayoutResolution">
+            <item>
+             <widget class="QGroupBox" name="groupBoxResolution">
+              <property name="title">
+               <string>Resolution</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_9">
+               <item>
+                <widget class="QRadioButton" name="radioButtonResolutionNoChange">
+                 <property name="text">
+                  <string>No Change</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioButtonResolution320x240">
+                 <property name="text">
+                  <string>320x240</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioButtonResolution640x480">
+                 <property name="text">
+                  <string>640x480</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioButtonResolution800x600">
+                 <property name="text">
+                  <string>800x600</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioButtonResolution1024x768">
+                 <property name="text">
+                  <string>1024x768</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioButtonResolution1280x1024">
+                 <property name="text">
+                  <string>1280x1024</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioButtonResolution1600x1200">
+                 <property name="text">
+                  <string>RadioButton</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacerResolution">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayoutFrequency">
+            <item>
+             <widget class="QGroupBox" name="groupBoxFrequency">
+              <property name="title">
+               <string>Frequency</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_10">
+               <item>
+                <widget class="QRadioButton" name="radioButtonFrequencyNoChange">
+                 <property name="text">
+                  <string>No Change</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioButtonFrequency60">
+                 <property name="text">
+                  <string>60</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioButtonFrequency70">
+                 <property name="text">
+                  <string>70</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioButtonFrequency85">
+                 <property name="text">
+                  <string>85</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioButtonFrequency100">
+                 <property name="text">
+                  <string>100</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radioButtonFrequency120">
+                 <property name="text">
+                  <string>120</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacerFrequency">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBoxVsync">
+         <property name="text">
+          <string>&amp;Use synchronization to avoid tearing</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>138</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="tabOther">
       <attribute name="title">
-       <string>Other</string>
+       <string>&amp;Other</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
@@ -216,42 +462,77 @@
           <item>
            <widget class="QCheckBox" name="checkBoxEscEndGame">
             <property name="text">
-             <string>Let &lt;Esc&gt; end the game</string>
+             <string>Let &lt;Esc&gt; en&amp;d the game</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="checkBoxTreatCloseAsEsc">
-            <property name="text">
-             <string>Treat the close button as &lt;Esc&gt; key</string>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="0,1">
+            <item>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="checkBoxTreatCloseAsEsc">
+              <property name="text">
+               <string>&amp;Treat the close button as &lt;Esc&gt; key</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item>
            <widget class="QCheckBox" name="checkBoxF1ShowGameInfo">
             <property name="text">
-             <string>Let &lt;F1&gt; show the game information</string>
+             <string>Let &lt;F1&gt; show the game i&amp;nformation</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="checkBoxF4SwitchScreenMode">
             <property name="text">
-             <string>Let &lt;F4&gt; switch between screen modes</string>
+             <string>Let &lt;F4&gt; s&amp;witch between screen modes</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="checkBoxEnableSavestates">
             <property name="text">
-             <string>Let &lt;F5&gt; save the game and &lt;F6&gt; load a game</string>
+             <string>Let &lt;F5&gt; s&amp;ave the game and &lt;F6&gt; load a game</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="checkBoxF9Screenshot">
             <property name="text">
-             <string>Let &lt;F9&gt; take a screenshot of the game</string>
+             <string>Let &lt;F9&gt; take a &amp;screenshot of the game</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -268,6 +549,9 @@
            <widget class="QRadioButton" name="radioButtonPriorityNormal">
             <property name="text">
              <string>Normal</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -307,7 +591,11 @@
              </widget>
             </item>
             <item>
-             <widget class="QSpinBox" name="spinBoxMajor"/>
+             <widget class="QSpinBox" name="spinBoxMajor">
+              <property name="value">
+               <number>1</number>
+              </property>
+             </widget>
             </item>
             <item>
              <widget class="QLabel" name="labelMinor">
@@ -413,18 +701,403 @@
      </widget>
      <widget class="QWidget" name="tabLoading">
       <attribute name="title">
-       <string>Loading</string>
+       <string>&amp;Loading</string>
       </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_13">
+       <item>
+        <widget class="QCheckBox" name="checkBoxCustomLoader">
+         <property name="text">
+          <string>Show your own i&amp;mage while loading</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="0,0,1">
+         <item>
+          <spacer name="horizontalSpacer_5">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_12">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_9">
+             <item>
+              <widget class="QPushButton" name="pushButtonChangeLoadingImage">
+               <property name="text">
+                <string>Ch&amp;ange Image</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_6">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBoxLoadingImageTransparent">
+             <property name="text">
+              <string>Make image partially transparent</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_10">
+             <item>
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>Make translucent with &amp;alpha value:</string>
+               </property>
+               <property name="buddy">
+                <cstring>spinBoxLoadingImageAlpha</cstring>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="spinBoxLoadingImageAlpha">
+               <property name="maximum">
+                <number>255</number>
+               </property>
+               <property name="value">
+                <number>255</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_7">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string/>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_11">
+          <item>
+           <widget class="QRadioButton" name="radioButtonProgressbarNone">
+            <property name="text">
+             <string>No loading progress bar</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="radioButtonProgressbaDefault">
+            <property name="text">
+             <string>Default loading progress bar</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="radioButtonProgressbarCustom">
+            <property name="text">
+             <string>Own loading progress bar</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="0,0,1">
+            <item>
+             <spacer name="horizontalSpacer_4">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_14">
+              <item>
+               <widget class="QWidget" name="widgetCustomProgressBar" native="true">
+                <property name="visible">
+                 <bool>false</bool>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_13">
+                 <item>
+                  <widget class="QPushButton" name="pushButton">
+                   <property name="text">
+                    <string>&amp;Back Image</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pushButton_2">
+                   <property name="text">
+                    <string>&amp;Front Image</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="checkBoxProgressbarScale">
+                <property name="text">
+                 <string>Scale progress bar image</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_10">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_11">
+         <item>
+          <widget class="QLabel" name="labelGameIcon">
+           <property name="text">
+            <string>Game Icon:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="labelGameIconDisplay">
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButtonChangeIcon">
+           <property name="text">
+            <string>PushButton</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_8">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_12">
+         <item>
+          <widget class="QLabel" name="labelGameIdentifier">
+           <property name="text">
+            <string>Ga&amp;me Identifier:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="spinBox_2"/>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_9">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="tabErrors">
       <attribute name="title">
-       <string>Errors</string>
+       <string>&amp;Errors</string>
       </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_15">
+       <item>
+        <widget class="QCheckBox" name="checkBoxDisplayErrorMessages">
+         <property name="text">
+          <string>&amp;Display error messages</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBoxWriteErrorMessages">
+         <property name="text">
+          <string>&amp;Write error messages to game_errors.log</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBoxAbortOnAllErrorMessages">
+         <property name="text">
+          <string>&amp;Abort on all error messages</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBoxTreatUninitalizedVariablesAs0">
+         <property name="text">
+          <string>&amp;Treat uninitialized variables as value 0</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBoxThrowAnErrorWhenArgumentsArentInitializedCorrectly">
+         <property name="text">
+          <string>Throw an error when arguments aren't initialized correctly</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="tabInfo">
       <attribute name="title">
-       <string>Info</string>
+       <string>In&amp;fo</string>
       </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_16">
+       <item>
+        <layout class="QFormLayout" name="formLayout_2">
+         <item row="0" column="0">
+          <widget class="QLabel" name="labelAuthor">
+           <property name="text">
+            <string>Author:</string>
+           </property>
+           <property name="buddy">
+            <cstring>lineEditAuthor</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="lineEditAuthor"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="labelVersion">
+           <property name="text">
+            <string>Version:</string>
+           </property>
+           <property name="buddy">
+            <cstring>lineEditVersion</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="lineEditVersion">
+           <property name="text">
+            <string>100</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="labelLastChanged">
+           <property name="text">
+            <string>Last Changed:</string>
+           </property>
+           <property name="buddy">
+            <cstring>dateTimeEditLastChanged</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QDateTimeEdit" name="dateTimeEditLastChanged"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QLabel" name="labelInformation">
+         <property name="text">
+          <string>Information:</string>
+         </property>
+         <property name="buddy">
+          <cstring>plainTextEditInformation</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPlainTextEdit" name="plainTextEditInformation"/>
+       </item>
+      </layout>
      </widget>
     </widget>
    </item>
@@ -446,8 +1119,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>184</x>
-     <y>506</y>
+     <x>193</x>
+     <y>598</y>
     </hint>
     <hint type="destinationlabel">
      <x>184</x>
@@ -462,12 +1135,44 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>184</x>
-     <y>506</y>
+     <x>193</x>
+     <y>598</y>
     </hint>
     <hint type="destinationlabel">
      <x>184</x>
      <y>263</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBoxResolution</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>widgetResolution</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>255</x>
+     <y>59</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>110</x>
+     <y>68</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonProgressbarCustom</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>widgetCustomProgressBar</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>255</x>
+     <y>267</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>173</x>
+     <y>309</y>
     </hint>
    </hints>
   </connection>

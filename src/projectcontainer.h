@@ -12,6 +12,31 @@
 
 struct GlobalGameSettings
 {
+    bool startInFullscreenMode{};
+    struct FixedScale {
+        int percent{100};
+    };
+    struct KeepAspectRatio {
+    };
+    struct FullScale {
+    };
+    std::variant<FixedScale, KeepAspectRatio, FullScale> scaling{
+        KeepAspectRatio{}
+    };
+    bool interpolateBetweenColors{};
+    QColor colorOutsideRoomRegion;
+    bool resizable{};
+    bool topMost{};
+    bool noBorder{};
+    bool noButtons{};
+    bool displayCursor{true};
+    bool freezeWhenFocusLost{};
+    bool disableScreensaver{true};
+    struct Resolution {
+
+    };
+    std::optional<Resolution> resolution;
+    bool vsync{};
 };
 
 struct Sprite

@@ -6,6 +6,14 @@
 
 QDataStream &operator<<(QDataStream &ds, const GlobalGameSettings &globalGameSettings);
 QDataStream &operator>>(QDataStream &ds, GlobalGameSettings &globalGameSettings);
+QDataStream &operator<<(QDataStream &ds, const GlobalGameSettings::FixedScale &fixedScale);
+QDataStream &operator>>(QDataStream &ds, GlobalGameSettings::FixedScale &fixedScale);
+QDataStream &operator<<(QDataStream &ds, const GlobalGameSettings::KeepAspectRatio &keepAspectRatio);
+QDataStream &operator>>(QDataStream &ds, GlobalGameSettings::KeepAspectRatio &keepAspectRatio);
+QDataStream &operator<<(QDataStream &ds, const GlobalGameSettings::FullScale &fullScale);
+QDataStream &operator>>(QDataStream &ds, GlobalGameSettings::FullScale &fullScale);
+QDataStream &operator<<(QDataStream &ds, const GlobalGameSettings::Resolution &resolution);
+QDataStream &operator>>(QDataStream &ds, GlobalGameSettings::Resolution &resolution);
 QDataStream &operator<<(QDataStream &ds, const Sprite &sprite);
 QDataStream &operator>>(QDataStream &ds, Sprite &sprite);
 QDataStream &operator<<(QDataStream &ds, const Sound &sound);

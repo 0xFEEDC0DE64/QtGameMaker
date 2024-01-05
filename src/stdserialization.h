@@ -1,11 +1,13 @@
 #pragma once
 
-#include <QDataStream>
 #include <array>
 #include <list>
 #include <vector>
 #include <map>
 #include <variant>
+#include <optional>
+
+#include <QDataStream>
 
 template<typename T, std::size_t Tsize>
 QDataStream &operator<<(QDataStream &ds, const std::array<T, Tsize> &array)
@@ -147,6 +149,36 @@ QDataStream &operator>>(QDataStream &ds, std::variant<T...> &variant)
         detail::variantUnpacker<T, T...>...
     };
     variant = funcs[index](ds);
+
+    return ds;
+}
+
+template<typename T>
+QDataStream &operator<<(QDataStream &ds, const std::optional<T> &optional)
+{
+    {
+        bool hasValue = optional.has_value();
+        ds << hasValue;
+    }
+    if (optional)
+        ds << *optional;
+    return ds;
+}
+
+template<typename T>
+QDataStream &operator>>(QDataStream &ds, std::optional<T> &optional)
+{
+    bool hasValue;
+    ds >> hasValue;
+
+    if (hasValue)
+    {
+        T entry;
+        ds >> entry;
+        optional = std::move(entry);
+    }
+    else
+        optional = std::nullopt;
 
     return ds;
 }
