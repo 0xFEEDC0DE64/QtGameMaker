@@ -12,6 +12,7 @@
 
 struct GlobalGameSettings
 {
+    // Graphics settings
     bool startInFullscreenMode{};
     struct FixedScale {
         int percent{100};
@@ -32,11 +33,57 @@ struct GlobalGameSettings
     bool displayCursor{true};
     bool freezeWhenFocusLost{};
     bool disableScreensaver{true};
-    struct Resolution {
 
+    // Resolution settings
+    struct ScreenSetting {
+        enum class ColorDepth {
+            NoChange,
+            _16bit,
+            _32bit
+        };
+        ColorDepth colorDepth;
+        enum class Resolution {
+            NoChange,
+            _320x240,
+            _640x480,
+            _800x600,
+            _1024x768,
+            _1280x1024,
+            _1600x1200
+        };
+        Resolution resolution;
+        enum class Frequency {
+            NoChange,
+            _60,
+            _70,
+            _85,
+            _100,
+            _120
+        };
+        Frequency frequency;
     };
-    std::optional<Resolution> resolution;
+    std::optional<ScreenSetting> screenSetting;
     bool vsync{};
+
+    // Other settings
+    bool letEscEndGame{true};
+    bool treatCloseButtonAsEsc{true};
+    bool letF1ShowGameInformation{true};
+    bool letF4SwitchBetweenScreenModes{true};
+    bool letF5SaveF6LoadGame{true};
+    bool letF9TakeScreenshot{true};
+    enum class Priority {
+        Normal, High, Highest
+    };
+    Priority priority;
+    int major{1};
+    int minor{};
+    int release{};
+    int build{};
+    QString company;
+    QString product;
+    QString copyright;
+    QString description;
 };
 
 struct Sprite

@@ -27,6 +27,7 @@ INCLUDEPATH += \
 HEADERS += \
     src/closeeventfilter.h \
     src/editor/dialogs/genericcodeeditordialog.h \
+    src/editor/dialogs/transparentbackgroundsettingsdialog.h \
     src/editor/editorguiutils.h \
     src/editor/roomscene.h \
     src/editor/widgets/actiondragwidget.h \
@@ -88,6 +89,7 @@ HEADERS += \
 SOURCES += \
     src/closeeventfilter.cpp \
     src/editor/dialogs/genericcodeeditordialog.cpp \
+    src/editor/dialogs/transparentbackgroundsettingsdialog.cpp \
     src/editor/editorguiutils.cpp \
     src/editor/roomscene.cpp \
     src/editor/widgets/actiondragwidget.cpp \
@@ -146,6 +148,7 @@ SOURCES += \
     src/projectserialization.cpp
 
 FORMS += \
+    src/editor/dialogs/transparentbackgroundsettingsdialog.ui \
     src/editor/mainwindow.ui \
     src/editor/dialogs/addeventdialog.ui \
     src/editor/dialogs/backgroundpropertiesdialog.ui \

@@ -56,6 +56,7 @@ private slots:
     void showProperties();
     void findResource();
     void showObjectInformation();
+    void transparentBackgroundSettings();
 private:
     template<typename T>
     void createFor();

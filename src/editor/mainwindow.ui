@@ -61,7 +61,7 @@
      <x>0</x>
      <y>0</y>
      <width>1366</width>
-     <height>20</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -112,6 +112,7 @@
     <addaction name="actionCollapseResourceTree"/>
     <addaction name="separator"/>
     <addaction name="actionShowObjectInformation"/>
+    <addaction name="actionTransparentBackgroundSettings"/>
    </widget>
    <widget class="QMenu" name="menuResources">
     <property name="title">
@@ -829,6 +830,11 @@
    </property>
    <property name="text">
     <string>Ta&amp;bbed view</string>
+   </property>
+  </action>
+  <action name="actionTransparentBackgroundSettings">
+   <property name="text">
+    <string>&amp;Transparent Background Settings</string>
    </property>
   </action>
  </widget>

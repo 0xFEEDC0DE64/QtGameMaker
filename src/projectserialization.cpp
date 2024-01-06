@@ -15,8 +15,23 @@ QDataStream &operator<<(QDataStream &ds, const GlobalGameSettings &globalGameSet
        << globalGameSettings.displayCursor
        << globalGameSettings.freezeWhenFocusLost
        << globalGameSettings.disableScreensaver
-       << globalGameSettings.resolution
-       << globalGameSettings.vsync;
+       << globalGameSettings.screenSetting
+       << globalGameSettings.vsync
+       << globalGameSettings.letEscEndGame
+       << globalGameSettings.treatCloseButtonAsEsc
+       << globalGameSettings.letF1ShowGameInformation
+       << globalGameSettings.letF4SwitchBetweenScreenModes
+       << globalGameSettings.letF5SaveF6LoadGame
+       << globalGameSettings.letF9TakeScreenshot
+       << globalGameSettings.priority
+       << globalGameSettings.major
+       << globalGameSettings.minor
+       << globalGameSettings.release
+       << globalGameSettings.build
+       << globalGameSettings.company
+       << globalGameSettings.product
+       << globalGameSettings.copyright
+       << globalGameSettings.description;
     return ds;
 }
 
@@ -33,8 +48,23 @@ QDataStream &operator>>(QDataStream &ds, GlobalGameSettings &globalGameSettings)
        >> globalGameSettings.displayCursor
        >> globalGameSettings.freezeWhenFocusLost
        >> globalGameSettings.disableScreensaver
-       >> globalGameSettings.resolution
-       >> globalGameSettings.vsync;
+       >> globalGameSettings.screenSetting
+       >> globalGameSettings.vsync
+       >> globalGameSettings.letEscEndGame
+       >> globalGameSettings.treatCloseButtonAsEsc
+       >> globalGameSettings.letF1ShowGameInformation
+       >> globalGameSettings.letF4SwitchBetweenScreenModes
+       >> globalGameSettings.letF5SaveF6LoadGame
+       >> globalGameSettings.letF9TakeScreenshot
+       >> globalGameSettings.priority
+       >> globalGameSettings.major
+       >> globalGameSettings.minor
+       >> globalGameSettings.release
+       >> globalGameSettings.build
+       >> globalGameSettings.company
+       >> globalGameSettings.product
+       >> globalGameSettings.copyright
+       >> globalGameSettings.description;
     return ds;
 }
 
@@ -78,17 +108,19 @@ QDataStream &operator>>(QDataStream &ds, GlobalGameSettings::FullScale &fullScal
     return ds;
 }
 
-QDataStream &operator<<(QDataStream &ds, const GlobalGameSettings::Resolution &resolution)
+QDataStream &operator<<(QDataStream &ds, const GlobalGameSettings::ScreenSetting &screenSetting)
 {
-    Q_UNUSED(resolution);
-    //ds << resolution.;
+    ds << screenSetting.colorDepth
+       << screenSetting.resolution
+       << screenSetting.frequency;
     return ds;
 }
 
-QDataStream &operator>>(QDataStream &ds, GlobalGameSettings::Resolution &resolution)
+QDataStream &operator>>(QDataStream &ds, GlobalGameSettings::ScreenSetting &screenSetting)
 {
-    Q_UNUSED(resolution);
-    //ds >> resolution.;
+    ds >> screenSetting.colorDepth
+       >> screenSetting.resolution
+       >> screenSetting.frequency;
     return ds;
 }
 

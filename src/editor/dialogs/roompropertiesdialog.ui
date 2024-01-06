@@ -101,7 +101,7 @@
        <enum>QTabWidget::West</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tabObjects">
        <attribute name="title">
@@ -133,8 +133,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>419</width>
-             <height>333</height>
+             <width>402</width>
+             <height>297</height>
             </rect>
            </property>
            <property name="alignment">
@@ -326,7 +326,7 @@
           <item>
            <widget class="QPushButton" name="pushButtonCreationCode">
             <property name="text">
-             <string>CreationCode</string>
+             <string>C&amp;reationCode</string>
             </property>
             <property name="icon">
              <iconset resource="../resources_editor.qrc">
@@ -402,8 +402,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>459</width>
-             <height>482</height>
+             <width>473</width>
+             <height>478</height>
             </rect>
            </property>
           </widget>

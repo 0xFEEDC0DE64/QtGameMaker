@@ -330,7 +330,7 @@
                <item>
                 <widget class="QRadioButton" name="radioButtonResolution1600x1200">
                  <property name="text">
-                  <string>RadioButton</string>
+                  <string>1600x1200</string>
                  </property>
                 </widget>
                </item>

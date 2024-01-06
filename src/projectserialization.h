@@ -12,8 +12,8 @@ QDataStream &operator<<(QDataStream &ds, const GlobalGameSettings::KeepAspectRat
 QDataStream &operator>>(QDataStream &ds, GlobalGameSettings::KeepAspectRatio &keepAspectRatio);
 QDataStream &operator<<(QDataStream &ds, const GlobalGameSettings::FullScale &fullScale);
 QDataStream &operator>>(QDataStream &ds, GlobalGameSettings::FullScale &fullScale);
-QDataStream &operator<<(QDataStream &ds, const GlobalGameSettings::Resolution &resolution);
-QDataStream &operator>>(QDataStream &ds, GlobalGameSettings::Resolution &resolution);
+QDataStream &operator<<(QDataStream &ds, const GlobalGameSettings::ScreenSetting &screenSetting);
+QDataStream &operator>>(QDataStream &ds, GlobalGameSettings::ScreenSetting &screenSetting);
 QDataStream &operator<<(QDataStream &ds, const Sprite &sprite);
 QDataStream &operator>>(QDataStream &ds, Sprite &sprite);
 QDataStream &operator<<(QDataStream &ds, const Sound &sound);

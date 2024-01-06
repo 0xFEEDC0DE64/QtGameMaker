@@ -24,6 +24,7 @@
 #include "dialogs/objectpropertiesdialog.h"
 #include "dialogs/roompropertiesdialog.h"
 #include "dialogs/objectinformationdialog.h"
+#include "dialogs/transparentbackgroundsettingsdialog.h"
 #include "dialogs/gameinformationdialog.h"
 #include "dialogs/globalgamesettingsdialog.h"
 #include "dialogs/extensionpackagesdialog.h"
@@ -103,6 +104,7 @@ MainWindow::MainWindow(const QString &filePath, QWidget *parent) :
     connect(m_ui->actionProperties, &QAction::triggered, this, &MainWindow::showProperties);
     connect(m_ui->actionFindResource, &QAction::triggered, this, &MainWindow::findResource);
     connect(m_ui->actionShowObjectInformation, &QAction::triggered, this, &MainWindow::showObjectInformation);
+    connect(m_ui->actionTransparentBackgroundSettings, &QAction::triggered, this, &MainWindow::transparentBackgroundSettings);
     connect(m_ui->actionCreateSprite, &QAction::triggered, this, &MainWindow::createFor<Sprite>);
     connect(m_ui->actionCreateSound, &QAction::triggered, this, &MainWindow::createFor<Sound>);
     connect(m_ui->actionCreateBackground, &QAction::triggered, this, &MainWindow::createFor<Background>);
@@ -712,6 +714,12 @@ void MainWindow::findResource()
 void MainWindow::showObjectInformation()
 {
     openOrActivateWindow<ObjectInformationDialog>(m_objectInformationWindow, m_project);
+}
+
+void MainWindow::transparentBackgroundSettings()
+{
+    TransparentBackgroundSettingsDialog dialog{this};
+    dialog.exec();
 }
 
 template<typename T>
