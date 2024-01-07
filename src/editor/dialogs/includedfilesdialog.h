@@ -16,6 +16,9 @@ public:
     explicit IncludedFilesDialog(ProjectContainer &project, QWidget *parent = nullptr);
     ~IncludedFilesDialog();
 
+private slots:
+    void addPressed();
+
 private:
     const std::unique_ptr<Ui::IncludedFilesDialog> m_ui;
 

@@ -65,7 +65,9 @@ private slots:
     void showGlobalGameSettings();
     void showExtensionPackages();
     void showDefineConstants();
+public slots:
     void showDefineTriggers();
+private slots:
     void showIncludedFiles();
     void runGame();
     void debugGame();

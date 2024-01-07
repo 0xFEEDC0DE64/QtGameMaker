@@ -13,13 +13,14 @@ class QMenu;
 namespace Ui { class PathPropertiesDialog; }
 class ProjectTreeModel;
 class PathPointsModel;
+class MainWindow;
 
 class PathPropertiesDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit PathPropertiesDialog(Path &path, ProjectTreeModel &projectModel, QWidget *parent = nullptr);
+    explicit PathPropertiesDialog(Path &path, ProjectTreeModel &projectModel, MainWindow &mainWindow);
     ~PathPropertiesDialog();
 
     void accept() override;

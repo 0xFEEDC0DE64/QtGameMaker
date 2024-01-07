@@ -7,11 +7,15 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>462</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Included Files</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../resources_editor.qrc">
+    <normaloff>:/qtgameengine/icons/included-files.png</normaloff>:/qtgameengine/icons/included-files.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0">
    <item>

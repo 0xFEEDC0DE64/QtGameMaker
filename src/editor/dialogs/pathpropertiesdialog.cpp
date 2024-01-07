@@ -12,9 +12,10 @@
 #include "projectcontainer.h"
 #include "models/projecttreemodel.h"
 #include "models/pathpointsmodel.h"
+#include "mainwindow.h"
 
-PathPropertiesDialog::PathPropertiesDialog(Path &path, ProjectTreeModel &projectModel, QWidget *parent) :
-    QDialog{parent},
+PathPropertiesDialog::PathPropertiesDialog(Path &path, ProjectTreeModel &projectModel, MainWindow &mainWindow) :
+    QDialog{&mainWindow},
     m_ui{std::make_unique<Ui::PathPropertiesDialog>()},
     m_path{path},
     m_projectModel{projectModel},

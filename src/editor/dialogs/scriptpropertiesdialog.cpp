@@ -8,9 +8,10 @@
 
 #include "projectcontainer.h"
 #include "models/projecttreemodel.h"
+#include "mainwindow.h"
 
-ScriptPropertiesDialog::ScriptPropertiesDialog(Script &script, ProjectTreeModel &projectModel, QWidget *parent) :
-    CodeEditorDialog{tr("Script Properties: %0").arg(script.name), parent},
+ScriptPropertiesDialog::ScriptPropertiesDialog(Script &script, ProjectTreeModel &projectModel, MainWindow &mainWindow) :
+    CodeEditorDialog{tr("Script Properties: %0").arg(script.name), &mainWindow},
     m_script{script},
     m_projectModel{projectModel},
     m_lineEditName{new QLineEdit{this}}

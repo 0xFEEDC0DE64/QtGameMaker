@@ -5,7 +5,6 @@
 #include <QDrag>
 #include <QMimeData>
 
-#include "projectcontainer.h"
 #include "projectserialization.h"
 #include "stdserialization.h"
 
@@ -39,7 +38,7 @@ void ActionDragWidget::mouseMoveEvent(QMouseEvent *event)
     QMimeData *mimeData = new QMimeData;
     QByteArray encoded;
     QDataStream stream(&encoded, QDataStream::WriteOnly);
-    stream << Action{ExecuteCodeAction{ .script = "hatschi" }};
+    stream << m_action;
     mimeData->setData("custom", encoded);
     drag->setMimeData(mimeData);
 

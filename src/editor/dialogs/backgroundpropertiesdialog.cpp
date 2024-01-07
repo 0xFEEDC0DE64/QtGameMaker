@@ -8,9 +8,10 @@
 #include "projectcontainer.h"
 #include "models/projecttreemodel.h"
 #include "imageeditordialog.h"
+#include "mainwindow.h"
 
-BackgroundPropertiesDialog::BackgroundPropertiesDialog(Background &background, ProjectTreeModel &projectModel, QWidget *parent) :
-    QDialog{parent},
+BackgroundPropertiesDialog::BackgroundPropertiesDialog(Background &background, ProjectTreeModel &projectModel, MainWindow &mainWindow) :
+    QDialog{&mainWindow},
     m_ui{std::make_unique<Ui::BackgroundPropertiesDialog>()},
     m_background{background},
     m_projectModel{projectModel},

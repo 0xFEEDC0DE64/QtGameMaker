@@ -13,19 +13,184 @@
   <property name="windowTitle">
    <string>Game Information</string>
   </property>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>50</x>
-     <y>50</y>
-     <width>201</width>
-     <height>16</height>
-    </rect>
-   </property>
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1">
+   <item>
+    <widget class="QMenuBar" name="menuBar">
+     <widget class="QMenu" name="menuFile">
+      <property name="title">
+       <string>&amp;File</string>
+      </property>
+      <addaction name="actionNew"/>
+      <addaction name="actionOpen"/>
+      <addaction name="separator"/>
+      <addaction name="actionSave"/>
+      <addaction name="actionSaveAs"/>
+      <addaction name="separator"/>
+      <addaction name="actionPrint"/>
+      <addaction name="actionPrintPreview"/>
+      <addaction name="actionExportPDF"/>
+     </widget>
+     <widget class="QMenu" name="menuEdit">
+      <property name="title">
+       <string>&amp;Edit</string>
+      </property>
+      <addaction name="actionUndo"/>
+      <addaction name="actionRedo"/>
+      <addaction name="separator"/>
+      <addaction name="actionCut"/>
+      <addaction name="actionCopy"/>
+      <addaction name="actionPaste"/>
+     </widget>
+     <widget class="QMenu" name="menuFormat">
+      <property name="title">
+       <string>F&amp;ormat</string>
+      </property>
+      <addaction name="actionBold"/>
+      <addaction name="actionItalic"/>
+      <addaction name="actionUnderline"/>
+      <addaction name="separator"/>
+      <addaction name="actionLeft"/>
+      <addaction name="actionCenter"/>
+      <addaction name="actionRight"/>
+      <addaction name="actionIndent"/>
+      <addaction name="actionUnindent"/>
+      <addaction name="separator"/>
+      <addaction name="actionColor"/>
+      <addaction name="separator"/>
+      <addaction name="actionChecked"/>
+     </widget>
+     <addaction name="menuFile"/>
+     <addaction name="menuEdit"/>
+     <addaction name="menuFormat"/>
+    </widget>
+   </item>
+   <item>
+    <widget class="QToolBar" name="toolBar">
+    <addaction name="actionNew"/>
+    <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionPrint"/>
+    <addaction name="actionExportPDF"/>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Not yet implemented</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+  <action name="actionNew">
    <property name="text">
-    <string>Not yet implemented</string>
+    <string>&amp;New</string>
    </property>
-  </widget>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>&amp;Open...</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>&amp;Save</string>
+   </property>
+  </action>
+  <action name="actionSaveAs">
+   <property name="text">
+    <string>Save &amp;As...</string>
+   </property>
+  </action>
+  <action name="actionPrint">
+   <property name="text">
+    <string>&amp;Print...</string>
+   </property>
+  </action>
+  <action name="actionPrintPreview">
+   <property name="text">
+    <string>Print Preview...</string>
+   </property>
+  </action>
+  <action name="actionExportPDF">
+   <property name="text">
+    <string>&amp;Export PDF...</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="text">
+    <string>&amp;Undo</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="text">
+    <string>&amp;Redo</string>
+   </property>
+  </action>
+  <action name="actionCut">
+   <property name="text">
+    <string>Cu&amp;t</string>
+   </property>
+  </action>
+  <action name="actionCopy">
+   <property name="text">
+    <string>&amp;Copy</string>
+   </property>
+  </action>
+  <action name="actionPaste">
+   <property name="text">
+    <string>&amp;Paste</string>
+   </property>
+  </action>
+  <action name="actionBold">
+   <property name="text">
+    <string>&amp;Bold</string>
+   </property>
+  </action>
+  <action name="actionItalic">
+   <property name="text">
+    <string>&amp;Italic</string>
+   </property>
+  </action>
+  <action name="actionUnderline">
+   <property name="text">
+    <string>&amp;Underline</string>
+   </property>
+  </action>
+  <action name="actionLeft">
+   <property name="text">
+    <string>&amp;Left</string>
+   </property>
+  </action>
+  <action name="actionCenter">
+   <property name="text">
+    <string>C&amp;enter</string>
+   </property>
+  </action>
+  <action name="actionRight">
+   <property name="text">
+    <string>&amp;Justify</string>
+   </property>
+  </action>
+  <action name="actionIndent">
+   <property name="text">
+    <string>&amp;Indent</string>
+   </property>
+  </action>
+  <action name="actionUnindent">
+   <property name="text">
+    <string>&amp;Unindent</string>
+   </property>
+  </action>
+  <action name="actionColor">
+   <property name="text">
+    <string>&amp;Color</string>
+   </property>
+  </action>
+  <action name="actionChecked">
+   <property name="text">
+    <string>Chec&amp;ked</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

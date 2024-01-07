@@ -122,6 +122,10 @@
        <property name="text">
         <string>&amp;Trigger</string>
        </property>
+       <property name="icon">
+        <iconset resource="../resources_editor.qrc">
+         <normaloff>:/qtgameengine/icons/trigger.png</normaloff>:/qtgameengine/icons/trigger.png</iconset>
+       </property>
       </widget>
      </item>
     </layout>

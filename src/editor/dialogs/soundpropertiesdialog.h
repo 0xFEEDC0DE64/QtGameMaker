@@ -9,13 +9,14 @@
 namespace Ui { class SoundPropertiesDialog; }
 struct Sound;
 class ProjectTreeModel;
+class MainWindow;
 
 class SoundPropertiesDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit SoundPropertiesDialog(Sound &sound, ProjectTreeModel &projectModel, QWidget *parent = nullptr);
+    explicit SoundPropertiesDialog(Sound &sound, ProjectTreeModel &projectModel, MainWindow &mainWindow);
     ~SoundPropertiesDialog();
 
     void accept() override;

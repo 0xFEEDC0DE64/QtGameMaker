@@ -277,9 +277,14 @@ struct Room
     std::vector<Object> objects;
 };
 
+struct IncludedFile {
+
+};
+
 struct ProjectContainer
 {
     GlobalGameSettings globalGameSettings;
+
     std::list<Sprite> sprites;
     std::list<Sound> sounds;
     std::list<Background> backgrounds;
@@ -289,6 +294,8 @@ struct ProjectContainer
     std::list<TimeLine> timeLines;
     std::list<Object> objects;
     std::list<Room> rooms;
+
+    std::list<IncludedFile> includedFiles;
 
     template<typename T> std::list<T> &containerFor();
     template<typename T> const std::list<T> &containerFor() const;

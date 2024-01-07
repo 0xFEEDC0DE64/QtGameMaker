@@ -49,6 +49,7 @@
         <file>icons/grid.png</file>
         <file>icons/help.png</file>
         <file>icons/import-resources.png</file>
+        <file>icons/included-files.png</file>
         <file>icons/info.png</file>
         <file>icons/isometric.png</file>
         <file>icons/lock.png</file>
@@ -90,6 +91,7 @@
         <file>icons/tile.png</file>
         <file>icons/timeline-file.png</file>
         <file>icons/timeline.png</file>
+        <file>icons/trigger.png</file>
         <file>icons/undo.png</file>
         <file>icons/unlock.png</file>
         <file>icons/blue-arrow-down.png</file>

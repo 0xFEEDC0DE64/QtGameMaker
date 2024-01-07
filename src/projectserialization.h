@@ -44,5 +44,7 @@ QDataStream &operator<<(QDataStream &ds, const Room::Object &object);
 QDataStream &operator>>(QDataStream &ds, Room::Object &object);
 QDataStream &operator<<(QDataStream &ds, const Room &room);
 QDataStream &operator>>(QDataStream &ds, Room &room);
+QDataStream &operator<<(QDataStream &ds, const IncludedFile &includedFile);
+QDataStream &operator>>(QDataStream &ds, IncludedFile &includedFile);
 QDataStream &operator<<(QDataStream &ds, const ProjectContainer &project);;
 QDataStream &operator>>(QDataStream &ds, ProjectContainer &project);;

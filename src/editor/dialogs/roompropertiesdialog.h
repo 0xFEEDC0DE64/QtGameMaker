@@ -15,13 +15,14 @@ struct Sprite;
 struct Object;
 class ProjectTreeModel;
 class RoomScene;
+class MainWindow;
 
 class RoomPropertiesDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit RoomPropertiesDialog(Room &room, ProjectTreeModel &projectModel, QWidget *parent = nullptr);
+    explicit RoomPropertiesDialog(Room &room, ProjectTreeModel &projectModel, MainWindow &mainWindow);
     ~RoomPropertiesDialog();
 
     void accept() override;

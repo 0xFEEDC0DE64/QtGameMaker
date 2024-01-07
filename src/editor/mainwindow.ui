@@ -634,6 +634,10 @@
    </property>
   </action>
   <action name="actionDefineTriggers">
+   <property name="icon">
+    <iconset resource="resources_editor.qrc">
+     <normaloff>:/qtgameengine/icons/trigger.png</normaloff>:/qtgameengine/icons/trigger.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Define Triggers...</string>
    </property>
@@ -642,6 +646,10 @@
    </property>
   </action>
   <action name="actionIncludedFiles">
+   <property name="icon">
+    <iconset resource="resources_editor.qrc">
+     <normaloff>:/qtgameengine/icons/included-files.png</normaloff>:/qtgameengine/icons/included-files.png</iconset>
+   </property>
    <property name="text">
     <string>Inc&amp;luded Files...</string>
    </property>

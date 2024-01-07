@@ -8,13 +8,14 @@
 namespace Ui { class BackgroundPropertiesDialog; }
 struct Background;
 class ProjectTreeModel;
+class MainWindow;
 
 class BackgroundPropertiesDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit BackgroundPropertiesDialog(Background &background, ProjectTreeModel &projectModel, QWidget *parent = nullptr);
+    explicit BackgroundPropertiesDialog(Background &background, ProjectTreeModel &projectModel, MainWindow &mainWindow);
     ~BackgroundPropertiesDialog();
 
     void accept() override;

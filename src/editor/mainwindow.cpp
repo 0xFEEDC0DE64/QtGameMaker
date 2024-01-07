@@ -232,7 +232,7 @@ void MainWindow::openPropertiesWindowFor(T &entry)
         return;
     }
 
-    auto dialog = new PropertiesDialogFor<T>{entry, *m_projectTreeModel, this};
+    auto dialog = new PropertiesDialogFor<T>{entry, *m_projectTreeModel, *this};
     auto subwindow = m_ui->mdiArea->addSubWindow(dialog);
     auto action = m_ui->menuWindow->addAction(dialog->windowTitle());
     m_actionGroupWindows->addAction(action);

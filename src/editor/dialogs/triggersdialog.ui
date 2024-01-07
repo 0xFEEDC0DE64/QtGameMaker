@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Triggers</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../resources_editor.qrc">
+    <normaloff>:/qtgameengine/icons/trigger.png</normaloff>:/qtgameengine/icons/trigger.png</iconset>
+  </property>
   <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">

@@ -3,13 +3,14 @@
 class QLineEdit;
 struct Script;
 class ProjectTreeModel;
+class MainWindow;
 
 class ScriptPropertiesDialog : public CodeEditorDialog
 {
     Q_OBJECT
 
 public:
-    ScriptPropertiesDialog(Script &script, ProjectTreeModel &projectModel, QWidget *parent = nullptr);
+    ScriptPropertiesDialog(Script &script, ProjectTreeModel &projectModel, MainWindow &mainWindow);
 
     void accept() override;
 

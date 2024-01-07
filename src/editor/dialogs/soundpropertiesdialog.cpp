@@ -9,9 +9,10 @@
 
 #include "projectcontainer.h"
 #include "models/projecttreemodel.h"
+#include "mainwindow.h"
 
-SoundPropertiesDialog::SoundPropertiesDialog(Sound &sound, ProjectTreeModel &projectModel, QWidget *parent) :
-    QDialog{parent},
+SoundPropertiesDialog::SoundPropertiesDialog(Sound &sound, ProjectTreeModel &projectModel, MainWindow &mainWindow) :
+    QDialog{&mainWindow},
     m_ui{std::make_unique<Ui::SoundPropertiesDialog>()},
     m_sound{sound},
     m_projectModel{projectModel},

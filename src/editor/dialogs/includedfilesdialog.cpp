@@ -3,6 +3,7 @@
 
 #include "projectcontainer.h"
 #include "models/includedfilesmodel.h"
+#include "dialogs/includedfilepropertiesdialog.h"
 
 IncludedFilesDialog::IncludedFilesDialog(ProjectContainer &project, QWidget *parent) :
     QDialog{parent},
@@ -18,6 +19,18 @@ IncludedFilesDialog::IncludedFilesDialog(ProjectContainer &project, QWidget *par
         button->setIcon(QIcon{":/qtgameengine/icons/delete.png"});
 
     m_ui->listView->setModel(m_model.get());
+
+    connect(m_ui->pushButtonAdd, &QAbstractButton::clicked, this, &IncludedFilesDialog::addPressed);
 }
 
 IncludedFilesDialog::~IncludedFilesDialog() = default;
+
+void IncludedFilesDialog::addPressed()
+{
+    IncludedFile includedFile;
+    IncludedFilePropertiesDialog dialog{includedFile, this};
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        // TODO
+    }
+}

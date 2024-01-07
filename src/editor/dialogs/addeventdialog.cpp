@@ -5,10 +5,12 @@
 #include <QMenu>
 
 #include "models/projecttreemodel.h"
+#include "mainwindow.h"
 
-AddEventDialog::AddEventDialog(ProjectTreeModel &projectModel, QWidget *parent) :
+AddEventDialog::AddEventDialog(ProjectTreeModel &projectModel, MainWindow &mainWindow, QWidget *parent) :
     QDialog{parent},
     m_projectModel{projectModel},
+    m_mainWindow{mainWindow},
     m_ui{std::make_unique<Ui::AddEventDialog>()}
 {
     m_ui->setupUi(this);
@@ -79,6 +81,12 @@ AddEventDialog::AddEventDialog(ProjectTreeModel &projectModel, QWidget *parent) 
             }
         });
         m_ui->pushButtonCollision->setMenu(menu);
+    }
+
+    {
+        auto menu = new QMenu;
+        menu->addAction(tr("Add/Modify Triggers..."), this, [this](){ m_mainWindow.showDefineTriggers(); reject(); });
+        m_ui->pushButtonTrigger->setMenu(menu);
     }
 }
 

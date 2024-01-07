@@ -6,9 +6,10 @@
 
 #include "projectcontainer.h"
 #include "models/projecttreemodel.h"
+#include "mainwindow.h"
 
-FontPropertiesDialog::FontPropertiesDialog(Font &font, ProjectTreeModel &projectModel, QWidget *parent) :
-    QDialog{parent},
+FontPropertiesDialog::FontPropertiesDialog(Font &font, ProjectTreeModel &projectModel, MainWindow &mainWindow) :
+    QDialog{&mainWindow},
     m_ui{std::make_unique<Ui::FontPropertiesDialog>()},
     m_font{font},
     m_projectModel{projectModel}

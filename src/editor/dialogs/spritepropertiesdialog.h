@@ -8,13 +8,14 @@
 namespace Ui { class SpritePropertiesDialog; }
 struct Sprite;
 class ProjectTreeModel;
+class MainWindow;
 
 class SpritePropertiesDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit SpritePropertiesDialog(Sprite &sprite, ProjectTreeModel &projectModel, QWidget *parent = nullptr);
+    explicit SpritePropertiesDialog(Sprite &sprite, ProjectTreeModel &projectModel, MainWindow &mainWindow);
     ~SpritePropertiesDialog();
 
     void accept() override;

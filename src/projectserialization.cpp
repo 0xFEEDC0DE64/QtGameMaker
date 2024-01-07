@@ -408,6 +408,20 @@ QDataStream &operator>>(QDataStream &ds, Room &room)
     return ds;
 }
 
+QDataStream &operator<<(QDataStream &ds, const IncludedFile &includedFile)
+{
+    Q_UNUSED(includedFile);
+    //ds << includedFile.;
+    return ds;
+}
+
+QDataStream &operator>>(QDataStream &ds, IncludedFile &includedFile)
+{
+    Q_UNUSED(includedFile);
+    //ds >> includedFile.;
+    return ds;
+}
+
 QDataStream &operator<<(QDataStream &ds, const ProjectContainer &project)
 {
     ds << project.globalGameSettings
@@ -419,7 +433,8 @@ QDataStream &operator<<(QDataStream &ds, const ProjectContainer &project)
        << project.fonts
        << project.timeLines
        << project.objects
-       << project.rooms;
+       << project.rooms
+       << project.includedFiles;
     return ds;
 }
 
@@ -434,6 +449,7 @@ QDataStream &operator>>(QDataStream &ds, ProjectContainer &project)
        >> project.fonts
        >> project.timeLines
        >> project.objects
-       >> project.rooms;
+       >> project.rooms
+       >> project.includedFiles;
     return ds;
 }

@@ -12,8 +12,8 @@
 #include "models/objecteventsmodel.h"
 #include "addeventdialog.h"
 
-ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel &projectModel, MainWindow *mainWindow) :
-    QDialog{mainWindow},
+ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel &projectModel, MainWindow &mainWindow) :
+    QDialog{&mainWindow},
     m_ui{std::make_unique<Ui::ObjectPropertiesDialog>()},
     m_object{object},
     m_projectModel{projectModel},
@@ -191,12 +191,6 @@ void ObjectPropertiesDialog::newSprite()
 
 void ObjectPropertiesDialog::editSprite()
 {
-    if (!m_mainWindow)
-    {
-        qCritical() << "no mainWindow available";
-        return;
-    }
-
     auto &sprites = m_projectModel.project()->sprites;
     const auto iter = std::find_if(std::begin(sprites), std::end(sprites),
                                    [&](const Sprite &sprite){ return sprite.name == m_spriteName; });
@@ -206,7 +200,7 @@ void ObjectPropertiesDialog::editSprite()
         return;
     }
 
-    m_mainWindow->openPropertiesWindowFor(*iter);
+    m_mainWindow.openPropertiesWindowFor(*iter);
 }
 
 void ObjectPropertiesDialog::showInformation()
@@ -216,7 +210,7 @@ void ObjectPropertiesDialog::showInformation()
 
 void ObjectPropertiesDialog::addEvent()
 {
-    AddEventDialog dialog{m_projectModel, this};
+    AddEventDialog dialog{m_projectModel, m_mainWindow, this};
     if (dialog.exec() == QDialog::Accepted)
         if (const auto &eventType = dialog.eventType())
             if (!m_eventsModel->addEvent(*eventType))
@@ -248,7 +242,7 @@ void ObjectPropertiesDialog::replaceEvent()
 
     std::variant<Object::EventType, QString> x = event->first;
 
-    AddEventDialog dialog{m_projectModel, this};
+    AddEventDialog dialog{m_projectModel, m_mainWindow, this};
     if (dialog.exec() == QDialog::Accepted)
         if (const auto &eventType = dialog.eventType())
         if (!m_eventsModel->changeEvent(event->first, *eventType))
@@ -432,7 +426,7 @@ void ObjectPropertiesDialog::setParent(const Object &object)
 {
     if (&m_object == &object)
     {
-        QMessageBox::warning(m_mainWindow, tr("This will create a loop in parents."), tr("This will create a loop in parents."));
+        QMessageBox::warning(this, tr("This will create a loop in parents."), tr("This will create a loop in parents."));
         return;
     }
 

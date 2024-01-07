@@ -13,9 +13,10 @@
 #include "roomscene.h"
 #include "editorguiutils.h"
 #include "genericcodeeditordialog.h"
+#include "mainwindow.h"
 
-RoomPropertiesDialog::RoomPropertiesDialog(Room &room, ProjectTreeModel &projectModel, QWidget *parent) :
-    QDialog{parent},
+RoomPropertiesDialog::RoomPropertiesDialog(Room &room, ProjectTreeModel &projectModel, MainWindow &mainWindow) :
+    QDialog{&mainWindow},
     m_ui{std::make_unique<Ui::RoomPropertiesDialog>()},
     m_room{room},
     m_projectModel{projectModel},

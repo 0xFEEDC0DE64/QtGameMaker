@@ -9,13 +9,14 @@
 namespace Ui { class TimeLinePropertiesDialog; }
 class ProjectTreeModel;
 class TimelineMomentsModel;
+class MainWindow;
 
 class TimeLinePropertiesDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit TimeLinePropertiesDialog(TimeLine &timeLine, ProjectTreeModel &projectModel, QWidget *parent = nullptr);
+    explicit TimeLinePropertiesDialog(TimeLine &timeLine, ProjectTreeModel &projectModel, MainWindow &mainWindow);
     ~TimeLinePropertiesDialog();
 
     void accept() override;

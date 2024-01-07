@@ -11,9 +11,10 @@
 #include "models/projecttreemodel.h"
 #include "models/timelinemomentsmodel.h"
 #include "dialogs/deletemomentsdialog.h"
+#include "mainwindow.h"
 
-TimeLinePropertiesDialog::TimeLinePropertiesDialog(TimeLine &timeLine, ProjectTreeModel &projectModel, QWidget *parent) :
-    QDialog{parent},
+TimeLinePropertiesDialog::TimeLinePropertiesDialog(TimeLine &timeLine, ProjectTreeModel &projectModel, MainWindow &mainWindow) :
+    QDialog{&mainWindow},
     m_ui{std::make_unique<Ui::TimeLinePropertiesDialog>()},
     m_timeLine{timeLine},
     m_projectModel{projectModel},

@@ -7,13 +7,14 @@
 namespace Ui { class FontPropertiesDialog; }
 struct Font;
 class ProjectTreeModel;
+class MainWindow;
 
 class FontPropertiesDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit FontPropertiesDialog(Font &font, ProjectTreeModel &projectModel, QWidget *parent = nullptr);
+    explicit FontPropertiesDialog(Font &font, ProjectTreeModel &projectModel, MainWindow &mainWindow);
     ~FontPropertiesDialog();
 
     void accept() override;

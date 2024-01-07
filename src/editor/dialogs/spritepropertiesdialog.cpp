@@ -10,9 +10,10 @@
 #include "models/projecttreemodel.h"
 #include "editspritedialog.h"
 #include "maskpropertiesdialog.h"
+#include "mainwindow.h"
 
-SpritePropertiesDialog::SpritePropertiesDialog(Sprite &sprite, ProjectTreeModel &projectModel, QWidget *parent) :
-    QDialog{parent},
+SpritePropertiesDialog::SpritePropertiesDialog(Sprite &sprite, ProjectTreeModel &projectModel, MainWindow &mainWindow) :
+    QDialog{&mainWindow},
     m_ui{std::make_unique<Ui::SpritePropertiesDialog>()},
     m_sprite{sprite},
     m_projectModel{projectModel},

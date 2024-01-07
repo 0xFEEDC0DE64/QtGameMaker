@@ -18,7 +18,7 @@ class ObjectPropertiesDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ObjectPropertiesDialog(Object &object, ProjectTreeModel &projectModel, MainWindow *mainWindow);
+    explicit ObjectPropertiesDialog(Object &object, ProjectTreeModel &projectModel, MainWindow &mainWindow);
     ~ObjectPropertiesDialog();
 
     void accept() override;
@@ -62,7 +62,7 @@ private:
 
     Object &m_object;
     ProjectTreeModel &m_projectModel;
-    MainWindow * const m_mainWindow;
+    MainWindow &m_mainWindow;
 
     Object::events_container_t m_events;
     Object::collision_events_container_t m_collisionEvents;
