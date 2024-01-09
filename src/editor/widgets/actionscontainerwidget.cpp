@@ -40,6 +40,11 @@ ActionsContainerWidget::ActionsContainerWidget(QWidget *parent) :
             emit changed();
         }
     });
+
+    m_ui->toolButtonMoveFixed->setAction(MoveFixedAction{});
+    m_ui->toolButtonMoveFree->setAction(MoveFreeAction{});
+    m_ui->toolButtonMoveTowards->setAction(MoveTowardsAction{});
+    m_ui->toolButtonExecuteCode->setAction(ExecuteCodeAction{});
 }
 
 ActionsContainerWidget::~ActionsContainerWidget() = default;

@@ -23,8 +23,10 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel 
     m_eventsModel{std::make_unique<ObjectEventsModel>(m_events, m_collisionEvents)},
     m_menuSprites{new QMenu{this}},
     m_menuParents{new QMenu{this}},
+    m_menuMaskSprites{new QMenu{this}},
     m_spriteName{object.spriteName},
-    m_parentName{object.parentName}
+    m_parentName{object.parentName},
+    m_maskSpriteName{object.maskSpriteName}
 {
     m_ui->setupUi(this);
 
@@ -38,9 +40,11 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel 
     m_ui->lineEditName->setText(m_object.name);
     m_ui->lineEditSprite->setText(m_spriteName.isEmpty() ? tr("<no sprite>") : m_spriteName);
     m_ui->lineEditParent->setText(m_parentName.isEmpty() ? tr("<no parent>") : m_parentName);
+    m_ui->lineEditMask->setText(m_maskSpriteName.isEmpty() ? tr("<same as sprite>") : m_maskSpriteName);
     updateSpritePreview();
     m_ui->toolButtonSprite->setMenu(m_menuSprites);
     m_ui->toolButtonParent->setMenu(m_menuParents);
+    m_ui->toolButtonMask->setMenu(m_menuMaskSprites);
     m_ui->checkBoxVisible->setChecked(m_object.visible);
     m_ui->checkBoxSolid->setChecked(m_object.solid);
     m_ui->spinBoxDepth->setValue(m_object.depth);
@@ -48,6 +52,7 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel 
 
     m_ui->lineEditSprite->setMenu(m_menuSprites);
     m_ui->lineEditParent->setMenu(m_menuParents);
+    m_ui->lineEditMask->setMenu(m_menuMaskSprites);
 
     m_ui->listViewEvents->setModel(m_eventsModel.get());
 
@@ -101,6 +106,8 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel 
             this, &ObjectPropertiesDialog::spritesMenuAboutToShow);
     connect(m_menuParents, &QMenu::aboutToShow,
             this, &ObjectPropertiesDialog::parentsMenuAboutToShow);
+    connect(m_menuMaskSprites, &QMenu::aboutToShow,
+            this, &ObjectPropertiesDialog::maskSpritesMenuAboutToShow);
 
     connect(m_ui->listViewEvents->selectionModel(), &QItemSelectionModel::currentChanged,
             this, &ObjectPropertiesDialog::currentEventChanged);
@@ -142,6 +149,7 @@ void ObjectPropertiesDialog::accept()
     m_object.depth = m_ui->spinBoxDepth->value();
     m_object.persistent = m_ui->checkBoxPersistent->isChecked();
     m_object.parentName = m_parentName;
+    m_object.maskSpriteName = m_maskSpriteName;
     m_object.events = std::move(m_events);
     m_object.collisionEvents = std::move(m_collisionEvents);
 
@@ -284,18 +292,24 @@ void ObjectPropertiesDialog::objectNameChanged(const Object &object, const QStri
 
 void ObjectPropertiesDialog::spriteNameChanged(const Sprite &sprite, const QString &oldName)
 {
-    if (m_spriteName.isEmpty())
-        return;
-
-    if (m_spriteName != oldName)
-        return;
-
-    m_spriteName = sprite.name;
+    if (!m_spriteName.isEmpty() && m_spriteName == oldName)
     {
-        QSignalBlocker blocker{m_ui->lineEditSprite};
-        m_ui->lineEditSprite->setText(sprite.name);
+        m_spriteName = sprite.name;
+        {
+            QSignalBlocker blocker{m_ui->lineEditSprite};
+            m_ui->lineEditSprite->setText(sprite.name);
+        }
+        updateSpritePreview();
     }
-    updateSpritePreview();
+
+    if (!m_maskSpriteName.isEmpty() && m_maskSpriteName == oldName)
+    {
+        m_maskSpriteName = sprite.name;
+        {
+            QSignalBlocker blocker{m_ui->lineEditMask};
+            m_ui->lineEditMask->setText(sprite.name);
+        }
+    }
 }
 
 void ObjectPropertiesDialog::objectAboutToBeRemoved(const Object &object)
@@ -317,6 +331,15 @@ void ObjectPropertiesDialog::spriteAboutToBeRemoved(const Sprite &sprite)
             m_ui->lineEditSprite->setText(tr("<no sprite>"));
         }
         m_ui->labelSpritePreview->setPixmap(QPixmap{});
+    }
+
+    if (!m_maskSpriteName.isEmpty() && m_maskSpriteName == sprite.name)
+    {
+        m_maskSpriteName.clear();
+        {
+            QSignalBlocker blocker{m_ui->lineEditMask};
+            m_ui->lineEditMask->setText(tr("<same as sprite>"));
+        }
     }
 }
 
@@ -363,6 +386,17 @@ void ObjectPropertiesDialog::parentsMenuAboutToShow()
         m_menuParents->addAction(icon, object.name, this,
                                  [&object,this](){ setParent(object); });
     }
+}
+
+void ObjectPropertiesDialog::maskSpritesMenuAboutToShow()
+{
+    m_menuMaskSprites->clear();
+    m_menuMaskSprites->addAction(tr("<same as sprite>"), this, &ObjectPropertiesDialog::clearMaskSprite);
+    for (const auto &sprite : m_projectModel.project()->sprites)
+        m_menuMaskSprites->addAction(sprite.pixmaps.empty() ? QPixmap{} : sprite.pixmaps.front(),
+                                     sprite.name,
+                                     this,
+                                     [&sprite,this](){ setMaskSprite(sprite); });
 }
 
 void ObjectPropertiesDialog::currentEventChanged(const QModelIndex &index)
@@ -432,6 +466,20 @@ void ObjectPropertiesDialog::setParent(const Object &object)
 
     m_parentName = object.name;
     m_ui->lineEditParent->setText(object.name);
+    changed();
+}
+
+void ObjectPropertiesDialog::clearMaskSprite()
+{
+    m_maskSpriteName.clear();
+    m_ui->lineEditMask->setText(tr("<same as sprite>"));
+    changed();
+}
+
+void ObjectPropertiesDialog::setMaskSprite(const Sprite &sprite)
+{
+    m_maskSpriteName = sprite.name;
+    m_ui->lineEditMask->setText(sprite.name);
     changed();
 }
 

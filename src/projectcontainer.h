@@ -232,26 +232,8 @@ struct Object
     int depth{};
     bool persistent{};
     QString parentName;
-    events_container_t events {
-        {
-            EventType::Create,
-            ActionsContainer {
-                Action { MoveFixedAction{} },
-                Action { MoveFreeAction{} },
-                Action { MoveTowardsAction{} },
-                Action { ExecuteCodeAction{} }
-            }
-        },
-        {
-            EventType::Destroy,
-            ActionsContainer {
-                Action { ExecuteCodeAction{} },
-                Action { MoveTowardsAction{} },
-                Action { MoveFreeAction{} },
-                Action { MoveFixedAction{} }
-            }
-        }
-    };
+    QString maskSpriteName;
+    events_container_t events;
     collision_events_container_t collisionEvents;
 };
 

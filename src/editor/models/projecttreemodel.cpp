@@ -283,16 +283,21 @@ template<> void ProjectTreeModel::onBeforeRemove<Sprite>(const Sprite &sprite)
 {
     for (auto iter = std::begin(m_project->objects); iter != std::end(m_project->objects); iter++)
     {
-        if (iter->spriteName != sprite.name)
-            continue;
+        if (iter->spriteName == sprite.name)
+        {
+            auto oldSpriteName = std::move(iter->spriteName);
+            iter->spriteName.clear();
 
-        auto oldSpriteName = std::move(iter->spriteName);
-        iter->spriteName.clear();
+            const auto index = this->index(std::distance(std::begin(m_project->objects), iter), 0, rootFor<Object>());
+            emit dataChanged(index, index, {Qt::DecorationRole});
 
-        const auto index = this->index(std::distance(std::begin(m_project->objects), iter), 0, rootFor<Object>());
-        emit dataChanged(index, index, {Qt::DecorationRole});
+            emit objectSpriteNameChanged(*iter, std::move(oldSpriteName));
+        }
 
-        emit objectSpriteNameChanged(*iter, std::move(oldSpriteName));
+        if (iter->maskSpriteName == sprite.name)
+        {
+            iter->maskSpriteName.clear();
+        }
     }
 }
 
@@ -330,17 +335,22 @@ template<> void ProjectTreeModel::onAfterRename<Sprite>(const Sprite &sprite, co
 {
     for (auto &object : m_project->objects)
     {
-        if (object.spriteName != oldName)
-            continue;
+        if (object.spriteName == oldName)
+        {
+            auto oldSpriteName = std::move(object.spriteName);
 
-        auto oldSpriteName = std::move(object.spriteName);
+            object.spriteName = sprite.name;
 
-        object.spriteName = sprite.name;
+//            const auto index = this->index(std::distance(std::begin(m_project->objects), iter), 0, rootFor<Object>());
+//            emit dataChanged(index, index, {Qt::DecorationRole});
 
-//        const auto index = this->index(std::distance(std::begin(m_project->objects), iter), 0, rootFor<Object>());
-//        emit dataChanged(index, index, {Qt::DecorationRole});
+            emit objectSpriteNameChanged(object, std::move(oldSpriteName));
+        }
 
-        emit objectSpriteNameChanged(object, std::move(oldSpriteName));
+        if (object.maskSpriteName == oldName)
+        {
+            object.maskSpriteName = sprite.name;
+        }
     }
 }
 

@@ -341,6 +341,7 @@ QDataStream &operator<<(QDataStream &ds, const Object &object)
        << object.depth
        << object.persistent
        << object.parentName
+       << object.maskSpriteName
        << object.events
        << object.collisionEvents;
     return ds;
@@ -355,6 +356,7 @@ QDataStream &operator>>(QDataStream &ds, Object &object)
        >> object.depth
        >> object.persistent
        >> object.parentName
+       >> object.maskSpriteName
        >> object.events
        >> object.collisionEvents;
     return ds;

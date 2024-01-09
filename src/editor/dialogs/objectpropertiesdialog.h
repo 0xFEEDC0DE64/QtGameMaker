@@ -43,6 +43,7 @@ private slots:
 
     void spritesMenuAboutToShow();
     void parentsMenuAboutToShow();
+    void maskSpritesMenuAboutToShow();
     void currentEventChanged(const QModelIndex &index);
     void eventsContextMenuRequested(const QPoint &pos);
     void rowsInserted(const QModelIndex &parent, int first);
@@ -52,6 +53,9 @@ private slots:
 
     void clearParent();
     void setParent(const Object &object);
+
+    void clearMaskSprite();
+    void setMaskSprite(const Sprite &sprite);
 
 private:
     void updateTitle();
@@ -71,9 +75,11 @@ private:
 
     QMenu * const m_menuSprites;
     QMenu * const m_menuParents;
+    QMenu * const m_menuMaskSprites;
 
     QString m_spriteName;
     QString m_parentName;
+    QString m_maskSpriteName;
 
     bool m_unsavedChanges{};
 };
