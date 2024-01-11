@@ -1,16 +1,16 @@
 #pragma once
 
-#include "codeeditordialog.h"
+#include "dialogs/codeeditordialog.h"
 
 class QRadioButton;
 struct ExecuteCodeAction;
 
-class CodeActionDialog : public CodeEditorDialog
+class ExecuteCodeDialog : public CodeEditorDialog
 {
     Q_OBJECT
 
 public:
-    explicit CodeActionDialog(ExecuteCodeAction &action, QWidget *parent = nullptr);
+    explicit ExecuteCodeDialog(ExecuteCodeAction &action, QWidget *parent = nullptr);
 
     void accept() override;
 

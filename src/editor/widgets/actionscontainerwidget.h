@@ -28,6 +28,9 @@ private slots:
     void actionsContextMenuRequested(const QPoint &pos);
 
 private:
+    template<typename T>
+    void createNewAction();
+
     const std::unique_ptr<Ui::ActionsContainerWidget> m_ui;
 
     const std::unique_ptr<ActionsContainerModel> m_actionsModel;

@@ -25,9 +25,6 @@ public:
     bool canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const override;
     bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) override;
 
-    QMap<int, QVariant> itemData(const QModelIndex &index) const override;
-    bool setItemData(const QModelIndex &index, const QMap<int, QVariant> &roles) override;
-
     bool removeRows(int row, int count, const QModelIndex &parent) override;
     bool moveRows(const QModelIndex &sourceParent, int sourceRow, int count, const QModelIndex &destinationParent, int destinationChild) override;
 
@@ -38,6 +35,12 @@ public:
     const Action *getAction(const QModelIndex &index) const;
     Action *getAction(int row);
     const Action *getAction(int row) const;
+
+    void appendAction(Action &&action);
+    void appendAction(const Action &action);
+
+signals:
+    void changed();
 
 private:
     ActionsContainer *m_actionsContainer{};

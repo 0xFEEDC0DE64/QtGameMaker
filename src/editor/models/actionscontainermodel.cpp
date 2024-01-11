@@ -207,21 +207,10 @@ bool ActionsContainerModel::dropMimeData(const QMimeData *data, Qt::DropAction a
         iter = m_actionsContainer->insert(iter, std::move(action));
     endInsertRows();
 
+    if (!actions.isEmpty())
+        emit changed();
+
     return true;
-}
-
-QMap<int, QVariant> ActionsContainerModel::itemData(const QModelIndex &index) const
-{
-    auto itemData = QAbstractListModel::itemData(index);
-    qDebug() << index << itemData;
-    return itemData;
-}
-
-bool ActionsContainerModel::setItemData(const QModelIndex &index, const QMap<int, QVariant> &roles)
-{
-    auto setItemData = QAbstractListModel::setItemData(index, roles);
-    qDebug() << index << roles << setItemData;
-    return setItemData;
 }
 
 bool ActionsContainerModel::removeRows(int row, int count, const QModelIndex &parent)
@@ -251,6 +240,9 @@ bool ActionsContainerModel::removeRows(int row, int count, const QModelIndex &pa
     m_actionsContainer->erase(begin, end);
     endRemoveRows();
 
+    if (count)
+        emit changed();
+
     return true;
 }
 
@@ -272,6 +264,7 @@ bool ActionsContainerModel::moveRows(const QModelIndex &sourceParent, int source
     m_actionsContainer->splice(std::next(std::begin(*m_actionsContainer), destinationChild), *m_actionsContainer, std::next(std::begin(*m_actionsContainer), sourceRow));
     endMoveRows();
 
+    emit changed();
 
     return true;
 }
@@ -337,4 +330,32 @@ const Action *ActionsContainerModel::getAction(int row) const
     }
 
     return &*std::next(std::cbegin(*m_actionsContainer), row);
+}
+
+void ActionsContainerModel::appendAction(Action &&action)
+{
+    if (!m_actionsContainer)
+    {
+        qWarning() << "invalid actions container";
+        return;
+    }
+
+    beginInsertRows({}, m_actionsContainer->size(), m_actionsContainer->size());
+    m_actionsContainer->push_back(std::move(action));
+    endInsertRows();
+    emit changed();
+}
+
+void ActionsContainerModel::appendAction(const Action &action)
+{
+    if (!m_actionsContainer)
+    {
+        qWarning() << "invalid actions container";
+        return;
+    }
+
+    beginInsertRows({}, m_actionsContainer->size(), m_actionsContainer->size());
+    m_actionsContainer->push_back(action);
+    endInsertRows();
+    emit changed();
 }

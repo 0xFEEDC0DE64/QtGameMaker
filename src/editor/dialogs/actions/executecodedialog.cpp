@@ -1,4 +1,4 @@
-#include "codeactiondialog.h"
+#include "executecodedialog.h"
 
 #include <QRadioButton>
 #include <QLabel>
@@ -6,7 +6,7 @@
 
 #include "projectcontainer.h"
 
-CodeActionDialog::CodeActionDialog(ExecuteCodeAction &action, QWidget *parent) :
+ExecuteCodeDialog::ExecuteCodeDialog(ExecuteCodeAction &action, QWidget *parent) :
     CodeEditorDialog{tr("Execute Code"), parent},
     m_action{action},
     m_radioButtonSelf{new QRadioButton{tr("Self"), this}},
@@ -30,14 +30,14 @@ CodeActionDialog::CodeActionDialog(ExecuteCodeAction &action, QWidget *parent) :
     setScript(m_action.script);
 
     connect(m_radioButtonSelf, &QRadioButton::toggled,
-            this, &CodeActionDialog::changed);
+            this, &ExecuteCodeDialog::changed);
     connect(m_radioButtonOther, &QRadioButton::toggled,
-            this, &CodeActionDialog::changed);
+            this, &ExecuteCodeDialog::changed);
     connect(m_radioButtonObject, &QRadioButton::toggled,
-            this, &CodeActionDialog::changed);
+            this, &ExecuteCodeDialog::changed);
 }
 
-void CodeActionDialog::accept()
+void ExecuteCodeDialog::accept()
 {
     if (!m_unsavedChanges)
     {

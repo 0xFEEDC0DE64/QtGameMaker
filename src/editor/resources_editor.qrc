@@ -95,8 +95,13 @@
         <file>icons/undo.png</file>
         <file>icons/unlock.png</file>
         <file>icons/blue-arrow-down.png</file>
+        <file>icons/blue-arrow-down-left.png</file>
+        <file>icons/blue-arrow-down-right.png</file>
         <file>icons/blue-arrow-left.png</file>
         <file>icons/blue-arrow-right.png</file>
         <file>icons/blue-arrow-up.png</file>
+        <file>icons/blue-arrow-up-left.png</file>
+        <file>icons/blue-arrow-up-right.png</file>
+        <file>icons/blue-stop.png</file>
     </qresource>
 </RCC>

@@ -26,6 +26,9 @@ INCLUDEPATH += \
 
 HEADERS += \
     src/closeeventfilter.h \
+    src/editor/dialogs/actions/movefreedialog.h \
+    src/editor/dialogs/actions/movetowardsdialog.h \
+    src/editor/dialogs/actions/executecodedialog.h \
     src/editor/dialogs/genericcodeeditordialog.h \
     src/editor/dialogs/includedfilepropertiesdialog.h \
     src/editor/dialogs/transparentbackgroundsettingsdialog.h \
@@ -46,7 +49,6 @@ HEADERS += \
     src/editor/mainwindow.h \
     src/editor/dialogs/addeventdialog.h \
     src/editor/dialogs/backgroundpropertiesdialog.h \
-    src/editor/dialogs/codeactiondialog.h \
     src/editor/dialogs/codeeditordialog.h \
     src/editor/dialogs/createspritedialog.h \
     src/editor/dialogs/deletemomentsdialog.h \
@@ -89,6 +91,9 @@ HEADERS += \
 
 SOURCES += \
     src/closeeventfilter.cpp \
+    src/editor/dialogs/actions/executecodedialog.cpp \
+    src/editor/dialogs/actions/movefreedialog.cpp \
+    src/editor/dialogs/actions/movetowardsdialog.cpp \
     src/editor/dialogs/genericcodeeditordialog.cpp \
     src/editor/dialogs/includedfilepropertiesdialog.cpp \
     src/editor/dialogs/transparentbackgroundsettingsdialog.cpp \
@@ -109,7 +114,6 @@ SOURCES += \
     src/editor/mainwindow.cpp \
     src/editor/dialogs/addeventdialog.cpp \
     src/editor/dialogs/backgroundpropertiesdialog.cpp \
-    src/editor/dialogs/codeactiondialog.cpp \
     src/editor/dialogs/codeeditordialog.cpp \
     src/editor/dialogs/createspritedialog.cpp \
     src/editor/dialogs/deletemomentsdialog.cpp \
@@ -150,6 +154,8 @@ SOURCES += \
     src/projectserialization.cpp
 
 FORMS += \
+    src/editor/dialogs/actions/movefreedialog.ui \
+    src/editor/dialogs/actions/movetowardsdialog.ui \
     src/editor/dialogs/includedfilepropertiesdialog.ui \
     src/editor/dialogs/transparentbackgroundsettingsdialog.ui \
     src/editor/mainwindow.ui \

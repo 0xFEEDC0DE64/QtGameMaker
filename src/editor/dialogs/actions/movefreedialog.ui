@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MoveFixedDialog</class>
- <widget class="QDialog" name="MoveFixedDialog">
+ <class>MoveFreeDialog</class>
+ <widget class="QDialog" name="MoveFreeDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Move Fixed</string>
+   <string>Move Free</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1,0">
    <item>
@@ -22,7 +22,7 @@
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="../../resources_editor.qrc">:/qtgameengine/icons/action-move-fixed.png</pixmap>
+        <pixmap resource="../../resources_editor.qrc">:/qtgameengine/icons/action-move-free.png</pixmap>
        </property>
       </widget>
      </item>
@@ -139,124 +139,24 @@
       <item row="1" column="1">
        <layout class="QFormLayout" name="formLayout">
         <item row="0" column="0">
-         <widget class="QLabel" name="labelDirections">
+         <widget class="QLabel" name="labelDirection">
           <property name="text">
-           <string>Directions:</string>
+           <string>direction:</string>
           </property>
          </widget>
         </item>
         <item row="0" column="1">
-         <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="0">
-           <widget class="QPushButton" name="pushButton">
-            <property name="icon">
-             <iconset resource="../../resources_editor.qrc">
-              <normaloff>:/qtgameengine/icons/blue-arrow-up-left.png</normaloff>:/qtgameengine/icons/blue-arrow-up-left.png</iconset>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QPushButton" name="pushButton_5">
-            <property name="icon">
-             <iconset resource="../../resources_editor.qrc">
-              <normaloff>:/qtgameengine/icons/blue-stop.png</normaloff>:/qtgameengine/icons/blue-stop.png</iconset>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QPushButton" name="pushButton_2">
-            <property name="icon">
-             <iconset resource="../../resources_editor.qrc">
-              <normaloff>:/qtgameengine/icons/blue-arrow-up.png</normaloff>:/qtgameengine/icons/blue-arrow-up.png</iconset>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QPushButton" name="pushButton_6">
-            <property name="icon">
-             <iconset resource="../../resources_editor.qrc">
-              <normaloff>:/qtgameengine/icons/blue-arrow-right.png</normaloff>:/qtgameengine/icons/blue-arrow-right.png</iconset>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QPushButton" name="pushButton_3">
-            <property name="icon">
-             <iconset resource="../../resources_editor.qrc">
-              <normaloff>:/qtgameengine/icons/blue-arrow-up-right.png</normaloff>:/qtgameengine/icons/blue-arrow-up-right.png</iconset>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QPushButton" name="pushButton_4">
-            <property name="icon">
-             <iconset resource="../../resources_editor.qrc">
-              <normaloff>:/qtgameengine/icons/blue-arrow-left.png</normaloff>:/qtgameengine/icons/blue-arrow-left.png</iconset>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QPushButton" name="pushButton_7">
-            <property name="icon">
-             <iconset resource="../../resources_editor.qrc">
-              <normaloff>:/qtgameengine/icons/blue-arrow-down-left.png</normaloff>:/qtgameengine/icons/blue-arrow-down-left.png</iconset>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QPushButton" name="pushButton_8">
-            <property name="icon">
-             <iconset resource="../../resources_editor.qrc">
-              <normaloff>:/qtgameengine/icons/blue-arrow-down.png</normaloff>:/qtgameengine/icons/blue-arrow-down.png</iconset>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QPushButton" name="pushButton_9">
-            <property name="icon">
-             <iconset resource="../../resources_editor.qrc">
-              <normaloff>:/qtgameengine/icons/blue-arrow-down-right.png</normaloff>:/qtgameengine/icons/blue-arrow-down-right.png</iconset>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <widget class="QSpinBox" name="spinBoxDirection"/>
         </item>
         <item row="1" column="0">
          <widget class="QLabel" name="labelSpeed">
           <property name="text">
-           <string>Speed:</string>
+           <string>speed:</string>
           </property>
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QSpinBox" name="spinBox"/>
+         <widget class="QSpinBox" name="spinBoxSpeed"/>
         </item>
         <item row="2" column="1">
          <widget class="QCheckBox" name="checkBoxRelative">
@@ -289,7 +189,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>MoveFixedDialog</receiver>
+   <receiver>MoveFreeDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -305,7 +205,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>MoveFixedDialog</receiver>
+   <receiver>MoveFreeDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

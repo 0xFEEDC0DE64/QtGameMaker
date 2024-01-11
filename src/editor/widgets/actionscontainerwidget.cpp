@@ -7,8 +7,19 @@
 #include <QKeySequence>
 
 #include "models/actionscontainermodel.h"
-#include "dialogs/codeactiondialog.h"
 #include "dialogs/actions/movefixeddialog.h"
+#include "dialogs/actions/movefreedialog.h"
+#include "dialogs/actions/movetowardsdialog.h"
+#include "dialogs/actions/executecodedialog.h"
+
+namespace {
+template<typename T> struct ActionDialogForImpl;
+template<> struct ActionDialogForImpl<MoveFixedAction> { using Dialog = MoveFixedDialog; };
+template<> struct ActionDialogForImpl<MoveFreeAction> { using Dialog = MoveFreeDialog; };
+template<> struct ActionDialogForImpl<MoveTowardsAction> { using Dialog = MoveTowardsDialog; };
+template<> struct ActionDialogForImpl<ExecuteCodeAction> { using Dialog = ExecuteCodeDialog; };
+template<typename T> using ActionDialogFor = ActionDialogForImpl<T>::Dialog;
+}
 
 ActionsContainerWidget::ActionsContainerWidget(QWidget *parent) :
     QWidget{parent},
@@ -18,6 +29,9 @@ ActionsContainerWidget::ActionsContainerWidget(QWidget *parent) :
     m_ui->setupUi(this);
 
     m_ui->listViewActions->setModel(m_actionsModel.get());
+
+    connect(m_actionsModel.get(), &ActionsContainerModel::changed,
+            this, &ActionsContainerWidget::changed);
 
     connect(m_ui->listViewActions, &QListView::customContextMenuRequested,
             this, &ActionsContainerWidget::actionsContextMenuRequested);
@@ -31,15 +45,13 @@ ActionsContainerWidget::ActionsContainerWidget(QWidget *parent) :
     });
 
     connect(m_ui->toolButtonMoveFixed, &QAbstractButton::clicked,
-            this, [this](){
-        MoveFixedAction action;
-        MoveFixedDialog dialog{action, this};
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            // TODO insert into model
-            emit changed();
-        }
-    });
+            this, &ActionsContainerWidget::createNewAction<MoveFixedAction>);
+    connect(m_ui->toolButtonMoveFree, &QAbstractButton::clicked,
+            this, &ActionsContainerWidget::createNewAction<MoveFreeAction>);
+    connect(m_ui->toolButtonMoveTowards, &QAbstractButton::clicked,
+            this, &ActionsContainerWidget::createNewAction<MoveTowardsAction>);
+    connect(m_ui->toolButtonExecuteCode, &QAbstractButton::clicked,
+            this, &ActionsContainerWidget::createNewAction<ExecuteCodeAction>);
 
     m_ui->toolButtonMoveFixed->setAction(MoveFixedAction{});
     m_ui->toolButtonMoveFree->setAction(MoveFreeAction{});
@@ -74,9 +86,21 @@ void ActionsContainerWidget::actionDoubleClicked(const QModelIndex &index)
         if (dialog.exec() == QDialog::Accepted)
             emit changed();
     }
+    else if (auto ptr = std::get_if<MoveFreeAction>(action))
+    {
+        MoveFreeDialog dialog{*ptr, this};
+        if (dialog.exec() == QDialog::Accepted)
+            emit changed();
+    }
+    else if (auto ptr = std::get_if<MoveTowardsAction>(action))
+    {
+        MoveTowardsDialog dialog{*ptr, this};
+        if (dialog.exec() == QDialog::Accepted)
+            emit changed();
+    }
     else if (auto ptr = std::get_if<ExecuteCodeAction>(action))
     {
-        CodeActionDialog dialog{*ptr, this};
+        ExecuteCodeDialog dialog{*ptr, this};
         if (dialog.exec() == QDialog::Accepted)
             emit changed();
     }
@@ -141,4 +165,16 @@ void ActionsContainerWidget::actionsContextMenuRequested(const QPoint &pos)
         action->setEnabled(m_actionsModel->actionsContainer() && !m_actionsModel->actionsContainer()->empty());
     }
     menu.exec(m_ui->listViewActions->viewport()->mapToGlobal(pos));
+}
+
+template<typename T>
+void ActionsContainerWidget::createNewAction()
+{
+    if (!m_actionsModel->actionsContainer())
+        return;
+
+    T action;
+    ActionDialogFor<T> dialog{action, this};
+    if (dialog.exec() == QDialog::Accepted)
+        m_actionsModel->appendAction(std::move(action));
 }
