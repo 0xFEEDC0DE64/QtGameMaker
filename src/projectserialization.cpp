@@ -304,6 +304,34 @@ QDataStream &operator>>(QDataStream &ds, MoveTowardsAction &action)
     return ds;
 }
 
+QDataStream &operator<<(QDataStream &ds, const SpeedHorizontalAction &action)
+{
+    Q_UNUSED(action);
+//   ds << action.;
+    return ds;
+}
+
+QDataStream &operator>>(QDataStream &ds, SpeedHorizontalAction &action)
+{
+    Q_UNUSED(action);
+//    ds >> action.;
+    return ds;
+}
+
+QDataStream &operator<<(QDataStream &ds, const SpeedVerticalAction &action)
+{
+    Q_UNUSED(action);
+//   ds << action.;
+    return ds;
+}
+
+QDataStream &operator>>(QDataStream &ds, SpeedVerticalAction &action)
+{
+    Q_UNUSED(action);
+//    ds >> action.;
+    return ds;
+}
+
 QDataStream &operator<<(QDataStream &ds, const ExecuteCodeAction &action)
 {
     ds << action.script;

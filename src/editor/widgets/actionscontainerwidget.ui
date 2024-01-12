@@ -240,13 +240,13 @@
         </widget>
        </item>
        <item row="4" column="1">
-        <widget class="QToolButton" name="toolButtonSpeedVertical">
+        <widget class="ActionDragWidget" name="toolButtonSpeedVertical">
          <property name="toolTip">
           <string>Speed Vertical</string>
          </property>
          <property name="icon">
           <iconset resource="../resources_editor.qrc">
-           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+           <normaloff>:/qtgameengine/icons/action-speed-vertical.png</normaloff>:/qtgameengine/icons/action-speed-vertical.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -336,13 +336,13 @@
         </widget>
        </item>
        <item row="4" column="0">
-        <widget class="QToolButton" name="toolButtonSpeedHorizontal">
+        <widget class="ActionDragWidget" name="toolButtonSpeedHorizontal">
          <property name="toolTip">
           <string>Speed Horizontal</string>
          </property>
          <property name="icon">
           <iconset resource="../resources_editor.qrc">
-           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+           <normaloff>:/qtgameengine/icons/action-speed-horizontal.png</normaloff>:/qtgameengine/icons/action-speed-horizontal.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -1450,7 +1450,7 @@
          </property>
          <property name="icon">
           <iconset resource="../resources_editor.qrc">
-           <normaloff>:/qtgameengine/icons/action-code.png</normaloff>:/qtgameengine/icons/action-code.png</iconset>
+           <normaloff>:/qtgameengine/icons/action-execute-code.png</normaloff>:/qtgameengine/icons/action-execute-code.png</iconset>
          </property>
          <property name="iconSize">
           <size>

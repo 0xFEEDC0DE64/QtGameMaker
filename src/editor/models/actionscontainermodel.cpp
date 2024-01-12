@@ -50,6 +50,10 @@ QVariant ActionsContainerModel::data(const QModelIndex &index, int role) const
             return tr("Set direction and speed of motion");
         else if (std::holds_alternative<MoveTowardsAction>(action))
             return tr("Move towards point (99, 99)");
+        else if (std::holds_alternative<SpeedHorizontalAction>(action))
+            return tr("Set the horizontal speed");
+        else if (std::holds_alternative<SpeedVerticalAction>(action))
+            return tr("Set the vertical speed");
         else if (std::holds_alternative<ExecuteCodeAction>(action))
             return tr("Execute a piece of code");
         else
@@ -64,8 +68,12 @@ QVariant ActionsContainerModel::data(const QModelIndex &index, int role) const
             return QIcon{":/qtgameengine/icons/action-move-free.png"};
         else if (std::holds_alternative<MoveTowardsAction>(action))
             return QIcon{":/qtgameengine/icons/action-move-towards.png"};
+        else if (std::holds_alternative<SpeedHorizontalAction>(action))
+            return QIcon{":/qtgameengine/icons/action-speed-horizontal.png"};
+        else if (std::holds_alternative<SpeedVerticalAction>(action))
+            return QIcon{":/qtgameengine/icons/action-speed-vertical.png"};
         else if (std::holds_alternative<ExecuteCodeAction>(action))
-            return QIcon{":/qtgameengine/icons/action-code.png"};
+            return QIcon{":/qtgameengine/icons/action-execute-code.png"};
         else
         {
             qWarning() << "unknown action type";
@@ -132,11 +140,6 @@ QMimeData *ActionsContainerModel::mimeData(const QModelIndexList &indexes) const
 
 bool ActionsContainerModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const
 {
-    if (!m_actionsContainer)
-    {
-        qWarning() << "no container";
-        return false;
-    }
     // if the drop is on an item, reject drop
     if (parent.isValid() && row == -1 && column == -1)
     {
@@ -149,11 +152,6 @@ bool ActionsContainerModel::canDropMimeData(const QMimeData *data, Qt::DropActio
 
 bool ActionsContainerModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
-    if (!m_actionsContainer)
-    {
-        qWarning() << "no container";
-        return false;
-    }
     // check if the action is supported
     if (!data || !(action == Qt::CopyAction || action == Qt::MoveAction))
     {
@@ -198,6 +196,12 @@ bool ActionsContainerModel::dropMimeData(const QMimeData *data, Qt::DropAction a
     if (actions.isEmpty())
     {
         qWarning() << "empty actions";
+        return false;
+    }
+    if (!m_actionsContainer)
+    {
+        qWarning() << "no container";
+        emit actionsContainerMissing();
         return false;
     }
 

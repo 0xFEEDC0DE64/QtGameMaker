@@ -26,6 +26,7 @@ signals:
 private slots:
     void actionDoubleClicked(const QModelIndex &index);
     void actionsContextMenuRequested(const QPoint &pos);
+    void actionsContainerMissing();
 
 private:
     template<typename T>

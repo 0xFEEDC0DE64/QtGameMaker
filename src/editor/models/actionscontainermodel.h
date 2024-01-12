@@ -41,6 +41,7 @@ public:
 
 signals:
     void changed();
+    void actionsContainerMissing();
 
 private:
     ActionsContainer *m_actionsContainer{};

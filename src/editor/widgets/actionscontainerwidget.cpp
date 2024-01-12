@@ -10,6 +10,8 @@
 #include "dialogs/actions/movefixeddialog.h"
 #include "dialogs/actions/movefreedialog.h"
 #include "dialogs/actions/movetowardsdialog.h"
+#include "dialogs/actions/speedhorizontaldialog.h"
+#include "dialogs/actions/speedverticaldialog.h"
 #include "dialogs/actions/executecodedialog.h"
 
 namespace {
@@ -17,6 +19,8 @@ template<typename T> struct ActionDialogForImpl;
 template<> struct ActionDialogForImpl<MoveFixedAction> { using Dialog = MoveFixedDialog; };
 template<> struct ActionDialogForImpl<MoveFreeAction> { using Dialog = MoveFreeDialog; };
 template<> struct ActionDialogForImpl<MoveTowardsAction> { using Dialog = MoveTowardsDialog; };
+template<> struct ActionDialogForImpl<SpeedHorizontalAction> { using Dialog = SpeedHorizontalDialog; };
+template<> struct ActionDialogForImpl<SpeedVerticalAction> { using Dialog = SpeedVerticalDialog; };
 template<> struct ActionDialogForImpl<ExecuteCodeAction> { using Dialog = ExecuteCodeDialog; };
 template<typename T> using ActionDialogFor = ActionDialogForImpl<T>::Dialog;
 }
@@ -32,6 +36,9 @@ ActionsContainerWidget::ActionsContainerWidget(QWidget *parent) :
 
     connect(m_actionsModel.get(), &ActionsContainerModel::changed,
             this, &ActionsContainerWidget::changed);
+
+    connect(m_actionsModel.get(), &ActionsContainerModel::actionsContainerMissing,
+            this, &ActionsContainerWidget::actionsContainerMissing);
 
     connect(m_ui->listViewActions, &QListView::customContextMenuRequested,
             this, &ActionsContainerWidget::actionsContextMenuRequested);
@@ -50,12 +57,18 @@ ActionsContainerWidget::ActionsContainerWidget(QWidget *parent) :
             this, &ActionsContainerWidget::createNewAction<MoveFreeAction>);
     connect(m_ui->toolButtonMoveTowards, &QAbstractButton::clicked,
             this, &ActionsContainerWidget::createNewAction<MoveTowardsAction>);
+    connect(m_ui->toolButtonSpeedHorizontal, &QAbstractButton::clicked,
+            this, &ActionsContainerWidget::createNewAction<SpeedHorizontalAction>);
+    connect(m_ui->toolButtonSpeedVertical, &QAbstractButton::clicked,
+            this, &ActionsContainerWidget::createNewAction<SpeedVerticalAction>);
     connect(m_ui->toolButtonExecuteCode, &QAbstractButton::clicked,
             this, &ActionsContainerWidget::createNewAction<ExecuteCodeAction>);
 
     m_ui->toolButtonMoveFixed->setAction(MoveFixedAction{});
     m_ui->toolButtonMoveFree->setAction(MoveFreeAction{});
     m_ui->toolButtonMoveTowards->setAction(MoveTowardsAction{});
+    m_ui->toolButtonSpeedHorizontal->setAction(SpeedHorizontalAction{});
+    m_ui->toolButtonSpeedVertical->setAction(SpeedVerticalAction{});
     m_ui->toolButtonExecuteCode->setAction(ExecuteCodeAction{});
 }
 
@@ -95,6 +108,18 @@ void ActionsContainerWidget::actionDoubleClicked(const QModelIndex &index)
     else if (auto ptr = std::get_if<MoveTowardsAction>(action))
     {
         MoveTowardsDialog dialog{*ptr, this};
+        if (dialog.exec() == QDialog::Accepted)
+            emit changed();
+    }
+    else if (auto ptr = std::get_if<SpeedHorizontalAction>(action))
+    {
+        SpeedHorizontalDialog dialog{*ptr, this};
+        if (dialog.exec() == QDialog::Accepted)
+            emit changed();
+    }
+    else if (auto ptr = std::get_if<SpeedVerticalAction>(action))
+    {
+        SpeedVerticalDialog dialog{*ptr, this};
         if (dialog.exec() == QDialog::Accepted)
             emit changed();
     }
@@ -165,6 +190,12 @@ void ActionsContainerWidget::actionsContextMenuRequested(const QPoint &pos)
         action->setEnabled(m_actionsModel->actionsContainer() && !m_actionsModel->actionsContainer()->empty());
     }
     menu.exec(m_ui->listViewActions->viewport()->mapToGlobal(pos));
+}
+
+void ActionsContainerWidget::actionsContainerMissing()
+{
+    QMessageBox::warning(this, tr("You need to select or add an event before you can add actions"),
+                               tr("You need to select or add an event before you can add actions"));
 }
 
 template<typename T>

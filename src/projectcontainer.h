@@ -169,6 +169,14 @@ struct MoveTowardsAction {
 
 };
 
+struct SpeedHorizontalAction {
+
+};
+
+struct SpeedVerticalAction {
+
+};
+
 struct ExecuteCodeAction {
     enum class AppliesTo {
         Self,
@@ -184,6 +192,8 @@ using Action = std::variant<
     MoveFixedAction,
     MoveFreeAction,
     MoveTowardsAction,
+    SpeedHorizontalAction,
+    SpeedVerticalAction,
     ExecuteCodeAction
 >;
 

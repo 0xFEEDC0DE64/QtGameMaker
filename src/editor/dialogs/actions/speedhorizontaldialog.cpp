@@ -1,11 +1,11 @@
-#include "movetowardsdialog.h"
-#include "ui_movetowardsdialog.h"
+#include "speedhorizontaldialog.h"
+#include "ui_speedhorizontaldialog.h"
 
 #include <QPushButton>
 
-MoveTowardsDialog::MoveTowardsDialog(MoveTowardsAction &action, QWidget *parent) :
+SpeedHorizontalDialog::SpeedHorizontalDialog(SpeedHorizontalAction &action, QWidget *parent) :
     QDialog{parent},
-    m_ui{std::make_unique<Ui::MoveTowardsDialog>()},
+    m_ui{std::make_unique<Ui::SpeedHorizontalDialog>()},
     m_action{action}
 {
     m_ui->setupUi(this);
@@ -16,4 +16,4 @@ MoveTowardsDialog::MoveTowardsDialog(MoveTowardsAction &action, QWidget *parent)
         button->setIcon(QIcon{":/qtgameengine/icons/delete.png"});
 }
 
-MoveTowardsDialog::~MoveTowardsDialog() = default;
+SpeedHorizontalDialog::~SpeedHorizontalDialog() = default;
