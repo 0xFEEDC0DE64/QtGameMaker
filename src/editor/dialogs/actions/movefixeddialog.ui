@@ -50,7 +50,7 @@
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1">
           <item>
            <widget class="QRadioButton" name="radioButtonObject">
             <property name="text">
@@ -59,12 +59,9 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="lineEdit"/>
-          </item>
-          <item>
-           <widget class="QToolButton" name="toolButton">
-            <property name="text">
-             <string>...</string>
+           <widget class="ObjectSelectorWidget" name="widgetObject" native="true">
+            <property name="visible">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -285,6 +282,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ObjectSelectorWidget</class>
+   <extends>QWidget</extends>
+   <header>widgets/objectselectorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../resources_editor.qrc"/>
  </resources>
@@ -318,6 +323,22 @@
     <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButtonObject</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>widgetObject</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>127</x>
+     <y>115</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>289</x>
+     <y>115</y>
     </hint>
    </hints>
   </connection>

@@ -157,35 +157,51 @@ struct Font
     } range;
 };
 
-struct MoveFixedAction {
+struct AppliesToSelf {
 
+};
+
+struct AppliesToOther {
+
+};
+
+struct AppliesToObject {
+    QString objectName;
+};
+
+using AppliesTo = std::variant<
+    AppliesToSelf,
+    AppliesToOther,
+    AppliesToObject
+>;
+
+struct MoveFixedAction {
+    AppliesTo appliesTo{AppliesToSelf{}};
 };
 
 struct MoveFreeAction {
-
+    AppliesTo appliesTo{AppliesToSelf{}};
 };
 
 struct MoveTowardsAction {
-
+    AppliesTo appliesTo{AppliesToSelf{}};
 };
 
 struct SpeedHorizontalAction {
+    AppliesTo appliesTo{AppliesToSelf{}};
+};
 
+struct SetGravityAction {
+    AppliesTo appliesTo{AppliesToSelf{}};
 };
 
 struct SpeedVerticalAction {
-
+    AppliesTo appliesTo{AppliesToSelf{}};
 };
 
 struct ExecuteCodeAction {
-    enum class AppliesTo {
-        Self,
-        Other,
-        Object
-    };
-
+    AppliesTo appliesTo{AppliesToSelf{}};
     QString script;
-    AppliesTo appliesTo{AppliesTo::Self};
 };
 
 using Action = std::variant<
@@ -194,6 +210,7 @@ using Action = std::variant<
     MoveTowardsAction,
     SpeedHorizontalAction,
     SpeedVerticalAction,
+    SetGravityAction,
     ExecuteCodeAction
 >;
 

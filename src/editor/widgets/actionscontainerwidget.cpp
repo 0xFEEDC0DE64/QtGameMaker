@@ -12,6 +12,7 @@
 #include "dialogs/actions/movetowardsdialog.h"
 #include "dialogs/actions/speedhorizontaldialog.h"
 #include "dialogs/actions/speedverticaldialog.h"
+#include "dialogs/actions/setgravitydialog.h"
 #include "dialogs/actions/executecodedialog.h"
 
 namespace {
@@ -21,6 +22,7 @@ template<> struct ActionDialogForImpl<MoveFreeAction> { using Dialog = MoveFreeD
 template<> struct ActionDialogForImpl<MoveTowardsAction> { using Dialog = MoveTowardsDialog; };
 template<> struct ActionDialogForImpl<SpeedHorizontalAction> { using Dialog = SpeedHorizontalDialog; };
 template<> struct ActionDialogForImpl<SpeedVerticalAction> { using Dialog = SpeedVerticalDialog; };
+template<> struct ActionDialogForImpl<SetGravityAction> { using Dialog = SetGravityDialog; };
 template<> struct ActionDialogForImpl<ExecuteCodeAction> { using Dialog = ExecuteCodeDialog; };
 template<typename T> using ActionDialogFor = ActionDialogForImpl<T>::Dialog;
 }
@@ -61,6 +63,8 @@ ActionsContainerWidget::ActionsContainerWidget(QWidget *parent) :
             this, &ActionsContainerWidget::createNewAction<SpeedHorizontalAction>);
     connect(m_ui->toolButtonSpeedVertical, &QAbstractButton::clicked,
             this, &ActionsContainerWidget::createNewAction<SpeedVerticalAction>);
+    connect(m_ui->toolButtonSetGravity, &QAbstractButton::clicked,
+            this, &ActionsContainerWidget::createNewAction<SetGravityAction>);
     connect(m_ui->toolButtonExecuteCode, &QAbstractButton::clicked,
             this, &ActionsContainerWidget::createNewAction<ExecuteCodeAction>);
 
@@ -69,12 +73,18 @@ ActionsContainerWidget::ActionsContainerWidget(QWidget *parent) :
     m_ui->toolButtonMoveTowards->setAction(MoveTowardsAction{});
     m_ui->toolButtonSpeedHorizontal->setAction(SpeedHorizontalAction{});
     m_ui->toolButtonSpeedVertical->setAction(SpeedVerticalAction{});
+    m_ui->toolButtonSetGravity->setAction(SetGravityAction{});
     m_ui->toolButtonExecuteCode->setAction(ExecuteCodeAction{});
 }
 
 ActionsContainerWidget::~ActionsContainerWidget() = default;
 
-ActionsContainer *ActionsContainerWidget::actionsContainer() const
+ActionsContainer *ActionsContainerWidget::actionsContainer()
+{
+    return m_actionsModel->actionsContainer();
+}
+
+const ActionsContainer *ActionsContainerWidget::actionsContainer() const
 {
     return m_actionsModel->actionsContainer();
 }
@@ -95,37 +105,43 @@ void ActionsContainerWidget::actionDoubleClicked(const QModelIndex &index)
 
     if (auto ptr = std::get_if<MoveFixedAction>(action))
     {
-        MoveFixedDialog dialog{*ptr, this};
+        MoveFixedDialog dialog{*ptr, m_projectModel, this};
         if (dialog.exec() == QDialog::Accepted)
             emit changed();
     }
     else if (auto ptr = std::get_if<MoveFreeAction>(action))
     {
-        MoveFreeDialog dialog{*ptr, this};
+        MoveFreeDialog dialog{*ptr, m_projectModel, this};
         if (dialog.exec() == QDialog::Accepted)
             emit changed();
     }
     else if (auto ptr = std::get_if<MoveTowardsAction>(action))
     {
-        MoveTowardsDialog dialog{*ptr, this};
+        MoveTowardsDialog dialog{*ptr, m_projectModel, this};
         if (dialog.exec() == QDialog::Accepted)
             emit changed();
     }
     else if (auto ptr = std::get_if<SpeedHorizontalAction>(action))
     {
-        SpeedHorizontalDialog dialog{*ptr, this};
+        SpeedHorizontalDialog dialog{*ptr, m_projectModel, this};
         if (dialog.exec() == QDialog::Accepted)
             emit changed();
     }
     else if (auto ptr = std::get_if<SpeedVerticalAction>(action))
     {
-        SpeedVerticalDialog dialog{*ptr, this};
+        SpeedVerticalDialog dialog{*ptr, m_projectModel, this};
+        if (dialog.exec() == QDialog::Accepted)
+            emit changed();
+    }
+    else if (auto ptr = std::get_if<SetGravityAction>(action))
+    {
+        SetGravityDialog dialog{*ptr, m_projectModel, this};
         if (dialog.exec() == QDialog::Accepted)
             emit changed();
     }
     else if (auto ptr = std::get_if<ExecuteCodeAction>(action))
     {
-        ExecuteCodeDialog dialog{*ptr, this};
+        ExecuteCodeDialog dialog{*ptr, m_projectModel, this};
         if (dialog.exec() == QDialog::Accepted)
             emit changed();
     }
@@ -205,7 +221,7 @@ void ActionsContainerWidget::createNewAction()
         return;
 
     T action;
-    ActionDialogFor<T> dialog{action, this};
+    ActionDialogFor<T> dialog{action, m_projectModel, this};
     if (dialog.exec() == QDialog::Accepted)
         m_actionsModel->appendAction(std::move(action));
 }

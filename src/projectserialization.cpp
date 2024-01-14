@@ -262,87 +262,143 @@ QDataStream &operator>>(QDataStream &ds, Font &font)
     return ds;
 }
 
+QDataStream &operator<<(QDataStream &ds, const AppliesToSelf &action)
+{
+    Q_UNUSED(action);
+    //ds << action.;
+    return ds;
+}
+
+QDataStream &operator>>(QDataStream &ds, AppliesToSelf &action)
+{
+    Q_UNUSED(action);
+    //ds >> action.;
+    return ds;
+}
+
+QDataStream &operator<<(QDataStream &ds, const AppliesToOther &action)
+{
+    Q_UNUSED(action);
+    //ds << action.;
+    return ds;
+}
+
+QDataStream &operator>>(QDataStream &ds, AppliesToOther &action)
+{
+    Q_UNUSED(action);
+    //ds >> action.;
+    return ds;
+}
+
+QDataStream &operator<<(QDataStream &ds, const AppliesToObject &action)
+{
+    Q_UNUSED(action);
+    ds << action.objectName;
+    return ds;
+}
+
+QDataStream &operator>>(QDataStream &ds, AppliesToObject &action)
+{
+    Q_UNUSED(action);
+    ds >> action.objectName;
+    return ds;
+}
+
 QDataStream &operator<<(QDataStream &ds, const MoveFixedAction &action)
 {
     Q_UNUSED(action);
-//   ds << action.;
+    ds << action.appliesTo;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, MoveFixedAction &action)
 {
     Q_UNUSED(action);
-//    ds >> action.;
+    ds >> action.appliesTo;
     return ds;
 }
 
 QDataStream &operator<<(QDataStream &ds, const MoveFreeAction &action)
 {
     Q_UNUSED(action);
-//   ds << action.;
+    ds << action.appliesTo;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, MoveFreeAction &action)
 {
     Q_UNUSED(action);
-//    ds >> action.;
+    ds >> action.appliesTo;
     return ds;
 }
 
 QDataStream &operator<<(QDataStream &ds, const MoveTowardsAction &action)
 {
     Q_UNUSED(action);
-//   ds << action.;
+    ds << action.appliesTo;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, MoveTowardsAction &action)
 {
     Q_UNUSED(action);
-//    ds >> action.;
+    ds >> action.appliesTo;
     return ds;
 }
 
 QDataStream &operator<<(QDataStream &ds, const SpeedHorizontalAction &action)
 {
     Q_UNUSED(action);
-//   ds << action.;
+    ds << action.appliesTo;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, SpeedHorizontalAction &action)
 {
     Q_UNUSED(action);
-//    ds >> action.;
+    ds >> action.appliesTo;
     return ds;
 }
 
 QDataStream &operator<<(QDataStream &ds, const SpeedVerticalAction &action)
 {
     Q_UNUSED(action);
-//   ds << action.;
+    ds << action.appliesTo;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, SpeedVerticalAction &action)
 {
     Q_UNUSED(action);
-//    ds >> action.;
+    ds >> action.appliesTo;
+    return ds;
+}
+
+QDataStream &operator<<(QDataStream &ds, const SetGravityAction &action)
+{
+    Q_UNUSED(action);
+    ds << action.appliesTo;
+    return ds;
+}
+
+QDataStream &operator>>(QDataStream &ds, SetGravityAction &action)
+{
+    Q_UNUSED(action);
+    ds >> action.appliesTo;
     return ds;
 }
 
 QDataStream &operator<<(QDataStream &ds, const ExecuteCodeAction &action)
 {
-    ds << action.script;
-    ds << action.appliesTo;
+    ds << action.appliesTo
+       << action.script;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, ExecuteCodeAction &action)
 {
-    ds >> action.script;
-    ds >> action.appliesTo;
+    ds >> action.appliesTo
+       >> action.script;
     return ds;
 }
 

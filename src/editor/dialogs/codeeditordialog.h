@@ -30,7 +30,7 @@ protected slots:
 protected:
     bool m_unsavedChanges{};
 
-    void addToolbarWidget(QWidget *widget);
+    QAction *addToolbarWidget(QWidget *widget);
 
 private slots:
     void loadCode();

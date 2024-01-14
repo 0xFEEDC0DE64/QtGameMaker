@@ -1,11 +1,11 @@
-#include "speedverticaldialog.h"
-#include "ui_speedverticaldialog.h"
+#include "setgravitydialog.h"
+#include "ui_setgravitydialog.h"
 
 #include <QPushButton>
 
-SpeedVerticalDialog::SpeedVerticalDialog(SpeedVerticalAction &action, ProjectTreeModel *projectModel, QWidget *parent) :
+SetGravityDialog::SetGravityDialog(SetGravityAction &action, ProjectTreeModel *projectModel, QWidget *parent) :
     QDialog{parent},
-    m_ui{std::make_unique<Ui::SpeedVerticalDialog>()},
+    m_ui{std::make_unique<Ui::SetGravityDialog>()},
     m_action{action}
 {
     m_ui->setupUi(this);
@@ -26,4 +26,4 @@ SpeedVerticalDialog::SpeedVerticalDialog(SpeedVerticalAction &action, ProjectTre
         button->setIcon(QIcon{":/qtgameengine/icons/delete.png"});
 }
 
-SpeedVerticalDialog::~SpeedVerticalDialog() = default;
+SetGravityDialog::~SetGravityDialog() = default;

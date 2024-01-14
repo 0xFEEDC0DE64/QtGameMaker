@@ -6,13 +6,14 @@
 
 namespace Ui { class MoveTowardsDialog; }
 class MoveTowardsAction;
+class ProjectTreeModel;
 
 class MoveTowardsDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit MoveTowardsDialog(MoveTowardsAction &action, QWidget *parent = nullptr);
+    explicit MoveTowardsDialog(MoveTowardsAction &action, ProjectTreeModel *projectModel, QWidget *parent = nullptr);
     ~MoveTowardsDialog() override;
 
 private:

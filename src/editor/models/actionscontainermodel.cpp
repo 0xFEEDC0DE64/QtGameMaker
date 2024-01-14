@@ -54,6 +54,8 @@ QVariant ActionsContainerModel::data(const QModelIndex &index, int role) const
             return tr("Set the horizontal speed");
         else if (std::holds_alternative<SpeedVerticalAction>(action))
             return tr("Set the vertical speed");
+        else if (std::holds_alternative<SetGravityAction>(action))
+            return tr("Set the gravity");
         else if (std::holds_alternative<ExecuteCodeAction>(action))
             return tr("Execute a piece of code");
         else
@@ -72,6 +74,8 @@ QVariant ActionsContainerModel::data(const QModelIndex &index, int role) const
             return QIcon{":/qtgameengine/icons/action-speed-horizontal.png"};
         else if (std::holds_alternative<SpeedVerticalAction>(action))
             return QIcon{":/qtgameengine/icons/action-speed-vertical.png"};
+        else if (std::holds_alternative<SetGravityAction>(action))
+            return QIcon{":/qtgameengine/icons/action-set-gravity.png"};
         else if (std::holds_alternative<ExecuteCodeAction>(action))
             return QIcon{":/qtgameengine/icons/action-execute-code.png"};
         else

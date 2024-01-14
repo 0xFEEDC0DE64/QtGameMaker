@@ -6,13 +6,14 @@
 
 namespace Ui { class SpeedVerticalDialog; }
 struct SpeedVerticalAction;
+class ProjectTreeModel;
 
 class SpeedVerticalDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit SpeedVerticalDialog(SpeedVerticalAction &action, QWidget *parent = nullptr);
+    explicit SpeedVerticalDialog(SpeedVerticalAction &action, ProjectTreeModel *projectModel, QWidget *parent = nullptr);
     ~SpeedVerticalDialog() override;
 
 private:

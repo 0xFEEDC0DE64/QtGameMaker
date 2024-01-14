@@ -115,9 +115,9 @@ void CodeEditorDialog::changed()
     }
 }
 
-void CodeEditorDialog::addToolbarWidget(QWidget *widget)
+QAction *CodeEditorDialog::addToolbarWidget(QWidget *widget)
 {
-    m_ui->toolBar->addWidget(widget);
+    return m_ui->toolBar->addWidget(widget);
 }
 
 void CodeEditorDialog::loadCode()

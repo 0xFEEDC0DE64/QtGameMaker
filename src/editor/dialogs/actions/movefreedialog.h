@@ -6,13 +6,14 @@
 
 namespace Ui { class MoveFreeDialog; }
 class MoveFreeAction;
+class ProjectTreeModel;
 
 class MoveFreeDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit MoveFreeDialog(MoveFreeAction &action, QWidget *parent = nullptr);
+    explicit MoveFreeDialog(MoveFreeAction &action, ProjectTreeModel *projectModel, QWidget *parent = nullptr);
     ~MoveFreeDialog() override;
 
 private:

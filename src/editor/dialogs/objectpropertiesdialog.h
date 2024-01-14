@@ -42,7 +42,6 @@ private slots:
     void spritePixmapsChanged(const Sprite &sprite);
 
     void spritesMenuAboutToShow();
-    void parentsMenuAboutToShow();
     void maskSpritesMenuAboutToShow();
     void currentEventChanged(const QModelIndex &index);
     void eventsContextMenuRequested(const QPoint &pos);
@@ -50,9 +49,6 @@ private slots:
 
     void clearSprite();
     void setSprite(const Sprite &sprite);
-
-    void clearParent();
-    void setParent(const Object &object);
 
     void clearMaskSprite();
     void setMaskSprite(const Sprite &sprite);
@@ -74,11 +70,9 @@ private:
     const std::unique_ptr<ObjectEventsModel> m_eventsModel;
 
     QMenu * const m_menuSprites;
-    QMenu * const m_menuParents;
     QMenu * const m_menuMaskSprites;
 
     QString m_spriteName;
-    QString m_parentName;
     QString m_maskSpriteName;
 
     bool m_unsavedChanges{};

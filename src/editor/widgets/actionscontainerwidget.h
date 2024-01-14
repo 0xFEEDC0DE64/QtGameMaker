@@ -8,6 +8,7 @@
 
 namespace Ui { class ActionsContainerWidget; }
 class ActionsContainerModel;
+class ProjectTreeModel;
 
 class ActionsContainerWidget : public QWidget
 {
@@ -17,7 +18,12 @@ public:
     explicit ActionsContainerWidget(QWidget *parent = nullptr);
     ~ActionsContainerWidget();
 
-    ActionsContainer *actionsContainer() const;
+    ProjectTreeModel *projectModel() { return m_projectModel; }
+    const ProjectTreeModel *projectModel() const { return m_projectModel; }
+    void setProjectModel(ProjectTreeModel *projectModel) { m_projectModel = projectModel; }
+
+    ActionsContainer *actionsContainer();
+    const ActionsContainer *actionsContainer() const;
     void setActionsContainer(ActionsContainer *actionsContainer);
 
 signals:
@@ -35,4 +41,6 @@ private:
     const std::unique_ptr<Ui::ActionsContainerWidget> m_ui;
 
     const std::unique_ptr<ActionsContainerModel> m_actionsModel;
+
+    ProjectTreeModel *m_projectModel{};
 };

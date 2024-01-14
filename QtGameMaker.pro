@@ -26,6 +26,7 @@ INCLUDEPATH += \
 
 HEADERS += \
     src/closeeventfilter.h \
+    src/editor/dialogs/actions/setgravitydialog.h \
     src/editor/dialogs/actions/speedhorizontaldialog.h \
     src/editor/dialogs/actions/movefreedialog.h \
     src/editor/dialogs/actions/movetowardsdialog.h \
@@ -38,6 +39,8 @@ HEADERS += \
     src/editor/roomscene.h \
     src/editor/widgets/actiondragwidget.h \
     src/editor/widgets/draggabletreeview.h \
+    src/editor/widgets/objectparentselectorwidget.h \
+    src/editor/widgets/objectselectorwidget.h \
     src/editor/widgets/qlineeditwithmenu.h \
     src/editor/widgets/qscrollareawithmenu.h \
     src/editor/widgets/roomeditwidget.h \
@@ -94,6 +97,7 @@ HEADERS += \
 SOURCES += \
     src/closeeventfilter.cpp \
     src/editor/dialogs/actions/executecodedialog.cpp \
+    src/editor/dialogs/actions/setgravitydialog.cpp \
     src/editor/dialogs/actions/speedhorizontaldialog.cpp \
     src/editor/dialogs/actions/movefreedialog.cpp \
     src/editor/dialogs/actions/movetowardsdialog.cpp \
@@ -105,6 +109,8 @@ SOURCES += \
     src/editor/roomscene.cpp \
     src/editor/widgets/actiondragwidget.cpp \
     src/editor/widgets/draggabletreeview.cpp \
+    src/editor/widgets/objectparentselectorwidget.cpp \
+    src/editor/widgets/objectselectorwidget.cpp \
     src/editor/widgets/qlineeditwithmenu.cpp \
     src/editor/widgets/qscrollareawithmenu.cpp \
     src/editor/widgets/roomeditwidget.cpp \
@@ -158,6 +164,7 @@ SOURCES += \
     src/projectserialization.cpp
 
 FORMS += \
+    src/editor/dialogs/actions/setgravitydialog.ui \
     src/editor/dialogs/actions/speedhorizontaldialog.ui \
     src/editor/dialogs/actions/movefreedialog.ui \
     src/editor/dialogs/actions/movetowardsdialog.ui \
@@ -190,7 +197,8 @@ FORMS += \
     src/editor/dialogs/triggersdialog.ui \
     src/editor/dialogs/userdefinedconstantsdialog.ui \
     src/editor/widgets/actionscontainerwidget.ui\
-    src/editor/dialogs/actions/movefixeddialog.ui
+    src/editor/dialogs/actions/movefixeddialog.ui \
+    src/editor/widgets/objectselectorwidget.ui
 
 RESOURCES += \
     src/editor/resources_editor.qrc \

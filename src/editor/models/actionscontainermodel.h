@@ -28,7 +28,8 @@ public:
     bool removeRows(int row, int count, const QModelIndex &parent) override;
     bool moveRows(const QModelIndex &sourceParent, int sourceRow, int count, const QModelIndex &destinationParent, int destinationChild) override;
 
-    ActionsContainer *actionsContainer() const { return m_actionsContainer; }
+    ActionsContainer *actionsContainer() { return m_actionsContainer; }
+    const ActionsContainer *actionsContainer() const { return m_actionsContainer; }
     void setActionsContainer(ActionsContainer *actionsContainer);
 
     Action *getAction(const QModelIndex &index);

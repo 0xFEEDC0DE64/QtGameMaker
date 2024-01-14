@@ -5,6 +5,7 @@
         <file>icons/action-move-fixed.png</file>
         <file>icons/action-move-free.png</file>
         <file>icons/action-move-towards.png</file>
+        <file>icons/action-set-gravity.png</file>
         <file>icons/action-speed-horizontal.png</file>
         <file>icons/action-speed-vertical.png</file>
         <file>icons/add.png</file>
