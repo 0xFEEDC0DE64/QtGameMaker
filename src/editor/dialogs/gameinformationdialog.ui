@@ -13,7 +13,19 @@
   <property name="windowTitle">
    <string>Game Information</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,1">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
     <widget class="QMenuBar" name="menuBar">
      <widget class="QMenu" name="menuFile">
@@ -66,12 +78,15 @@
    </item>
    <item>
     <widget class="QToolBar" name="toolBar">
-    <addaction name="actionNew"/>
-    <addaction name="actionOpen"/>
-    <addaction name="actionSave"/>
-    <addaction name="actionPrint"/>
-    <addaction name="actionExportPDF"/>
+     <addaction name="actionNew"/>
+     <addaction name="actionOpen"/>
+     <addaction name="actionSave"/>
+     <addaction name="actionPrint"/>
+     <addaction name="actionExportPDF"/>
     </widget>
+   </item>
+   <item>
+    <widget class="QToolBar" name="toolBar2"/>
    </item>
    <item>
     <widget class="QLabel" name="label">

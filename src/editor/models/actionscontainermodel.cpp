@@ -144,6 +144,7 @@ QMimeData *ActionsContainerModel::mimeData(const QModelIndexList &indexes) const
 
 bool ActionsContainerModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const
 {
+    qDebug() << data->formats();
     // if the drop is on an item, reject drop
     if (parent.isValid() && row == -1 && column == -1)
     {
@@ -156,6 +157,7 @@ bool ActionsContainerModel::canDropMimeData(const QMimeData *data, Qt::DropActio
 
 bool ActionsContainerModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
+    qDebug() << data->formats();
     // check if the action is supported
     if (!data || !(action == Qt::CopyAction || action == Qt::MoveAction))
     {

@@ -33,7 +33,11 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QLineEditWithMenu" name="lineEdit"/>
+    <widget class="QLineEditWithMenu" name="lineEdit">
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QToolButton" name="toolButton">

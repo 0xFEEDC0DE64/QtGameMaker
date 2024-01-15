@@ -742,7 +742,7 @@ template void MainWindow::createFor<Room>();
 void MainWindow::showGameInformation()
 {
     GameInformationDialog dialog{this};
-    if (dialog.exec() == QDialog::Accepted)
+    if (dialog.exec() /*== QDialog::Accepted*/)
         changed();
 }
 
