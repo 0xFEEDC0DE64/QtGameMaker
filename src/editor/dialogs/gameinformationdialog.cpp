@@ -688,7 +688,7 @@ void GameInformationDialog::textItalic()
 void GameInformationDialog::textFamily(const QString &f)
 {
     QTextCharFormat fmt;
-    fmt.setFontFamily(f);
+    fmt.setFontFamilies({f});
     mergeFormatOnWordOrSelection(fmt);
 }
 

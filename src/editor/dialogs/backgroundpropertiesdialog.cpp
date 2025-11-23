@@ -42,7 +42,7 @@ BackgroundPropertiesDialog::BackgroundPropertiesDialog(Background &background, P
 
     connect(m_ui->lineEditName, &QLineEdit::textChanged,
             this, &BackgroundPropertiesDialog::changed);
-    connect(m_ui->checkBoxTileset, &QCheckBox::stateChanged,
+    connect(m_ui->checkBoxTileset, &QCheckBox::checkStateChanged,
             this, &BackgroundPropertiesDialog::changed);
 }
 

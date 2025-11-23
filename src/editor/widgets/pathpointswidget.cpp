@@ -6,6 +6,7 @@
 #include <QMouseEvent>
 
 #include <algorithm>
+#include <ranges>
 
 #include "editorguiutils.h"
 
@@ -106,11 +107,8 @@ void PathPointsWidget::paintEvent(QPaintEvent *event)
         painter.drawLine(point0.point, point1.point);
     };
 
-    std::adjacent_find(std::cbegin(*m_points), std::cend(*m_points),
-                       [&](const Path::Point &point0, const Path::Point &point1){
-        drawLine(point0, point1);
-        return false;
-    });
+    for (auto&& [p0, p1] : std::views::adjacent<2>(*m_points))
+        drawLine(p0, p1);
 
     if (m_closed && m_points->size() >= 2)
         drawLine(m_points->back(), m_points->front());

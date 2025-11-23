@@ -55,9 +55,9 @@ SpritePropertiesDialog::SpritePropertiesDialog(Sprite &sprite, ProjectTreeModel 
             this, &SpritePropertiesDialog::changed);
     connect(m_ui->spinBoxOriginY, &QSpinBox::valueChanged,
             this, &SpritePropertiesDialog::changed);
-    connect(m_ui->checkBoxPreciseCollisionChecking, &QCheckBox::stateChanged,
+    connect(m_ui->checkBoxPreciseCollisionChecking, &QCheckBox::checkStateChanged,
             this, &SpritePropertiesDialog::changed);
-    connect(m_ui->checkBoxSeparateCollisionMasks, &QCheckBox::stateChanged,
+    connect(m_ui->checkBoxSeparateCollisionMasks, &QCheckBox::checkStateChanged,
             this, &SpritePropertiesDialog::changed);
 }
 

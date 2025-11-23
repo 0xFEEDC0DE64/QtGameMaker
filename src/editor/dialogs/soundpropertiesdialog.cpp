@@ -70,21 +70,21 @@ SoundPropertiesDialog::SoundPropertiesDialog(Sound &sound, ProjectTreeModel &pro
             this, &SoundPropertiesDialog::changed);
     connect(m_ui->radioButtonMultimedia, &QRadioButton::toggled,
             this, &SoundPropertiesDialog::changed);
-    connect(m_ui->checkBoxChorus, &QCheckBox::stateChanged,
+    connect(m_ui->checkBoxChorus, &QCheckBox::checkStateChanged,
             this, &SoundPropertiesDialog::changed);
-    connect(m_ui->checkBoxFlanger, &QCheckBox::stateChanged,
+    connect(m_ui->checkBoxFlanger, &QCheckBox::checkStateChanged,
             this, &SoundPropertiesDialog::changed);
-    connect(m_ui->checkBoxGargle, &QCheckBox::stateChanged,
+    connect(m_ui->checkBoxGargle, &QCheckBox::checkStateChanged,
             this, &SoundPropertiesDialog::changed);
-    connect(m_ui->checkBoxEcho, &QCheckBox::stateChanged,
+    connect(m_ui->checkBoxEcho, &QCheckBox::checkStateChanged,
             this, &SoundPropertiesDialog::changed);
-    connect(m_ui->checkBoxReverb, &QCheckBox::stateChanged,
+    connect(m_ui->checkBoxReverb, &QCheckBox::checkStateChanged,
             this, &SoundPropertiesDialog::changed);
     connect(m_ui->horizontalSliderVolume, &QSlider::valueChanged,
             this, &SoundPropertiesDialog::changed);
     connect(m_ui->horizontalSliderPan, &QSlider::valueChanged,
             this, &SoundPropertiesDialog::changed);
-    connect(m_ui->checkBoxPreload, &QCheckBox::stateChanged,
+    connect(m_ui->checkBoxPreload, &QCheckBox::checkStateChanged,
             this, &SoundPropertiesDialog::changed);
 }
 
