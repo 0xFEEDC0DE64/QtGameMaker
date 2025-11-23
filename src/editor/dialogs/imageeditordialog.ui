@@ -65,11 +65,30 @@
       <property name="title">
        <string>&amp;View</string>
       </property>
+      <addaction name="actionZoomOut"/>
+      <addaction name="actionNoZoom"/>
+      <addaction name="actionZoomIn"/>
+      <addaction name="separator"/>
+      <addaction name="actionToggleGrid"/>
+      <addaction name="actionGridOptions"/>
+      <addaction name="separator"/>
+      <addaction name="actionShowPreview"/>
+      <addaction name="separator"/>
+      <addaction name="actionSetTransparencyBackground"/>
      </widget>
      <widget class="QMenu" name="menuTransform">
       <property name="title">
        <string>&amp;Transform</string>
       </property>
+      <addaction name="actionShift"/>
+      <addaction name="actionMirrorFlip"/>
+      <addaction name="actionRotate"/>
+      <addaction name="actionScale"/>
+      <addaction name="actionSkew"/>
+      <addaction name="separator"/>
+      <addaction name="actionResizeCanvas"/>
+      <addaction name="actionStretch"/>
+      <addaction name="actionCrop"/>
      </widget>
      <widget class="QMenu" name="menuImage">
       <property name="title">
@@ -86,10 +105,10 @@
    <item>
     <widget class="QFrame" name="frame">
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::Shape::StyledPanel</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
+      <enum>QFrame::Shadow::Raised</enum>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="spacing">
@@ -129,6 +148,16 @@
         <addaction name="actionUndo"/>
         <addaction name="actionRedo"/>
         <addaction name="separator"/>
+        <addaction name="actionCut"/>
+        <addaction name="actionCopy"/>
+        <addaction name="actionPaste"/>
+        <addaction name="separator"/>
+        <addaction name="actionZoomOut"/>
+        <addaction name="actionNoZoom"/>
+        <addaction name="actionZoomIn"/>
+        <addaction name="separator"/>
+        <addaction name="actionToggleGrid"/>
+        <addaction name="actionShowPreview"/>
        </widget>
       </item>
      </layout>
@@ -141,107 +170,197 @@
        <item>
         <layout class="QGridLayout" name="gridLayout">
          <item row="0" column="1">
-          <widget class="QToolButton" name="toolButton_2">
+          <widget class="QToolButton" name="toolButtonSpray">
+           <property name="toolTip">
+            <string>Spray on the image (A)</string>
+           </property>
            <property name="text">
-            <string>...</string>
+            <string>Sp</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
          <item row="3" column="1">
-          <widget class="QToolButton" name="toolButton_11">
+          <widget class="QToolButton" name="toolButtonSelectWand">
+           <property name="toolTip">
+            <string>Selecting by using magic wand (W)</string>
+           </property>
            <property name="text">
-            <string>...</string>
+            <string>SW</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QToolButton" name="toolButton_5">
+          <widget class="QToolButton" name="toolButtonLine">
+           <property name="toolTip">
+            <string>Draw a line (L)</string>
+           </property>
            <property name="text">
-            <string>...</string>
+            <string>Li</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
          <item row="0" column="0">
-          <widget class="QToolButton" name="toolButton">
+          <widget class="QToolButton" name="toolButtonDraw">
+           <property name="toolTip">
+            <string>Draw on the image (D)</string>
+           </property>
            <property name="text">
-            <string>...</string>
+            <string>Dr</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
          <item row="2" column="2">
-          <widget class="QToolButton" name="toolButton_9">
+          <widget class="QToolButton" name="toolButtonRoundedRectangle">
+           <property name="toolTip">
+            <string>Draw a rounded rectangle (O)</string>
+           </property>
            <property name="text">
-            <string>...</string>
+            <string>Ro</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
          <item row="3" column="2">
-          <widget class="QToolButton" name="toolButton_12">
+          <widget class="QToolButton" name="toolButtonSelectSpray">
+           <property name="toolTip">
+            <string>Selecting by spraying (Y)</string>
+           </property>
            <property name="text">
-            <string>...</string>
+            <string>SS</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
          <item row="0" column="2">
-          <widget class="QToolButton" name="toolButton_3">
+          <widget class="QToolButton" name="toolButtonErase">
+           <property name="toolTip">
+            <string>Erase parts of the image (E)</string>
+           </property>
            <property name="text">
-            <string>...</string>
+            <string>Er</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QToolButton" name="toolButton_8">
+          <widget class="QToolButton" name="toolButtonEllipse">
+           <property name="toolTip">
+            <string>Draw an elipse (I)</string>
+           </property>
            <property name="text">
-            <string>...</string>
+            <string>El</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="QToolButton" name="toolButton_4">
+          <widget class="QToolButton" name="toolButtonPick">
+           <property name="toolTip">
+            <string>Pick a color from the image (C)</string>
+           </property>
            <property name="text">
-            <string>...</string>
+            <string>Pi</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
          <item row="2" column="0">
-          <widget class="QToolButton" name="toolButton_7">
+          <widget class="QToolButton" name="toolButtonRectangle">
+           <property name="toolTip">
+            <string>Draw a rectangle (R)</string>
+           </property>
            <property name="text">
-            <string>...</string>
+            <string>Re</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
          <item row="1" column="2">
-          <widget class="QToolButton" name="toolButton_6">
+          <widget class="QToolButton" name="toolButtonPolygon">
+           <property name="toolTip">
+            <string>Draw a polygon (P)</string>
+           </property>
            <property name="text">
-            <string>...</string>
+            <string>Po</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
          <item row="3" column="0">
-          <widget class="QToolButton" name="toolButton_10">
+          <widget class="QToolButton" name="toolButtonSelectRegion">
+           <property name="toolTip">
+            <string>Selecting a region (S)</string>
+           </property>
            <property name="text">
-            <string>...</string>
+            <string>SR</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
          <item row="4" column="0">
-          <widget class="QToolButton" name="toolButton_13">
+          <widget class="QToolButton" name="toolButtonText">
+           <property name="toolTip">
+            <string>Draw text (T)</string>
+           </property>
            <property name="text">
-            <string>...</string>
+            <string>Te</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
          <item row="4" column="1">
-          <widget class="QToolButton" name="toolButton_14">
+          <widget class="QToolButton" name="toolButtonFill">
+           <property name="toolTip">
+            <string>Fill an area (F)</string>
+           </property>
            <property name="text">
-            <string>...</string>
+            <string>Fi</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
          <item row="4" column="2">
-          <widget class="QToolButton" name="toolButton_15">
+          <widget class="QToolButton" name="toolButtonReplace">
+           <property name="toolTip">
+            <string>Change all pixels with the same color (H)</string>
+           </property>
            <property name="text">
-            <string>...</string>
+            <string>RC</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -254,44 +373,65 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="0" column="1">
-           <widget class="QToolButton" name="toolButton_17">
+           <widget class="QToolButton" name="toolButtonSize2">
             <property name="text">
-             <string>...</string>
+             <string>2</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item row="0" column="2">
-           <widget class="QToolButton" name="toolButton_18">
+           <widget class="QToolButton" name="toolButtonSize3">
             <property name="text">
-             <string>...</string>
+             <string>3</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item row="0" column="0">
-           <widget class="QToolButton" name="toolButton_16">
+           <widget class="QToolButton" name="toolButtonSize1">
             <property name="text">
-             <string>...</string>
+             <string>1</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QToolButton" name="toolButton_19">
+           <widget class="QToolButton" name="toolButtonSize4">
             <property name="text">
-             <string>...</string>
+             <string>4</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QToolButton" name="toolButton_20">
+           <widget class="QToolButton" name="toolButtonSize5">
             <property name="text">
-             <string>...</string>
+             <string>5</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item row="1" column="2">
-           <widget class="QToolButton" name="toolButton_21">
+           <widget class="QToolButton" name="toolButtonSize6">
             <property name="text">
-             <string>...</string>
+             <string>6</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -305,7 +445,14 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
-           <widget class="QSpinBox" name="spinBoxHardness"/>
+           <widget class="QSpinBox" name="spinBoxHardness">
+            <property name="maximum">
+             <number>255</number>
+            </property>
+            <property name="value">
+             <number>128</number>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QSlider" name="horizontalSliderHardness">
@@ -315,8 +462,14 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="maximum">
+             <number>255</number>
+            </property>
+            <property name="value">
+             <number>128</number>
+            </property>
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
            </widget>
           </item>
@@ -330,37 +483,52 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_8">
           <item>
-           <widget class="QPushButton" name="pushButton">
+           <widget class="QPushButton" name="pushButtonLine1">
             <property name="text">
-             <string>PushButton</string>
+             <string>----</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_2">
+           <widget class="QPushButton" name="pushButtonLine2">
             <property name="text">
-             <string>PushButton</string>
+             <string>---&gt;</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_3">
+           <widget class="QPushButton" name="pushButtonLine3">
             <property name="text">
-             <string>PushButton</string>
+             <string>&lt;---</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_4">
+           <widget class="QPushButton" name="pushButtonLine4">
             <property name="text">
-             <string>PushButton</string>
+             <string>&lt;---&gt;</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="checkBox">
+           <widget class="QCheckBox" name="checkBoxLineAntiAlias">
             <property name="text">
-             <string>CheckBox</string>
+             <string>Anti-alias</string>
             </property>
            </widget>
           </item>
@@ -374,30 +542,42 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_9">
           <item>
-           <widget class="QPushButton" name="pushButton_5">
+           <widget class="QPushButton" name="pushButtonBorder">
             <property name="text">
-             <string>PushButton</string>
+             <string>Border</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_6">
+           <widget class="QPushButton" name="pushButtonBorderFill">
             <property name="text">
-             <string>PushButton</string>
+             <string>Border+Fill</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_7">
+           <widget class="QPushButton" name="pushButtonFill">
             <property name="text">
-             <string>PushButton</string>
+             <string>Fill</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="checkBox_2">
+           <widget class="QCheckBox" name="checkBoxShapeAntiAlias">
             <property name="text">
-             <string>CheckBox</string>
+             <string>Anti-alias</string>
             </property>
            </widget>
           </item>
@@ -411,7 +591,11 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_10">
           <item>
-           <widget class="QSpinBox" name="spinBox"/>
+           <widget class="QSpinBox" name="spinBox">
+            <property name="maximum">
+             <number>64</number>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QSlider" name="horizontalSlider">
@@ -421,15 +605,18 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="maximum">
+             <number>64</number>
+            </property>
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QCheckBox" name="checkBox_3">
+           <widget class="QCheckBox" name="checkBoxToleranceColorOnly">
             <property name="text">
-             <string>CheckBox</string>
+             <string>Color only</string>
             </property>
            </widget>
           </item>
@@ -443,32 +630,44 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_11">
           <item>
-           <widget class="QPushButton" name="pushButton_8">
+           <widget class="QPushButton" name="pushButtonSelectFont">
             <property name="text">
-             <string>PushButton</string>
+             <string>Aa</string>
             </property>
            </widget>
           </item>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
-             <widget class="QToolButton" name="toolButton_23">
+             <widget class="QToolButton" name="toolButtonAlignLeft">
               <property name="text">
-               <string>...</string>
+               <string>L</string>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QToolButton" name="toolButton_22">
+             <widget class="QToolButton" name="toolButtonCenter">
               <property name="text">
-               <string>...</string>
+               <string>C</string>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QToolButton" name="toolButton_24">
+             <widget class="QToolButton" name="toolButtonAlignRight">
               <property name="text">
-               <string>...</string>
+               <string>R</string>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -480,7 +679,7 @@
        <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
-          <enum>Qt::Vertical</enum>
+          <enum>Qt::Orientation::Vertical</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -498,15 +697,15 @@
         <bool>true</bool>
        </property>
        <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
        </property>
        <widget class="DrawingCanvasWidget" name="canvas">
         <property name="geometry">
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>756</width>
-          <height>1044</height>
+          <width>759</width>
+          <height>1042</height>
          </rect>
         </property>
        </widget>
@@ -540,10 +739,10 @@
                  </size>
                 </property>
                 <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
+                 <enum>QFrame::Shape::StyledPanel</enum>
                 </property>
                 <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
+                 <enum>QFrame::Shadow::Raised</enum>
                 </property>
                </widget>
               </item>
@@ -567,10 +766,10 @@
                  </size>
                 </property>
                 <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
+                 <enum>QFrame::Shape::StyledPanel</enum>
                 </property>
                 <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
+                 <enum>QFrame::Shadow::Raised</enum>
                 </property>
                </widget>
               </item>
@@ -587,10 +786,10 @@
              </size>
             </property>
             <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
+             <enum>QFrame::Shape::StyledPanel</enum>
             </property>
             <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
+             <enum>QFrame::Shadow::Raised</enum>
             </property>
            </widget>
           </item>
@@ -603,10 +802,10 @@
              </size>
             </property>
             <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
+             <enum>QFrame::Shape::StyledPanel</enum>
             </property>
             <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
+             <enum>QFrame::Shadow::Raised</enum>
             </property>
            </widget>
           </item>
@@ -620,7 +819,14 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <item>
-           <widget class="QSpinBox" name="spinBoxOpacity"/>
+           <widget class="QSpinBox" name="spinBoxOpacity">
+            <property name="maximum">
+             <number>255</number>
+            </property>
+            <property name="value">
+             <number>255</number>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QSlider" name="horizontalSliderOpacity">
@@ -630,8 +836,14 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="maximum">
+             <number>255</number>
+            </property>
+            <property name="value">
+             <number>255</number>
+            </property>
             <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
            </widget>
           </item>
@@ -649,6 +861,9 @@
             <property name="text">
              <string>Blend</string>
             </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item>
@@ -662,9 +877,16 @@
         </widget>
        </item>
        <item>
+        <widget class="QGroupBox" name="groupBoxPreview">
+         <property name="title">
+          <string>Preview</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="verticalSpacer_2">
          <property name="orientation">
-          <enum>Qt::Vertical</enum>
+          <enum>Qt::Orientation::Vertical</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -703,7 +925,7 @@
     <string>&amp;Save as PNG file...</string>
    </property>
    <property name="toolTip">
-    <string>Save the image as a PNG file</string>
+    <string>Save the image as PNG file (Ctrl+S)</string>
    </property>
   </action>
   <action name="actionPreviousImage">
@@ -804,6 +1026,87 @@
     <string>Select &amp;All</string>
    </property>
   </action>
+  <action name="actionZoomOut">
+   <property name="text">
+    <string>Zoom &amp;Out</string>
+   </property>
+  </action>
+  <action name="actionNoZoom">
+   <property name="text">
+    <string>&amp;No Zoom</string>
+   </property>
+  </action>
+  <action name="actionZoomIn">
+   <property name="text">
+    <string>Zoom &amp;In</string>
+   </property>
+  </action>
+  <action name="actionToggleGrid">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Toggle &amp;Grid</string>
+   </property>
+  </action>
+  <action name="actionGridOptions">
+   <property name="text">
+    <string>G&amp;rid Options</string>
+   </property>
+  </action>
+  <action name="actionShowPreview">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show &amp;Preview</string>
+   </property>
+  </action>
+  <action name="actionSetTransparencyBackground">
+   <property name="text">
+    <string>Set &amp;Transparency Background...</string>
+   </property>
+  </action>
+  <action name="actionShift">
+   <property name="text">
+    <string>&amp;Shift...</string>
+   </property>
+  </action>
+  <action name="actionMirrorFlip">
+   <property name="text">
+    <string>&amp;Mirror/Flip...</string>
+   </property>
+  </action>
+  <action name="actionRotate">
+   <property name="text">
+    <string>&amp;Rotate...</string>
+   </property>
+  </action>
+  <action name="actionScale">
+   <property name="text">
+    <string>Sc&amp;ale...</string>
+   </property>
+  </action>
+  <action name="actionSkew">
+   <property name="text">
+    <string>S&amp;kew...</string>
+   </property>
+  </action>
+  <action name="actionResizeCanvas">
+   <property name="text">
+    <string>Resize &amp;Canvas...</string>
+   </property>
+  </action>
+  <action name="actionStretch">
+   <property name="text">
+    <string>Str&amp;etch...</string>
+   </property>
+  </action>
+  <action name="actionCrop">
+   <property name="text">
+    <string>Cro&amp;p...</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -829,6 +1132,1590 @@
     <hint type="destinationlabel">
      <x>285</x>
      <y>226</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinBoxHardness</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>horizontalSliderHardness</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>44</x>
+     <y>367</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>56</x>
+     <y>398</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSliderHardness</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinBoxHardness</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>81</x>
+     <y>401</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>83</x>
+     <y>369</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinBoxOpacity</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>horizontalSliderOpacity</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>933</x>
+     <y>435</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>938</x>
+     <y>469</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSliderOpacity</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinBoxOpacity</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>961</x>
+     <y>463</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>960</x>
+     <y>437</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBoxLineAntiAlias</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>checkBoxShapeAntiAlias</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>59</x>
+     <y>592</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>50</x>
+     <y>764</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBoxShapeAntiAlias</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>checkBoxLineAntiAlias</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>81</x>
+     <y>765</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>83</x>
+     <y>598</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>horizontalSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>36</x>
+     <y>846</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>41</x>
+     <y>870</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinBox</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>75</x>
+     <y>873</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>72</x>
+     <y>843</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonDraw</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxHardness</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>30</x>
+     <y>75</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>14</x>
+     <y>337</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonDraw</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxLine</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>16</x>
+     <y>77</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>17</x>
+     <y>437</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonDraw</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxShape</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>14</x>
+     <y>82</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>16</x>
+     <y>638</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonDraw</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxTolerance</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>71</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>15</x>
+     <y>809</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonDraw</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxFont</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>17</x>
+     <y>75</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>18</x>
+     <y>940</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonDraw</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxColorMode</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>22</x>
+     <y>71</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>909</x>
+     <y>499</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonSpray</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxHardness</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>56</x>
+     <y>73</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>48</x>
+     <y>338</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonSpray</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxLine</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>55</x>
+     <y>77</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>46</x>
+     <y>432</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonSpray</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxShape</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>49</x>
+     <y>73</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>53</x>
+     <y>642</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonSpray</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxTolerance</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>54</x>
+     <y>85</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>54</x>
+     <y>810</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonSpray</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxFont</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>53</x>
+     <y>76</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>46</x>
+     <y>937</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonSpray</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxColorMode</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>71</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>914</x>
+     <y>502</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonErase</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxHardness</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>86</x>
+     <y>71</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>91</x>
+     <y>337</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonErase</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxLine</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>95</x>
+     <y>75</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>75</x>
+     <y>439</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonErase</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxShape</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>92</x>
+     <y>79</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>79</x>
+     <y>641</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonErase</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxTolerance</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>93</x>
+     <y>82</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>82</x>
+     <y>810</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonErase</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxFont</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>99</x>
+     <y>78</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>89</x>
+     <y>944</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonErase</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxColorMode</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>88</x>
+     <y>71</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>961</x>
+     <y>504</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonPick</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxHardness</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>7</x>
+     <y>110</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>23</x>
+     <y>338</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonPick</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxLine</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>22</x>
+     <y>116</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>22</x>
+     <y>435</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonPick</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxShape</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>15</x>
+     <y>109</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>23</x>
+     <y>643</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonPick</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxTolerance</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>108</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>29</x>
+     <y>806</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonPick</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxFont</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>10</x>
+     <y>103</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>24</x>
+     <y>939</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonPick</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxColorMode</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>106</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>936</x>
+     <y>507</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonLine</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxHardness</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>55</x>
+     <y>105</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>51</x>
+     <y>339</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonLine</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxLine</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>50</x>
+     <y>106</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>58</x>
+     <y>441</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonLine</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxShape</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>48</x>
+     <y>102</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>49</x>
+     <y>640</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonLine</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxTolerance</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>55</x>
+     <y>102</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>49</x>
+     <y>812</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonLine</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxFont</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>51</x>
+     <y>112</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>63</x>
+     <y>939</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonLine</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxColorMode</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>50</x>
+     <y>101</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>943</x>
+     <y>504</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonPolygon</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxHardness</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>93</x>
+     <y>114</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>70</x>
+     <y>338</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonPolygon</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxLine</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>96</x>
+     <y>110</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>93</x>
+     <y>432</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonPolygon</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxShape</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>94</x>
+     <y>102</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>64</x>
+     <y>639</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonPolygon</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxTolerance</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>86</x>
+     <y>100</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>90</x>
+     <y>805</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonPolygon</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxFont</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>94</x>
+     <y>95</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>97</x>
+     <y>936</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonPolygon</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxColorMode</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>91</x>
+     <y>106</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>932</x>
+     <y>502</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonRectangle</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxHardness</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>17</x>
+     <y>130</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>18</x>
+     <y>338</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonRectangle</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxLine</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>14</x>
+     <y>140</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>38</x>
+     <y>451</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonRectangle</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxShape</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>7</x>
+     <y>133</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>27</x>
+     <y>640</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonRectangle</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxTolerance</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>16</x>
+     <y>140</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>32</x>
+     <y>807</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonRectangle</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxFont</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>12</x>
+     <y>130</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>21</x>
+     <y>931</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonRectangle</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxColorMode</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>6</x>
+     <y>139</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>949</x>
+     <y>502</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonEllipse</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxHardness</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>51</x>
+     <y>137</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>46</x>
+     <y>336</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonEllipse</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxLine</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>49</x>
+     <y>131</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>51</x>
+     <y>438</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonEllipse</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxShape</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>56</x>
+     <y>142</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>49</x>
+     <y>633</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonEllipse</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxTolerance</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>52</x>
+     <y>132</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>48</x>
+     <y>807</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonEllipse</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxFont</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>57</x>
+     <y>132</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>57</x>
+     <y>937</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonEllipse</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxColorMode</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>52</x>
+     <y>141</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>931</x>
+     <y>505</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonRoundedRectangle</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxHardness</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>91</x>
+     <y>129</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>91</x>
+     <y>335</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonRoundedRectangle</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxLine</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>100</x>
+     <y>132</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>74</x>
+     <y>439</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonRoundedRectangle</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxShape</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>102</x>
+     <y>142</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>82</x>
+     <y>637</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonRoundedRectangle</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxTolerance</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>93</x>
+     <y>144</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>73</x>
+     <y>805</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonRoundedRectangle</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxFont</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>101</x>
+     <y>139</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>95</x>
+     <y>935</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonRoundedRectangle</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxColorMode</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>87</x>
+     <y>138</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>945</x>
+     <y>503</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonSelectRegion</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxHardness</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>13</x>
+     <y>160</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>25</x>
+     <y>339</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonSelectRegion</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxLine</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>12</x>
+     <y>167</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>22</x>
+     <y>438</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonSelectRegion</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxShape</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>13</x>
+     <y>163</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>22</x>
+     <y>635</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonSelectRegion</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxTolerance</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>14</x>
+     <y>173</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>22</x>
+     <y>808</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonSelectWand</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxHardness</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>52</x>
+     <y>167</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>53</x>
+     <y>338</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonSelectWand</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxLine</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>49</x>
+     <y>178</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>49</x>
+     <y>431</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonSelectWand</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxShape</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>62</x>
+     <y>174</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>51</x>
+     <y>642</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonSelectWand</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxTolerance</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>67</x>
+     <y>163</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>68</x>
+     <y>804</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonSelectWand</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxFont</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>51</x>
+     <y>163</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>64</x>
+     <y>935</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonSelectRegion</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxFont</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>9</x>
+     <y>165</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>32</x>
+     <y>937</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonSelectRegion</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxColorMode</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>15</x>
+     <y>161</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>505</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonSelectWand</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxColorMode</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>52</x>
+     <y>173</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>969</x>
+     <y>509</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonSelectSpray</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxHardness</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>92</x>
+     <y>173</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>69</x>
+     <y>343</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonSelectSpray</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxLine</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>97</x>
+     <y>163</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>80</x>
+     <y>436</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonSelectSpray</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxShape</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>91</x>
+     <y>170</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>77</x>
+     <y>640</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonSelectSpray</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxTolerance</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>101</x>
+     <y>169</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>72</x>
+     <y>811</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonSelectSpray</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxFont</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>88</x>
+     <y>166</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>74</x>
+     <y>939</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonSelectSpray</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxColorMode</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>91</x>
+     <y>171</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>945</x>
+     <y>506</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonText</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxHardness</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>19</x>
+     <y>196</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>25</x>
+     <y>338</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonText</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxLine</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>6</x>
+     <y>193</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>30</x>
+     <y>432</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonText</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxShape</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>13</x>
+     <y>203</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>23</x>
+     <y>643</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonText</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxTolerance</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>11</x>
+     <y>195</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>23</x>
+     <y>804</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonText</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxFont</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>9</x>
+     <y>206</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>31</x>
+     <y>933</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonText</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxColorMode</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>21</x>
+     <y>199</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>918</x>
+     <y>507</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonFill</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxHardness</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>54</x>
+     <y>202</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>48</x>
+     <y>333</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonFill</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxLine</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>50</x>
+     <y>194</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>51</x>
+     <y>434</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonFill</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxShape</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>55</x>
+     <y>191</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>44</x>
+     <y>637</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonFill</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxTolerance</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>202</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>47</x>
+     <y>807</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonFill</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxFont</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>54</x>
+     <y>198</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>52</x>
+     <y>930</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonFill</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxColorMode</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>54</x>
+     <y>193</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>944</x>
+     <y>505</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonReplace</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxHardness</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>96</x>
+     <y>201</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>85</x>
+     <y>332</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonReplace</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxLine</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>94</x>
+     <y>194</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>80</x>
+     <y>435</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonReplace</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxShape</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>91</x>
+     <y>202</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>81</x>
+     <y>637</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonReplace</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxTolerance</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>97</x>
+     <y>196</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>74</x>
+     <y>804</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonReplace</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxFont</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>102</x>
+     <y>190</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>88</x>
+     <y>936</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>toolButtonReplace</sender>
+   <signal>clicked()</signal>
+   <receiver>groupBoxColorMode</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>98</x>
+     <y>205</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>934</x>
+     <y>505</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionShowPreview</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>groupBoxPreview</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>940</x>
+     <y>612</y>
     </hint>
    </hints>
   </connection>

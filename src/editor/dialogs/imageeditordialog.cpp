@@ -3,6 +3,7 @@
 
 #include <QMessageBox>
 #include <QDebug>
+#include <QButtonGroup>
 
 ImageEditorDialog::ImageEditorDialog(const QPixmap &pixmap, const QString &title, QWidget *parent) :
     QDialog{parent},
@@ -22,6 +23,53 @@ ImageEditorDialog::ImageEditorDialog(const QPixmap &pixmap, const QString &title
     updateTitle();
 
     m_ui->scrollArea->setBackgroundRole(QPalette::Dark);
+
+    {
+        auto group = new QButtonGroup{this};
+        group->setExclusive(true);
+        group->addButton(m_ui->toolButtonDraw);
+        group->addButton(m_ui->toolButtonSpray);
+        group->addButton(m_ui->toolButtonErase);
+        group->addButton(m_ui->toolButtonPick);
+        group->addButton(m_ui->toolButtonLine);
+        group->addButton(m_ui->toolButtonPolygon);
+        group->addButton(m_ui->toolButtonRectangle);
+        group->addButton(m_ui->toolButtonEllipse);
+        group->addButton(m_ui->toolButtonRoundedRectangle);
+        group->addButton(m_ui->toolButtonSelectRegion);
+        group->addButton(m_ui->toolButtonSelectWand);
+        group->addButton(m_ui->toolButtonSelectSpray);
+        group->addButton(m_ui->toolButtonText);
+        group->addButton(m_ui->toolButtonFill);
+        group->addButton(m_ui->toolButtonReplace);
+    }
+
+    {
+        auto group = new QButtonGroup{this};
+        group->setExclusive(true);
+        group->addButton(m_ui->pushButtonLine1);
+        group->addButton(m_ui->pushButtonLine2);
+        group->addButton(m_ui->pushButtonLine3);
+        group->addButton(m_ui->pushButtonLine4);
+    }
+
+    {
+        auto group = new QButtonGroup{this};
+        group->setExclusive(true);
+        group->addButton(m_ui->pushButtonBorder);
+        group->addButton(m_ui->pushButtonBorderFill);
+        group->addButton(m_ui->pushButtonFill);
+    }
+
+    {
+        auto group = new QButtonGroup{this};
+        group->setExclusive(true);
+        group->addButton(m_ui->toolButtonAlignLeft);
+        group->addButton(m_ui->toolButtonCenter);
+        group->addButton(m_ui->toolButtonAlignRight);
+    }
+
+    m_ui->toolButtonDraw->click();
 
     m_ui->canvas->setPixmap(m_pixmap);
 }

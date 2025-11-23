@@ -2,6 +2,7 @@
 
 #include <QPixmap>
 #include <QPainter>
+#include <QMouseEvent>
 
 DrawingCanvasWidget::DrawingCanvasWidget(QWidget *parent) :
     QWidget{parent}
@@ -56,4 +57,29 @@ void DrawingCanvasWidget::paintEvent(QPaintEvent *ev)
     painter.drawRect(rect());
 
     painter.drawPixmap(rect(), *m_pixmap);
+}
+
+void DrawingCanvasWidget::mousePressEvent(QMouseEvent *event)
+{
+    QWidget::mousePressEvent(event);
+
+    if (event->button() == Qt::LeftButton)
+    {
+        setMouseTracking(true);
+    }
+}
+
+void DrawingCanvasWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    QWidget::mouseReleaseEvent(event);
+
+    if (event->button() == Qt::LeftButton)
+    {
+        setMouseTracking(false);
+    }
+}
+
+void DrawingCanvasWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    QWidget::mouseMoveEvent(event);
 }
