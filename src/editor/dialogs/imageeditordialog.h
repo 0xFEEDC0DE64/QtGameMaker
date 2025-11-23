@@ -23,6 +23,11 @@ public:
 
 private slots:
     void changed();
+    void selectFont();
+    void selectLeftButtonColor();
+    void selectRightButtonColor();
+    void updateLeftButtonColor(const QColor &leftButtonColor);
+    void updateRightButtonColor(const QColor &rightButtonColor);
 
 private:
     void updateTitle();

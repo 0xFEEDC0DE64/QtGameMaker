@@ -4,6 +4,8 @@
 #include <QMessageBox>
 #include <QDebug>
 #include <QButtonGroup>
+#include <QFontDialog>
+#include <QColorDialog>
 
 ImageEditorDialog::ImageEditorDialog(const QPixmap &pixmap, const QString &title, QWidget *parent) :
     QDialog{parent},
@@ -23,6 +25,21 @@ ImageEditorDialog::ImageEditorDialog(const QPixmap &pixmap, const QString &title
     updateTitle();
 
     m_ui->scrollArea->setBackgroundRole(QPalette::Dark);
+
+    connect(m_ui->pushButtonSelectFont, &QAbstractButton::pressed,
+            this, &ImageEditorDialog::selectFont);
+
+    connect(m_ui->pushButtonLeftButtonColor, &QAbstractButton::pressed,
+            this, &ImageEditorDialog::selectLeftButtonColor);
+    connect(m_ui->pushButtonRightButtonColor, &QAbstractButton::pressed,
+            this, &ImageEditorDialog::selectRightButtonColor);
+
+    connect(m_ui->canvas, &DrawingCanvasWidget::changed,
+            this, &ImageEditorDialog::changed);
+    connect(m_ui->canvas, &DrawingCanvasWidget::leftButtonColorChanged,
+            this, &ImageEditorDialog::updateLeftButtonColor);
+    connect(m_ui->canvas, &DrawingCanvasWidget::rightButtonColorChanged,
+            this, &ImageEditorDialog::updateRightButtonColor);
 
     {
         auto group = new QButtonGroup{this};
@@ -71,6 +88,9 @@ ImageEditorDialog::ImageEditorDialog(const QPixmap &pixmap, const QString &title
 
     m_ui->toolButtonDraw->click();
 
+    updateLeftButtonColor(m_ui->canvas->leftButtonColor());
+    updateRightButtonColor(m_ui->canvas->rightButtonColor());
+
     m_ui->canvas->setPixmap(m_pixmap);
 }
 
@@ -78,12 +98,6 @@ ImageEditorDialog::~ImageEditorDialog() = default;
 
 void ImageEditorDialog::accept()
 {
-    if (!m_unsavedChanges)
-    {
-        QDialog::reject();
-        return;
-    }
-
     // TODO
 
     QDialog::accept();
@@ -126,6 +140,45 @@ void ImageEditorDialog::changed()
         m_unsavedChanges = true;
         updateTitle();
     }
+}
+
+void ImageEditorDialog::selectFont()
+{
+    QFontDialog dialog{m_ui->pushButtonSelectFont->font(), this};
+    if (dialog.exec() == QDialog::Accepted)
+        m_ui->pushButtonSelectFont->setFont(dialog.selectedFont());
+}
+
+void ImageEditorDialog::selectLeftButtonColor()
+{
+    QColorDialog dialog{m_ui->canvas->leftButtonColor(), this};
+    if (dialog.exec() == QDialog::Accepted)
+        m_ui->canvas->setLeftButtonColor(dialog.selectedColor());
+}
+
+void ImageEditorDialog::selectRightButtonColor()
+{
+    QColorDialog dialog{m_ui->canvas->rightButtonColor(), this};
+    if (dialog.exec() == QDialog::Accepted)
+        m_ui->canvas->setRightButtonColor(dialog.selectedColor());
+}
+
+void ImageEditorDialog::updateLeftButtonColor(const QColor &leftButtonColor)
+{
+    auto frame = m_ui->pushButtonLeftButtonColor;
+    auto palette = frame->palette();
+    auto role = frame->backgroundRole();
+    palette.setBrush(role, leftButtonColor);
+    frame->setPalette(palette);
+}
+
+void ImageEditorDialog::updateRightButtonColor(const QColor &rightButtonColor)
+{
+    auto frame = m_ui->pushButtonRightButtonColor;
+    auto palette = frame->palette();
+    auto role = frame->backgroundRole();
+    palette.setBrush(role, rightButtonColor);
+    frame->setPalette(palette);
 }
 
 void ImageEditorDialog::updateTitle()

@@ -89,7 +89,7 @@ void EditSpriteDialog::newSprite()
     if (dialog.exec() == QDialog::Accepted)
     {
         QPixmap pixmap{dialog.spriteSize()};
-        pixmap.fill(Qt::white);
+        pixmap.fill(Qt::transparent);
 
         m_model->beginResetModel();
         m_pixmaps = std::vector<QPixmap> { std::move(pixmap) };
@@ -110,8 +110,11 @@ void EditSpriteDialog::doubleClicked(const QModelIndex &index)
     ImageEditorDialog dialog{m_model->pixmap(index), tr("Image Editor: %0").arg(m_spriteName), this};
     if (dialog.exec() == QDialog::Accepted)
     {
+        qDebug() << "apply pixmap?!";
+        emit m_model->beginResetModel();
         m_pixmaps[index.row()] = dialog.pixmap();
-        emit m_model->dataChanged(index, index, {Qt::DecorationRole});
+        emit m_model->endResetModel();
+        //emit m_model->dataChanged(index, index, {Qt::DecorationRole});
         changed();
     }
 }

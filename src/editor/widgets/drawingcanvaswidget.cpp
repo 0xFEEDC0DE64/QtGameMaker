@@ -26,6 +26,20 @@ void DrawingCanvasWidget::setScale(float scale)
     update();
 }
 
+void DrawingCanvasWidget::setLeftButtonColor(const QColor &leftButtonColor)
+{
+    if (m_leftButtonColor == leftButtonColor)
+        return;
+    emit leftButtonColorChanged(m_leftButtonColor = leftButtonColor);
+}
+
+void DrawingCanvasWidget::setRightButtonColor(const QColor &rightButtonColor)
+{
+    if (m_rightButtonColor == rightButtonColor)
+        return;
+    emit rightButtonColorChanged(m_rightButtonColor = rightButtonColor);
+}
+
 void DrawingCanvasWidget::paintEvent(QPaintEvent *ev)
 {
     if (!m_pixmap)
@@ -63,9 +77,20 @@ void DrawingCanvasWidget::mousePressEvent(QMouseEvent *event)
 {
     QWidget::mousePressEvent(event);
 
-    if (event->button() == Qt::LeftButton)
+    switch (event->button())
     {
+    case Qt::LeftButton:
+    case Qt::RightButton:
+    {
+        m_currentlyDrawing = event->button() == Qt::LeftButton;
+
         setMouseTracking(true);
+
+        setPixel(event->pos() / m_scale, event->button() == Qt::LeftButton);
+
+        break;
+    }
+    default:;
     }
 }
 
@@ -73,13 +98,34 @@ void DrawingCanvasWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     QWidget::mouseReleaseEvent(event);
 
-    if (event->button() == Qt::LeftButton)
+    switch (event->button())
     {
+    case Qt::LeftButton:
+    case Qt::RightButton:
+    {
+        m_currentlyDrawing = std::nullopt;
+
         setMouseTracking(false);
+
+        break;
+    }
+    default:;
     }
 }
 
 void DrawingCanvasWidget::mouseMoveEvent(QMouseEvent *event)
 {
     QWidget::mouseMoveEvent(event);
+
+    if (m_currentlyDrawing)
+        setPixel(event->pos() / m_scale, *m_currentlyDrawing);
+}
+
+void DrawingCanvasWidget::setPixel(QPoint pos, bool leftColor)
+{
+    auto image = m_pixmap->toImage();
+    image.setPixelColor(pos.x(), pos.y(), leftColor ? m_leftButtonColor : m_rightButtonColor);
+    *m_pixmap = QPixmap::fromImage(image);
+    repaint();
+    emit changed();
 }

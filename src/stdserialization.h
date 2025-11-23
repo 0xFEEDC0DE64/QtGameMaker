@@ -148,6 +148,7 @@ QDataStream &operator>>(QDataStream &ds, std::variant<T...> &variant)
     static constexpr func_t *funcs[] = {
         detail::variantUnpacker<T, T...>...
     };
+    assert(index >= 0 && size_t(index) < std::size(funcs));
     variant = funcs[index](ds);
 
     return ds;

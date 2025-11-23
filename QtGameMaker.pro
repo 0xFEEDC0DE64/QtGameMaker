@@ -38,6 +38,7 @@ HEADERS += \
     src/editor/editorguiutils.h \
     src/editor/roomscene.h \
     src/editor/widgets/actiondragwidget.h \
+    src/editor/widgets/colorwidget.h \
     src/editor/widgets/draggabletreeview.h \
     src/editor/widgets/objectparentselectorwidget.h \
     src/editor/widgets/objectselectorwidget.h \
@@ -108,6 +109,7 @@ SOURCES += \
     src/editor/editorguiutils.cpp \
     src/editor/roomscene.cpp \
     src/editor/widgets/actiondragwidget.cpp \
+    src/editor/widgets/colorwidget.cpp \
     src/editor/widgets/draggabletreeview.cpp \
     src/editor/widgets/objectparentselectorwidget.cpp \
     src/editor/widgets/objectselectorwidget.cpp \

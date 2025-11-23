@@ -631,6 +631,12 @@
          <layout class="QVBoxLayout" name="verticalLayout_11">
           <item>
            <widget class="QPushButton" name="pushButtonSelectFont">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>64</height>
+             </size>
+            </property>
             <property name="text">
              <string>Aa</string>
             </property>
@@ -704,7 +710,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>759</width>
+          <width>741</width>
           <height>1042</height>
          </rect>
         </property>
@@ -731,18 +737,12 @@
                </widget>
               </item>
               <item>
-               <widget class="QFrame" name="frameLeft">
+               <widget class="QPushButton" name="pushButtonLeftButtonColor">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
                   <height>40</height>
                  </size>
-                </property>
-                <property name="frameShape">
-                 <enum>QFrame::Shape::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Shadow::Raised</enum>
                 </property>
                </widget>
               </item>
@@ -758,18 +758,12 @@
                </widget>
               </item>
               <item>
-               <widget class="QFrame" name="frameHeight">
+               <widget class="QPushButton" name="pushButtonRightButtonColor">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
                   <height>40</height>
                  </size>
-                </property>
-                <property name="frameShape">
-                 <enum>QFrame::Shape::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Shadow::Raised</enum>
                 </property>
                </widget>
               </item>
@@ -778,10 +772,10 @@
            </layout>
           </item>
           <item>
-           <widget class="QFrame" name="frame_4">
+           <widget class="ColorWidget" name="frameColorCoarse">
             <property name="minimumSize">
              <size>
-              <width>0</width>
+              <width>75</width>
               <height>100</height>
              </size>
             </property>
@@ -794,10 +788,10 @@
            </widget>
           </item>
           <item>
-           <widget class="QFrame" name="frame_5">
+           <widget class="ColorWidget" name="frameColorFine">
             <property name="minimumSize">
              <size>
-              <width>0</width>
+              <width>75</width>
               <height>100</height>
              </size>
             </property>
@@ -878,6 +872,9 @@
        </item>
        <item>
         <widget class="QGroupBox" name="groupBoxPreview">
+         <property name="visible">
+          <bool>false</bool>
+         </property>
          <property name="title">
           <string>Preview</string>
          </property>
@@ -1113,6 +1110,12 @@
    <class>DrawingCanvasWidget</class>
    <extends>QWidget</extends>
    <header>widgets/drawingcanvaswidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ColorWidget</class>
+   <extends>QFrame</extends>
+   <header>widgets/colorwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>
