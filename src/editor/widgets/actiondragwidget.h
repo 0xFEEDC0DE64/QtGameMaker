@@ -10,7 +10,7 @@ class ActionDragWidget : public QToolButton
     Q_OBJECT
 
 public:
-    explicit ActionDragWidget(QWidget *parent = nullptr);
+    using QToolButton::QToolButton;
 
     const Action &action() const { return m_action; }
     void setAction(Action &&action) { m_action = std::move(action); }

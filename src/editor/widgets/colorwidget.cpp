@@ -2,32 +2,16 @@
 
 #include <QPaintEvent>
 #include <QResizeEvent>
+#include <QMouseEvent>
 #include <QPainter>
 
-ColorWidget::ColorWidget(QWidget *parent)
-    : QFrame{parent}
+ColorWidget::ColorWidget(QWidget *parent) :
+    QFrame{parent}
 {
-    setCol(150, 255);
     setAttribute(Qt::WA_NoSystemBackground);
-    setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed) );
 }
 
 ColorWidget::~ColorWidget() = default;
-
-void ColorWidget::setCol(int h, int s)
-{
-    int nhue = qMin(qMax(0,h), 359);
-    int nsat = qMin(qMax(0,s), 255);
-    if (nhue == m_hue && nsat == m_sat)
-        return;
-    QRect r(colPt(), QSize(20,20));
-    m_hue = nhue;
-    m_sat = nsat;
-    r = r.united(QRect(colPt(), QSize(20,20)));
-    r.translate(contentsRect().x()-9, contentsRect().y()-9);
-//    update(r);
-    repaint(r);
-}
 
 void ColorWidget::paintEvent(QPaintEvent *event)
 {
@@ -39,50 +23,61 @@ void ColorWidget::paintEvent(QPaintEvent *event)
     p.drawPixmap(r.topLeft(), m_pixmap);
 }
 
-void ColorWidget::resizeEvent(QResizeEvent *event)
+void ColorWidget::mousePressEvent(QMouseEvent *event)
 {
-    Q_UNUSED(event)
+    QFrame::mousePressEvent(event);
 
-    int w = width() - frameWidth() * 2;
-    int h = height() - frameWidth() * 2;
-    QImage img(w, h, QImage::Format_RGB32);
-    int x, y;
-    uint *pixel = (uint *) img.scanLine(0);
-    for (y = 0; y < h; y++)
+    switch (event->button())
     {
-        const uint *end = pixel + w;
-        x = 0;
-        while (pixel < end) {
-            QPoint p(x, y);
-            QColor c;
-            c.setHsv(huePt(p), satPt(p), 200);
-            *pixel = c.rgb();
-            ++pixel;
-            ++x;
-        }
+    case Qt::LeftButton:
+    case Qt::RightButton:
+    {
+        m_currentlyPicking = event->button() == Qt::LeftButton;
+
+        setMouseTracking(true);
+
+        pickPixel(event->pos(), event->button() == Qt::LeftButton);
+
+        break;
     }
-    m_pixmap = QPixmap::fromImage(img);
+    default:;
+    }
 }
 
-QPoint ColorWidget::colPt()
+void ColorWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-    QRect r = contentsRect();
-    return QPoint((360 - m_hue) * (r.width() - 1) / 360, (255 - m_sat) * (r.height() - 1) / 255);
+    QFrame::mouseReleaseEvent(event);
+
+    switch (event->button())
+    {
+    case Qt::LeftButton:
+    case Qt::RightButton:
+    {
+        m_currentlyPicking = std::nullopt;
+
+        setMouseTracking(false);
+
+        break;
+    }
+    default:;
+    }
 }
 
-int ColorWidget::huePt(const QPoint &pt)
+void ColorWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    QRect r = contentsRect();
-    return 360 - pt.x() * 360 / (r.width() - 1);
+    QFrame::mouseMoveEvent(event);
+
+    if (m_currentlyPicking)
+        pickPixel(event->pos(), *m_currentlyPicking);
 }
 
-int ColorWidget::satPt(const QPoint &pt)
+void ColorWidget::pickPixel(const QPoint &pos, bool left)
 {
-    QRect r = contentsRect();
-    return 255 - pt.y() * 255 / (r.height() - 1);
-}
+    if (!m_image.rect().contains(pos))
+        return;
 
-void ColorWidget::setCol(const QPoint &pt)
-{
-    setCol(huePt(pt), satPt(pt));
+    if (left)
+        emit colorLeftClicked(m_image.pixelColor(pos));
+    else
+        emit colorRightClicked(m_image.pixelColor(pos));
 }

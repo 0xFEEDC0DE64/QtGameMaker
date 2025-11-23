@@ -7,7 +7,7 @@ class DraggableTreeView : public QTreeView
     Q_OBJECT
 
 public:
-    explicit DraggableTreeView(QWidget *parent = nullptr);
+    using QTreeView::QTreeView;
 
     void dragMoveEvent(QDragMoveEvent *event) override;
     void dropEvent(QDropEvent *event) override;

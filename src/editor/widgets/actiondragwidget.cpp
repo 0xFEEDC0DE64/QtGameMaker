@@ -8,11 +8,6 @@
 #include "projectserialization.h"
 #include "stdserialization.h"
 
-ActionDragWidget::ActionDragWidget(QWidget *parent) :
-    QToolButton{parent}
-{
-}
-
 void ActionDragWidget::mousePressEvent(QMouseEvent *event)
 {
     QToolButton::mousePressEvent(event);

@@ -4,11 +4,6 @@
 #include <QPainter>
 #include <QMouseEvent>
 
-DrawingCanvasWidget::DrawingCanvasWidget(QWidget *parent) :
-    QWidget{parent}
-{
-}
-
 void DrawingCanvasWidget::setPixmap(QPixmap &pixmap)
 {
     m_pixmap = &pixmap;

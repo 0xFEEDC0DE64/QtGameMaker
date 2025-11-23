@@ -34,6 +34,16 @@ ImageEditorDialog::ImageEditorDialog(const QPixmap &pixmap, const QString &title
     connect(m_ui->pushButtonRightButtonColor, &QAbstractButton::pressed,
             this, &ImageEditorDialog::selectRightButtonColor);
 
+    connect(m_ui->frameColorCoarse, &ColorWidget::colorLeftClicked,
+            m_ui->canvas, &DrawingCanvasWidget::setLeftButtonColor);
+    connect(m_ui->frameColorCoarse, &ColorWidget::colorRightClicked,
+            m_ui->canvas, &DrawingCanvasWidget::setRightButtonColor);
+
+    connect(m_ui->frameColorFine, &ColorWidget::colorLeftClicked,
+            m_ui->canvas, &DrawingCanvasWidget::setLeftButtonColor);
+    connect(m_ui->frameColorFine, &ColorWidget::colorRightClicked,
+            m_ui->canvas, &DrawingCanvasWidget::setRightButtonColor);
+
     connect(m_ui->canvas, &DrawingCanvasWidget::changed,
             this, &ImageEditorDialog::changed);
     connect(m_ui->canvas, &DrawingCanvasWidget::leftButtonColorChanged,

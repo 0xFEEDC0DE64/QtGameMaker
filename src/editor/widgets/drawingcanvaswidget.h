@@ -14,7 +14,7 @@ class DrawingCanvasWidget : public QWidget
     Q_PROPERTY(QColor rightButtonColor READ rightButtonColor WRITE setRightButtonColor NOTIFY rightButtonColorChanged FINAL)
 
 public:
-    explicit DrawingCanvasWidget(QWidget *parent = nullptr);
+    using QWidget::QWidget;
 
     QPixmap *pixmap() { return m_pixmap; }
     const QPixmap *pixmap() const { return m_pixmap; }

@@ -1,7 +1,10 @@
 #pragma once
 
 #include <QFrame>
+#include <QImage>
 #include <QPixmap>
+
+#include <optional>
 
 class ColorWidget : public QFrame
 {
@@ -11,21 +14,22 @@ public:
     explicit ColorWidget(QWidget *parent = nullptr);
     ~ColorWidget() override;
 
-public slots:
-    void setCol(int h, int s);
+signals:
+    void colorLeftClicked(const QColor &color);
+    void colorRightClicked(const QColor &color);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
-    void resizeEvent(QResizeEvent *event) override;
+
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+
+    QImage m_image;
+    QPixmap m_pixmap;
 
 private:
-    QPoint colPt();
-    int huePt(const QPoint &pt);
-    int satPt(const QPoint &pt);
-    void setCol(const QPoint &pt);
+    void pickPixel(const QPoint &pos, bool left);
 
-    int m_hue{};
-    int m_sat{};
-
-    QPixmap m_pixmap;
+    std::optional<bool> m_currentlyPicking;
 };

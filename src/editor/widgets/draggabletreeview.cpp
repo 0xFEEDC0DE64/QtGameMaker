@@ -1,10 +1,5 @@
 #include "draggabletreeview.h"
 
-DraggableTreeView::DraggableTreeView(QWidget *parent) :
-    QTreeView{parent}
-{
-}
-
 void DraggableTreeView::dragMoveEvent(QDragMoveEvent *event)
 {
     setDropIndicatorShown(true);

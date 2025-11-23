@@ -725,12 +725,20 @@
           <string>Colors</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="spacing">
+           <number>10</number>
+          </property>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0">
             <item>
              <layout class="QVBoxLayout" name="verticalLayout_4">
               <item>
                <widget class="QLabel" name="labelLeft">
+                <property name="font">
+                 <font>
+                  <pointsize>8</pointsize>
+                 </font>
+                </property>
                 <property name="text">
                  <string>Left</string>
                 </property>
@@ -752,6 +760,11 @@
              <layout class="QVBoxLayout" name="verticalLayout_5">
               <item>
                <widget class="QLabel" name="labelRight">
+                <property name="font">
+                 <font>
+                  <pointsize>8</pointsize>
+                 </font>
+                </property>
                 <property name="text">
                  <string>Right</string>
                 </property>
@@ -772,34 +785,34 @@
            </layout>
           </item>
           <item>
-           <widget class="ColorWidget" name="frameColorCoarse">
+           <widget class="CoarseColorWidget" name="frameColorCoarse">
             <property name="minimumSize">
              <size>
-              <width>75</width>
-              <height>100</height>
+              <width>0</width>
+              <height>125</height>
              </size>
             </property>
             <property name="frameShape">
-             <enum>QFrame::Shape::StyledPanel</enum>
+             <enum>QFrame::Shape::Panel</enum>
             </property>
             <property name="frameShadow">
-             <enum>QFrame::Shadow::Raised</enum>
+             <enum>QFrame::Shadow::Sunken</enum>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="ColorWidget" name="frameColorFine">
+           <widget class="FineColorWidget" name="frameColorFine">
             <property name="minimumSize">
              <size>
-              <width>75</width>
-              <height>100</height>
+              <width>0</width>
+              <height>125</height>
              </size>
             </property>
             <property name="frameShape">
-             <enum>QFrame::Shape::StyledPanel</enum>
+             <enum>QFrame::Shape::Panel</enum>
             </property>
             <property name="frameShadow">
-             <enum>QFrame::Shadow::Raised</enum>
+             <enum>QFrame::Shadow::Sunken</enum>
             </property>
            </widget>
           </item>
@@ -1112,9 +1125,15 @@
    <header>widgets/drawingcanvaswidget.h</header>
   </customwidget>
   <customwidget>
-   <class>ColorWidget</class>
+   <class>CoarseColorWidget</class>
    <extends>QFrame</extends>
-   <header>widgets/colorwidget.h</header>
+   <header>widgets/coarsecolorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>FineColorWidget</class>
+   <extends>QFrame</extends>
+   <header>widgets/finecolorwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
