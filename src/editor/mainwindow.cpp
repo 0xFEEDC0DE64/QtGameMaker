@@ -719,7 +719,10 @@ void MainWindow::showObjectInformation()
 void MainWindow::transparentBackgroundSettings()
 {
     TransparentBackgroundSettingsDialog dialog{this};
-    dialog.exec();
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        // TODO apply
+    }
 }
 
 template<typename T>

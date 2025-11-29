@@ -26,6 +26,7 @@ public:
 private slots:
     void newSprite();
     void saveAsPng();
+    void transparentBackgroundSettings();
 
     void activated(const QModelIndex &index);
     void currentChanged(const QModelIndex &index);

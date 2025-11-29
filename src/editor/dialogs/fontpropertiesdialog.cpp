@@ -7,6 +7,7 @@
 #include "projectcontainer.h"
 #include "models/projecttreemodel.h"
 #include "mainwindow.h"
+#include "editorguiutils.h"
 
 FontPropertiesDialog::FontPropertiesDialog(Font &font, ProjectTreeModel &projectModel, MainWindow &mainWindow) :
     QDialog{&mainWindow},
@@ -18,10 +19,7 @@ FontPropertiesDialog::FontPropertiesDialog(Font &font, ProjectTreeModel &project
 
     updateTitle();
 
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Ok))
-        button->setIcon(QIcon{":/qtgameengine/icons/ok.png"});
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Cancel))
-        button->setIcon(QIcon{":/qtgameengine/icons/delete.png"});
+    improveButtonBox(m_ui->buttonBox);
 
     m_ui->lineEditName->setText(m_font.name);
     m_ui->fontComboBox->setCurrentFont(m_font.font);

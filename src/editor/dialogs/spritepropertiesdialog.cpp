@@ -12,6 +12,7 @@
 #include "maskpropertiesdialog.h"
 #include "mainwindow.h"
 #include "imagehelpers.h"
+#include "editorguiutils.h"
 
 SpritePropertiesDialog::SpritePropertiesDialog(Sprite &sprite, ProjectTreeModel &projectModel, MainWindow &mainWindow) :
     QDialog{&mainWindow},
@@ -24,10 +25,7 @@ SpritePropertiesDialog::SpritePropertiesDialog(Sprite &sprite, ProjectTreeModel 
 
     updateTitle();
 
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Ok))
-        button->setIcon(QIcon{":/qtgameengine/icons/ok.png"});
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Cancel))
-        button->setIcon(QIcon{":/qtgameengine/icons/delete.png"});
+    improveButtonBox(m_ui->buttonBox);
 
     m_ui->lineEditName->setText(m_sprite.name);
     updateSpriteInfo();

@@ -7,6 +7,7 @@
 #include <QFontDialog>
 #include <QColorDialog>
 
+#include "dialogs/transparentbackgroundsettingsdialog.h"
 #include "imagehelpers.h"
 
 ImageEditorDialog::ImageEditorDialog(const QPixmap &pixmap, const QString &title, QWidget *parent) :
@@ -29,10 +30,22 @@ ImageEditorDialog::ImageEditorDialog(const QPixmap &pixmap, const QString &title
 
     updateTitle();
 
+    m_ui->actionNew->setShortcut(QKeySequence::New);
+    m_ui->actionOpen->setShortcut(QKeySequence::Open);
+    m_ui->actionSaveAsPngFile->setShortcut(QKeySequence::Save);
+    m_ui->actionUndo->setShortcut(QKeySequence::Undo);
+    m_ui->actionRedo->setShortcut(QKeySequence::Redo);
+    m_ui->actionDelete->setShortcut(QKeySequence::Delete);
+    m_ui->actionCut->setShortcut(QKeySequence::Cut);
+    m_ui->actionCopy->setShortcut(QKeySequence::Copy);
+    m_ui->actionPaste->setShortcut(QKeySequence::Paste);
+
     m_ui->scrollArea->setBackgroundRole(QPalette::Dark);
 
     connect(m_ui->actionSaveAsPngFile, &QAction::triggered,
             this, &ImageEditorDialog::saveAsPng);
+    connect(m_ui->actionSetTransparencyBackground, &QAction::triggered,
+            this, &ImageEditorDialog::transparentBackgroundSettings);
 
     connect(m_ui->pushButtonSelectFont, &QAbstractButton::pressed,
             this, &ImageEditorDialog::selectFont);
@@ -193,6 +206,15 @@ void ImageEditorDialog::saveAsPng()
     }
 
     saveImage(this, image);
+}
+
+void ImageEditorDialog::transparentBackgroundSettings()
+{
+    TransparentBackgroundSettingsDialog dialog{this};
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        // TODO apply
+    }
 }
 
 void ImageEditorDialog::changed()

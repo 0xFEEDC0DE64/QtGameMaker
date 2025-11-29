@@ -53,8 +53,8 @@ HEADERS += \
     src/engine/vulkangamerenderer.h \
     src/engine/vulkangamewindow.h \
     src/futurecpp.h \
-    src/imagehelpers.h \
     src/projectcontainer.h \
+    src/editor/imagehelpers.h \
     src/editor/jshighlighter.h \
     src/editor/mainwindow.h \
     src/editor/dialogs/addeventdialog.h \
@@ -127,9 +127,9 @@ SOURCES += \
     src/engine/glgamewindow.cpp \
     src/engine/vulkangamerenderer.cpp \
     src/engine/vulkangamewindow.cpp \
-    src/imagehelpers.cpp \
     src/main.cpp \
     src/projectcontainer.cpp \
+    src/editor/imagehelpers.cpp \
     src/editor/jshighlighter.cpp \
     src/editor/mainwindow.cpp \
     src/editor/dialogs/addeventdialog.cpp \

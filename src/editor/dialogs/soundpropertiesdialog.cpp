@@ -10,6 +10,7 @@
 #include "projectcontainer.h"
 #include "models/projecttreemodel.h"
 #include "mainwindow.h"
+#include "editorguiutils.h"
 
 SoundPropertiesDialog::SoundPropertiesDialog(Sound &sound, ProjectTreeModel &projectModel, MainWindow &mainWindow) :
     QDialog{&mainWindow},
@@ -22,10 +23,7 @@ SoundPropertiesDialog::SoundPropertiesDialog(Sound &sound, ProjectTreeModel &pro
 
     updateTitle();
 
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Ok))
-        button->setIcon(QIcon{":/qtgameengine/icons/ok.png"});
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Cancel))
-        button->setIcon(QIcon{":/qtgameengine/icons/delete.png"});
+    improveButtonBox(m_ui->buttonBox);
 
     m_ui->lineEditName->setText(m_sound.name);
     if (!m_sound.path.isEmpty())

@@ -6,6 +6,7 @@
 
 #include "models/projecttreemodel.h"
 #include "mainwindow.h"
+#include "editorguiutils.h"
 
 AddEventDialog::AddEventDialog(ProjectTreeModel &projectModel, MainWindow &mainWindow, QWidget *parent) :
     QDialog{parent},
@@ -20,10 +21,7 @@ AddEventDialog::AddEventDialog(ProjectTreeModel &projectModel, MainWindow &mainW
 #endif
     setWindowFlag(Qt::WindowCloseButtonHint);
 
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Ok))
-        button->setIcon(QIcon{":/qtgameengine/icons/ok.png"});
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Cancel))
-        button->setIcon(QIcon{":/qtgameengine/icons/delete.png"});
+    improveButtonBox(m_ui->buttonBox);
 
     connect(m_ui->pushButtonCreate, &QAbstractButton::clicked,
             this, [this](){ m_eventType = Object::EventType::Create; accept(); });

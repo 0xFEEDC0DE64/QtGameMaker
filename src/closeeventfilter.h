@@ -7,7 +7,7 @@ class CloseEventFilter : public QObject
     Q_OBJECT
 
 public:
-    CloseEventFilter(QObject *parent = nullptr);
+    using QObject::QObject;
 
 signals:
     void closeEventReceived();

@@ -6,6 +6,7 @@
 
 #include "projectcontainer.h"
 #include "models/spritesmodel.h"
+#include "dialogs/transparentbackgroundsettingsdialog.h"
 #include "createspritedialog.h"
 #include "imageeditordialog.h"
 #include "imagehelpers.h"
@@ -31,13 +32,24 @@ EditSpriteDialog::EditSpriteDialog(const std::vector<QPixmap> &pixmaps, const QS
     m_ui->actionNew->setShortcut(QKeySequence::New);
     m_ui->actionCreateFromFile->setShortcut(QKeySequence::Open);
     m_ui->actionSaveAsPngFile->setShortcut(QKeySequence::Save);
+    m_ui->actionUndo->setShortcut(QKeySequence::Undo);
+    m_ui->actionRedo->setShortcut(QKeySequence::Redo);
+    m_ui->actionCut->setShortcut(QKeySequence::Cut);
+    m_ui->actionCopy->setShortcut(QKeySequence::Copy);
+    m_ui->actionPaste->setShortcut(QKeySequence::Paste);
+    m_ui->actionDelete->setShortcut(QKeySequence::Delete);
 
     m_ui->listView->setModel(m_model.get());
 
-    connect(m_ui->actionNew, &QAction::triggered, this, &EditSpriteDialog::newSprite);
-    connect(m_ui->actionSaveAsPngFile, &QAction::triggered, this, &EditSpriteDialog::saveAsPng);
+    connect(m_ui->actionNew, &QAction::triggered,
+            this, &EditSpriteDialog::newSprite);
+    connect(m_ui->actionSaveAsPngFile, &QAction::triggered,
+            this, &EditSpriteDialog::saveAsPng);
+    connect(m_ui->actionSetTransparencyBackground, &QAction::triggered,
+            this, &EditSpriteDialog::transparentBackgroundSettings);
 
-    connect(m_ui->listView, &QAbstractItemView::activated, this, &EditSpriteDialog::activated);
+    connect(m_ui->listView, &QAbstractItemView::activated,
+            this, &EditSpriteDialog::activated);
     connect(m_ui->listView->selectionModel(), &QItemSelectionModel::currentChanged,
             this, &EditSpriteDialog::currentChanged);
     currentChanged(m_ui->listView->currentIndex());
@@ -124,6 +136,15 @@ void EditSpriteDialog::saveAsPng()
     }
 
     saveImage(this, pixmap.toImage());
+}
+
+void EditSpriteDialog::transparentBackgroundSettings()
+{
+    TransparentBackgroundSettingsDialog dialog{this};
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        // TODO apply
+    }
 }
 
 void EditSpriteDialog::activated(const QModelIndex &index)

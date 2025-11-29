@@ -36,6 +36,7 @@
        <string>&amp;File</string>
       </property>
       <addaction name="actionNew"/>
+      <addaction name="actionOpen"/>
       <addaction name="separator"/>
       <addaction name="actionSaveAsPngFile"/>
       <addaction name="separator"/>
@@ -142,7 +143,7 @@
         <addaction name="actionNextImage"/>
         <addaction name="separator"/>
         <addaction name="actionNew"/>
-        <addaction name="actionLoad"/>
+        <addaction name="actionOpen"/>
         <addaction name="actionSaveAsPngFile"/>
         <addaction name="separator"/>
         <addaction name="actionUndo"/>
@@ -974,13 +975,13 @@
     <string>Close the image editor, saving the changes made</string>
    </property>
   </action>
-  <action name="actionLoad">
+  <action name="actionOpen">
    <property name="icon">
     <iconset resource="../resources_editor.qrc">
      <normaloff>:/qtgameengine/icons/open.png</normaloff>:/qtgameengine/icons/open.png</iconset>
    </property>
    <property name="text">
-    <string>Load</string>
+    <string>&amp;Open...</string>
    </property>
   </action>
   <action name="actionUndo">
@@ -1007,21 +1008,37 @@
    </property>
   </action>
   <action name="actionDelete">
+   <property name="icon">
+    <iconset resource="../resources_editor.qrc">
+     <normaloff>:/qtgameengine/icons/delete.png</normaloff>:/qtgameengine/icons/delete.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Delete</string>
    </property>
   </action>
   <action name="actionCut">
+   <property name="icon">
+    <iconset resource="../resources_editor.qrc">
+     <normaloff>:/qtgameengine/icons/cut.png</normaloff>:/qtgameengine/icons/cut.png</iconset>
+   </property>
    <property name="text">
     <string>Cu&amp;t</string>
    </property>
   </action>
   <action name="actionCopy">
+   <property name="icon">
+    <iconset resource="../resources_editor.qrc">
+     <normaloff>:/qtgameengine/icons/copy.png</normaloff>:/qtgameengine/icons/copy.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Copy</string>
    </property>
   </action>
   <action name="actionPaste">
+   <property name="icon">
+    <iconset resource="../resources_editor.qrc">
+     <normaloff>:/qtgameengine/icons/paste.png</normaloff>:/qtgameengine/icons/paste.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Paste</string>
    </property>
@@ -1054,6 +1071,10 @@
   <action name="actionToggleGrid">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources_editor.qrc">
+     <normaloff>:/qtgameengine/icons/grid.png</normaloff>:/qtgameengine/icons/grid.png</iconset>
    </property>
    <property name="text">
     <string>Toggle &amp;Grid</string>

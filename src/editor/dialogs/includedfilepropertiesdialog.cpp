@@ -1,6 +1,8 @@
 #include "includedfilepropertiesdialog.h"
 #include "ui_includedfilepropertiesdialog.h"
 
+#include "editorguiutils.h"
+
 IncludedFilePropertiesDialog::IncludedFilePropertiesDialog(IncludedFile &includedFile, QWidget *parent) :
     QDialog{parent},
     m_includedFile{includedFile},
@@ -12,6 +14,8 @@ IncludedFilePropertiesDialog::IncludedFilePropertiesDialog(IncludedFile &include
     setWindowFlags((windowFlags() & ~Qt::Dialog) | Qt::Window);
 #endif
     setWindowFlag(Qt::WindowCloseButtonHint);
+
+    improveButtonBox(m_ui->buttonBox);
 }
 
 IncludedFilePropertiesDialog::~IncludedFilePropertiesDialog() = default;

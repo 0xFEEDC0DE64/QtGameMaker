@@ -4,6 +4,7 @@
 #include "projectcontainer.h"
 #include "models/includedfilesmodel.h"
 #include "dialogs/includedfilepropertiesdialog.h"
+#include "editorguiutils.h"
 
 IncludedFilesDialog::IncludedFilesDialog(ProjectContainer &project, QWidget *parent) :
     QDialog{parent},
@@ -13,10 +14,7 @@ IncludedFilesDialog::IncludedFilesDialog(ProjectContainer &project, QWidget *par
 {
     m_ui->setupUi(this);
 
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Ok))
-        button->setIcon(QIcon{":/qtgameengine/icons/ok.png"});
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Cancel))
-        button->setIcon(QIcon{":/qtgameengine/icons/delete.png"});
+    improveButtonBox(m_ui->buttonBox);
 
     m_ui->listView->setModel(m_model.get());
 

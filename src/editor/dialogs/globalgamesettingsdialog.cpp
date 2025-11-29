@@ -5,6 +5,8 @@
 #include <QMessageBox>
 #include <QDebug>
 
+#include "editorguiutils.h"
+
 GlobalGameSettingsDialog::GlobalGameSettingsDialog(GlobalGameSettings &globalGameSettings, QWidget *parent) :
     QDialog{parent},
     m_ui{std::make_unique<Ui::GlobalGameSettingsDialog>()},
@@ -27,10 +29,7 @@ GlobalGameSettingsDialog::GlobalGameSettingsDialog(GlobalGameSettings &globalGam
         widget->setSizePolicy(sp_retain);
     }
 
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Ok))
-        button->setIcon(QIcon{":/qtgameengine/icons/ok.png"});
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Cancel))
-        button->setIcon(QIcon{":/qtgameengine/icons/delete.png"});
+    improveButtonBox(m_ui->buttonBox);
 
     connect(m_ui->checkBoxFullscreen, &QCheckBox::toggled,
             this, &GlobalGameSettingsDialog::changed);

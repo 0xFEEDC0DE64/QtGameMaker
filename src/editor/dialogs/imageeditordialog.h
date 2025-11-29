@@ -28,6 +28,8 @@ public:
 
 private slots:
     void saveAsPng();
+    void transparentBackgroundSettings();
+
     void changed();
     void selectFont();
     void selectLeftButtonColor();

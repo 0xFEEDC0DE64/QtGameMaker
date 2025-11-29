@@ -11,6 +11,7 @@
 #include "models/projecttreemodel.h"
 #include "models/objecteventsmodel.h"
 #include "addeventdialog.h"
+#include "editorguiutils.h"
 
 ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel &projectModel, MainWindow &mainWindow) :
     QDialog{&mainWindow},
@@ -30,10 +31,7 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel 
 
     updateTitle();
 
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Ok))
-        button->setIcon(QIcon{":/qtgameengine/icons/ok.png"});
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Cancel))
-        button->setIcon(QIcon{":/qtgameengine/icons/delete.png"});
+    improveButtonBox(m_ui->buttonBox);
 
     m_ui->widgetParent->setProjectModel(&m_projectModel);
     m_ui->widgetParent->setForbiddenObjectName(m_object.name);

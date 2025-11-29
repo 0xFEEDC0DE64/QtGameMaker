@@ -3,6 +3,8 @@
 
 #include <QPushButton>
 
+#include "editorguiutils.h"
+
 CreateSpriteDialog::CreateSpriteDialog(QWidget *parent) :
     QDialog{parent},
     m_ui{std::make_unique<Ui::CreateSpriteDialog>()}
@@ -14,10 +16,7 @@ CreateSpriteDialog::CreateSpriteDialog(QWidget *parent) :
 #endif
     setWindowFlag(Qt::WindowCloseButtonHint);
 
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Ok))
-        button->setIcon(QIcon{":/qtgameengine/icons/ok.png"});
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Cancel))
-        button->setIcon(QIcon{":/qtgameengine/icons/delete.png"});
+    improveButtonBox(m_ui->buttonBox);
 }
 
 CreateSpriteDialog::CreateSpriteDialog(const QSize &size, QWidget *parent) :

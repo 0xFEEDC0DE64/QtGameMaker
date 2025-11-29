@@ -3,6 +3,8 @@
 
 #include <QPushButton>
 
+#include "editorguiutils.h"
+
 MoveFixedDialog::MoveFixedDialog(MoveFixedAction &action, ProjectTreeModel *projectModel, QWidget *parent) :
     QDialog{parent},
     m_ui{std::make_unique<Ui::MoveFixedDialog>()},
@@ -20,10 +22,7 @@ MoveFixedDialog::MoveFixedDialog(MoveFixedAction &action, ProjectTreeModel *proj
     m_ui->widgetObject->setEmptySelectionText(tr("self"));
     m_ui->widgetObject->setShowClearObjectAction(false);
 
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Ok))
-        button->setIcon(QIcon{":/qtgameengine/icons/ok.png"});
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Cancel))
-        button->setIcon(QIcon{":/qtgameengine/icons/delete.png"});
+    improveButtonBox(m_ui->buttonBox);
 }
 
 MoveFixedDialog::~MoveFixedDialog() = default;

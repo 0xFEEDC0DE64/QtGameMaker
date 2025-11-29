@@ -6,6 +6,7 @@
 
 #include "projectcontainer.h"
 #include "models/constantsmodel.h"
+#include "editorguiutils.h"
 
 UserDefinedConstantsDialog::UserDefinedConstantsDialog(ProjectContainer &project, QWidget *parent) :
     QDialog{parent},
@@ -15,10 +16,7 @@ UserDefinedConstantsDialog::UserDefinedConstantsDialog(ProjectContainer &project
 {
     m_ui->setupUi(this);
 
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Ok))
-        button->setIcon(QIcon{":/qtgameengine/icons/ok.png"});
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Cancel))
-        button->setIcon(QIcon{":/qtgameengine/icons/delete.png"});
+    improveButtonBox(m_ui->buttonBox);
 
     m_ui->treeView->setModel(m_model.get());
 

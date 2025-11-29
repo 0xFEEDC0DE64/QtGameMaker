@@ -7,6 +7,7 @@
 #include "projectcontainer.h"
 #include "models/triggersmodel.h"
 #include "genericcodeeditordialog.h"
+#include "editorguiutils.h"
 
 TriggersDialog::TriggersDialog(ProjectContainer &project, QWidget *parent) :
     QDialog{parent},
@@ -16,10 +17,7 @@ TriggersDialog::TriggersDialog(ProjectContainer &project, QWidget *parent) :
 {
     m_ui->setupUi(this);
 
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Ok))
-        button->setIcon(QIcon{":/qtgameengine/icons/ok.png"});
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Cancel))
-        button->setIcon(QIcon{":/qtgameengine/icons/delete.png"});
+    improveButtonBox(m_ui->buttonBox);
 
     m_ui->listView->setModel(m_model.get());
 

@@ -50,6 +50,25 @@
       <property name="title">
        <string>&amp;Edit</string>
       </property>
+      <addaction name="actionUndo"/>
+      <addaction name="actionRedo"/>
+      <addaction name="separator"/>
+      <addaction name="actionCut"/>
+      <addaction name="actionCopy"/>
+      <addaction name="actionPaste"/>
+      <addaction name="separator"/>
+      <addaction name="actionErase"/>
+      <addaction name="actionDelete"/>
+      <addaction name="separator"/>
+      <addaction name="actionMoveLeft"/>
+      <addaction name="actionMoveRight"/>
+      <addaction name="separator"/>
+      <addaction name="actionAddEmpty"/>
+      <addaction name="actionInsertEmpty"/>
+      <addaction name="separator"/>
+      <addaction name="actionEdit"/>
+      <addaction name="separator"/>
+      <addaction name="actionSetTransparencyBackground"/>
      </widget>
      <widget class="QMenu" name="menuTransform">
       <property name="title">
@@ -76,10 +95,10 @@
    <item>
     <widget class="QFrame" name="frame">
      <property name="frameShape">
-      <enum>QFrame::Panel</enum>
+      <enum>QFrame::Shape::Panel</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
+      <enum>QFrame::Shadow::Raised</enum>
      </property>
      <layout class="QHBoxLayout">
       <property name="spacing">
@@ -118,6 +137,20 @@
         <addaction name="actionAddFromFile"/>
         <addaction name="actionSaveAsPngFile"/>
         <addaction name="separator"/>
+        <addaction name="actionInsertEmpty"/>
+        <addaction name="actionAddEmpty"/>
+        <addaction name="separator"/>
+        <addaction name="actionUndo"/>
+        <addaction name="actionRedo"/>
+        <addaction name="separator"/>
+        <addaction name="actionCut"/>
+        <addaction name="actionCopy"/>
+        <addaction name="actionPaste"/>
+        <addaction name="separator"/>
+        <addaction name="actionMoveLeft"/>
+        <addaction name="actionMoveRight"/>
+        <addaction name="separator"/>
+        <addaction name="actionEdit"/>
        </widget>
       </item>
      </layout>
@@ -126,7 +159,7 @@
    <item>
     <widget class="QSplitter" name="splitter">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <widget class="QWidget" name="verticalLayoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -140,7 +173,7 @@
        <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
-          <enum>Qt::Vertical</enum>
+          <enum>Qt::Orientation::Vertical</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -157,7 +190,7 @@
        <number>16</number>
       </property>
       <property name="viewMode">
-       <enum>QListView::IconMode</enum>
+       <enum>QListView::ViewMode::IconMode</enum>
       </property>
      </widget>
     </widget>
@@ -174,6 +207,9 @@
    <property name="text">
     <string>&amp;New...</string>
    </property>
+   <property name="toolTip">
+    <string>Create a new sprite</string>
+   </property>
   </action>
   <action name="actionCreateFromFile">
    <property name="icon">
@@ -183,6 +219,9 @@
    <property name="text">
     <string>&amp;Create from file...</string>
    </property>
+   <property name="toolTip">
+    <string>Create new sprite from file</string>
+   </property>
   </action>
   <action name="actionAddFromFile">
    <property name="icon">
@@ -191,6 +230,9 @@
    </property>
    <property name="text">
     <string>&amp;Add from file...</string>
+   </property>
+   <property name="toolTip">
+    <string>Add a sprite from file</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+A</string>
@@ -203,6 +245,9 @@
    </property>
    <property name="text">
     <string>&amp;Save as PNG File...</string>
+   </property>
+   <property name="toolTip">
+    <string>Save the sprite as PNG File</string>
    </property>
   </action>
   <action name="actionCreateFromStrip">
@@ -228,6 +273,109 @@
    </property>
    <property name="text">
     <string>Close Saving Changes</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="icon">
+    <iconset resource="../resources_editor.qrc">
+     <normaloff>:/qtgameengine/icons/undo.png</normaloff>:/qtgameengine/icons/undo.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Undo</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="icon">
+    <iconset resource="../resources_editor.qrc">
+     <normaloff>:/qtgameengine/icons/redo.png</normaloff>:/qtgameengine/icons/redo.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Redo</string>
+   </property>
+  </action>
+  <action name="actionCut">
+   <property name="icon">
+    <iconset resource="../resources_editor.qrc">
+     <normaloff>:/qtgameengine/icons/cut.png</normaloff>:/qtgameengine/icons/cut.png</iconset>
+   </property>
+   <property name="text">
+    <string>Cu&amp;t</string>
+   </property>
+  </action>
+  <action name="actionCopy">
+   <property name="icon">
+    <iconset resource="../resources_editor.qrc">
+     <normaloff>:/qtgameengine/icons/copy.png</normaloff>:/qtgameengine/icons/copy.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Copy</string>
+   </property>
+  </action>
+  <action name="actionPaste">
+   <property name="icon">
+    <iconset resource="../resources_editor.qrc">
+     <normaloff>:/qtgameengine/icons/paste.png</normaloff>:/qtgameengine/icons/paste.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Paste</string>
+   </property>
+  </action>
+  <action name="actionErase">
+   <property name="text">
+    <string>&amp;Erase...</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+Del</string>
+   </property>
+  </action>
+  <action name="actionDelete">
+   <property name="text">
+    <string>&amp;Delete</string>
+   </property>
+  </action>
+  <action name="actionMoveLeft">
+   <property name="text">
+    <string>Move &amp;Left</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="actionMoveRight">
+   <property name="text">
+    <string>&amp;Move Right</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionAddEmpty">
+   <property name="text">
+    <string>&amp;Add Empty</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+A</string>
+   </property>
+  </action>
+  <action name="actionInsertEmpty">
+   <property name="text">
+    <string>&amp;Insert Empty</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+I</string>
+   </property>
+  </action>
+  <action name="actionEdit">
+   <property name="text">
+    <string>Edit...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="actionSetTransparencyBackground">
+   <property name="text">
+    <string>&amp;Set Transparency Background...</string>
    </property>
   </action>
  </widget>

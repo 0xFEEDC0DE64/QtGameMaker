@@ -2,6 +2,7 @@
 #include "ui_extensionpackagesdialog.h"
 
 #include "installextensiondialog.h"
+#include "editorguiutils.h"
 
 ExtensionPackagesDialog::ExtensionPackagesDialog(QWidget *parent) :
     QDialog{parent},
@@ -14,10 +15,7 @@ ExtensionPackagesDialog::ExtensionPackagesDialog(QWidget *parent) :
 #endif
     setWindowFlag(Qt::WindowCloseButtonHint);
 
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Ok))
-        button->setIcon(QIcon{":/qtgameengine/icons/ok.png"});
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Cancel))
-        button->setIcon(QIcon{":/qtgameengine/icons/delete.png"});
+    improveButtonBox(m_ui->buttonBox);
 
     if (auto button = m_ui->buttonBox->addButton(tr("Install"), QDialogButtonBox::ActionRole))
     {

@@ -1,11 +1,15 @@
 #include "deletemomentsdialog.h"
 #include "ui_deletemomentsdialog.h"
 
+#include "editorguiutils.h"
+
 DeleteMomentsDialog::DeleteMomentsDialog(QWidget *parent) :
     QDialog{parent},
     m_ui{std::make_unique<Ui::DeleteMomentsDialog>()}
 {
     m_ui->setupUi(this);
+
+    improveButtonBox(m_ui->buttonBox);
 }
 
 DeleteMomentsDialog::DeleteMomentsDialog(int fromMoment, int tillMoment, QWidget *parent) :

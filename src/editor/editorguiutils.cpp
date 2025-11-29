@@ -5,6 +5,8 @@
 #include <QPixmap>
 #include <QPen>
 #include <QColor>
+#include <QDialogButtonBox>
+#include <QPushButton>
 
 QBrush makeGridBrush(int snapX, int snapY, const QPen &gridPen, const QColor &backgroundColor)
 {
@@ -34,4 +36,12 @@ QBrush makeGridBrush(int snapX, int snapY, const QColor &gridColor, const QColor
     }
 
     return QBrush{std::move(pixmap)};
+}
+
+void improveButtonBox(QDialogButtonBox *buttonBox)
+{
+    if (auto button = buttonBox->button(QDialogButtonBox::Ok))
+        button->setIcon(QIcon{":/qtgameengine/icons/ok.png"});
+    if (auto button = buttonBox->button(QDialogButtonBox::Cancel))
+        button->setIcon(QIcon{":/qtgameengine/icons/delete.png"});
 }

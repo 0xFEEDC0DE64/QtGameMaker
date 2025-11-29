@@ -9,6 +9,8 @@
 #include "models/projecttreemodel.h"
 #include "imageeditordialog.h"
 #include "mainwindow.h"
+#include "imagehelpers.h"
+#include "editorguiutils.h"
 
 BackgroundPropertiesDialog::BackgroundPropertiesDialog(Background &background, ProjectTreeModel &projectModel, MainWindow &mainWindow) :
     QDialog{&mainWindow},
@@ -21,10 +23,7 @@ BackgroundPropertiesDialog::BackgroundPropertiesDialog(Background &background, P
 
     updateTitle();
 
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Ok))
-        button->setIcon(QIcon{":/qtgameengine/icons/ok.png"});
-    if (auto button = m_ui->buttonBox->button(QDialogButtonBox::Cancel))
-        button->setIcon(QIcon{":/qtgameengine/icons/delete.png"});
+    improveButtonBox(m_ui->buttonBox);
 
     m_ui->lineEditName->setText(m_background.name);
     updateSpriteInfo();
@@ -139,22 +138,7 @@ void BackgroundPropertiesDialog::saveBackground()
         return;
     }
 
-    const auto path = QFileDialog::getSaveFileName(this, tr("Save a Background Image..."), m_background.name + ".png",
-                                                   QStringLiteral("%0 (*.png);;%1 (*.bmp);;%2 (*.tiff);;%3 (*.jpg *.jpeg);;%4 (*)")
-                                                       .arg(tr("PNG Files"))
-                                                       .arg(tr("BMP Files"))
-                                                       .arg(tr("TIFF Files"))
-                                                       .arg(tr("JPEG Files"))
-                                                       .arg(tr("All Files"))
-                                                   );
-    if (path.isEmpty())
-        return;
-
-    if (!m_pixmap.save(path))
-    {
-        QMessageBox::warning(this, tr("Could not save Background!"), tr("Could not save Background!"));
-        return;
-    }
+    saveImage(this, m_pixmap.toImage());
 }
 
 void BackgroundPropertiesDialog::editBackground()
