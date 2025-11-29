@@ -47,6 +47,7 @@ HEADERS += \
     src/editor/widgets/qlineeditwithmenu.h \
     src/editor/widgets/qscrollareawithmenu.h \
     src/editor/widgets/roomeditwidget.h \
+    src/editor/widgets/zoomablescrollarea.h \
     src/engine/gameengine.h \
     src/engine/glgamewindow.h \
     src/engine/vulkangamerenderer.h \
@@ -120,6 +121,7 @@ SOURCES += \
     src/editor/widgets/qlineeditwithmenu.cpp \
     src/editor/widgets/qscrollareawithmenu.cpp \
     src/editor/widgets/roomeditwidget.cpp \
+    src/editor/widgets/zoomablescrollarea.cpp \
     src/engine/gameengine.cpp \
     src/engine/glgamewindow.cpp \
     src/engine/vulkangamerenderer.cpp \

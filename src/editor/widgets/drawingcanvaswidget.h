@@ -46,7 +46,7 @@ private:
 
     QPixmap *m_pixmap{};
 
-    float m_scale{4.f};
+    float m_scale{1.f};
 
     QColor m_leftButtonColor{Qt::white};
     QColor m_rightButtonColor{Qt::black};

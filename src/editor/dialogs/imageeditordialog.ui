@@ -698,7 +698,7 @@
       </layout>
      </item>
      <item>
-      <widget class="QScrollArea" name="scrollArea">
+      <widget class="ZoomableScrollArea" name="scrollArea">
        <property name="widgetResizable">
         <bool>true</bool>
        </property>
@@ -1134,6 +1134,12 @@
    <class>FineColorWidget</class>
    <extends>QFrame</extends>
    <header>widgets/finecolorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ZoomableScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>widgets/zoomablescrollarea.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
