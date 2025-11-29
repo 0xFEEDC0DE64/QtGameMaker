@@ -107,23 +107,9 @@ void BackgroundPropertiesDialog::reject()
 
 void BackgroundPropertiesDialog::loadBackground()
 {
-    const auto path = QFileDialog::getOpenFileName(this, tr("Open a Background Image..."), {},
-                                                   QStringLiteral("%0 (*.png);;%1 (*.bmp);;%2 (*.tiff);;%3 (*.jpg *.jpeg);;%4 (*)")
-                                                       .arg(tr("PNG Files"))
-                                                       .arg(tr("BMP Files"))
-                                                       .arg(tr("TIFF Files"))
-                                                       .arg(tr("JPEG Files"))
-                                                       .arg(tr("All Files"))
-                                                   );
-    if (path.isEmpty())
+    auto pixmap = loadPixmap(this);
+    if (pixmap.isNull())
         return;
-
-    QPixmap pixmap;
-    if (!pixmap.load(path))
-    {
-        QMessageBox::warning(this, tr("Could not load sprite!"), tr("Could not load sprite!"));
-        return;
-    }
 
     m_pixmap = std::move(pixmap);
     changed();

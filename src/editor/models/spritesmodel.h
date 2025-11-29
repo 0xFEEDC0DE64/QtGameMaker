@@ -20,6 +20,9 @@ public:
     using QAbstractListModel::beginResetModel;
     using QAbstractListModel::endResetModel;
 
+    using QAbstractListModel::beginInsertRows;
+    using QAbstractListModel::endInsertRows;
+
 private:
     const std::vector<QPixmap> &m_pixmaps;
 };

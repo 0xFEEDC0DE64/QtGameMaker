@@ -25,7 +25,11 @@ public:
 
 private slots:
     void newSprite();
+    void createFromFile();
+    void addFromFile();
     void saveAsPng();
+    void createFromStrip();
+    void addFromStrip();
     void transparentBackgroundSettings();
 
     void activated(const QModelIndex &index);

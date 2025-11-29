@@ -11,6 +11,31 @@
 #include <QMessageBox>
 #include <QCoreApplication>
 
+QPixmap loadPixmap(QWidget *parent)
+{
+    const auto path = QFileDialog::getOpenFileName(parent, QCoreApplication::translate("imagehelpers", "Open a Sprite Image..."), {},
+                                                   QStringLiteral("%0 (*.png);;%1 (*.bmp);;%2 (*.tiff);;%3 (*.jpg *.jpeg);;%4 (*)")
+                                                       .arg(QCoreApplication::translate("imagehelpers", "PNG Files"))
+                                                       .arg(QCoreApplication::translate("imagehelpers", "BMP Files"))
+                                                       .arg(QCoreApplication::translate("imagehelpers", "TIFF Files"))
+                                                       .arg(QCoreApplication::translate("imagehelpers", "JPEG Files"))
+                                                       .arg(QCoreApplication::translate("imagehelpers", "All Files"))
+                                                   );
+    if (path.isEmpty())
+        return {};
+
+    QPixmap pixmap;
+    if (!pixmap.load(path))
+    {
+        QMessageBox::warning(parent,
+                             QCoreApplication::translate("imagehelpers", "Could not load sprite!"),
+                             QCoreApplication::translate("imagehelpers", "Could not load sprite!"));
+        return {};
+    }
+
+    return pixmap;
+}
+
 void saveImage(QWidget *parent, const QImage &image)
 {
     QList<QByteArray> formats = QImageWriter::supportedImageFormats();

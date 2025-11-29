@@ -43,8 +43,16 @@ EditSpriteDialog::EditSpriteDialog(const std::vector<QPixmap> &pixmaps, const QS
 
     connect(m_ui->actionNew, &QAction::triggered,
             this, &EditSpriteDialog::newSprite);
+    connect(m_ui->actionCreateFromFile, &QAction::triggered,
+            this, &EditSpriteDialog::createFromFile);
+    connect(m_ui->actionAddFromFile, &QAction::triggered,
+            this, &EditSpriteDialog::addFromFile);
     connect(m_ui->actionSaveAsPngFile, &QAction::triggered,
             this, &EditSpriteDialog::saveAsPng);
+    connect(m_ui->actionCreateFromStrip, &QAction::triggered,
+            this, &EditSpriteDialog::createFromStrip);
+    connect(m_ui->actionAddFromStrip, &QAction::triggered,
+            this, &EditSpriteDialog::addFromStrip);
     connect(m_ui->actionSetTransparencyBackground, &QAction::triggered,
             this, &EditSpriteDialog::transparentBackgroundSettings);
 
@@ -116,6 +124,38 @@ void EditSpriteDialog::newSprite()
     }
 }
 
+void EditSpriteDialog::createFromFile()
+{
+    auto pixmap = loadPixmap(this);
+    if (pixmap.isNull())
+        return;
+
+    m_model->beginResetModel();
+    m_pixmaps = std::vector<QPixmap> { std::move(pixmap) };
+    m_model->endResetModel();
+
+    changed();
+}
+
+void EditSpriteDialog::addFromFile()
+{
+    auto pixmap = loadPixmap(this);
+    if (pixmap.isNull())
+        return;
+
+    if (!m_pixmaps.empty() && m_pixmaps.front().size() != pixmap.size())
+    {
+        QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+        return;
+    }
+    else
+    {
+        m_model->beginInsertRows({}, m_pixmaps.size(), m_pixmaps.size());
+        m_pixmaps.emplace_back(std::move(pixmap));
+        m_model->endInsertRows();
+    }
+}
+
 void EditSpriteDialog::saveAsPng()
 {
     auto index = m_ui->listView->currentIndex();
@@ -136,6 +176,16 @@ void EditSpriteDialog::saveAsPng()
     }
 
     saveImage(this, pixmap.toImage());
+}
+
+void EditSpriteDialog::createFromStrip()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void EditSpriteDialog::addFromStrip()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
 }
 
 void EditSpriteDialog::transparentBackgroundSettings()
