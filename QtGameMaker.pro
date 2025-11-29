@@ -53,6 +53,7 @@ HEADERS += \
     src/engine/vulkangamerenderer.h \
     src/engine/vulkangamewindow.h \
     src/futurecpp.h \
+    src/imagehelpers.h \
     src/projectcontainer.h \
     src/editor/jshighlighter.h \
     src/editor/mainwindow.h \
@@ -126,6 +127,7 @@ SOURCES += \
     src/engine/glgamewindow.cpp \
     src/engine/vulkangamerenderer.cpp \
     src/engine/vulkangamewindow.cpp \
+    src/imagehelpers.cpp \
     src/main.cpp \
     src/projectcontainer.cpp \
     src/editor/jshighlighter.cpp \

@@ -37,6 +37,8 @@ public:
     Mode mode() const { return m_mode; }
     void setMode(Mode mode);
 
+    const QImage &image() const { return m_image; }
+
     QPixmap pixmap() const;
     void setPixmap(const QPixmap &pixmap);
 

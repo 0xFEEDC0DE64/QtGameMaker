@@ -25,7 +25,10 @@ public:
 
 private slots:
     void newSprite();
+    void saveAsPng();
+
     void activated(const QModelIndex &index);
+    void currentChanged(const QModelIndex &index);
 
     void changed();
 

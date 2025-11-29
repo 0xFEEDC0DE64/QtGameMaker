@@ -7,6 +7,8 @@
 #include <QFontDialog>
 #include <QColorDialog>
 
+#include "imagehelpers.h"
+
 ImageEditorDialog::ImageEditorDialog(const QPixmap &pixmap, const QString &title, QWidget *parent) :
     QDialog{parent},
     m_ui{std::make_unique<Ui::ImageEditorDialog>()},
@@ -28,6 +30,9 @@ ImageEditorDialog::ImageEditorDialog(const QPixmap &pixmap, const QString &title
     updateTitle();
 
     m_ui->scrollArea->setBackgroundRole(QPalette::Dark);
+
+    connect(m_ui->actionSaveAsPngFile, &QAction::triggered,
+            this, &ImageEditorDialog::saveAsPng);
 
     connect(m_ui->pushButtonSelectFont, &QAbstractButton::pressed,
             this, &ImageEditorDialog::selectFont);
@@ -136,6 +141,11 @@ QPixmap ImageEditorDialog::pixmap() const
     return m_ui->canvas->pixmap();
 }
 
+const QImage &ImageEditorDialog::image() const
+{
+    return m_ui->canvas->image();
+}
+
 void ImageEditorDialog::accept()
 {
     // TODO
@@ -171,6 +181,18 @@ void ImageEditorDialog::reject()
     default:
         qWarning() << "unexpected dialog result" << result;
     }
+}
+
+void ImageEditorDialog::saveAsPng()
+{
+    const auto &image = m_ui->canvas->image();
+    if (image.isNull())
+    {
+        QMessageBox::warning(this, tr("Invalid sprite!"), tr("The sprite you tried to save is invalid!"));
+        return;
+    }
+
+    saveImage(this, image);
 }
 
 void ImageEditorDialog::changed()

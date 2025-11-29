@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QDialog>
-#include <QPixmap>
 #include <QString>
 
 #include <memory>
@@ -9,6 +8,8 @@
 #include "widgets/drawingcanvaswidget.h"
 
 class QLabel;
+class QPixmap;
+class QImage;
 namespace Ui { class ImageEditorDialog; }
 
 class ImageEditorDialog : public QDialog
@@ -20,11 +21,13 @@ public:
     ~ImageEditorDialog();
 
     QPixmap pixmap() const;
+    const QImage &image() const;
 
     void accept() override;
     void reject() override;
 
 private slots:
+    void saveAsPng();
     void changed();
     void selectFont();
     void selectLeftButtonColor();

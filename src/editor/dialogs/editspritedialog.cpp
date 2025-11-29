@@ -8,6 +8,7 @@
 #include "models/spritesmodel.h"
 #include "createspritedialog.h"
 #include "imageeditordialog.h"
+#include "imagehelpers.h"
 
 EditSpriteDialog::EditSpriteDialog(const std::vector<QPixmap> &pixmaps, const QString &spriteName, QWidget *parent) :
     QDialog{parent},
@@ -34,8 +35,12 @@ EditSpriteDialog::EditSpriteDialog(const std::vector<QPixmap> &pixmaps, const QS
     m_ui->listView->setModel(m_model.get());
 
     connect(m_ui->actionNew, &QAction::triggered, this, &EditSpriteDialog::newSprite);
+    connect(m_ui->actionSaveAsPngFile, &QAction::triggered, this, &EditSpriteDialog::saveAsPng);
 
     connect(m_ui->listView, &QAbstractItemView::activated, this, &EditSpriteDialog::activated);
+    connect(m_ui->listView->selectionModel(), &QItemSelectionModel::currentChanged,
+            this, &EditSpriteDialog::currentChanged);
+    currentChanged(m_ui->listView->currentIndex());
 }
 
 EditSpriteDialog::~EditSpriteDialog() = default;
@@ -99,6 +104,28 @@ void EditSpriteDialog::newSprite()
     }
 }
 
+void EditSpriteDialog::saveAsPng()
+{
+    auto index = m_ui->listView->currentIndex();
+    if (!index.isValid())
+        return;
+
+    if (index.row() < 0 || (size_t)index.row() >= m_pixmaps.size())
+    {
+        qWarning() << "invalid row" << index.row();
+        return;
+    }
+
+    const auto &pixmap = m_pixmaps[index.row()];
+    if (pixmap.isNull())
+    {
+        QMessageBox::warning(this, tr("Invalid sprite!"), tr("The sprite you tried to save is invalid!"));
+        return;
+    }
+
+    saveImage(this, pixmap.toImage());
+}
+
 void EditSpriteDialog::activated(const QModelIndex &index)
 {
     if (!index.isValid())
@@ -115,6 +142,11 @@ void EditSpriteDialog::activated(const QModelIndex &index)
 
         changed();
     }
+}
+
+void EditSpriteDialog::currentChanged(const QModelIndex &index)
+{
+    m_ui->actionSaveAsPngFile->setEnabled(index.isValid());
 }
 
 void EditSpriteDialog::changed()

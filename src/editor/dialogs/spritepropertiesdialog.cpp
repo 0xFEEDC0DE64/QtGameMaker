@@ -11,6 +11,7 @@
 #include "editspritedialog.h"
 #include "maskpropertiesdialog.h"
 #include "mainwindow.h"
+#include "imagehelpers.h"
 
 SpritePropertiesDialog::SpritePropertiesDialog(Sprite &sprite, ProjectTreeModel &projectModel, MainWindow &mainWindow) :
     QDialog{&mainWindow},
@@ -157,22 +158,7 @@ void SpritePropertiesDialog::saveSprite()
         return;
     }
 
-    const auto path = QFileDialog::getSaveFileName(this, tr("Save a Sprite Image..."), m_sprite.name + ".png",
-                                                   QStringLiteral("%0 (*.png);;%1 (*.bmp);;%2 (*.tiff);;%3 (*.jpg *.jpeg);;%4 (*)")
-                                                       .arg(tr("PNG Files"))
-                                                       .arg(tr("BMP Files"))
-                                                       .arg(tr("TIFF Files"))
-                                                       .arg(tr("JPEG Files"))
-                                                       .arg(tr("All Files"))
-                                                   );
-    if (path.isEmpty())
-        return;
-
-    if (!m_pixmaps.front().save(path))
-    {
-        QMessageBox::warning(this, tr("Could not save Sprite!"), tr("Could not save Sprite!"));
-        return;
-    }
+    saveImage(this, m_pixmaps.front().toImage());
 }
 
 void SpritePropertiesDialog::editSprite()
