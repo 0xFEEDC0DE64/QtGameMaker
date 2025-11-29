@@ -53,6 +53,30 @@ EditSpriteDialog::EditSpriteDialog(const std::vector<QPixmap> &pixmaps, const QS
             this, &EditSpriteDialog::createFromStrip);
     connect(m_ui->actionAddFromStrip, &QAction::triggered,
             this, &EditSpriteDialog::addFromStrip);
+    connect(m_ui->actionUndo, &QAction::triggered,
+            this, &EditSpriteDialog::undo);
+    connect(m_ui->actionRedo, &QAction::triggered,
+            this, &EditSpriteDialog::redo);
+    connect(m_ui->actionCut, &QAction::triggered,
+            this, &EditSpriteDialog::cut);
+    connect(m_ui->actionCopy, &QAction::triggered,
+            this, &EditSpriteDialog::copy);
+    connect(m_ui->actionPaste, &QAction::triggered,
+            this, &EditSpriteDialog::paste);
+    connect(m_ui->actionErase, &QAction::triggered,
+            this, &EditSpriteDialog::erase);
+    connect(m_ui->actionDelete, &QAction::triggered,
+            this, &EditSpriteDialog::delete_);
+    connect(m_ui->actionMoveLeft, &QAction::triggered,
+            this, &EditSpriteDialog::moveLeft);
+    connect(m_ui->actionMoveRight, &QAction::triggered,
+            this, &EditSpriteDialog::moveRight);
+    connect(m_ui->actionAddEmpty, &QAction::triggered,
+            this, &EditSpriteDialog::addEmpty);
+    connect(m_ui->actionInsertEmpty, &QAction::triggered,
+            this, &EditSpriteDialog::insertEmpty);
+    connect(m_ui->actionEdit, &QAction::triggered,
+            this, &EditSpriteDialog::edit);
     connect(m_ui->actionSetTransparencyBackground, &QAction::triggered,
             this, &EditSpriteDialog::transparentBackgroundSettings);
 
@@ -60,7 +84,13 @@ EditSpriteDialog::EditSpriteDialog(const std::vector<QPixmap> &pixmaps, const QS
             this, &EditSpriteDialog::activated);
     connect(m_ui->listView->selectionModel(), &QItemSelectionModel::currentChanged,
             this, &EditSpriteDialog::currentChanged);
-    currentChanged(m_ui->listView->currentIndex());
+    connect(m_model.get(), &QAbstractItemModel::rowsInserted,
+            this, &EditSpriteDialog::currentChanged);
+    connect(m_model.get(), &QAbstractItemModel::rowsMoved,
+            this, &EditSpriteDialog::currentChanged);
+    connect(m_model.get(), &QAbstractItemModel::rowsRemoved,
+            this, &EditSpriteDialog::currentChanged);
+    currentChanged();
 }
 
 EditSpriteDialog::~EditSpriteDialog() = default;
@@ -158,17 +188,18 @@ void EditSpriteDialog::addFromFile()
 
 void EditSpriteDialog::saveAsPng()
 {
-    auto index = m_ui->listView->currentIndex();
+    const auto index = m_ui->listView->currentIndex();
     if (!index.isValid())
         return;
 
-    if (index.row() < 0 || (size_t)index.row() >= m_pixmaps.size())
+    const int row = index.row();
+    if (row < 0 || size_t(row) >= m_pixmaps.size())
     {
-        qWarning() << "invalid row" << index.row();
+        qWarning() << "invalid row" << row;
         return;
     }
 
-    const auto &pixmap = m_pixmaps[index.row()];
+    const auto &pixmap = m_pixmaps[row];
     if (pixmap.isNull())
     {
         QMessageBox::warning(this, tr("Invalid sprite!"), tr("The sprite you tried to save is invalid!"));
@@ -186,6 +217,166 @@ void EditSpriteDialog::createFromStrip()
 void EditSpriteDialog::addFromStrip()
 {
     QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void EditSpriteDialog::undo()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void EditSpriteDialog::redo()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void EditSpriteDialog::cut()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void EditSpriteDialog::copy()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void EditSpriteDialog::paste()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void EditSpriteDialog::erase()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void EditSpriteDialog::delete_()
+{
+    const auto index = m_ui->listView->currentIndex();
+    if (!index.isValid())
+        return;
+
+    const int row = index.row();
+    if (row < 0 || size_t(row) >= m_pixmaps.size())
+    {
+        qWarning() << "unexpected row" << row;
+        return;
+    }
+
+    m_model->beginRemoveRows({}, row, row);
+    m_pixmaps.erase(std::begin(m_pixmaps) + row);
+    m_model->endRemoveRows();
+
+    changed();
+}
+
+void EditSpriteDialog::moveLeft()
+{
+    const auto index = m_ui->listView->currentIndex();
+    if (!index.isValid())
+        return;
+
+    const size_t row = index.row();
+    if (row < 1 || row >= m_pixmaps.size())
+    {
+        qWarning() << "unexpected row" << row;
+        return;
+    }
+
+    m_model->beginMoveRows({}, row, row, {}, row-1);
+    std::swap(m_pixmaps[row-1], m_pixmaps[row]);
+    m_model->endMoveRows();
+
+    changed();
+}
+
+void EditSpriteDialog::moveRight()
+{
+    const auto index = m_ui->listView->currentIndex();
+    if (!index.isValid())
+        return;
+
+    const int row = index.row();
+    if (row < 0 || size_t(row) >= m_pixmaps.size() - 1)
+    {
+        qWarning() << "unexpected row" << row;
+        return;
+    }
+
+    m_model->beginMoveRows({}, row, row, {}, row+2);
+    std::swap(m_pixmaps[row+1], m_pixmaps[row]);
+    m_model->endMoveRows();
+
+    changed();
+}
+
+void EditSpriteDialog::addEmpty()
+{
+    QSize size;
+    if (!m_pixmaps.empty())
+        size = m_pixmaps.front().size();
+
+    if (size.isEmpty())
+    {
+        CreateSpriteDialog dialog{this};
+        if (dialog.exec() == QDialog::Accepted)
+            size = dialog.spriteSize();
+        else
+            return;
+    }
+
+    QPixmap pixmap{size};
+    pixmap.fill(Qt::transparent);
+
+    m_model->beginInsertRows({}, m_pixmaps.size(), m_pixmaps.size());
+    m_pixmaps.emplace_back(std::move(pixmap));
+    m_model->endInsertRows();
+
+    changed();
+}
+
+void EditSpriteDialog::insertEmpty()
+{
+    int row{};
+
+    const auto index = m_ui->listView->currentIndex();
+    if (index.isValid())
+    {
+        row = index.row();
+        if (row < 0 || size_t(row) >= m_pixmaps.size())
+        {
+            qWarning() << "unexpected row" << row;
+            row = 0;
+        }
+    }
+
+    QSize size;
+    if (!m_pixmaps.empty())
+        size = m_pixmaps.front().size();
+
+    if (size.isEmpty())
+    {
+        CreateSpriteDialog dialog{this};
+        if (dialog.exec() == QDialog::Accepted)
+            size = dialog.spriteSize();
+        else
+            return;
+    }
+
+    QPixmap pixmap{size};
+    pixmap.fill(Qt::transparent);
+
+    m_model->beginInsertRows({}, row, row);
+    m_pixmaps.emplace(std::begin(m_pixmaps) + row, std::move(pixmap));
+    m_model->endInsertRows();
+}
+
+void EditSpriteDialog::edit()
+{
+    const auto index = m_ui->listView->currentIndex();
+    if (!index.isValid())
+        return;
+
+    activated(index);
 }
 
 void EditSpriteDialog::transparentBackgroundSettings()
@@ -215,9 +406,15 @@ void EditSpriteDialog::activated(const QModelIndex &index)
     }
 }
 
-void EditSpriteDialog::currentChanged(const QModelIndex &index)
+void EditSpriteDialog::currentChanged()
 {
+    const auto index = m_ui->listView->currentIndex();
     m_ui->actionSaveAsPngFile->setEnabled(index.isValid());
+    m_ui->actionCut->setEnabled(index.isValid());
+    m_ui->actionCopy->setEnabled(index.isValid());
+    m_ui->actionDelete->setEnabled(index.isValid());
+    m_ui->actionMoveLeft->setEnabled(index.isValid() && index.row() > 0);
+    m_ui->actionMoveRight->setEnabled(index.isValid() && size_t(index.row()) < m_pixmaps.size() - 1);
 }
 
 void EditSpriteDialog::changed()

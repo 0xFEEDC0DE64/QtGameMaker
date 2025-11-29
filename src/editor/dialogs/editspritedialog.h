@@ -30,10 +30,22 @@ private slots:
     void saveAsPng();
     void createFromStrip();
     void addFromStrip();
+    void undo();
+    void redo();
+    void cut();
+    void copy();
+    void paste();
+    void erase();
+    void delete_();
+    void moveLeft();
+    void moveRight();
+    void addEmpty();
+    void insertEmpty();
+    void edit();
     void transparentBackgroundSettings();
 
     void activated(const QModelIndex &index);
-    void currentChanged(const QModelIndex &index);
+    void currentChanged();
 
     void changed();
 

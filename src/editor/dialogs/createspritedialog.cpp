@@ -1,6 +1,7 @@
 #include "createspritedialog.h"
 #include "ui_createspritedialog.h"
 
+#include <QMessageBox>
 #include <QPushButton>
 
 #include "editorguiutils.h"
@@ -31,4 +32,20 @@ CreateSpriteDialog::~CreateSpriteDialog() = default;
 QSize CreateSpriteDialog::spriteSize() const
 {
     return QSize{m_ui->spinBoxWidth->value(), m_ui->spinBoxHeight->value()};
+}
+
+void CreateSpriteDialog::accept()
+{
+    const auto size = spriteSize();
+    if (size.width() < 1)
+    {
+        QMessageBox::warning(this, tr("Zero width not possible!"), tr("Zero width not possible!"));
+        return;
+    }
+    if (size.height() < 1)
+    {
+        QMessageBox::warning(this, tr("Zero height not possible!"), tr("Zero height not possible!"));
+        return;
+    }
+    QDialog::accept();
 }

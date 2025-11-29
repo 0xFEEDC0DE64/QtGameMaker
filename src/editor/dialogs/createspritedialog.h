@@ -17,6 +17,9 @@ public:
 
     QSize spriteSize() const;
 
+public slots:
+    void accept() override;
+
 private:
     const std::unique_ptr<Ui::CreateSpriteDialog> m_ui;
 };

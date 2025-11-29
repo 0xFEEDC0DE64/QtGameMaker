@@ -23,6 +23,12 @@ public:
     using QAbstractListModel::beginInsertRows;
     using QAbstractListModel::endInsertRows;
 
+    using QAbstractListModel::beginRemoveRows;
+    using QAbstractListModel::endRemoveRows;
+
+    using QAbstractListModel::beginMoveRows;
+    using QAbstractListModel::endMoveRows;
+
 private:
     const std::vector<QPixmap> &m_pixmaps;
 };
