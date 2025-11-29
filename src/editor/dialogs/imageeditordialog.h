@@ -6,6 +6,9 @@
 
 #include <memory>
 
+#include "widgets/drawingcanvaswidget.h"
+
+class QLabel;
 namespace Ui { class ImageEditorDialog; }
 
 class ImageEditorDialog : public QDialog
@@ -16,7 +19,7 @@ public:
     explicit ImageEditorDialog(const QPixmap &pixmap, const QString &title, QWidget *parent = nullptr);
     ~ImageEditorDialog();
 
-    const QPixmap &pixmap() const { return m_pixmap; }
+    QPixmap pixmap() const;
 
     void accept() override;
     void reject() override;
@@ -28,14 +31,22 @@ private slots:
     void selectRightButtonColor();
     void updateLeftButtonColor(const QColor &leftButtonColor);
     void updateRightButtonColor(const QColor &rightButtonColor);
+    void modeChanged(DrawingCanvasWidget::Mode mode);
+    void cursorMoved(const QPoint &pos);
+    void zoomChanged(float zoom);
 
 private:
     void updateTitle();
+    void updateSize(const QPixmap &pixmap);
 
     const std::unique_ptr<Ui::ImageEditorDialog> m_ui;
 
-    QPixmap m_pixmap;
     const QString m_title;
+
+    QLabel &m_posLabel;
+    QLabel &m_zoomLabel;
+    QLabel &m_sizeLabel;
+    QLabel &m_memoryLabel;
 
     bool m_unsavedChanges{};
 };

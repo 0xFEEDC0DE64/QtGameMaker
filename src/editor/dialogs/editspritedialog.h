@@ -25,7 +25,7 @@ public:
 
 private slots:
     void newSprite();
-    void doubleClicked(const QModelIndex &index);
+    void activated(const QModelIndex &index);
 
     void changed();
 

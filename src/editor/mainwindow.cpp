@@ -143,8 +143,8 @@ MainWindow::MainWindow(const QString &filePath, QWidget *parent) :
     connect(m_ui->treeView, &QTreeView::customContextMenuRequested,
             this, &MainWindow::contextMenuRequested);
 
-    connect(m_ui->treeView, &QTreeView::doubleClicked,
-            this, &MainWindow::doubleClicked);
+    connect(m_ui->treeView, &QTreeView::activated,
+            this, &MainWindow::activated);
 
     connect(m_ui->treeView->selectionModel(), &QItemSelectionModel::currentChanged,
             this, &MainWindow::selectionChanged);
@@ -342,7 +342,7 @@ void MainWindow::contextMenuRequested(const QPoint &pos)
     menu.exec(m_ui->treeView->viewport()->mapToGlobal(pos));
 }
 
-void MainWindow::doubleClicked(const QModelIndex &index)
+void MainWindow::activated(const QModelIndex &index)
 {
     if (m_projectTreeModel->nodeType(index) == ProjectTreeModel::NodeType::Root)
     {
@@ -354,15 +354,15 @@ void MainWindow::doubleClicked(const QModelIndex &index)
             showExtensionPackages();
         return;
     }
-    if (doubleClickedFor<Sprite>(index)) return;
-    if (doubleClickedFor<Sound>(index)) return;
-    if (doubleClickedFor<Background>(index)) return;
-    if (doubleClickedFor<Path>(index)) return;
-    if (doubleClickedFor<Script>(index)) return;
-    if (doubleClickedFor<Font>(index)) return;
-    if (doubleClickedFor<TimeLine>(index)) return;
-    if (doubleClickedFor<Object>(index)) return;
-    if (doubleClickedFor<Room>(index)) return;
+    if (activatedFor<Sprite>(index)) return;
+    if (activatedFor<Sound>(index)) return;
+    if (activatedFor<Background>(index)) return;
+    if (activatedFor<Path>(index)) return;
+    if (activatedFor<Script>(index)) return;
+    if (activatedFor<Font>(index)) return;
+    if (activatedFor<TimeLine>(index)) return;
+    if (activatedFor<Object>(index)) return;
+    if (activatedFor<Room>(index)) return;
 }
 
 void MainWindow::selectionChanged(const QModelIndex &index)
@@ -698,7 +698,7 @@ void MainWindow::showProperties()
         return;
     }
 
-    doubleClicked(index);
+    activated(index);
 }
 
 void MainWindow::findResource()
@@ -801,7 +801,7 @@ void MainWindow::rowsInserted(const QModelIndex &parent, int first, int last)
     m_ui->treeView->expand(parent);
     const auto index = m_projectTreeModel->index(first, 0, parent);
     m_ui->treeView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);
-    doubleClicked(index);
+    activated(index);
 }
 
 void MainWindow::rowsAboutToBeRemoved(const QModelIndex &parent, int first, int last)
@@ -981,7 +981,7 @@ void MainWindow::openOrActivateWindow(QMdiSubWindow * &ptr, Targs &&...args)
 }
 
 template<typename T>
-bool MainWindow::doubleClickedFor(const QModelIndex &index)
+bool MainWindow::activatedFor(const QModelIndex &index)
 {
     if (m_projectTreeModel->nodeType(index) != ProjectTreeModel::nodeTypeFor<T>())
         return false;

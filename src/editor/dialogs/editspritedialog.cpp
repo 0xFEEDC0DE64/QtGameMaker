@@ -35,7 +35,7 @@ EditSpriteDialog::EditSpriteDialog(const std::vector<QPixmap> &pixmaps, const QS
 
     connect(m_ui->actionNew, &QAction::triggered, this, &EditSpriteDialog::newSprite);
 
-    connect(m_ui->listView, &QListView::doubleClicked, this, &EditSpriteDialog::doubleClicked);
+    connect(m_ui->listView, &QAbstractItemView::activated, this, &EditSpriteDialog::activated);
 }
 
 EditSpriteDialog::~EditSpriteDialog() = default;
@@ -99,7 +99,7 @@ void EditSpriteDialog::newSprite()
     }
 }
 
-void EditSpriteDialog::doubleClicked(const QModelIndex &index)
+void EditSpriteDialog::activated(const QModelIndex &index)
 {
     if (!index.isValid())
     {

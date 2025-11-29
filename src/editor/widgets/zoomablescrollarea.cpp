@@ -17,13 +17,13 @@ void ZoomableScrollArea::wheelEvent(QWheelEvent *event)
     if (!w)
         return;
 
-    auto scale = w->scale();
+    auto zoom = w->zoom();
     if (event->angleDelta().y() > 0)
-        scale *= 2;
+        zoom *= 2;
     else
-        scale /= 2;
+        zoom /= 2;
 
-    w->setScale(scale);
+    w->setScale(zoom);
 
     event->accept();
 }

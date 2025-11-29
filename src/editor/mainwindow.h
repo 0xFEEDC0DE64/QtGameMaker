@@ -33,7 +33,7 @@ protected:
 
 private slots:
     void contextMenuRequested(const QPoint &pos);
-    void doubleClicked(const QModelIndex &index);
+    void activated(const QModelIndex &index);
     void selectionChanged(const QModelIndex &index);
     void modelErrorOccured(const QString &message);
     void changed();
@@ -86,7 +86,7 @@ private:
     void openOrActivateWindow(QMdiSubWindow * &ptr, Targs &&...args);
 
     template<typename T>
-    bool doubleClickedFor(const QModelIndex &index);
+    bool activatedFor(const QModelIndex &index);
 
     template<typename T>
     bool rowsAboutToBeRemovedFor(const QModelIndex &parent, int first, int last);

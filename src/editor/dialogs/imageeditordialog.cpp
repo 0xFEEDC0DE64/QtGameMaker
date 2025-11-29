@@ -10,8 +10,11 @@
 ImageEditorDialog::ImageEditorDialog(const QPixmap &pixmap, const QString &title, QWidget *parent) :
     QDialog{parent},
     m_ui{std::make_unique<Ui::ImageEditorDialog>()},
-    m_pixmap{pixmap},
-    m_title{title}
+    m_title{title},
+    m_posLabel{*new QLabel(tr("(%0,%1)").arg(0).arg(0))},
+    m_zoomLabel{*new QLabel},
+    m_sizeLabel{*new QLabel},
+    m_memoryLabel{*new QLabel}
 {
     m_ui->setupUi(this);
 
@@ -54,21 +57,25 @@ ImageEditorDialog::ImageEditorDialog(const QPixmap &pixmap, const QString &title
     {
         auto group = new QButtonGroup{this};
         group->setExclusive(true);
-        group->addButton(m_ui->toolButtonDraw);
-        group->addButton(m_ui->toolButtonSpray);
-        group->addButton(m_ui->toolButtonErase);
-        group->addButton(m_ui->toolButtonPick);
-        group->addButton(m_ui->toolButtonLine);
-        group->addButton(m_ui->toolButtonPolygon);
-        group->addButton(m_ui->toolButtonRectangle);
-        group->addButton(m_ui->toolButtonEllipse);
-        group->addButton(m_ui->toolButtonRoundedRectangle);
-        group->addButton(m_ui->toolButtonSelectRegion);
-        group->addButton(m_ui->toolButtonSelectWand);
-        group->addButton(m_ui->toolButtonSelectSpray);
-        group->addButton(m_ui->toolButtonText);
-        group->addButton(m_ui->toolButtonFill);
-        group->addButton(m_ui->toolButtonReplace);
+        group->addButton(m_ui->toolButtonDraw,             std::to_underlying(DrawingCanvasWidget::Mode::Draw));
+        group->addButton(m_ui->toolButtonSpray,            std::to_underlying(DrawingCanvasWidget::Mode::Spray));
+        group->addButton(m_ui->toolButtonErase,            std::to_underlying(DrawingCanvasWidget::Mode::Erase));
+        group->addButton(m_ui->toolButtonPick,             std::to_underlying(DrawingCanvasWidget::Mode::Pick));
+        group->addButton(m_ui->toolButtonLine,             std::to_underlying(DrawingCanvasWidget::Mode::Line));
+        group->addButton(m_ui->toolButtonPolygon,          std::to_underlying(DrawingCanvasWidget::Mode::Polygon));
+        group->addButton(m_ui->toolButtonRectangle,        std::to_underlying(DrawingCanvasWidget::Mode::Rectangle));
+        group->addButton(m_ui->toolButtonEllipse,          std::to_underlying(DrawingCanvasWidget::Mode::Ellipse));
+        group->addButton(m_ui->toolButtonRoundedRectangle, std::to_underlying(DrawingCanvasWidget::Mode::RoundedRectangle));
+        group->addButton(m_ui->toolButtonSelectRegion,     std::to_underlying(DrawingCanvasWidget::Mode::SelectRegion));
+        group->addButton(m_ui->toolButtonSelectWand,       std::to_underlying(DrawingCanvasWidget::Mode::SelectWand));
+        group->addButton(m_ui->toolButtonSelectSpray,      std::to_underlying(DrawingCanvasWidget::Mode::SelectSpray));
+        group->addButton(m_ui->toolButtonText,             std::to_underlying(DrawingCanvasWidget::Mode::Text));
+        group->addButton(m_ui->toolButtonFill,             std::to_underlying(DrawingCanvasWidget::Mode::Fill));
+        group->addButton(m_ui->toolButtonReplace,          std::to_underlying(DrawingCanvasWidget::Mode::Replace));
+        if (auto button = group->button(std::to_underlying(m_ui->canvas->mode())))
+            button->click();
+        connect(group, &QButtonGroup::idClicked,
+                m_ui->canvas, [canvas=m_ui->canvas](int id){ canvas->setMode(DrawingCanvasWidget::Mode(id)); });
     }
 
     {
@@ -96,15 +103,38 @@ ImageEditorDialog::ImageEditorDialog(const QPixmap &pixmap, const QString &title
         group->addButton(m_ui->toolButtonAlignRight);
     }
 
-    m_ui->toolButtonDraw->click();
-
     updateLeftButtonColor(m_ui->canvas->leftButtonColor());
     updateRightButtonColor(m_ui->canvas->rightButtonColor());
 
-    m_ui->canvas->setPixmap(m_pixmap);
+    m_ui->canvas->setPixmap(pixmap);
+
+    connect(m_ui->canvas, &DrawingCanvasWidget::cursorMoved,
+            this, &ImageEditorDialog::cursorMoved);
+
+    connect(m_ui->canvas, &DrawingCanvasWidget::modeChanged,
+            this, &ImageEditorDialog::modeChanged);
+    modeChanged(m_ui->canvas->mode());
+
+    connect(m_ui->canvas, &DrawingCanvasWidget::zoomChanged,
+            this, &ImageEditorDialog::zoomChanged);
+    zoomChanged(m_ui->canvas->zoom());
+
+    updateSize(pixmap);
+
+    for (QLabel *label : { &m_posLabel, &m_zoomLabel, &m_sizeLabel, &m_memoryLabel })
+    {
+        label->setFrameShape(QFrame::Panel);
+        label->setFrameShadow(QFrame::Sunken);
+        m_ui->statusBar->addPermanentWidget(label);
+    }
 }
 
 ImageEditorDialog::~ImageEditorDialog() = default;
+
+QPixmap ImageEditorDialog::pixmap() const
+{
+    return m_ui->canvas->pixmap();
+}
 
 void ImageEditorDialog::accept()
 {
@@ -191,10 +221,54 @@ void ImageEditorDialog::updateRightButtonColor(const QColor &rightButtonColor)
     frame->setPalette(palette);
 }
 
+void ImageEditorDialog::modeChanged(DrawingCanvasWidget::Mode mode)
+{
+    QString msg;
+    switch (mode)
+    {
+    case DrawingCanvasWidget::Mode::Draw: msg = tr("Paint with the mouse. <Shift> for hor/vert"); break;
+    case DrawingCanvasWidget::Mode::Spray: msg = tr("Spray with the mouse. <Shift> for hor/vert"); break;
+    case DrawingCanvasWidget::Mode::Erase: msg = tr("Erase with the mouse (based on transparency)"); break;
+    case DrawingCanvasWidget::Mode::Pick: msg = tr("Pick a color with the mouse"); break;
+    case DrawingCanvasWidget::Mode::Line: msg = tr("Draw a line. <Shift> for diagonal"); break;
+    case DrawingCanvasWidget::Mode::Polygon: msg = tr("Draw a polygon. <Esc> to end"); break;
+    case DrawingCanvasWidget::Mode::Rectangle: msg = tr("Draw a rectangle. <Shift> for square"); break;
+    case DrawingCanvasWidget::Mode::Ellipse: msg = tr("Draw an ellipse. <Shift> for circle"); break;
+    case DrawingCanvasWidget::Mode::RoundedRectangle: msg = tr("Draw a rounded rectangle. <Shift> for square"); break;
+    case DrawingCanvasWidget::Mode::SelectRegion: msg = tr("Select a region with the mouse"); break;
+    case DrawingCanvasWidget::Mode::SelectWand: msg = tr("Click to select with magic wand"); break;
+    case DrawingCanvasWidget::Mode::SelectSpray: msg = tr("Spray selection with the mouse"); break;
+    case DrawingCanvasWidget::Mode::Text: msg = tr("Click the mouse to start a new text"); break;
+    case DrawingCanvasWidget::Mode::Fill: msg = tr("Flood filling a region"); break;
+    case DrawingCanvasWidget::Mode::Replace: msg = tr("Click on a pixel whose color to change"); break;
+    };
+
+    if (msg.isNull())
+        qWarning() << "unknown mode" << mode;
+
+    m_ui->statusBar->showMessage(msg);
+}
+
+void ImageEditorDialog::cursorMoved(const QPoint &pos)
+{
+    m_posLabel.setText(tr("(%0,%1)").arg(pos.x()).arg(pos.y()));
+}
+
+void ImageEditorDialog::zoomChanged(float zoom)
+{
+    m_zoomLabel.setText(tr("Zoom: %0%").arg(zoom * 100.f, 0, 'f', 0));
+}
+
 void ImageEditorDialog::updateTitle()
 {
     setWindowTitle(tr("%0%1")
                        .arg(m_title)
                        .arg(m_unsavedChanges ? tr("*") : QString{})
                    );
+}
+
+void ImageEditorDialog::updateSize(const QPixmap &pixmap)
+{
+    m_sizeLabel.setText(tr("Size: %0 x %1").arg(pixmap.width()).arg(pixmap.height()));
+    m_memoryLabel.setText(tr("Memory: %0 KB").arg(pixmap.width() * pixmap.height() * 4 / 1000));
 }
