@@ -55,25 +55,20 @@ void DrawingCanvasWidget::setRightButtonColor(const QColor &rightButtonColor)
     emit rightButtonColorChanged(m_rightButtonColor = rightButtonColor);
 }
 
+void DrawingCanvasWidget::setTransparentBackgroundPattern(const TransparentBackgroundPattern &transparentBackgroundPattern)
+{
+    if (m_transparentBackgroundPattern == transparentBackgroundPattern)
+        return;
+
+    emit transparentBackgroundPatternChanged(m_transparentBackgroundPattern = transparentBackgroundPattern);
+    update();
+}
+
 void DrawingCanvasWidget::paintEvent(QPaintEvent *ev)
 {
     QWidget::paintEvent(ev);
 
-    QBrush brush;
-    {
-        QPixmap pixmap{32, 32};
-        {
-            QPainter painter{&pixmap};
-            painter.setPen(Qt::NoPen);
-            painter.setBrush(Qt::gray);
-            painter.drawRect(0, 0, 16, 16);
-            painter.drawRect(16, 16, 16, 16);
-            painter.setBrush(Qt::white);
-            painter.drawRect(0, 16, 16, 16);
-            painter.drawRect(16, 0, 16, 16);
-        }
-        brush.setTexture(std::move(pixmap));
-    }
+    const auto brush = makeTransparentBackgroundPatternBrush(m_transparentBackgroundPattern);
 
     QPainter painter{this};
 
@@ -106,33 +101,46 @@ void DrawingCanvasWidget::mousePressEvent(QMouseEvent *event)
             setPixel(zoomdPos, left);
             break;
         case Mode::Spray:
+            //TODO
             break;
         case Mode::Erase:
+            //TODO
             break;
         case Mode::Pick:
+            //TODO
             break;
         case Mode::Line:
+            //TODO
             break;
         case Mode::Polygon:
+            //TODO
             break;
         case Mode::Rectangle:
+            //TODO
             break;
         case Mode::Ellipse:
+            //TODO
             break;
         case Mode::RoundedRectangle:
+            //TODO
             break;
         case Mode::SelectRegion:
+            //TODO
             break;
         case Mode::SelectWand:
+            //TODO
             break;
         case Mode::SelectSpray:
+            //TODO
             break;
         case Mode::Text:
+            //TODO
             break;
         case Mode::Fill:
             floodFill(zoomdPos, left);
             break;
         case Mode::Replace:
+            //TODO
             break;
         };
 

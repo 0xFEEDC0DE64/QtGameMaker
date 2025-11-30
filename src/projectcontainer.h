@@ -21,7 +21,7 @@ struct GlobalGameSettings
     };
     struct FullScale {
     };
-    std::variant<FixedScale, KeepAspectRatio, FullScale> scaling{
+    std::variant<FixedScale, KeepAspectRatio, FullScale> scaling {
         KeepAspectRatio{}
     };
     bool interpolateBetweenColors{};

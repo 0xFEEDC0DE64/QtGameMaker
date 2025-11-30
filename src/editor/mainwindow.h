@@ -10,6 +10,7 @@
 class QMdiSubWindow;
 class QActionGroup;
 namespace Ui { class MainWindow; }
+class EditorSettings;
 class ProjectTreeModel;
 
 class MainWindow : public QMainWindow
@@ -17,8 +18,11 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(const QString &filePath, QWidget *parent = nullptr);
+    explicit MainWindow(const QString &filePath, EditorSettings &settings, QWidget *parent = nullptr);
     ~MainWindow();
+
+    EditorSettings &settings() { return m_settings; }
+    const EditorSettings &settings() const { return m_settings; }
 
 private:
     template<typename T>
@@ -95,6 +99,8 @@ private:
     void modelAboutToBeResetFor();
 
     const std::unique_ptr<Ui::MainWindow> m_ui;
+
+    EditorSettings &m_settings;
 
     ProjectContainer m_project;
 

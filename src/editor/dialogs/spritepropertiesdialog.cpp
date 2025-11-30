@@ -19,6 +19,7 @@ SpritePropertiesDialog::SpritePropertiesDialog(Sprite &sprite, ProjectTreeModel 
     m_ui{std::make_unique<Ui::SpritePropertiesDialog>()},
     m_sprite{sprite},
     m_projectModel{projectModel},
+    m_mainWindow{mainWindow},
     m_pixmaps{m_sprite.pixmaps}
 {
     m_ui->setupUi(this);
@@ -147,7 +148,12 @@ void SpritePropertiesDialog::saveSprite()
 
 void SpritePropertiesDialog::editSprite()
 {
-    EditSpriteDialog dialog{m_pixmaps, m_sprite.name, this};
+    EditSpriteDialog dialog {
+        m_pixmaps,
+        m_sprite.name,
+        m_mainWindow.settings(),
+        this
+    };
     if (dialog.exec() == QDialog::Accepted)
     {
         m_pixmaps = dialog.pixmaps();
@@ -158,16 +164,17 @@ void SpritePropertiesDialog::editSprite()
 
 void SpritePropertiesDialog::centerOrigin()
 {
+    QPoint center;
     if (m_pixmaps.empty() || m_pixmaps.front().isNull())
-    {
         qDebug() << "unexpected empty pixmaps";
-        m_ui->spinBoxOriginX->setValue(0);
-        m_ui->spinBoxOriginY->setValue(0);
-        return;
-    }
+    else
+        center = {
+            m_pixmaps.front().width() / 2,
+            m_pixmaps.front().height() / 2
+        };
 
-    m_ui->spinBoxOriginX->setValue(m_pixmaps.front().width() / 2);
-    m_ui->spinBoxOriginY->setValue(m_pixmaps.front().height() / 2);
+    m_ui->spinBoxOriginX->setValue(center.x());
+    m_ui->spinBoxOriginY->setValue(center.y());
 }
 
 void SpritePropertiesDialog::modifyMask()

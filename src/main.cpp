@@ -2,6 +2,7 @@
 #include <QCommandLineParser>
 #include <QLoggingCategory>
 
+#include "editorsettings.h"
 #include "mainwindow.h"
 
 Q_LOGGING_CATEGORY(lcVk, "qt.vulkan")
@@ -38,7 +39,9 @@ int main(int argc, char *argv[])
     parser.addPositionalArgument("project", "The project to open.");
     parser.process(app);
 
-    MainWindow mainWindow{parser.positionalArguments().value(0)};
+    EditorSettings settings;
+
+    MainWindow mainWindow{parser.positionalArguments().value(0), settings};
     mainWindow.show();
 
     return app.exec();

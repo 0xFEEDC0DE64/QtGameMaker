@@ -4,19 +4,19 @@
 #include <QMessageBox>
 #include <QDebug>
 
-#include "projectcontainer.h"
 #include "models/spritesmodel.h"
 #include "dialogs/transparentbackgroundsettingsdialog.h"
 #include "createspritedialog.h"
 #include "imageeditordialog.h"
 #include "imagehelpers.h"
 
-EditSpriteDialog::EditSpriteDialog(const std::vector<QPixmap> &pixmaps, const QString &spriteName, QWidget *parent) :
+EditSpriteDialog::EditSpriteDialog(const std::vector<QPixmap> &pixmaps, const QString &spriteName,
+                                   EditorSettings &settings, QWidget *parent) :
     QDialog{parent},
     m_ui{std::make_unique<Ui::EditSpriteDialog>()},
-    m_pixmaps{pixmaps},
+    m_settings{settings},
     m_spriteName{spriteName},
-    m_model{std::make_unique<SpritesModel>(m_pixmaps, this)}
+    m_model{std::make_unique<SpritesModel>(pixmaps, this)}
 {
     m_ui->setupUi(this);
 
@@ -138,6 +138,11 @@ void EditSpriteDialog::reject()
     }
 }
 
+const std::vector<QPixmap> &EditSpriteDialog::pixmaps() const
+{
+    return m_model->pixmaps();
+}
+
 void EditSpriteDialog::newSprite()
 {
     CreateSpriteDialog dialog{this};
@@ -146,9 +151,7 @@ void EditSpriteDialog::newSprite()
         QPixmap pixmap{dialog.spriteSize()};
         pixmap.fill(Qt::transparent);
 
-        m_model->beginResetModel();
-        m_pixmaps = std::vector<QPixmap> { std::move(pixmap) };
-        m_model->endResetModel();
+        m_model->setPixmaps({ std::move(pixmap) });
 
         changed();
     }
@@ -160,9 +163,7 @@ void EditSpriteDialog::createFromFile()
     if (pixmap.isNull())
         return;
 
-    m_model->beginResetModel();
-    m_pixmaps = std::vector<QPixmap> { std::move(pixmap) };
-    m_model->endResetModel();
+    m_model->setPixmaps({ std::move(pixmap) });
 
     changed();
 }
@@ -173,16 +174,14 @@ void EditSpriteDialog::addFromFile()
     if (pixmap.isNull())
         return;
 
-    if (!m_pixmaps.empty() && m_pixmaps.front().size() != pixmap.size())
+    if (!m_model->empty() && m_model->front().size() != pixmap.size())
     {
         QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
         return;
     }
     else
     {
-        m_model->beginInsertRows({}, m_pixmaps.size(), m_pixmaps.size());
-        m_pixmaps.emplace_back(std::move(pixmap));
-        m_model->endInsertRows();
+        m_model->insertPixmap(std::move(pixmap), m_model->size());
     }
 }
 
@@ -193,13 +192,13 @@ void EditSpriteDialog::saveAsPng()
         return;
 
     const int row = index.row();
-    if (row < 0 || size_t(row) >= m_pixmaps.size())
+    if (row < 0 || size_t(row) >= m_model->size())
     {
         qWarning() << "invalid row" << row;
         return;
     }
 
-    const auto &pixmap = m_pixmaps[row];
+    const auto &pixmap = m_model->pixmap(row);
     if (pixmap.isNull())
     {
         QMessageBox::warning(this, tr("Invalid sprite!"), tr("The sprite you tried to save is invalid!"));
@@ -256,17 +255,14 @@ void EditSpriteDialog::delete_()
         return;
 
     const int row = index.row();
-    if (row < 0 || size_t(row) >= m_pixmaps.size())
+    if (row < 0 || size_t(row) >= m_model->size())
     {
         qWarning() << "unexpected row" << row;
         return;
     }
 
-    m_model->beginRemoveRows({}, row, row);
-    m_pixmaps.erase(std::begin(m_pixmaps) + row);
-    m_model->endRemoveRows();
-
-    changed();
+    if (m_model->removeRow(row))
+        changed();
 }
 
 void EditSpriteDialog::moveLeft()
@@ -276,17 +272,14 @@ void EditSpriteDialog::moveLeft()
         return;
 
     const size_t row = index.row();
-    if (row < 1 || row >= m_pixmaps.size())
+    if (row < 1 || row >= m_model->size())
     {
         qWarning() << "unexpected row" << row;
         return;
     }
 
-    m_model->beginMoveRows({}, row, row, {}, row-1);
-    std::swap(m_pixmaps[row-1], m_pixmaps[row]);
-    m_model->endMoveRows();
-
-    changed();
+    if (m_model->moveRow({}, row, {}, row-1))
+        changed();
 }
 
 void EditSpriteDialog::moveRight()
@@ -296,24 +289,21 @@ void EditSpriteDialog::moveRight()
         return;
 
     const int row = index.row();
-    if (row < 0 || size_t(row) >= m_pixmaps.size() - 1)
+    if (row < 0 || size_t(row) >= m_model->size() - 1)
     {
         qWarning() << "unexpected row" << row;
         return;
     }
 
-    m_model->beginMoveRows({}, row, row, {}, row+2);
-    std::swap(m_pixmaps[row+1], m_pixmaps[row]);
-    m_model->endMoveRows();
-
-    changed();
+    if (m_model->moveRow({}, row, {}, row+2))
+        changed();
 }
 
 void EditSpriteDialog::addEmpty()
 {
     QSize size;
-    if (!m_pixmaps.empty())
-        size = m_pixmaps.front().size();
+    if (!m_model->empty())
+        size = m_model->front().size();
 
     if (size.isEmpty())
     {
@@ -327,9 +317,7 @@ void EditSpriteDialog::addEmpty()
     QPixmap pixmap{size};
     pixmap.fill(Qt::transparent);
 
-    m_model->beginInsertRows({}, m_pixmaps.size(), m_pixmaps.size());
-    m_pixmaps.emplace_back(std::move(pixmap));
-    m_model->endInsertRows();
+    m_model->insertPixmap(std::move(pixmap), m_model->size());
 
     changed();
 }
@@ -342,7 +330,7 @@ void EditSpriteDialog::insertEmpty()
     if (index.isValid())
     {
         row = index.row();
-        if (row < 0 || size_t(row) >= m_pixmaps.size())
+        if (row < 0 || size_t(row) >= m_model->size())
         {
             qWarning() << "unexpected row" << row;
             row = 0;
@@ -350,8 +338,8 @@ void EditSpriteDialog::insertEmpty()
     }
 
     QSize size;
-    if (!m_pixmaps.empty())
-        size = m_pixmaps.front().size();
+    if (!m_model->empty())
+        size = m_model->front().size();
 
     if (size.isEmpty())
     {
@@ -365,9 +353,7 @@ void EditSpriteDialog::insertEmpty()
     QPixmap pixmap{size};
     pixmap.fill(Qt::transparent);
 
-    m_model->beginInsertRows({}, row, row);
-    m_pixmaps.emplace(std::begin(m_pixmaps) + row, std::move(pixmap));
-    m_model->endInsertRows();
+    m_model->insertPixmap(std::move(pixmap), row);
 }
 
 void EditSpriteDialog::edit()
@@ -381,11 +367,9 @@ void EditSpriteDialog::edit()
 
 void EditSpriteDialog::transparentBackgroundSettings()
 {
-    TransparentBackgroundSettingsDialog dialog{this};
+    TransparentBackgroundSettingsDialog dialog{m_settings, this};
     if (dialog.exec() == QDialog::Accepted)
-    {
-        // TODO apply
-    }
+        dialog.save(m_settings);
 }
 
 void EditSpriteDialog::activated(const QModelIndex &index)
@@ -396,12 +380,10 @@ void EditSpriteDialog::activated(const QModelIndex &index)
         return;
     }
 
-    ImageEditorDialog dialog{m_model->pixmap(index), tr("Image Editor: %0").arg(m_spriteName), this};
+    ImageEditorDialog dialog{m_model->pixmap(index), tr("Image Editor: %0").arg(m_spriteName), m_settings, this};
     if (dialog.exec() == QDialog::Accepted)
     {
-        m_pixmaps[index.row()] = dialog.pixmap();
-        emit m_model->dataChanged(index, index, {Qt::DecorationRole});
-
+        m_model->setPixmap(dialog.pixmap(), index);
         changed();
     }
 }
@@ -414,7 +396,7 @@ void EditSpriteDialog::currentChanged()
     m_ui->actionCopy->setEnabled(index.isValid());
     m_ui->actionDelete->setEnabled(index.isValid());
     m_ui->actionMoveLeft->setEnabled(index.isValid() && index.row() > 0);
-    m_ui->actionMoveRight->setEnabled(index.isValid() && size_t(index.row()) < m_pixmaps.size() - 1);
+    m_ui->actionMoveRight->setEnabled(index.isValid() && size_t(index.row()) < m_model->size() - 1);
 }
 
 void EditSpriteDialog::changed()

@@ -5,15 +5,17 @@
 #include <QDebug>
 #include <QButtonGroup>
 #include <QFontDialog>
-#include <QColorDialog>
 
 #include "dialogs/transparentbackgroundsettingsdialog.h"
 #include "imagehelpers.h"
+#include "editorsettings.h"
 
-ImageEditorDialog::ImageEditorDialog(const QPixmap &pixmap, const QString &title, QWidget *parent) :
+ImageEditorDialog::ImageEditorDialog(const QPixmap &pixmap, const QString &title,
+                                     EditorSettings &settings, QWidget *parent) :
     QDialog{parent},
     m_ui{std::make_unique<Ui::ImageEditorDialog>()},
     m_title{title},
+    m_settings{settings},
     m_posLabel{*new QLabel(tr("(%0,%1)").arg(0).arg(0))},
     m_zoomLabel{*new QLabel},
     m_sizeLabel{*new QLabel},
@@ -50,11 +52,6 @@ ImageEditorDialog::ImageEditorDialog(const QPixmap &pixmap, const QString &title
     connect(m_ui->pushButtonSelectFont, &QAbstractButton::pressed,
             this, &ImageEditorDialog::selectFont);
 
-    connect(m_ui->pushButtonLeftButtonColor, &QAbstractButton::pressed,
-            this, &ImageEditorDialog::selectLeftButtonColor);
-    connect(m_ui->pushButtonRightButtonColor, &QAbstractButton::pressed,
-            this, &ImageEditorDialog::selectRightButtonColor);
-
     connect(m_ui->frameColorCoarse, &ColorWidget::colorLeftClicked,
             m_ui->canvas, &DrawingCanvasWidget::setLeftButtonColor);
     connect(m_ui->frameColorCoarse, &ColorWidget::colorRightClicked,
@@ -67,10 +64,16 @@ ImageEditorDialog::ImageEditorDialog(const QPixmap &pixmap, const QString &title
 
     connect(m_ui->canvas, &DrawingCanvasWidget::changed,
             this, &ImageEditorDialog::changed);
+
     connect(m_ui->canvas, &DrawingCanvasWidget::leftButtonColorChanged,
-            this, &ImageEditorDialog::updateLeftButtonColor);
+            m_ui->pushButtonLeftButtonColor, &ColorButton::setColor);
+    connect(m_ui->pushButtonLeftButtonColor, &ColorButton::colorChanged,
+            m_ui->canvas, &DrawingCanvasWidget::setLeftButtonColor);
+
     connect(m_ui->canvas, &DrawingCanvasWidget::rightButtonColorChanged,
-            this, &ImageEditorDialog::updateRightButtonColor);
+            m_ui->pushButtonRightButtonColor, &ColorButton::setColor);
+    connect(m_ui->pushButtonRightButtonColor, &ColorButton::colorChanged,
+            m_ui->canvas, &DrawingCanvasWidget::rightButtonColor);
 
     {
         auto group = new QButtonGroup{this};
@@ -99,6 +102,17 @@ ImageEditorDialog::ImageEditorDialog(const QPixmap &pixmap, const QString &title
     {
         auto group = new QButtonGroup{this};
         group->setExclusive(true);
+        group->addButton(m_ui->toolButtonSize1);
+        group->addButton(m_ui->toolButtonSize2);
+        group->addButton(m_ui->toolButtonSize3);
+        group->addButton(m_ui->toolButtonSize4);
+        group->addButton(m_ui->toolButtonSize5);
+        group->addButton(m_ui->toolButtonSize6);
+    }
+
+    {
+        auto group = new QButtonGroup{this};
+        group->setExclusive(true);
         group->addButton(m_ui->pushButtonLine1);
         group->addButton(m_ui->pushButtonLine2);
         group->addButton(m_ui->pushButtonLine3);
@@ -121,10 +135,11 @@ ImageEditorDialog::ImageEditorDialog(const QPixmap &pixmap, const QString &title
         group->addButton(m_ui->toolButtonAlignRight);
     }
 
-    updateLeftButtonColor(m_ui->canvas->leftButtonColor());
-    updateRightButtonColor(m_ui->canvas->rightButtonColor());
+    m_ui->pushButtonLeftButtonColor->setColor(m_ui->canvas->leftButtonColor());
+    m_ui->pushButtonRightButtonColor->setColor(m_ui->canvas->rightButtonColor());
 
     m_ui->canvas->setPixmap(pixmap);
+    m_ui->canvas->setTransparentBackgroundPattern(settings.transparentBackgroundPattern());
 
     connect(m_ui->canvas, &DrawingCanvasWidget::cursorMoved,
             this, &ImageEditorDialog::cursorMoved);
@@ -157,13 +172,6 @@ QPixmap ImageEditorDialog::pixmap() const
 const QImage &ImageEditorDialog::image() const
 {
     return m_ui->canvas->image();
-}
-
-void ImageEditorDialog::accept()
-{
-    // TODO
-
-    QDialog::accept();
 }
 
 void ImageEditorDialog::reject()
@@ -210,10 +218,11 @@ void ImageEditorDialog::saveAsPng()
 
 void ImageEditorDialog::transparentBackgroundSettings()
 {
-    TransparentBackgroundSettingsDialog dialog{this};
+    TransparentBackgroundSettingsDialog dialog{m_settings, this};
     if (dialog.exec() == QDialog::Accepted)
     {
-        // TODO apply
+        dialog.save(m_settings);
+        m_ui->canvas->setTransparentBackgroundPattern(m_settings.transparentBackgroundPattern());
     }
 }
 
@@ -231,38 +240,6 @@ void ImageEditorDialog::selectFont()
     QFontDialog dialog{m_ui->pushButtonSelectFont->font(), this};
     if (dialog.exec() == QDialog::Accepted)
         m_ui->pushButtonSelectFont->setFont(dialog.selectedFont());
-}
-
-void ImageEditorDialog::selectLeftButtonColor()
-{
-    QColorDialog dialog{m_ui->canvas->leftButtonColor(), this};
-    if (dialog.exec() == QDialog::Accepted)
-        m_ui->canvas->setLeftButtonColor(dialog.selectedColor());
-}
-
-void ImageEditorDialog::selectRightButtonColor()
-{
-    QColorDialog dialog{m_ui->canvas->rightButtonColor(), this};
-    if (dialog.exec() == QDialog::Accepted)
-        m_ui->canvas->setRightButtonColor(dialog.selectedColor());
-}
-
-void ImageEditorDialog::updateLeftButtonColor(const QColor &leftButtonColor)
-{
-    auto frame = m_ui->pushButtonLeftButtonColor;
-    auto palette = frame->palette();
-    auto role = frame->backgroundRole();
-    palette.setBrush(role, leftButtonColor);
-    frame->setPalette(palette);
-}
-
-void ImageEditorDialog::updateRightButtonColor(const QColor &rightButtonColor)
-{
-    auto frame = m_ui->pushButtonRightButtonColor;
-    auto palette = frame->palette();
-    auto role = frame->backgroundRole();
-    palette.setBrush(role, rightButtonColor);
-    frame->setPalette(palette);
 }
 
 void ImageEditorDialog::modeChanged(DrawingCanvasWidget::Mode mode)

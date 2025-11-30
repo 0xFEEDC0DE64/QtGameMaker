@@ -11,6 +11,7 @@
 #include <QInputDialog>
 #include <QDebug>
 
+#include "editorsettings.h"
 #include "projectserialization.h"
 #include "models/projecttreemodel.h"
 #include "dialogs/preferencesdialog.h"
@@ -47,9 +48,10 @@ template<> struct PropertiesDialogForDetail<Room> { using Type = RoomPropertiesD
 template<typename T> using PropertiesDialogFor = typename PropertiesDialogForDetail<T>::Type;
 }
 
-MainWindow::MainWindow(const QString &filePath, QWidget *parent) :
+MainWindow::MainWindow(const QString &filePath, EditorSettings &settings, QWidget *parent) :
     QMainWindow{parent},
     m_ui{std::make_unique<Ui::MainWindow>()},
+    m_settings{settings},
     m_filePath{filePath},
     m_projectTreeModel{std::make_unique<ProjectTreeModel>(m_project, this)}
 {
@@ -166,6 +168,9 @@ MainWindow::MainWindow(const QString &filePath, QWidget *parent) :
 
     if (!m_filePath.isEmpty())
         loadFile(m_filePath);
+
+    restoreGeometry(m_settings.mainWindowGeometry());
+    restoreState(m_settings.mainWindowState());
 }
 
 template<>
@@ -318,6 +323,9 @@ void MainWindow::closeEvent(QCloseEvent *event)
             return;
         }
     }
+
+    m_settings.setMainWindowGeometry(saveGeometry());
+    m_settings.setMainWindowState(saveState());
 
     QMainWindow::closeEvent(event);
 }
@@ -594,8 +602,9 @@ void MainWindow::exportResources()
 
 void MainWindow::preferences()
 {
-    PreferencesDialog dialog{this};
-    dialog.exec();
+    PreferencesDialog dialog{m_settings, this};
+    if (dialog.exec() == QDialog::Accepted)
+        dialog.save(m_settings);
 }
 
 void MainWindow::create()
@@ -718,11 +727,9 @@ void MainWindow::showObjectInformation()
 
 void MainWindow::transparentBackgroundSettings()
 {
-    TransparentBackgroundSettingsDialog dialog{this};
+    TransparentBackgroundSettingsDialog dialog{m_settings, this};
     if (dialog.exec() == QDialog::Accepted)
-    {
-        // TODO apply
-    }
+        dialog.save(m_settings);
 }
 
 template<typename T>

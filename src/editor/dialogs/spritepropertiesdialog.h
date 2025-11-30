@@ -40,6 +40,7 @@ private:
 
     Sprite &m_sprite;
     ProjectTreeModel &m_projectModel;
+    MainWindow &m_mainWindow;
 
     bool m_unsavedChanges{};
 

@@ -38,6 +38,7 @@ private:
 
     Background &m_background;
     ProjectTreeModel &m_projectModel;
+    MainWindow &m_mainWindow;
 
     bool m_unsavedChanges{};
 

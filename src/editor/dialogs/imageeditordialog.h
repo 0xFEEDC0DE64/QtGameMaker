@@ -11,19 +11,20 @@ class QLabel;
 class QPixmap;
 class QImage;
 namespace Ui { class ImageEditorDialog; }
+class EditorSettings;
 
 class ImageEditorDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit ImageEditorDialog(const QPixmap &pixmap, const QString &title, QWidget *parent = nullptr);
+    explicit ImageEditorDialog(const QPixmap &pixmap, const QString &title,
+                               EditorSettings &settings, QWidget *parent = nullptr);
     ~ImageEditorDialog();
 
     QPixmap pixmap() const;
     const QImage &image() const;
 
-    void accept() override;
     void reject() override;
 
 private slots:
@@ -32,10 +33,6 @@ private slots:
 
     void changed();
     void selectFont();
-    void selectLeftButtonColor();
-    void selectRightButtonColor();
-    void updateLeftButtonColor(const QColor &leftButtonColor);
-    void updateRightButtonColor(const QColor &rightButtonColor);
     void modeChanged(DrawingCanvasWidget::Mode mode);
     void cursorMoved(const QPoint &pos);
     void zoomChanged(float zoom);
@@ -47,6 +44,7 @@ private:
     const std::unique_ptr<Ui::ImageEditorDialog> m_ui;
 
     const QString m_title;
+    EditorSettings &m_settings;
 
     QLabel &m_posLabel;
     QLabel &m_zoomLabel;

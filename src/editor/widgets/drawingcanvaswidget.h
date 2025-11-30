@@ -2,6 +2,8 @@
 
 #include <QWidget>
 
+#include "editorguiutils.h"
+
 class QPixmap;
 
 class DrawingCanvasWidget : public QWidget
@@ -11,6 +13,7 @@ class DrawingCanvasWidget : public QWidget
     Q_PROPERTY(float zoom READ zoom WRITE setScale NOTIFY zoomChanged FINAL)
     Q_PROPERTY(QColor leftButtonColor READ leftButtonColor WRITE setLeftButtonColor NOTIFY leftButtonColorChanged FINAL)
     Q_PROPERTY(QColor rightButtonColor READ rightButtonColor WRITE setRightButtonColor NOTIFY rightButtonColorChanged FINAL)
+    Q_PROPERTY(TransparentBackgroundPattern transparentBackgroundPattern READ transparentBackgroundPattern WRITE setTransparentBackgroundPattern NOTIFY transparentBackgroundPatternChanged FINAL)
 
 public:
     explicit DrawingCanvasWidget(QWidget *parent = nullptr);
@@ -50,6 +53,9 @@ public:
     QColor rightButtonColor() const { return m_rightButtonColor; }
     void setRightButtonColor(const QColor &rightButtonColor);
 
+    const TransparentBackgroundPattern &transparentBackgroundPattern() const { return m_transparentBackgroundPattern; };
+    void setTransparentBackgroundPattern(const TransparentBackgroundPattern &transparentBackgroundPattern);
+
 signals:
     void changed();
 
@@ -59,6 +65,7 @@ signals:
     void zoomChanged(float zoom);
     void leftButtonColorChanged(const QColor &LeftButtonColor);
     void rightButtonColorChanged(const QColor &rightButtonColor);
+    void transparentBackgroundPatternChanged(const TransparentBackgroundPattern &transparentBackgroundPattern);
 
 protected:
     void paintEvent(QPaintEvent *ev) override;
@@ -78,6 +85,8 @@ private:
 
     QColor m_leftButtonColor{Qt::white};
     QColor m_rightButtonColor{Qt::black};
+
+    TransparentBackgroundPattern m_transparentBackgroundPattern;
 
     std::optional<bool> m_currentlyDrawing;
 };

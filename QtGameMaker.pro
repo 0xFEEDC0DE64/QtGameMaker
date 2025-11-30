@@ -36,9 +36,11 @@ HEADERS += \
     src/editor/dialogs/includedfilepropertiesdialog.h \
     src/editor/dialogs/transparentbackgroundsettingsdialog.h \
     src/editor/editorguiutils.h \
+    src/editor/editorsettings.h \
     src/editor/roomscene.h \
     src/editor/widgets/actiondragwidget.h \
     src/editor/widgets/coarsecolorwidget.h \
+    src/editor/widgets/colorbutton.h \
     src/editor/widgets/colorwidget.h \
     src/editor/widgets/draggabletreeview.h \
     src/editor/widgets/finecolorwidget.h \
@@ -111,9 +113,11 @@ SOURCES += \
     src/editor/dialogs/includedfilepropertiesdialog.cpp \
     src/editor/dialogs/transparentbackgroundsettingsdialog.cpp \
     src/editor/editorguiutils.cpp \
+    src/editor/editorsettings.cpp \
     src/editor/roomscene.cpp \
     src/editor/widgets/actiondragwidget.cpp \
     src/editor/widgets/coarsecolorwidget.cpp \
+    src/editor/widgets/colorbutton.cpp \
     src/editor/widgets/colorwidget.cpp \
     src/editor/widgets/draggabletreeview.cpp \
     src/editor/widgets/finecolorwidget.cpp \

@@ -1,11 +1,12 @@
 #include "preferencesdialog.h"
 #include "ui_preferencesdialog.h"
 
-#include <QPushButton>
+#include <QMessageBox>
 
 #include "editorguiutils.h"
+#include "editorsettings.h"
 
-PreferencesDialog::PreferencesDialog(QWidget *parent) :
+PreferencesDialog::PreferencesDialog(const EditorSettings &settings, QWidget *parent) :
     QDialog{parent},
     m_ui{std::make_unique<Ui::PreferencesDialog>()}
 {
@@ -17,6 +18,20 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     setWindowFlag(Qt::WindowCloseButtonHint);
 
     improveButtonBox(m_ui->buttonBox);
+
+    Q_UNUSED(settings);
+    // TODO copy from settings to m_ui->*
 }
 
 PreferencesDialog::~PreferencesDialog() = default;
+
+void PreferencesDialog::save(EditorSettings &settings)
+{
+    Q_UNUSED(settings);
+    // TODO copy from m_ui->* to settings
+}
+
+void PreferencesDialog::accept()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}

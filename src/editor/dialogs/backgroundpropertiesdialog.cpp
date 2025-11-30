@@ -17,6 +17,7 @@ BackgroundPropertiesDialog::BackgroundPropertiesDialog(Background &background, P
     m_ui{std::make_unique<Ui::BackgroundPropertiesDialog>()},
     m_background{background},
     m_projectModel{projectModel},
+    m_mainWindow{mainWindow},
     m_pixmap{m_background.pixmap}
 {
     m_ui->setupUi(this);
@@ -129,7 +130,12 @@ void BackgroundPropertiesDialog::saveBackground()
 
 void BackgroundPropertiesDialog::editBackground()
 {
-    ImageEditorDialog dialog{m_pixmap, tr("Image Editor: %0").arg(m_background.name), this};
+    ImageEditorDialog dialog {
+        m_pixmap,
+        tr("Image Editor: %0").arg(m_background.name),
+        m_mainWindow.settings(),
+        this
+    };
     if (dialog.exec() == QDialog::Accepted)
     {
         m_pixmap = dialog.pixmap();

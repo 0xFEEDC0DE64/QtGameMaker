@@ -7,6 +7,7 @@
 #include <vector>
 
 namespace Ui { class EditSpriteDialog; }
+class EditorSettings;
 struct Sprite;
 class SpritesModel;
 
@@ -15,13 +16,14 @@ class EditSpriteDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit EditSpriteDialog(const std::vector<QPixmap> &pixmaps, const QString &spriteName, QWidget *parent = nullptr);
+    explicit EditSpriteDialog(const std::vector<QPixmap> &pixmaps, const QString &spriteName,
+                              EditorSettings &settings, QWidget *parent = nullptr);
     ~EditSpriteDialog();
 
     void accept() override;
     void reject() override;
 
-    const std::vector<QPixmap> &pixmaps() const { return m_pixmaps; }
+    const std::vector<QPixmap> &pixmaps() const;
 
 private slots:
     void newSprite();
@@ -54,7 +56,8 @@ private:
 
     const std::unique_ptr<Ui::EditSpriteDialog> m_ui;
 
-    std::vector<QPixmap> m_pixmaps;
+    EditorSettings &m_settings;
+
     const QString m_spriteName;
 
     bool m_unsavedChanges{};
