@@ -1054,16 +1054,31 @@
    </property>
   </action>
   <action name="actionZoomOut">
+   <property name="icon">
+    <iconset resource="../resources_editor.qrc">
+     <normaloff>:/qtgameengine/icons/zoom-out.png</normaloff>:/qtgameengine/icons/zoom-out.png</iconset>
+   </property>
    <property name="text">
     <string>Zoom &amp;Out</string>
    </property>
   </action>
   <action name="actionNoZoom">
+   <property name="icon">
+    <iconset resource="../resources_editor.qrc">
+     <normaloff>:/qtgameengine/icons/zoom-original.png</normaloff>:/qtgameengine/icons/zoom-original.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;No Zoom</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+0</string>
+   </property>
   </action>
   <action name="actionZoomIn">
+   <property name="icon">
+    <iconset resource="../resources_editor.qrc">
+     <normaloff>:/qtgameengine/icons/zoom-in.png</normaloff>:/qtgameengine/icons/zoom-in.png</iconset>
+   </property>
    <property name="text">
     <string>Zoom &amp;In</string>
    </property>

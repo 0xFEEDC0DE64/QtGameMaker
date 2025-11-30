@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/qtgameengine">
-        <file>icons/action.png</file>
         <file>icons/action-execute-code.png</file>
         <file>icons/action-move-fixed.png</file>
         <file>icons/action-move-free.png</file>
@@ -8,6 +7,10 @@
         <file>icons/action-set-gravity.png</file>
         <file>icons/action-speed-horizontal.png</file>
         <file>icons/action-speed-vertical.png</file>
+        <file>icons/action.png</file>
+        <file>icons/add-from-file.png</file>
+        <file>icons/add-from-strip.png</file>
+        <file>icons/add-sprite.png</file>
         <file>icons/add.png</file>
         <file>icons/arrow-down.png</file>
         <file>icons/arrow-left.png</file>
@@ -15,12 +18,23 @@
         <file>icons/arrow-up.png</file>
         <file>icons/background-file.png</file>
         <file>icons/background.png</file>
+        <file>icons/blue-arrow-down-left.png</file>
+        <file>icons/blue-arrow-down-right.png</file>
+        <file>icons/blue-arrow-down.png</file>
+        <file>icons/blue-arrow-left.png</file>
+        <file>icons/blue-arrow-right.png</file>
+        <file>icons/blue-arrow-up-left.png</file>
+        <file>icons/blue-arrow-up-right.png</file>
+        <file>icons/blue-arrow-up.png</file>
+        <file>icons/blue-stop.png</file>
         <file>icons/cascade.png</file>
         <file>icons/center.png</file>
         <file>icons/check.png</file>
         <file>icons/constants.png</file>
         <file>icons/copy.png</file>
         <file>icons/create-executable.png</file>
+        <file>icons/create-from-file.png</file>
+        <file>icons/create-from-strip.png</file>
         <file>icons/create-group.png</file>
         <file>icons/create.png</file>
         <file>icons/cut.png</file>
@@ -54,6 +68,7 @@
         <file>icons/import-resources.png</file>
         <file>icons/included-files.png</file>
         <file>icons/info.png</file>
+        <file>icons/insert-sprite.png</file>
         <file>icons/isometric.png</file>
         <file>icons/lock.png</file>
         <file>icons/merge.png</file>
@@ -67,6 +82,7 @@
         <file>icons/paste.png</file>
         <file>icons/path-file.png</file>
         <file>icons/path.png</file>
+        <file>icons/pen.png</file>
         <file>icons/preferences.png</file>
         <file>icons/print.png</file>
         <file>icons/properties.png</file>
@@ -97,14 +113,8 @@
         <file>icons/trigger.png</file>
         <file>icons/undo.png</file>
         <file>icons/unlock.png</file>
-        <file>icons/blue-arrow-down.png</file>
-        <file>icons/blue-arrow-down-left.png</file>
-        <file>icons/blue-arrow-down-right.png</file>
-        <file>icons/blue-arrow-left.png</file>
-        <file>icons/blue-arrow-right.png</file>
-        <file>icons/blue-arrow-up.png</file>
-        <file>icons/blue-arrow-up-left.png</file>
-        <file>icons/blue-arrow-up-right.png</file>
-        <file>icons/blue-stop.png</file>
+        <file>icons/zoom-in.png</file>
+        <file>icons/zoom-original.png</file>
+        <file>icons/zoom-out.png</file>
     </qresource>
 </RCC>

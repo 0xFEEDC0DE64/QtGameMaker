@@ -32,7 +32,7 @@ void DrawingCanvasWidget::setPixmap(const QPixmap &pixmap)
     update();
 }
 
-void DrawingCanvasWidget::setScale(float zoom)
+void DrawingCanvasWidget::setZoom(float zoom)
 {
     if (m_zoom == zoom)
         return;

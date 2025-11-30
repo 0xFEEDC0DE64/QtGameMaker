@@ -214,7 +214,7 @@
   <action name="actionCreateFromFile">
    <property name="icon">
     <iconset resource="../resources_editor.qrc">
-     <normaloff>:/qtgameengine/icons/open.png</normaloff>:/qtgameengine/icons/open.png</iconset>
+     <normaloff>:/qtgameengine/icons/create-from-file.png</normaloff>:/qtgameengine/icons/create-from-file.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Create from file...</string>
@@ -226,7 +226,7 @@
   <action name="actionAddFromFile">
    <property name="icon">
     <iconset resource="../resources_editor.qrc">
-     <normaloff>:/qtgameengine/icons/create-group.png</normaloff>:/qtgameengine/icons/create-group.png</iconset>
+     <normaloff>:/qtgameengine/icons/add-from-file.png</normaloff>:/qtgameengine/icons/add-from-file.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Add from file...</string>
@@ -251,6 +251,10 @@
    </property>
   </action>
   <action name="actionCreateFromStrip">
+   <property name="icon">
+    <iconset resource="../resources_editor.qrc">
+     <normaloff>:/qtgameengine/icons/create-from-strip.png</normaloff>:/qtgameengine/icons/create-from-strip.png</iconset>
+   </property>
    <property name="text">
     <string>Create from Strip...</string>
    </property>
@@ -259,6 +263,10 @@
    </property>
   </action>
   <action name="actionAddFromStrip">
+   <property name="icon">
+    <iconset resource="../resources_editor.qrc">
+     <normaloff>:/qtgameengine/icons/add-from-strip.png</normaloff>:/qtgameengine/icons/add-from-strip.png</iconset>
+   </property>
    <property name="text">
     <string>Add from Stri&amp;p...</string>
    </property>
@@ -334,6 +342,10 @@
    </property>
   </action>
   <action name="actionMoveLeft">
+   <property name="icon">
+    <iconset resource="../resources_editor.qrc">
+     <normaloff>:/qtgameengine/icons/blue-arrow-left.png</normaloff>:/qtgameengine/icons/blue-arrow-left.png</iconset>
+   </property>
    <property name="text">
     <string>Move &amp;Left</string>
    </property>
@@ -342,6 +354,10 @@
    </property>
   </action>
   <action name="actionMoveRight">
+   <property name="icon">
+    <iconset resource="../resources_editor.qrc">
+     <normaloff>:/qtgameengine/icons/blue-arrow-right.png</normaloff>:/qtgameengine/icons/blue-arrow-right.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Move Right</string>
    </property>
@@ -350,6 +366,10 @@
    </property>
   </action>
   <action name="actionAddEmpty">
+   <property name="icon">
+    <iconset resource="../resources_editor.qrc">
+     <normaloff>:/qtgameengine/icons/add-sprite.png</normaloff>:/qtgameengine/icons/add-sprite.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Add Empty</string>
    </property>
@@ -358,6 +378,10 @@
    </property>
   </action>
   <action name="actionInsertEmpty">
+   <property name="icon">
+    <iconset resource="../resources_editor.qrc">
+     <normaloff>:/qtgameengine/icons/insert-sprite.png</normaloff>:/qtgameengine/icons/insert-sprite.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Insert Empty</string>
    </property>
@@ -366,6 +390,10 @@
    </property>
   </action>
   <action name="actionEdit">
+   <property name="icon">
+    <iconset resource="../resources_editor.qrc">
+     <normaloff>:/qtgameengine/icons/pen.png</normaloff>:/qtgameengine/icons/pen.png</iconset>
+   </property>
    <property name="text">
     <string>Edit...</string>
    </property>

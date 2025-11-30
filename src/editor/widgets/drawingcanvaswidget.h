@@ -10,7 +10,7 @@ class DrawingCanvasWidget : public QWidget
 {
     Q_OBJECT
 
-    Q_PROPERTY(float zoom READ zoom WRITE setScale NOTIFY zoomChanged FINAL)
+    Q_PROPERTY(float zoom READ zoom WRITE setZoom NOTIFY zoomChanged FINAL)
     Q_PROPERTY(QColor leftButtonColor READ leftButtonColor WRITE setLeftButtonColor NOTIFY leftButtonColorChanged FINAL)
     Q_PROPERTY(QColor rightButtonColor READ rightButtonColor WRITE setRightButtonColor NOTIFY rightButtonColorChanged FINAL)
     Q_PROPERTY(TransparentBackgroundPattern transparentBackgroundPattern READ transparentBackgroundPattern WRITE setTransparentBackgroundPattern NOTIFY transparentBackgroundPatternChanged FINAL)
@@ -46,7 +46,7 @@ public:
     void setPixmap(const QPixmap &pixmap);
 
     float zoom() const { return m_zoom; }
-    void setScale(float zoom);
+    void setZoom(float zoom);
 
     QColor leftButtonColor() const { return m_leftButtonColor; }
     void setLeftButtonColor(const QColor &LeftButtonColor);

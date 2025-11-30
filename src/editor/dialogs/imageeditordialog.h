@@ -28,7 +28,23 @@ public:
     void reject() override;
 
 private slots:
+    void newFile();
+    void openFile();
     void saveAsPng();
+    void previousSprite();
+    void nextSprite();
+    void undo();
+    void redo();
+    void eraseToLeftColor();
+    void delete_();
+    void cut();
+    void copy();
+    void paste();
+    void pasteFromFile();
+    void selectAll();
+    void zoomIn();
+    void resetZoom();
+    void zoomOut();
     void transparentBackgroundSettings();
 
     void changed();

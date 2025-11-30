@@ -23,7 +23,7 @@ void ZoomableScrollArea::wheelEvent(QWheelEvent *event)
     else
         zoom /= 2;
 
-    w->setScale(zoom);
+    w->setZoom(zoom);
 
     event->accept();
 }

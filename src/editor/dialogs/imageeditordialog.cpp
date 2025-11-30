@@ -41,11 +41,45 @@ ImageEditorDialog::ImageEditorDialog(const QPixmap &pixmap, const QString &title
     m_ui->actionCut->setShortcut(QKeySequence::Cut);
     m_ui->actionCopy->setShortcut(QKeySequence::Copy);
     m_ui->actionPaste->setShortcut(QKeySequence::Paste);
+    m_ui->actionZoomIn->setShortcut(QKeySequence::ZoomIn);
+    m_ui->actionZoomOut->setShortcut(QKeySequence::ZoomOut);
 
     m_ui->scrollArea->setBackgroundRole(QPalette::Dark);
 
+    connect(m_ui->actionNew, &QAction::triggered,
+            this, &ImageEditorDialog::newFile);
+    connect(m_ui->actionOpen, &QAction::triggered,
+            this, &ImageEditorDialog::openFile);
     connect(m_ui->actionSaveAsPngFile, &QAction::triggered,
             this, &ImageEditorDialog::saveAsPng);
+    connect(m_ui->actionPreviousImage, &QAction::triggered,
+            this, &ImageEditorDialog::previousSprite);
+    connect(m_ui->actionNextImage, &QAction::triggered,
+            this, &ImageEditorDialog::nextSprite);
+    connect(m_ui->actionUndo, &QAction::triggered,
+            this, &ImageEditorDialog::undo);
+    connect(m_ui->actionRedo, &QAction::triggered,
+            this, &ImageEditorDialog::redo);
+    connect(m_ui->actionEraseToLeftColor, &QAction::triggered,
+            this, &ImageEditorDialog::eraseToLeftColor);
+    connect(m_ui->actionDelete, &QAction::triggered,
+            this, &ImageEditorDialog::delete_);
+    connect(m_ui->actionCut, &QAction::triggered,
+            this, &ImageEditorDialog::cut);
+    connect(m_ui->actionCopy, &QAction::triggered,
+            this, &ImageEditorDialog::copy);
+    connect(m_ui->actionPaste, &QAction::triggered,
+            this, &ImageEditorDialog::paste);
+    connect(m_ui->actionPasteFromFile, &QAction::triggered,
+            this, &ImageEditorDialog::pasteFromFile);
+    connect(m_ui->actionSelectAll, &QAction::triggered,
+            this, &ImageEditorDialog::selectAll);
+    connect(m_ui->actionZoomIn, &QAction::triggered,
+            this, &ImageEditorDialog::zoomIn);
+    connect(m_ui->actionNoZoom, &QAction::triggered,
+            this, &ImageEditorDialog::resetZoom);
+    connect(m_ui->actionZoomOut, &QAction::triggered,
+            this, &ImageEditorDialog::zoomOut);
     connect(m_ui->actionSetTransparencyBackground, &QAction::triggered,
             this, &ImageEditorDialog::transparentBackgroundSettings);
 
@@ -204,6 +238,30 @@ void ImageEditorDialog::reject()
     }
 }
 
+void ImageEditorDialog::newFile()
+{
+    if (m_unsavedChanges)
+    {
+        if (QMessageBox::warning(
+            this,
+            tr("The Image has been modified."),
+            tr("Do you really want to start new?"),
+            QMessageBox::Ok | QMessageBox::Cancel
+        ) != QMessageBox::Ok)
+            return;
+    }
+
+    QPixmap pixmap{m_ui->canvas->pixmap().size()};
+    pixmap.fill(Qt::transparent);
+    m_ui->canvas->setPixmap(pixmap);
+    changed();
+}
+
+void ImageEditorDialog::openFile()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
 void ImageEditorDialog::saveAsPng()
 {
     const auto &image = m_ui->canvas->image();
@@ -214,6 +272,76 @@ void ImageEditorDialog::saveAsPng()
     }
 
     saveImage(this, image);
+}
+
+void ImageEditorDialog::previousSprite()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void ImageEditorDialog::nextSprite()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void ImageEditorDialog::undo()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void ImageEditorDialog::redo()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void ImageEditorDialog::eraseToLeftColor()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void ImageEditorDialog::delete_()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void ImageEditorDialog::cut()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void ImageEditorDialog::copy()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void ImageEditorDialog::paste()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void ImageEditorDialog::pasteFromFile()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void ImageEditorDialog::selectAll()
+{
+    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void ImageEditorDialog::zoomIn()
+{
+    m_ui->canvas->setZoom(m_ui->canvas->zoom() * 2.f);
+}
+
+void ImageEditorDialog::resetZoom()
+{
+    m_ui->canvas->setZoom(1.f);
+}
+
+void ImageEditorDialog::zoomOut()
+{
+    m_ui->canvas->setZoom(m_ui->canvas->zoom() / 2.f);
 }
 
 void ImageEditorDialog::transparentBackgroundSettings()
