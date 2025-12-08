@@ -9,6 +9,7 @@
 #include "createspritedialog.h"
 #include "imageeditordialog.h"
 #include "imagehelpers.h"
+#include "changeimagesizedialog.h"
 
 EditSpriteDialog::EditSpriteDialog(const std::vector<QPixmap> &pixmaps, const QString &spriteName,
                                    EditorSettings &settings, QWidget *parent) :
@@ -176,8 +177,11 @@ void EditSpriteDialog::addFromFile()
 
     if (!m_model->empty() && m_model->front().size() != pixmap.size())
     {
-        QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
-        return;
+        ChangeImageSizeDialog dialog{this};
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+        }
     }
     else
     {

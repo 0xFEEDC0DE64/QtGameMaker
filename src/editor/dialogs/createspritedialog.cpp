@@ -2,7 +2,6 @@
 #include "ui_createspritedialog.h"
 
 #include <QMessageBox>
-#include <QPushButton>
 
 #include "editorguiutils.h"
 

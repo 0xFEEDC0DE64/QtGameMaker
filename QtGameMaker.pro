@@ -32,6 +32,7 @@ HEADERS += \
     src/editor/dialogs/actions/movetowardsdialog.h \
     src/editor/dialogs/actions/executecodedialog.h \
     src/editor/dialogs/actions/speedverticaldialog.h \
+    src/editor/dialogs/changeimagesizedialog.h \
     src/editor/dialogs/genericcodeeditordialog.h \
     src/editor/dialogs/includedfilepropertiesdialog.h \
     src/editor/dialogs/transparentbackgroundsettingsdialog.h \
@@ -109,6 +110,7 @@ SOURCES += \
     src/editor/dialogs/actions/movefreedialog.cpp \
     src/editor/dialogs/actions/movetowardsdialog.cpp \
     src/editor/dialogs/actions/speedverticaldialog.cpp \
+    src/editor/dialogs/changeimagesizedialog.cpp \
     src/editor/dialogs/genericcodeeditordialog.cpp \
     src/editor/dialogs/includedfilepropertiesdialog.cpp \
     src/editor/dialogs/transparentbackgroundsettingsdialog.cpp \
@@ -183,6 +185,7 @@ FORMS += \
     src/editor/dialogs/actions/movefreedialog.ui \
     src/editor/dialogs/actions/movetowardsdialog.ui \
     src/editor/dialogs/actions/speedverticaldialog.ui \
+    src/editor/dialogs/changeimagesizedialog.ui \
     src/editor/dialogs/includedfilepropertiesdialog.ui \
     src/editor/dialogs/transparentbackgroundsettingsdialog.ui \
     src/editor/mainwindow.ui \
