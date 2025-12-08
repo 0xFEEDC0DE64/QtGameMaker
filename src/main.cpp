@@ -3,6 +3,7 @@
 #include <QLoggingCategory>
 
 #include "editorsettings.h"
+#include "editorguiutils.h"
 #include "mainwindow.h"
 
 Q_LOGGING_CATEGORY(lcVk, "qt.vulkan")
@@ -26,6 +27,8 @@ int main(int argc, char *argv[])
     Q_INIT_RESOURCE(resources_engine);
 
     QApplication app(argc, argv);
+
+    registerEditorMetatypes();
 
     QCoreApplication::setOrganizationDomain("brunner.ninja");
     QCoreApplication::setOrganizationName("brunner.ninja");

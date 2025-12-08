@@ -77,3 +77,8 @@ QBrush makeTransparentBackgroundPatternBrush(const TransparentBackgroundPattern 
     qWarning() << "unknown TransparentBackgroundPattern::Type" << transparentBackgroundPattern.type;
     return {};
 }
+
+void registerEditorMetatypes()
+{
+    qRegisterMetaType<TransparentBackgroundPattern::Type>();
+}

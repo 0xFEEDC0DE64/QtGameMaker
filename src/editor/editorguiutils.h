@@ -31,6 +31,8 @@ public:
     constexpr bool operator==(const TransparentBackgroundPattern &other) const = default;
 };
 
+void registerEditorMetatypes();
+
 QBrush makeTransparentBackgroundPatternBrush(const TransparentBackgroundPattern &transparentBackgroundPattern);
 
 void improveButtonBox(QDialogButtonBox *buttonBox);
