@@ -84,8 +84,8 @@ void DrawingCanvasWidget::mousePressEvent(QMouseEvent *event)
     QWidget::mousePressEvent(event);
 
     QPoint zoomdPos(
-        std::round(event->pos().x() / m_zoom),
-        std::round(event->pos().y() / m_zoom)
+        event->pos().x() / m_zoom,
+        event->pos().y() / m_zoom
     );
     auto left = event->button() == Qt::LeftButton;
 
@@ -172,8 +172,8 @@ void DrawingCanvasWidget::mouseMoveEvent(QMouseEvent *event)
     QWidget::mouseMoveEvent(event);
 
     QPoint zoomdPos(
-        std::round(event->pos().x() / m_zoom),
-        std::round(event->pos().y() / m_zoom)
+        event->pos().x() / m_zoom,
+        event->pos().y() / m_zoom
     );
     emit cursorMoved(zoomdPos);
 
