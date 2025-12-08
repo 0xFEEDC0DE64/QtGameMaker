@@ -86,6 +86,8 @@ private:
     void loadFile(const QString &path);
     void updateTitle();
 
+    QMdiSubWindow *addSubWindow(QDialog *dialog);
+
     template<typename T, typename ...Targs>
     void openOrActivateWindow(QMdiSubWindow * &ptr, Targs &&...args);
 

@@ -238,21 +238,8 @@ void MainWindow::openPropertiesWindowFor(T &entry)
     }
 
     auto dialog = new PropertiesDialogFor<T>{entry, *m_projectTreeModel, *this};
-    auto subwindow = m_ui->mdiArea->addSubWindow(dialog);
-    auto action = m_ui->menuWindow->addAction(dialog->windowTitle());
-    m_actionGroupWindows->addAction(action);
-    action->setCheckable(true);
-    connect(action, &QAction::triggered,
-            m_ui->mdiArea, [mdiArea=m_ui->mdiArea,subwindow,action](){
-                mdiArea->setActiveSubWindow(subwindow);
-                action->setChecked(subwindow->windowState().testFlag(Qt::WindowActive));
-            });
-    connect(subwindow, &QMdiSubWindow::windowStateChanged,
-            action, [action](Qt::WindowStates oldState, Qt::WindowStates newState){
-                Q_UNUSED(oldState)
-                action->setChecked(newState.testFlag(Qt::WindowActive));
-            });
-    connect(dialog, &QWidget::windowTitleChanged, action, &QAction::setText);
+    auto subwindow = addSubWindow(dialog);
+
     connect(dialog, &QDialog::finished,
             this, [this,&propertyWindows,subwindow](int result){
                 if (result == QDialog::Accepted)
@@ -265,11 +252,9 @@ void MainWindow::openPropertiesWindowFor(T &entry)
                         iter++;
                 }
             });
-    connect(dialog, &QDialog::finished,
-            subwindow, &QObject::deleteLater);
-    connect(dialog, &QDialog::finished,
-            action, &QObject::deleteLater);
+
     propertyWindows[&entry] = subwindow;
+
     dialog->show();
 }
 
@@ -954,6 +939,30 @@ void MainWindow::updateTitle()
                        .arg(m_unsavedChanges ? tr("*") : QString{}));
 }
 
+QMdiSubWindow *MainWindow::addSubWindow(QDialog *dialog)
+{
+    auto subwindow = m_ui->mdiArea->addSubWindow(dialog);
+    auto action = m_ui->menuWindow->addAction(dialog->windowTitle());
+    m_actionGroupWindows->addAction(action);
+    action->setCheckable(true);
+    connect(action, &QAction::triggered,
+            m_ui->mdiArea, [mdiArea=m_ui->mdiArea,subwindow,action](){
+                mdiArea->setActiveSubWindow(subwindow);
+                action->setChecked(subwindow->windowState().testFlag(Qt::WindowActive));
+            });
+    connect(subwindow, &QMdiSubWindow::windowStateChanged,
+            action, [action](Qt::WindowStates oldState, Qt::WindowStates newState){
+                Q_UNUSED(oldState)
+                action->setChecked(newState.testFlag(Qt::WindowActive));
+            });
+    connect(dialog, &QWidget::windowTitleChanged, action, &QAction::setText);
+    connect(dialog, &QDialog::finished,
+            subwindow, &QObject::deleteLater);
+    connect(dialog, &QDialog::finished,
+            action, &QObject::deleteLater);
+    return subwindow;
+}
+
 template<typename T, typename ...Targs>
 void MainWindow::openOrActivateWindow(QMdiSubWindow * &ptr, Targs &&...args)
 {
@@ -962,30 +971,15 @@ void MainWindow::openOrActivateWindow(QMdiSubWindow * &ptr, Targs &&...args)
     else
     {
         auto dialog = new T{std::forward<Targs>(args)...};
-        auto subwindow = m_ui->mdiArea->addSubWindow(dialog);
-        auto action = m_ui->menuWindow->addAction(dialog->windowTitle());
-        m_actionGroupWindows->addAction(action);
-        action->setCheckable(true);
-        connect(action, &QAction::triggered,
-                m_ui->mdiArea, [mdiArea=m_ui->mdiArea,subwindow,action](){
-                    mdiArea->setActiveSubWindow(subwindow);
-                    action->setChecked(subwindow->windowState().testFlag(Qt::WindowActive));
-                });
-        connect(subwindow, &QMdiSubWindow::windowStateChanged,
-                action, [action](Qt::WindowStates oldState, Qt::WindowStates newState){
-                    Q_UNUSED(oldState)
-                    action->setChecked(newState.testFlag(Qt::WindowActive));
-                });
-        connect(dialog, &QWidget::windowTitleChanged, action, &QAction::setText);
+        auto subwindow = addSubWindow(dialog);
+
         connect(dialog, &QDialog::finished,
                 this, [&ptr](){
                     ptr = nullptr;
                 });
-        connect(dialog, &QDialog::finished,
-                subwindow, &QObject::deleteLater);
-        connect(dialog, &QDialog::finished,
-                action, &QObject::deleteLater);
+
         ptr = subwindow;
+
         dialog->show();
     }
 }
