@@ -86,6 +86,7 @@ private:
     void loadFile(const QString &path);
     void updateTitle();
     void updateVisibilities();
+    void updateRecentFiles();
 
     QMdiSubWindow *addSubWindow(QDialog *dialog);
 

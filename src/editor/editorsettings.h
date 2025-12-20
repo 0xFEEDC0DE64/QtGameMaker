@@ -34,6 +34,11 @@ public:
 
     TransparentBackgroundPattern transparentBackgroundPattern() const;
 
+    QStringList recentFiles() const;
+    void pushRecentFile(const QString &file);
+    void clearRecentFiles();
+    void setRecentFiles(const QStringList &recentFiles);
+
     bool showRecentFiles() const;
     void setShowRecentFiles(bool showRecentFiles);
 

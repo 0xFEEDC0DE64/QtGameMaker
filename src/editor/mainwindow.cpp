@@ -561,6 +561,9 @@ void MainWindow::saveFileAs()
         dataStream << m_project;
     }
 
+    m_settings.pushRecentFile(path);
+    updateRecentFiles();
+
     m_filePath = path;
     m_unsavedChanges = false;
 
@@ -928,6 +931,9 @@ void MainWindow::loadFile(const QString &path)
         }
     }
 
+    m_settings.pushRecentFile(path);
+    updateRecentFiles();
+
     m_project = std::move(project);
     m_projectTreeModel->setProject(&m_project);
 
@@ -948,6 +954,29 @@ void MainWindow::updateVisibilities()
 {
     m_ui->menuRecentFiles->menuAction()->setVisible(m_settings.showRecentFiles());
     m_ui->logo->setHidden(m_settings.hideWebsiteImage());
+}
+
+void MainWindow::updateRecentFiles()
+{
+    m_ui->menuRecentFiles->clear();
+    for (const auto &path : m_settings.recentFiles())
+    {
+        QFileInfo fileInfo{path};
+        if (!fileInfo.exists())
+            continue;
+        m_ui->menuRecentFiles->addAction(fileInfo.fileName(), this, [path,this](){ loadFile(path); });
+    }
+
+    if (m_ui->menuRecentFiles->isEmpty())
+        m_ui->menuRecentFiles->addAction(tr("(none)"))->setEnabled(false);
+    else
+    {
+        m_ui->menuRecentFiles->addSeparator();
+        m_ui->menuRecentFiles->addAction(tr("&Clear Recent Files"), this, [this](){
+            m_settings.clearRecentFiles();
+            updateRecentFiles();
+        });
+    }
 }
 
 QMdiSubWindow *MainWindow::addSubWindow(QDialog *dialog)

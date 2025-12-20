@@ -83,6 +83,29 @@ TransparentBackgroundPattern EditorSettings::transparentBackgroundPattern() cons
     };
 }
 
+QStringList EditorSettings::recentFiles() const
+{
+    return value("recentFiles").toStringList();
+}
+
+void EditorSettings::pushRecentFile(const QString &file)
+{
+    auto files = recentFiles();
+    files.removeAll(file);
+    files.prepend(file);
+    setRecentFiles(files);
+}
+
+void EditorSettings::clearRecentFiles()
+{
+    setRecentFiles({});
+}
+
+void EditorSettings::setRecentFiles(const QStringList &recentFiles)
+{
+    setValue("recentFiles", recentFiles);
+}
+
 bool EditorSettings::showRecentFiles() const
 {
     return value("showRecentFiles", true).toBool();

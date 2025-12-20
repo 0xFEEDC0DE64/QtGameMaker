@@ -1,6 +1,7 @@
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QLoggingCategory>
+#include <QFileInfo>
 
 #include "editorsettings.h"
 #include "editorguiutils.h"
@@ -44,7 +45,11 @@ int main(int argc, char *argv[])
 
     EditorSettings settings;
 
-    MainWindow mainWindow{parser.positionalArguments().value(0), settings};
+    QString path = parser.positionalArguments().value(0);
+    if (!path.isEmpty())
+        path = QFileInfo{path}.absoluteFilePath();
+
+    MainWindow mainWindow{path, settings};
     mainWindow.show();
 
     return app.exec();
