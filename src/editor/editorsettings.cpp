@@ -116,6 +116,16 @@ void EditorSettings::setShowRecentFiles(bool showRecentFiles)
     setValue("showRecentFiles", showRecentFiles);
 }
 
+bool EditorSettings::autoLoadLastFile() const
+{
+    return value("autoLoadLastFile", false).toBool();
+}
+
+void EditorSettings::setAutoLoadLastFile(bool autoLoadLastFile)
+{
+    setValue("autoLoadLastFile", autoLoadLastFile);
+}
+
 bool EditorSettings::hideWebsiteImage() const
 {
     return value("hideWebsiteImage", false).toBool();

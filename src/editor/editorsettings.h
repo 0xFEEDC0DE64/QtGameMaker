@@ -42,6 +42,9 @@ public:
     bool showRecentFiles() const;
     void setShowRecentFiles(bool showRecentFiles);
 
+    bool autoLoadLastFile() const;
+    void setAutoLoadLastFile(bool autoLoadLastFile);
+
     bool hideWebsiteImage() const;
     void setHideWebsiteImage(bool hideWebsiteImage);
 };

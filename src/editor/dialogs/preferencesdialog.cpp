@@ -20,6 +20,7 @@ PreferencesDialog::PreferencesDialog(const EditorSettings &settings, QWidget *pa
     improveButtonBox(m_ui->buttonBox);
 
     m_ui->checkBoxShowRecentFiles->setChecked(settings.showRecentFiles());
+    m_ui->checkBoxAutoLoadLastFile->setChecked(settings.autoLoadLastFile());
     m_ui->checkBoxHideWebsiteLogo->setChecked(settings.hideWebsiteImage());
 }
 
@@ -28,5 +29,6 @@ PreferencesDialog::~PreferencesDialog() = default;
 void PreferencesDialog::save(EditorSettings &settings)
 {
     settings.setShowRecentFiles(m_ui->checkBoxShowRecentFiles->isChecked());
-    settings.setHideWebsiteImage(m_ui->checkBoxHideWebsiteLogo->isChecked());
+    settings.setAutoLoadLastFile(m_ui->checkBoxAutoLoadLastFile->isChecked());
+    settings.setShowRecentFiles(m_ui->checkBoxShowRecentFiles->isChecked());
 }

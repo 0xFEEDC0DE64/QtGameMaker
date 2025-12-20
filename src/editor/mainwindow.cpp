@@ -52,7 +52,6 @@ MainWindow::MainWindow(const QString &filePath, EditorSettings &settings, QWidge
     QMainWindow{parent},
     m_ui{std::make_unique<Ui::MainWindow>()},
     m_settings{settings},
-    m_filePath{filePath},
     m_projectTreeModel{std::make_unique<ProjectTreeModel>(m_project, this)}
 {
     m_ui->setupUi(this);
@@ -164,10 +163,12 @@ MainWindow::MainWindow(const QString &filePath, EditorSettings &settings, QWidge
     connect(m_projectTreeModel.get(), &QAbstractTableModel::dataChanged,
             this, &MainWindow::changed);
 
-    updateTitle();
-
-    if (!m_filePath.isEmpty())
-        loadFile(m_filePath);
+    if (!filePath.isEmpty())
+        loadFile(filePath);
+    else if (const auto &recentFiles = m_settings.recentFiles(); m_settings.autoLoadLastFile() && !recentFiles.isEmpty())
+        loadFile(recentFiles.front());
+    else
+        updateTitle();
 
     updateVisibilities();
 
