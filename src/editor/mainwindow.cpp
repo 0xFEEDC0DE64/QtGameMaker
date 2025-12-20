@@ -169,6 +169,8 @@ MainWindow::MainWindow(const QString &filePath, EditorSettings &settings, QWidge
     if (!m_filePath.isEmpty())
         loadFile(m_filePath);
 
+    updateVisibilities();
+
     restoreGeometry(m_settings.mainWindowGeometry());
     restoreState(m_settings.mainWindowState());
 }
@@ -589,7 +591,10 @@ void MainWindow::preferences()
 {
     PreferencesDialog dialog{m_settings, this};
     if (dialog.exec() == QDialog::Accepted)
+    {
         dialog.save(m_settings);
+        updateVisibilities();
+    }
 }
 
 void MainWindow::create()
@@ -937,6 +942,11 @@ void MainWindow::updateTitle()
     setWindowTitle(tr("%0%1 - Qt Gamemaker 1.0 Ultimate")
                        .arg(m_filePath.isEmpty() ? "<new-game>" : QFileInfo{m_filePath}.fileName())
                        .arg(m_unsavedChanges ? tr("*") : QString{}));
+}
+
+void MainWindow::updateVisibilities()
+{
+    m_ui->logo->setHidden(m_settings.hideWebsiteImage());
 }
 
 QMdiSubWindow *MainWindow::addSubWindow(QDialog *dialog)

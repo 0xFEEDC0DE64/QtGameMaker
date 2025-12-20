@@ -33,4 +33,7 @@ public:
     void setTransparentBackgroundSingleColor(QColor transparentBackgroundSingleColor);
 
     TransparentBackgroundPattern transparentBackgroundPattern() const;
+
+    bool hideWebsiteImage() const;
+    void setHideWebsiteImage(bool hideWebsiteImage);
 };

@@ -17,9 +17,6 @@ public:
 
     void save(EditorSettings &settings);
 
-public slots:
-    void accept() override;
-
 private:
     const std::unique_ptr<Ui::PreferencesDialog> m_ui;
 };

@@ -128,7 +128,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="checkBox_6">
+          <widget class="QCheckBox" name="checkBoxHideWebsiteLogo">
            <property name="text">
             <string>Don't show the &amp;website image in the main menu</string>
            </property>

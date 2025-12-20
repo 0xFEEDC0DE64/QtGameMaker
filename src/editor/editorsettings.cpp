@@ -82,3 +82,13 @@ TransparentBackgroundPattern EditorSettings::transparentBackgroundPattern() cons
         transparentBackgroundSingleColor()
     };
 }
+
+bool EditorSettings::hideWebsiteImage() const
+{
+    return value("hideWebsiteImage", false).toBool();
+}
+
+void EditorSettings::setHideWebsiteImage(bool hideWebsiteImage)
+{
+    setValue("hideWebsiteImage", hideWebsiteImage);
+}

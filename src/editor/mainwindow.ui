@@ -17,31 +17,44 @@
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
-   <widget class="DraggableTreeView" name="treeView">
-    <property name="contextMenuPolicy">
-     <enum>Qt::CustomContextMenu</enum>
-    </property>
-    <property name="editTriggers">
-     <set>QAbstractItemView::EditKeyPressed</set>
-    </property>
-    <property name="dragEnabled">
-     <bool>true</bool>
-    </property>
-    <property name="dragDropMode">
-     <enum>QAbstractItemView::DragDrop</enum>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>16</width>
-      <height>16</height>
-     </size>
-    </property>
-    <property name="animated">
-     <bool>true</bool>
-    </property>
-    <property name="headerHidden">
-     <bool>true</bool>
-    </property>
+   <widget class="QWidget">
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0">
+     <item>
+      <widget class="DraggableTreeView" name="treeView">
+       <property name="contextMenuPolicy">
+        <enum>Qt::CustomContextMenu</enum>
+       </property>
+       <property name="editTriggers">
+        <set>QAbstractItemView::EditKeyPressed</set>
+       </property>
+       <property name="dragEnabled">
+        <bool>true</bool>
+       </property>
+       <property name="dragDropMode">
+        <enum>QAbstractItemView::DragDrop</enum>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>16</width>
+         <height>16</height>
+        </size>
+       </property>
+       <property name="animated">
+        <bool>true</bool>
+       </property>
+       <property name="headerHidden">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="logo">
+       <property name="text">
+        <string>OIDA Games</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
    <widget class="QMdiArea" name="mdiArea">
     <property name="background">

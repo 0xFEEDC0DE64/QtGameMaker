@@ -19,19 +19,12 @@ PreferencesDialog::PreferencesDialog(const EditorSettings &settings, QWidget *pa
 
     improveButtonBox(m_ui->buttonBox);
 
-    Q_UNUSED(settings);
-    // TODO copy from settings to m_ui->*
+    m_ui->checkBoxHideWebsiteLogo->setChecked(settings.hideWebsiteImage());
 }
 
 PreferencesDialog::~PreferencesDialog() = default;
 
 void PreferencesDialog::save(EditorSettings &settings)
 {
-    Q_UNUSED(settings);
-    // TODO copy from m_ui->* to settings
-}
-
-void PreferencesDialog::accept()
-{
-    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+    settings.setHideWebsiteImage(m_ui->checkBoxHideWebsiteLogo->isChecked());
 }

@@ -85,6 +85,7 @@ private:
     void setupStylesMenu();
     void loadFile(const QString &path);
     void updateTitle();
+    void updateVisibilities();
 
     QMdiSubWindow *addSubWindow(QDialog *dialog);
 
