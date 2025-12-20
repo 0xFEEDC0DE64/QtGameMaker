@@ -27,7 +27,7 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0,0,0,0,0,0,0,0,0,0,1">
          <item>
-          <widget class="QCheckBox" name="checkBox_2">
+          <widget class="QCheckBox" name="checkBoxShowRecentFiles">
            <property name="text">
             <string>&amp;Show recently edited games in the file menu</string>
            </property>

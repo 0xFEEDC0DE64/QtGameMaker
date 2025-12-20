@@ -83,6 +83,16 @@ TransparentBackgroundPattern EditorSettings::transparentBackgroundPattern() cons
     };
 }
 
+bool EditorSettings::showRecentFiles() const
+{
+    return value("showRecentFiles", true).toBool();
+}
+
+void EditorSettings::setShowRecentFiles(bool showRecentFiles)
+{
+    setValue("showRecentFiles", showRecentFiles);
+}
+
 bool EditorSettings::hideWebsiteImage() const
 {
     return value("hideWebsiteImage", false).toBool();

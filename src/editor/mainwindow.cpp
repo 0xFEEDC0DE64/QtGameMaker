@@ -946,6 +946,7 @@ void MainWindow::updateTitle()
 
 void MainWindow::updateVisibilities()
 {
+    m_ui->menuRecentFiles->menuAction()->setVisible(m_settings.showRecentFiles());
     m_ui->logo->setHidden(m_settings.hideWebsiteImage());
 }
 

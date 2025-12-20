@@ -34,6 +34,9 @@ public:
 
     TransparentBackgroundPattern transparentBackgroundPattern() const;
 
+    bool showRecentFiles() const;
+    void setShowRecentFiles(bool showRecentFiles);
+
     bool hideWebsiteImage() const;
     void setHideWebsiteImage(bool hideWebsiteImage);
 };
