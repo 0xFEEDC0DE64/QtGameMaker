@@ -11,6 +11,7 @@
 #include "mainwindow.h"
 #include "imagehelpers.h"
 #include "editorguiutils.h"
+#include "editorsettings.h"
 
 BackgroundPropertiesDialog::BackgroundPropertiesDialog(Background &background, ProjectTreeModel &projectModel, MainWindow &mainWindow) :
     QDialog{&mainWindow},
@@ -44,6 +45,10 @@ BackgroundPropertiesDialog::BackgroundPropertiesDialog(Background &background, P
             this, &BackgroundPropertiesDialog::changed);
     connect(m_ui->checkBoxTileset, &QCheckBox::checkStateChanged,
             this, &BackgroundPropertiesDialog::changed);
+
+    connect(&mainWindow.settings(), &EditorSettings::advancedModeChanged,
+            this, &BackgroundPropertiesDialog::advancedModeChanged);
+    advancedModeChanged(mainWindow.settings().advancedMode());
 }
 
 BackgroundPropertiesDialog::~BackgroundPropertiesDialog() = default;
@@ -164,6 +169,15 @@ void BackgroundPropertiesDialog::backgroundNameChanged(const Background &backgro
     }
 
     updateTitle();
+}
+
+void BackgroundPropertiesDialog::advancedModeChanged(bool advancedMode)
+{
+    for (QWidget *widgets[] {
+             m_ui->pushButtonSave,
+             m_ui->checkBoxTileset
+         }; QWidget *widget : widgets)
+        widget->setVisible(advancedMode);
 }
 
 void BackgroundPropertiesDialog::updateTitle()

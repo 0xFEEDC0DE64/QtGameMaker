@@ -30,6 +30,8 @@ private slots:
 
     void backgroundNameChanged(const Background &background);
 
+    void advancedModeChanged(bool advancedMode);
+
 private:
     void updateTitle();
     void updateSpriteInfo();

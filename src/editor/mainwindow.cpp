@@ -172,6 +172,11 @@ MainWindow::MainWindow(const QString &filePath, EditorSettings &settings, QWidge
 
     updateVisibilities();
 
+    m_ui->actionAdvancedMode->setChecked(m_settings.advancedMode());
+    connect(m_ui->actionAdvancedMode, &QAction::toggled, &m_settings, &EditorSettings::setAdvancedMode);
+    connect(&m_settings, &EditorSettings::advancedModeChanged, this, &MainWindow::advancedModeChanged);
+    advancedModeChanged(m_settings.advancedMode());
+
     restoreGeometry(m_settings.mainWindowGeometry());
     restoreState(m_settings.mainWindowState());
 }
@@ -589,6 +594,41 @@ void MainWindow::importResources()
 void MainWindow::exportResources()
 {
     QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+}
+
+void MainWindow::advancedModeChanged(bool advancedMode)
+{
+    for (const QModelIndex &index : {
+             m_projectTreeModel->rootFor<Path>(),
+             m_projectTreeModel->rootFor<Script>(),
+             m_projectTreeModel->rootFor<Font>(),
+             m_projectTreeModel->rootFor<TimeLine>(),
+             m_projectTreeModel->extensionPackagesRoot()
+         })
+    {
+        m_ui->treeView->setRowHidden(index.row(), index.parent(), !advancedMode);
+    }
+
+    for (QAction *action : {
+             m_ui->actionImportResources,
+             m_ui->actionExportResources,
+             m_ui->actionCreateGroup,
+             m_ui->actionFindResource,
+             m_ui->actionExpandResourceTree,
+             m_ui->actionCollapseResourceTree,
+             m_ui->actionShowObjectInformation,
+             m_ui->actionCreatePath,
+             m_ui->actionCreateScript,
+             m_ui->actionCreateFont,
+             m_ui->actionCreateTimeLine,
+             m_ui->actionExtensionPackages,
+             m_ui->actionDefineConstants,
+             m_ui->actionDefineTriggers,
+             m_ui->actionIncludedFiles
+         })
+        action->setVisible(advancedMode);
+
+    m_ui->menuScripts->menuAction()->setVisible(advancedMode);
 }
 
 void MainWindow::preferences()

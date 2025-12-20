@@ -7,6 +7,7 @@
 #include "models/projecttreemodel.h"
 #include "mainwindow.h"
 #include "editorguiutils.h"
+#include "editorsettings.h"
 
 AddEventDialog::AddEventDialog(ProjectTreeModel &projectModel, MainWindow &mainWindow, QWidget *parent) :
     QDialog{parent},
@@ -86,6 +87,10 @@ AddEventDialog::AddEventDialog(ProjectTreeModel &projectModel, MainWindow &mainW
         menu->addAction(tr("Add/Modify Triggers..."), this, [this](){ m_mainWindow.showDefineTriggers(); reject(); });
         m_ui->pushButtonTrigger->setMenu(menu);
     }
+
+    connect(&mainWindow.settings(), &EditorSettings::advancedModeChanged,
+            this, &AddEventDialog::advancedModeChanged);
+    advancedModeChanged(mainWindow.settings().advancedMode());
 }
 
 AddEventDialog::~AddEventDialog() = default;
@@ -106,4 +111,12 @@ void AddEventDialog::reject()
     m_eventType = std::nullopt;
 
     QDialog::reject();
+}
+
+void AddEventDialog::advancedModeChanged(bool advancedMode)
+{
+    for (QWidget *widgets[] {
+             m_ui->pushButtonTrigger
+         }; QWidget *widget : widgets)
+        widget->setVisible(advancedMode);
 }

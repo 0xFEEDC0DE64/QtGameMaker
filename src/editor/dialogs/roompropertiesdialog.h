@@ -50,6 +50,8 @@ private slots:
 
     void cursorMoved(const QPoint &point);
 
+    void advancedModeChanged(bool advancedMode);
+
 private:
     void setObject(const Object &object);
     void updateTitle();

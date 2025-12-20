@@ -33,6 +33,8 @@ private slots:
 
     void soundNameChanged(const Sound &sound);
 
+    void advancedModeChanged(bool advancedMode);
+
 private:
     void updateTitle();
 

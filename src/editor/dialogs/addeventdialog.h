@@ -25,6 +25,9 @@ public:
     void accept() override;
     void reject() override;
 
+private slots:
+    void advancedModeChanged(bool advancedMode);
+
 private:
     ProjectTreeModel &m_projectModel;
     MainWindow &m_mainWindow;

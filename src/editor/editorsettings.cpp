@@ -135,3 +135,16 @@ void EditorSettings::setHideWebsiteImage(bool hideWebsiteImage)
 {
     setValue("hideWebsiteImage", hideWebsiteImage);
 }
+
+bool EditorSettings::advancedMode() const
+{
+    return value("advancedMode", true).toBool();
+}
+
+void EditorSettings::setAdvancedMode(bool advancedMode)
+{
+    if (advancedMode == this->advancedMode())
+        return;
+    setValue("advancedMode", advancedMode);
+    emit advancedModeChanged(advancedMode);
+}

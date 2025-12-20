@@ -53,6 +53,8 @@ private slots:
     void clearMaskSprite();
     void setMaskSprite(const Sprite &sprite);
 
+    void advancedModeChanged(bool advancedMode);
+
 private:
     void updateTitle();
     void updateSpritePreview();

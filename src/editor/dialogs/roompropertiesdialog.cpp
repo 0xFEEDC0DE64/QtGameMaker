@@ -14,6 +14,7 @@
 #include "editorguiutils.h"
 #include "genericcodeeditordialog.h"
 #include "mainwindow.h"
+#include "editorsettings.h"
 
 RoomPropertiesDialog::RoomPropertiesDialog(Room &room, ProjectTreeModel &projectModel, MainWindow &mainWindow) :
     QDialog{&mainWindow},
@@ -192,6 +193,10 @@ RoomPropertiesDialog::RoomPropertiesDialog(Room &room, ProjectTreeModel &project
 
     if (!m_projectModel.project()->objects.empty())
         setObject(m_projectModel.project()->objects.back());
+
+    connect(&mainWindow.settings(), &EditorSettings::advancedModeChanged,
+            this, &RoomPropertiesDialog::advancedModeChanged);
+    advancedModeChanged(mainWindow.settings().advancedMode());
 }
 
 RoomPropertiesDialog::~RoomPropertiesDialog() = default;
@@ -420,6 +425,18 @@ void RoomPropertiesDialog::cursorMoved(const QPoint &point)
 {
     m_labelX->setText(tr("X: %0").arg(point.x()));
     m_labelY->setText(tr("Y: %0").arg(point.y()));
+}
+
+void RoomPropertiesDialog::advancedModeChanged(bool advancedMode)
+{
+    for (QWidget *widgets[] {
+             m_ui->checkBoxPersistent,
+             m_ui->pushButtonCreationCode
+         }; QWidget *widget : widgets)
+        widget->setVisible(advancedMode);
+
+    m_ui->tabWidget->setTabVisible(m_ui->tabWidget->indexOf(m_ui->tabTiles), advancedMode);
+    m_ui->tabWidget->setTabVisible(m_ui->tabWidget->indexOf(m_ui->tabViews), advancedMode);
 }
 
 void RoomPropertiesDialog::setObject(const Object &object)

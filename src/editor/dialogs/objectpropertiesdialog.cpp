@@ -12,6 +12,7 @@
 #include "models/objecteventsmodel.h"
 #include "addeventdialog.h"
 #include "editorguiutils.h"
+#include "editorsettings.h"
 
 ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel &projectModel, MainWindow &mainWindow) :
     QDialog{&mainWindow},
@@ -120,6 +121,10 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel 
 
     connect(m_ui->actionsWidget, &ActionsContainerWidget::changed,
             this, &ObjectPropertiesDialog::changed);
+
+    connect(&mainWindow.settings(), &EditorSettings::advancedModeChanged,
+            this, &ObjectPropertiesDialog::advancedModeChanged);
+    advancedModeChanged(mainWindow.settings().advancedMode());
 }
 
 ObjectPropertiesDialog::~ObjectPropertiesDialog() = default;
@@ -437,6 +442,15 @@ void ObjectPropertiesDialog::setMaskSprite(const Sprite &sprite)
     m_maskSpriteName = sprite.name;
     m_ui->lineEditMask->setText(sprite.name);
     changed();
+}
+
+void ObjectPropertiesDialog::advancedModeChanged(bool advancedMode)
+{
+    for (QWidget *widgets[] {
+             m_ui->widgetDetails,
+             m_ui->pushButtonShowInformation
+         }; QWidget *widget : widgets)
+        widget->setVisible(advancedMode);
 }
 
 void ObjectPropertiesDialog::updateTitle()

@@ -32,6 +32,8 @@ private slots:
 
     void spriteNameChanged(const Sprite &sprite);
 
+    void advancedModeChanged(bool advancedMode);
+
 private:
     void updateTitle();
     void updateSpriteInfo();

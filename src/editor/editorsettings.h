@@ -7,6 +7,7 @@
 class EditorSettings : public QSettings
 {
     Q_OBJECT
+    Q_PROPERTY(bool advancedMode READ advancedMode WRITE setAdvancedMode NOTIFY advancedModeChanged FINAL)
 
 public:
     using QSettings::QSettings;
@@ -47,4 +48,10 @@ public:
 
     bool hideWebsiteImage() const;
     void setHideWebsiteImage(bool hideWebsiteImage);
+
+    bool advancedMode() const;
+    void setAdvancedMode(bool advancedMode);
+
+signals:
+    void advancedModeChanged(bool advancedMode);
 };

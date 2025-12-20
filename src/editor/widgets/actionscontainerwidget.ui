@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="contextMenuPolicy">
-   <enum>Qt::CustomContextMenu</enum>
+   <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -50,7 +50,7 @@
         </size>
        </property>
        <property name="contextMenuPolicy">
-        <enum>Qt::CustomContextMenu</enum>
+        <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
        </property>
        <property name="acceptDrops">
         <bool>true</bool>
@@ -59,10 +59,10 @@
         <bool>true</bool>
        </property>
        <property name="dragDropMode">
-        <enum>QAbstractItemView::DragDrop</enum>
+        <enum>QAbstractItemView::DragDropMode::DragDrop</enum>
        </property>
        <property name="defaultDropAction">
-        <enum>Qt::MoveAction</enum>
+        <enum>Qt::DropAction::MoveAction</enum>
        </property>
        <property name="iconSize">
         <size>
@@ -77,7 +77,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="tabPosition">
-      <enum>QTabWidget::East</enum>
+      <enum>QTabWidget::TabPosition::East</enum>
      </property>
      <property name="currentIndex">
       <number>0</number>
@@ -462,7 +462,7 @@
        <item row="15" column="0" colspan="3">
         <spacer name="verticalSpacer">
          <property name="orientation">
-          <enum>Qt::Vertical</enum>
+          <enum>Qt::Orientation::Vertical</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -762,7 +762,7 @@
        <item row="10" column="0" colspan="3">
         <spacer name="verticalSpacer_2">
          <property name="orientation">
-          <enum>Qt::Vertical</enum>
+          <enum>Qt::Orientation::Vertical</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -1132,7 +1132,7 @@
        <item row="13" column="0" colspan="3">
         <spacer name="verticalSpacer_3">
          <property name="orientation">
-          <enum>Qt::Vertical</enum>
+          <enum>Qt::Orientation::Vertical</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -1477,7 +1477,7 @@
        <item row="11" column="0" colspan="3">
         <spacer name="verticalSpacer_4">
          <property name="orientation">
-          <enum>Qt::Vertical</enum>
+          <enum>Qt::Orientation::Vertical</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -1493,7 +1493,248 @@
       <attribute name="title">
        <string>Score</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayoutScore"/>
+      <layout class="QGridLayout" name="gridLayoutScore">
+       <item row="3" column="0" colspan="3">
+        <widget class="QLabel" name="labelLives">
+         <property name="text">
+          <string>Lives</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QToolButton" name="toolButton_68">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="QToolButton" name="toolButton_80">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QToolButton" name="toolButton_82">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QToolButton" name="toolButton_86">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QToolButton" name="toolButton_77">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <spacer name="verticalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Orientation::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="2">
+        <widget class="QToolButton" name="toolButton_75">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="2">
+        <widget class="QToolButton" name="toolButton_85">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QToolButton" name="toolButton_74">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QToolButton" name="toolButton_79">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <widget class="QToolButton" name="toolButton_83">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0" colspan="3">
+        <widget class="QLabel" name="labelHealth">
+         <property name="text">
+          <string>Health</string>
+         </property>
+         <property name="icon" stdset="0">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize" stdset="0">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QToolButton" name="toolButton_76">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QToolButton" name="toolButton_84">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" colspan="3">
+        <widget class="QLabel" name="labelScore">
+         <property name="text">
+          <string>Score</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QToolButton" name="toolButton_81">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QToolButton" name="toolButton_78">
+         <property name="icon">
+          <iconset resource="../resources_editor.qrc">
+           <normaloff>:/qtgameengine/icons/action.png</normaloff>:/qtgameengine/icons/action.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="tabWidgetExtra">
       <attribute name="title">

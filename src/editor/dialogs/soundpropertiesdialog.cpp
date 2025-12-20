@@ -11,6 +11,7 @@
 #include "models/projecttreemodel.h"
 #include "mainwindow.h"
 #include "editorguiutils.h"
+#include "editorsettings.h"
 
 SoundPropertiesDialog::SoundPropertiesDialog(Sound &sound, ProjectTreeModel &projectModel, MainWindow &mainWindow) :
     QDialog{&mainWindow},
@@ -84,6 +85,10 @@ SoundPropertiesDialog::SoundPropertiesDialog(Sound &sound, ProjectTreeModel &pro
             this, &SoundPropertiesDialog::changed);
     connect(m_ui->checkBoxPreload, &QCheckBox::checkStateChanged,
             this, &SoundPropertiesDialog::changed);
+
+    connect(&mainWindow.settings(), &EditorSettings::advancedModeChanged,
+            this, &SoundPropertiesDialog::advancedModeChanged);
+    advancedModeChanged(mainWindow.settings().advancedMode());
 }
 
 SoundPropertiesDialog::~SoundPropertiesDialog() = default;
@@ -236,6 +241,18 @@ void SoundPropertiesDialog::soundNameChanged(const Sound &sound)
     }
 
     updateTitle();
+}
+
+void SoundPropertiesDialog::advancedModeChanged(bool advancedMode)
+{
+    for (QWidget *widgets[] {
+             m_ui->groupBoxKind,
+             m_ui->groupBoxEffects,
+             m_ui->widgetSliders,
+             m_ui->checkBoxPreload,
+             m_ui->pushButtonEdit
+         }; QWidget *widget : widgets)
+        widget->setVisible(advancedMode);
 }
 
 void SoundPropertiesDialog::updateTitle()

@@ -50,6 +50,7 @@ private slots:
     void publishGame();
     void importResources();
     void exportResources();
+    void advancedModeChanged(bool advancedMode);
     void preferences();
     void create();
     void duplicate();

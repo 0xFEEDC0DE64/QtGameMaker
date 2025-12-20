@@ -13,6 +13,7 @@
 #include "mainwindow.h"
 #include "imagehelpers.h"
 #include "editorguiutils.h"
+#include "editorsettings.h"
 
 SpritePropertiesDialog::SpritePropertiesDialog(Sprite &sprite, ProjectTreeModel &projectModel, MainWindow &mainWindow) :
     QDialog{&mainWindow},
@@ -59,6 +60,10 @@ SpritePropertiesDialog::SpritePropertiesDialog(Sprite &sprite, ProjectTreeModel 
             this, &SpritePropertiesDialog::changed);
     connect(m_ui->checkBoxSeparateCollisionMasks, &QCheckBox::checkStateChanged,
             this, &SpritePropertiesDialog::changed);
+
+    connect(&mainWindow.settings(), &EditorSettings::advancedModeChanged,
+            this, &SpritePropertiesDialog::advancedModeChanged);
+    advancedModeChanged(mainWindow.settings().advancedMode());
 }
 
 SpritePropertiesDialog::~SpritePropertiesDialog() = default;
@@ -203,6 +208,16 @@ void SpritePropertiesDialog::spriteNameChanged(const Sprite &sprite)
     }
 
     updateTitle();
+}
+
+void SpritePropertiesDialog::advancedModeChanged(bool advancedMode)
+{
+    for (QWidget *widgets[] {
+             m_ui->pushButtonSave,
+             m_ui->groupBoxOrigin,
+             m_ui->groupBoxCollisionChecking
+         }; QWidget *widget : widgets)
+        widget->setVisible(advancedMode);
 }
 
 void SpritePropertiesDialog::updateTitle()
