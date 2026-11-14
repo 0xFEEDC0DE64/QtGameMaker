@@ -1,7 +1,13 @@
 #pragma once
 
-#include <QObject>
+#include <array>
 
+#include <QObject>
+#include <QElapsedTimer>
+#include <QTimer>
+#include <QVulkanInstance>
+
+#include "engine/gamescene.h"
 #include "engine/glgamewindow.h"
 #include "engine/vulkangamewindow.h"
 
@@ -13,21 +19,17 @@ class GameEngine : public QObject
 
 public:
     explicit GameEngine(const ProjectContainer &project, QObject *parent = nullptr);
-
     void run();
-
-protected:
-    void timerEvent(QTimerEvent *event) override;
 
 private:
     const ProjectContainer &m_project;
-
+    GameScene m_scene;
     QVulkanInstance m_vulkanInstance;
-
-    float m_rotation{};
-
     GlGameWindow m_glGameWindow;
     VulkanGameWindow m_vulkanGameWindow;
-
-    const int m_timerId;
+    bool m_vulkanAvailable{};
+    QTimer m_frameTimer;
+    QElapsedTimer m_elapsed;
+    qint64 m_nextFrameNanoseconds{};
+    std::array<bool, std::variant_size_v<Action>> m_warnedActionTypes{};
 };

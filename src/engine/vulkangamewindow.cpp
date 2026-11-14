@@ -2,35 +2,39 @@
 
 #include <QKeyEvent>
 
+#include "projectcontainer.h"
+#include "gamescene.h"
 #include "vulkangamerenderer.h"
 
-VulkanGameWindow::VulkanGameWindow(const ProjectContainer &project, const float &rotation, QWindow *parent) :
+VulkanGameWindow::VulkanGameWindow(const ProjectContainer &project, const GameScene &scene, QWindow *parent) :
     QVulkanWindow{parent},
     m_project{project},
-    m_rotation{rotation}
+    m_scene{scene}
 {
-    setMinimumWidth(640);
-    setMaximumWidth(640);
-    setMinimumHeight(480);
-    setMaximumHeight(480);
-    resize(640, 480);
+    setPreferredColorFormats({VK_FORMAT_B8G8R8A8_UNORM, VK_FORMAT_R8G8B8A8_UNORM});
+    if (!m_project.rooms.empty())
+    {
+        resize(m_scene.roomSize);
+        if (!m_project.globalGameSettings.resizable)
+        {
+            setMinimumSize(m_scene.roomSize);
+            setMaximumSize(m_scene.roomSize);
+        }
+        setTitle(m_scene.caption);
+    }
 }
 
 QVulkanWindowRenderer *VulkanGameWindow::createRenderer()
 {
-    return new VulkanGameRenderer{m_project, m_rotation, this, true}; // try MSAA, when available
+    return new VulkanGameRenderer{m_scene, this};
 }
 
 void VulkanGameWindow::keyPressEvent(QKeyEvent *event)
 {
     QVulkanWindow::keyPressEvent(event);
 
-    switch (event->key())
-    {
-    case Qt::Key_Escape:
+    if (event->key() == Qt::Key_Escape && m_project.globalGameSettings.letEscEndGame)
         close();
-        break;
-    }
 }
 
 void VulkanGameWindow::keyReleaseEvent(QKeyEvent *event)

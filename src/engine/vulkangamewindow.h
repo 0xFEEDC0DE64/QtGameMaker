@@ -4,11 +4,12 @@
 #include <QVulkanWindowRenderer>
 
 struct ProjectContainer;
+struct GameScene;
 
 class VulkanGameWindow : public QVulkanWindow
 {
 public:
-    explicit VulkanGameWindow(const ProjectContainer &project, const float &rotation, QWindow *parent = nullptr);
+    explicit VulkanGameWindow(const ProjectContainer &project, const GameScene &scene, QWindow *parent = nullptr);
 
     QVulkanWindowRenderer *createRenderer() override;
 
@@ -18,5 +19,5 @@ protected:
 
 private:
     const ProjectContainer &m_project;
-    const float &m_rotation;
+    const GameScene &m_scene;
 };

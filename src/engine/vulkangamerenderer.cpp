@@ -1,855 +1,547 @@
 #include "vulkangamerenderer.h"
 
-#include <QVulkanFunctions>
+#include <algorithm>
+#include <array>
+#include <cstring>
+#include <limits>
+
 #include <QFile>
+#include <QVulkanFunctions>
 
-#include "projectcontainer.h"
+#include "gamescene.h"
 
-// Note that the vertex data and the projection matrix assume OpenGL. With
-// Vulkan Y is negated in clip space and the near/far plane is at 0/1 instead
-// of -1/1. These will be corrected for by an extra transformation when
-// calculating the modelview-projection matrix.
-static float vertexData[] = { // Y up, front = CW
-    // x, y, z, u, v
-    -1, -1, 0, 0, 1,
-    -1,  1, 0, 0, 0,
-    1, -1, 0, 1, 1,
-    1,  1, 0, 1, 0
+namespace {
+
+struct Vertex
+{
+    float x, y, z, u, v;
 };
 
-static const int UNIFORM_DATA_SIZE = 16 * sizeof(float);
+constexpr std::array<Vertex, 4> quad {{
+    {0.f, 0.f, 0.f, 0.f, 0.f},
+    {0.f, 1.f, 0.f, 0.f, 1.f},
+    {1.f, 0.f, 0.f, 1.f, 0.f},
+    {1.f, 1.f, 0.f, 1.f, 1.f}
+}};
 
-static inline VkDeviceSize aligned(VkDeviceSize v, VkDeviceSize byteAlign)
+uint32_t memoryIndex(QVulkanWindow *window, uint32_t allowed, VkMemoryPropertyFlags required)
 {
-    return (v + byteAlign - 1) & ~(byteAlign - 1);
+    VkPhysicalDeviceMemoryProperties properties;
+    window->vulkanInstance()->functions()->vkGetPhysicalDeviceMemoryProperties(
+        window->physicalDevice(), &properties);
+    for (uint32_t i = 0; i < properties.memoryTypeCount; ++i)
+        if ((allowed & (1u << i)) &&
+            (properties.memoryTypes[i].propertyFlags & required) == required)
+            return i;
+    return std::numeric_limits<uint32_t>::max();
 }
 
-VulkanGameRenderer::VulkanGameRenderer(const ProjectContainer &project, const float &rotation, QVulkanWindow *w, bool msaa) :
-    m_window{w},
-    m_project{project},
-    m_rotation{rotation}
+}
+
+VulkanGameRenderer::VulkanGameRenderer(const GameScene &scene, QVulkanWindow *window) :
+    m_scene{scene},
+    m_window{window}
 {
-    if (msaa)
-    {
-        const QVector<int> counts = w->supportedSampleCounts();
-        qDebug() << "Supported sample counts:" << counts;
-        for (int s = 16; s >= 4; s /= 2)
-        {
-            if (counts.contains(s))
-            {
-                qDebug("Requesting sample count %d", s);
-                m_window->setSampleCount(s);
-                break;
-            }
-        }
-    }
 }
 
 VkShaderModule VulkanGameRenderer::createShader(const QString &name)
 {
-    QByteArray blob;
+    QFile file{name};
+    if (!file.open(QIODevice::ReadOnly))
     {
-        QFile file(name);
-        if (!file.open(QIODevice::ReadOnly))
-        {
-            qWarning("Failed to read shader %s", qPrintable(name));
-            return VK_NULL_HANDLE;
-        }
-        blob = file.readAll();
-    }
-
-    VkShaderModuleCreateInfo shaderInfo;
-    memset(&shaderInfo, 0, sizeof(shaderInfo));
-    shaderInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-    shaderInfo.codeSize = blob.size();
-    shaderInfo.pCode = reinterpret_cast<const uint32_t *>(blob.constData());
-    VkShaderModule shaderModule;
-    VkResult err = m_devFuncs->vkCreateShaderModule(m_window->device(), &shaderInfo, nullptr, &shaderModule);
-    if (err != VK_SUCCESS)
-    {
-        qWarning("Failed to create shader module: %d", err);
+        qWarning("Failed to read Vulkan shader %s", qPrintable(name));
         return VK_NULL_HANDLE;
     }
+    const QByteArray blob = file.readAll();
+    VkShaderModuleCreateInfo info{};
+    info.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+    info.codeSize = static_cast<std::size_t>(blob.size());
+    info.pCode = reinterpret_cast<const uint32_t *>(blob.constData());
 
-    return shaderModule;
+    VkShaderModule shader = VK_NULL_HANDLE;
+    const VkResult result = m_devFuncs->vkCreateShaderModule(m_window->device(), &info, nullptr, &shader);
+    if (result != VK_SUCCESS)
+        qWarning("Failed to create Vulkan shader module: %d", result);
+    return shader;
 }
 
-bool VulkanGameRenderer::createTextureFromFile(const QString &name)
+bool VulkanGameRenderer::createTextureImage(const QSize &size, VkImageTiling tiling,
+                                             VkImageUsageFlags usage, VkImage *image, VkDeviceMemory *memory)
 {
-    QImage img{name};
-    if (img.isNull())
-    {
-        qWarning("Failed to load image %s", qPrintable(name));
+    const VkDevice device = m_window->device();
+    VkImageCreateInfo info{};
+    info.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+    info.imageType = VK_IMAGE_TYPE_2D;
+    info.format = m_texFormat;
+    info.extent = {uint32_t(size.width()), uint32_t(size.height()), 1};
+    info.mipLevels = 1;
+    info.arrayLayers = 1;
+    info.samples = VK_SAMPLE_COUNT_1_BIT;
+    info.tiling = tiling;
+    info.usage = usage;
+    info.initialLayout = tiling == VK_IMAGE_TILING_LINEAR ?
+                             VK_IMAGE_LAYOUT_PREINITIALIZED : VK_IMAGE_LAYOUT_UNDEFINED;
+    if (m_devFuncs->vkCreateImage(device, &info, nullptr, image) != VK_SUCCESS)
         return false;
-    }
 
-    return createTexture(img);
+    VkMemoryRequirements requirements;
+    m_devFuncs->vkGetImageMemoryRequirements(device, *image, &requirements);
+    const VkMemoryPropertyFlags flags = tiling == VK_IMAGE_TILING_LINEAR ?
+        VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT :
+        VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+    const uint32_t index = memoryIndex(m_window, requirements.memoryTypeBits, flags);
+    if (index == std::numeric_limits<uint32_t>::max())
+        return false;
+
+    VkMemoryAllocateInfo allocation{};
+    allocation.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    allocation.allocationSize = requirements.size;
+    allocation.memoryTypeIndex = index;
+    if (m_devFuncs->vkAllocateMemory(device, &allocation, nullptr, memory) != VK_SUCCESS)
+        return false;
+    return m_devFuncs->vkBindImageMemory(device, *image, *memory, 0) == VK_SUCCESS;
 }
 
-bool VulkanGameRenderer::createTexture(const QImage &image)
+bool VulkanGameRenderer::writeLinearImage(const QImage &image, VkImage target, VkDeviceMemory memory)
 {
-    // Convert to byte ordered RGBA8. Use premultiplied alpha, see pColorBlendState in the pipeline.
-    const auto img = image.convertToFormat(QImage::Format_RGBA8888_Premultiplied);
-
-    QVulkanFunctions *f = m_window->vulkanInstance()->functions();
-    VkDevice dev = m_window->device();
-
-    const bool srgb = false; //QCoreApplication::arguments().contains(QStringLiteral("--srgb"));
-    if (srgb)
-        qDebug("sRGB swapchain was requested, making texture sRGB too");
-
-    m_texFormat = srgb ? VK_FORMAT_R8G8B8A8_SRGB : VK_FORMAT_R8G8B8A8_UNORM;
-
-    // Now we can either map and copy the image data directly, or have to go
-    // through a staging buffer to copy and convert into the internal optimal
-    // tiling format.
-    VkFormatProperties props;
-    f->vkGetPhysicalDeviceFormatProperties(m_window->physicalDevice(), m_texFormat, &props);
-    const bool canSampleLinear = (props.linearTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
-    const bool canSampleOptimal = (props.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
-    if (!canSampleLinear && !canSampleOptimal)
-    {
-        qWarning("Neither linear nor optimal image sampling is supported for RGBA8");
-        return false;
-    }
-
-    static bool alwaysStage = qEnvironmentVariableIntValue("QT_VK_FORCE_STAGE_TEX");
-
-    if (canSampleLinear && !alwaysStage)
-    {
-        if (!createTextureImage(img.size(), &m_texImage, &m_texMem,
-                                VK_IMAGE_TILING_LINEAR, VK_IMAGE_USAGE_SAMPLED_BIT,
-                                m_window->hostVisibleMemoryIndex()))
-            return false;
-
-        if (!writeLinearImage(img, m_texImage, m_texMem))
-            return false;
-
-        m_texLayoutPending = true;
-    }
-    else
-    {
-        if (!createTextureImage(img.size(), &m_texStaging, &m_texStagingMem,
-                                VK_IMAGE_TILING_LINEAR, VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
-                                m_window->hostVisibleMemoryIndex()))
-            return false;
-
-        if (!createTextureImage(img.size(), &m_texImage, &m_texMem,
-                                VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
-                                m_window->deviceLocalMemoryIndex()))
-            return false;
-
-        if (!writeLinearImage(img, m_texStaging, m_texStagingMem))
-            return false;
-
-        m_texStagingPending = true;
-    }
-
-    VkImageViewCreateInfo viewInfo;
-    memset(&viewInfo, 0, sizeof(viewInfo));
-    viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    viewInfo.image = m_texImage;
-    viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    viewInfo.format = m_texFormat;
-    viewInfo.components.r = VK_COMPONENT_SWIZZLE_R;
-    viewInfo.components.g = VK_COMPONENT_SWIZZLE_G;
-    viewInfo.components.b = VK_COMPONENT_SWIZZLE_B;
-    viewInfo.components.a = VK_COMPONENT_SWIZZLE_A;
-    viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    viewInfo.subresourceRange.levelCount = viewInfo.subresourceRange.layerCount = 1;
-
-    VkResult err = m_devFuncs->vkCreateImageView(dev, &viewInfo, nullptr, &m_texView);
-    if (err != VK_SUCCESS)
-    {
-        qWarning("Failed to create image view for texture: %d", err);
-        return false;
-    }
-
-    m_texSize = img.size();
-
-    return true;
-}
-
-bool VulkanGameRenderer::createTextureImage(const QSize &size, VkImage *image, VkDeviceMemory *mem,
-                                            VkImageTiling tiling, VkImageUsageFlags usage, uint32_t memIndex)
-{
-    VkDevice dev = m_window->device();
-
-    VkImageCreateInfo imageInfo;
-    memset(&imageInfo, 0, sizeof(imageInfo));
-    imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-    imageInfo.imageType = VK_IMAGE_TYPE_2D;
-    imageInfo.format = m_texFormat;
-    imageInfo.extent.width = size.width();
-    imageInfo.extent.height = size.height();
-    imageInfo.extent.depth = 1;
-    imageInfo.mipLevels = 1;
-    imageInfo.arrayLayers = 1;
-    imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-    imageInfo.tiling = tiling;
-    imageInfo.usage = usage;
-    imageInfo.initialLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
-
-    VkResult err = m_devFuncs->vkCreateImage(dev, &imageInfo, nullptr, image);
-    if (err != VK_SUCCESS)
-    {
-        qWarning("Failed to create linear image for texture: %d", err);
-        return false;
-    }
-
-    VkMemoryRequirements memReq;
-    m_devFuncs->vkGetImageMemoryRequirements(dev, *image, &memReq);
-
-    if (!(memReq.memoryTypeBits & (1 << memIndex)))
-    {
-        VkPhysicalDeviceMemoryProperties physDevMemProps;
-        m_window->vulkanInstance()->functions()->vkGetPhysicalDeviceMemoryProperties(m_window->physicalDevice(), &physDevMemProps);
-        for (uint32_t i = 0; i < physDevMemProps.memoryTypeCount; ++i)
-        {
-            if (!(memReq.memoryTypeBits & (1 << i)))
-                continue;
-            memIndex = i;
-        }
-    }
-
-    VkMemoryAllocateInfo allocInfo {
-        VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-        nullptr,
-        memReq.size,
-        memIndex
-    };
-    qDebug("allocating %u bytes for texture image", uint32_t(memReq.size));
-
-    err = m_devFuncs->vkAllocateMemory(dev, &allocInfo, nullptr, mem);
-    if (err != VK_SUCCESS)
-    {
-        qWarning("Failed to allocate memory for linear image: %d", err);
-        return false;
-    }
-
-    err = m_devFuncs->vkBindImageMemory(dev, *image, *mem, 0);
-    if (err != VK_SUCCESS)
-    {
-        qWarning("Failed to bind linear image memory: %d", err);
-        return false;
-    }
-
-    return true;
-}
-
-bool VulkanGameRenderer::writeLinearImage(const QImage &img, VkImage image, VkDeviceMemory memory)
-{
-    VkDevice dev = m_window->device();
-
-    VkImageSubresource subres {
-        VK_IMAGE_ASPECT_COLOR_BIT,
-        0, // mip level
-        0
-    };
+    const VkDevice device = m_window->device();
+    VkImageSubresource subresource{VK_IMAGE_ASPECT_COLOR_BIT, 0, 0};
     VkSubresourceLayout layout;
-    m_devFuncs->vkGetImageSubresourceLayout(dev, image, &subres, &layout);
+    m_devFuncs->vkGetImageSubresourceLayout(device, target, &subresource, &layout);
 
-    uchar *p;
-    VkResult err = m_devFuncs->vkMapMemory(dev, memory, layout.offset, layout.size, 0, reinterpret_cast<void **>(&p));
-    if (err != VK_SUCCESS)
-    {
-        qWarning("Failed to map memory for linear image: %d", err);
+    uchar *mapped = nullptr;
+    if (m_devFuncs->vkMapMemory(device, memory, layout.offset, layout.size, 0,
+                                reinterpret_cast<void **>(&mapped)) != VK_SUCCESS)
         return false;
-    }
-
-    for (int y = 0; y < img.height(); ++y)
-    {
-        const uchar *line = img.constScanLine(y);
-        memcpy(p, line, img.width() * 4);
-        p += layout.rowPitch;
-    }
-
-    m_devFuncs->vkUnmapMemory(dev, memory);
+    for (int y = 0; y < image.height(); ++y)
+        std::memcpy(mapped + y * layout.rowPitch, image.constScanLine(y),
+                    std::size_t(image.width()) * 4);
+    m_devFuncs->vkUnmapMemory(device, memory);
     return true;
 }
 
-void VulkanGameRenderer::ensureTexture()
+bool VulkanGameRenderer::createTexture(const QImage &source, Texture &texture)
 {
-    if (!m_texLayoutPending && !m_texStagingPending)
-        return;
+    const QImage image = source.convertToFormat(QImage::Format_RGBA8888_Premultiplied);
+    texture.size = image.size();
 
-    Q_ASSERT(m_texLayoutPending != m_texStagingPending);
-    VkCommandBuffer cb = m_window->currentCommandBuffer();
+    VkFormatProperties properties;
+    m_window->vulkanInstance()->functions()->vkGetPhysicalDeviceFormatProperties(
+        m_window->physicalDevice(), m_texFormat, &properties);
 
-    VkImageMemoryBarrier barrier;
-    memset(&barrier, 0, sizeof(barrier));
-    barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-    barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    barrier.subresourceRange.levelCount = barrier.subresourceRange.layerCount = 1;
-
-    if (m_texLayoutPending)
+    if ((properties.linearTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) &&
+        !qEnvironmentVariableIntValue("QT_VK_FORCE_STAGE_TEX"))
     {
-        m_texLayoutPending = false;
-
-        barrier.oldLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
-        barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        barrier.srcAccessMask = VK_ACCESS_HOST_WRITE_BIT;
-        barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
-        barrier.image = m_texImage;
-
-        m_devFuncs->vkCmdPipelineBarrier(cb,
-                                         VK_PIPELINE_STAGE_HOST_BIT,
-                                         VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
-                                         0, 0, nullptr, 0, nullptr,
-                                         1, &barrier);
+        if (!createTextureImage(image.size(), VK_IMAGE_TILING_LINEAR, VK_IMAGE_USAGE_SAMPLED_BIT,
+                                &texture.image, &texture.memory) ||
+            !writeLinearImage(image, texture.image, texture.memory))
+            return false;
+        texture.layoutPending = true;
+    }
+    else if (properties.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT)
+    {
+        if (!createTextureImage(image.size(), VK_IMAGE_TILING_LINEAR, VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
+                                &texture.stagingImage, &texture.stagingMemory) ||
+            !createTextureImage(image.size(), VK_IMAGE_TILING_OPTIMAL,
+                                VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
+                                &texture.image, &texture.memory) ||
+            !writeLinearImage(image, texture.stagingImage, texture.stagingMemory))
+            return false;
+        texture.stagingPending = true;
     }
     else
+        return false;
+
+    VkImageViewCreateInfo view{};
+    view.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    view.image = texture.image;
+    view.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    view.format = m_texFormat;
+    view.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    view.subresourceRange.levelCount = 1;
+    view.subresourceRange.layerCount = 1;
+    return m_devFuncs->vkCreateImageView(m_window->device(), &view, nullptr, &texture.view) == VK_SUCCESS;
+}
+
+void VulkanGameRenderer::ensureTextures()
+{
+    const VkCommandBuffer command = m_window->currentCommandBuffer();
+    auto transition = [this, command](VkImage image, VkImageLayout oldLayout,
+                                       VkImageLayout newLayout, VkAccessFlags sourceAccess,
+                                       VkAccessFlags targetAccess, VkPipelineStageFlags sourceStage,
+                                       VkPipelineStageFlags targetStage) {
+        VkImageMemoryBarrier barrier{};
+        barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier.srcAccessMask = sourceAccess;
+        barrier.dstAccessMask = targetAccess;
+        barrier.oldLayout = oldLayout;
+        barrier.newLayout = newLayout;
+        barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        barrier.image = image;
+        barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier.subresourceRange.levelCount = 1;
+        barrier.subresourceRange.layerCount = 1;
+        m_devFuncs->vkCmdPipelineBarrier(command, sourceStage, targetStage, 0,
+                                         0, nullptr, 0, nullptr, 1, &barrier);
+    };
+
+    for (Texture &texture : m_textures)
     {
-        m_texStagingPending = false;
+        if (texture.layoutPending)
+        {
+            transition(texture.image, VK_IMAGE_LAYOUT_PREINITIALIZED,
+                       VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                       VK_ACCESS_HOST_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT,
+                       VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+            texture.layoutPending = false;
+        }
+        if (texture.stagingPending)
+        {
+            transition(texture.stagingImage, VK_IMAGE_LAYOUT_PREINITIALIZED,
+                       VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                       VK_ACCESS_HOST_WRITE_BIT, VK_ACCESS_TRANSFER_READ_BIT,
+                       VK_PIPELINE_STAGE_HOST_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
+            transition(texture.image, VK_IMAGE_LAYOUT_UNDEFINED,
+                       VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                       0, VK_ACCESS_TRANSFER_WRITE_BIT,
+                       VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
 
-        barrier.oldLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
-        barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
-        barrier.srcAccessMask = VK_ACCESS_HOST_WRITE_BIT;
-        barrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
-        barrier.image = m_texStaging;
-        m_devFuncs->vkCmdPipelineBarrier(cb,
-                                         VK_PIPELINE_STAGE_HOST_BIT,
-                                         VK_PIPELINE_STAGE_TRANSFER_BIT,
-                                         0, 0, nullptr, 0, nullptr,
-                                         1, &barrier);
-
-        barrier.oldLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
-        barrier.newLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-        barrier.srcAccessMask = 0;
-        barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-        barrier.image = m_texImage;
-        m_devFuncs->vkCmdPipelineBarrier(cb,
-                                         VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-                                         VK_PIPELINE_STAGE_TRANSFER_BIT,
-                                         0, 0, nullptr, 0, nullptr,
-                                         1, &barrier);
-
-        VkImageCopy copyInfo;
-        memset(&copyInfo, 0, sizeof(copyInfo));
-        copyInfo.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        copyInfo.srcSubresource.layerCount = 1;
-        copyInfo.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        copyInfo.dstSubresource.layerCount = 1;
-        copyInfo.extent.width = m_texSize.width();
-        copyInfo.extent.height = m_texSize.height();
-        copyInfo.extent.depth = 1;
-        m_devFuncs->vkCmdCopyImage(cb, m_texStaging, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                                   m_texImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyInfo);
-
-        barrier.oldLayout = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-        barrier.newLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-        barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
-        barrier.image = m_texImage;
-        m_devFuncs->vkCmdPipelineBarrier(cb,
-                                         VK_PIPELINE_STAGE_TRANSFER_BIT,
-                                         VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
-                                         0, 0, nullptr, 0, nullptr,
-                                         1, &barrier);
+            VkImageCopy copy{};
+            copy.srcSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+            copy.srcSubresource.layerCount = 1;
+            copy.dstSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+            copy.dstSubresource.layerCount = 1;
+            copy.extent = {uint32_t(texture.size.width()), uint32_t(texture.size.height()), 1};
+            m_devFuncs->vkCmdCopyImage(command, texture.stagingImage, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                                       texture.image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copy);
+            transition(texture.image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                       VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                       VK_ACCESS_TRANSFER_WRITE_BIT, VK_ACCESS_SHADER_READ_BIT,
+                       VK_PIPELINE_STAGE_TRANSFER_BIT, VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT);
+            texture.stagingPending = false;
+        }
     }
 }
 
 void VulkanGameRenderer::initResources()
 {
-    qDebug("initResources");
+    const VkDevice device = m_window->device();
+    m_devFuncs = m_window->vulkanInstance()->deviceFunctions(device);
 
-    VkDevice dev = m_window->device();
-    m_devFuncs = m_window->vulkanInstance()->deviceFunctions(dev);
+    VkBufferCreateInfo buffer{};
+    buffer.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    buffer.size = sizeof(quad);
+    buffer.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+    if (m_devFuncs->vkCreateBuffer(device, &buffer, nullptr, &m_vertexBuffer) != VK_SUCCESS)
+        qFatal("Failed to create Vulkan vertex buffer");
 
-    // Prepare the vertex and uniform data. The vertex data will never
-    // change so one buffer is sufficient regardless of the value of
-    // QVulkanWindow::CONCURRENT_FRAME_COUNT. Uniform data is changing per
-    // frame however so active frames have to have a dedicated copy.
+    VkMemoryRequirements requirements;
+    m_devFuncs->vkGetBufferMemoryRequirements(device, m_vertexBuffer, &requirements);
+    const uint32_t index = memoryIndex(m_window, requirements.memoryTypeBits,
+                                      VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+    if (index == std::numeric_limits<uint32_t>::max())
+        qFatal("No host-visible Vulkan vertex buffer memory");
 
-    // Use just one memory allocation and one buffer. We will then specify the
-    // appropriate offsets for uniform buffers in the VkDescriptorBufferInfo.
-    // Have to watch out for
-    // VkPhysicalDeviceLimits::minUniformBufferOffsetAlignment, though.
+    VkMemoryAllocateInfo allocation{};
+    allocation.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    allocation.allocationSize = requirements.size;
+    allocation.memoryTypeIndex = index;
+    if (m_devFuncs->vkAllocateMemory(device, &allocation, nullptr, &m_vertexMemory) != VK_SUCCESS ||
+        m_devFuncs->vkBindBufferMemory(device, m_vertexBuffer, m_vertexMemory, 0) != VK_SUCCESS)
+        qFatal("Failed to allocate Vulkan vertex buffer");
 
-    // The uniform buffer is not strictly required in this example, we could
-    // have used push constants as well since our single matrix (64 bytes) fits
-    // into the spec mandated minimum limit of 128 bytes. However, once that
-    // limit is not sufficient, the per-frame buffers, as shown below, will
-    // become necessary.
+    void *mapped = nullptr;
+    if (m_devFuncs->vkMapMemory(device, m_vertexMemory, 0, sizeof(quad), 0, &mapped) != VK_SUCCESS)
+        qFatal("Failed to map Vulkan vertex buffer");
+    std::memcpy(mapped, quad.data(), sizeof(quad));
+    m_devFuncs->vkUnmapMemory(device, m_vertexMemory);
 
-    const int concurrentFrameCount = m_window->concurrentFrameCount();
-    const VkPhysicalDeviceLimits *pdevLimits = &m_window->physicalDeviceProperties()->limits;
-    const VkDeviceSize uniAlign = pdevLimits->minUniformBufferOffsetAlignment;
-    qDebug("uniform buffer offset alignment is %u", (uint) uniAlign);
-    VkBufferCreateInfo bufInfo;
-    memset(&bufInfo, 0, sizeof(bufInfo));
-    bufInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    // Our internal layout is vertex, uniform, uniform, ... with each uniform buffer start offset aligned to uniAlign.
-    const VkDeviceSize vertexAllocSize = aligned(sizeof(vertexData), uniAlign);
-    const VkDeviceSize uniformAllocSize = aligned(UNIFORM_DATA_SIZE, uniAlign);
-    bufInfo.size = vertexAllocSize + concurrentFrameCount * uniformAllocSize;
-    bufInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+    VkSamplerCreateInfo sampler{};
+    sampler.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+    sampler.magFilter = VK_FILTER_NEAREST;
+    sampler.minFilter = VK_FILTER_NEAREST;
+    sampler.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    sampler.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    sampler.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+    sampler.maxAnisotropy = 1.f;
+    if (m_devFuncs->vkCreateSampler(device, &sampler, nullptr, &m_sampler) != VK_SUCCESS)
+        qFatal("Failed to create Vulkan sprite sampler");
 
-    VkResult err = m_devFuncs->vkCreateBuffer(dev, &bufInfo, nullptr, &m_buf);
-    if (err != VK_SUCCESS)
-        qFatal("Failed to create buffer: %d", err);
+    m_textures.resize(m_scene.textures.size());
+    for (std::size_t i = 0; i < m_textures.size(); ++i)
+        if (!createTexture(m_scene.textures[i], m_textures[i]))
+            qFatal("Failed to upload Vulkan sprite texture %zu", i);
 
-    VkMemoryRequirements memReq;
-    m_devFuncs->vkGetBufferMemoryRequirements(dev, m_buf, &memReq);
+    const uint32_t textureCount = uint32_t(std::max<std::size_t>(1, m_textures.size()));
+    VkDescriptorPoolSize poolSize{VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, textureCount};
+    VkDescriptorPoolCreateInfo pool{};
+    pool.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    pool.maxSets = textureCount;
+    pool.poolSizeCount = 1;
+    pool.pPoolSizes = &poolSize;
+    if (m_devFuncs->vkCreateDescriptorPool(device, &pool, nullptr, &m_descPool) != VK_SUCCESS)
+        qFatal("Failed to create Vulkan descriptor pool");
 
-    VkMemoryAllocateInfo memAllocInfo {
-        VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-        nullptr,
-        memReq.size,
-        m_window->hostVisibleMemoryIndex()
-    };
+    VkDescriptorSetLayoutBinding binding{};
+    binding.binding = 0;
+    binding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    binding.descriptorCount = 1;
+    binding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
+    VkDescriptorSetLayoutCreateInfo setLayout{};
+    setLayout.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+    setLayout.bindingCount = 1;
+    setLayout.pBindings = &binding;
+    if (m_devFuncs->vkCreateDescriptorSetLayout(device, &setLayout, nullptr, &m_descSetLayout) != VK_SUCCESS)
+        qFatal("Failed to create Vulkan descriptor set layout");
 
-    err = m_devFuncs->vkAllocateMemory(dev, &memAllocInfo, nullptr, &m_bufMem);
-    if (err != VK_SUCCESS)
-        qFatal("Failed to allocate memory: %d", err);
-
-    err = m_devFuncs->vkBindBufferMemory(dev, m_buf, m_bufMem, 0);
-    if (err != VK_SUCCESS)
-        qFatal("Failed to bind buffer memory: %d", err);
-
-    quint8 *p;
-    err = m_devFuncs->vkMapMemory(dev, m_bufMem, 0, memReq.size, 0, reinterpret_cast<void **>(&p));
-    if (err != VK_SUCCESS)
-        qFatal("Failed to map memory: %d", err);
-    memcpy(p, vertexData, sizeof(vertexData));
-    QMatrix4x4 ident;
-    memset(m_uniformBufInfo, 0, sizeof(m_uniformBufInfo));
-    for (int i = 0; i < concurrentFrameCount; ++i)
+    for (Texture &texture : m_textures)
     {
-        const VkDeviceSize offset = vertexAllocSize + i * uniformAllocSize;
-        memcpy(p + offset, ident.constData(), 16 * sizeof(float));
-        m_uniformBufInfo[i].buffer = m_buf;
-        m_uniformBufInfo[i].offset = offset;
-        m_uniformBufInfo[i].range = uniformAllocSize;
-    }
-    m_devFuncs->vkUnmapMemory(dev, m_bufMem);
+        VkDescriptorSetAllocateInfo set{};
+        set.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+        set.descriptorPool = m_descPool;
+        set.descriptorSetCount = 1;
+        set.pSetLayouts = &m_descSetLayout;
+        if (m_devFuncs->vkAllocateDescriptorSets(device, &set, &texture.descriptorSet) != VK_SUCCESS)
+            qFatal("Failed to allocate Vulkan texture descriptor");
 
-    VkVertexInputBindingDescription vertexBindingDesc {
-        0, // binding
-        5 * sizeof(float),
-        VK_VERTEX_INPUT_RATE_VERTEX
-    };
-    VkVertexInputAttributeDescription vertexAttrDesc[] {
-        { // position
-            0, // location
-            0, // binding
-            VK_FORMAT_R32G32B32_SFLOAT,
-            0
-        },
-        { // texcoord
-            1,
-            0,
-            VK_FORMAT_R32G32_SFLOAT,
-            3 * sizeof(float)
-        }
-    };
-
-    VkPipelineVertexInputStateCreateInfo vertexInputInfo;
-    vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-    vertexInputInfo.pNext = nullptr;
-    vertexInputInfo.flags = 0;
-    vertexInputInfo.vertexBindingDescriptionCount = 1;
-    vertexInputInfo.pVertexBindingDescriptions = &vertexBindingDesc;
-    vertexInputInfo.vertexAttributeDescriptionCount = 2;
-    vertexInputInfo.pVertexAttributeDescriptions = vertexAttrDesc;
-
-    // Sampler.
-    VkSamplerCreateInfo samplerInfo;
-    memset(&samplerInfo, 0, sizeof(samplerInfo));
-    samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-    samplerInfo.magFilter = VK_FILTER_NEAREST;
-    samplerInfo.minFilter = VK_FILTER_NEAREST;
-    samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-    samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-    samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-    samplerInfo.maxAnisotropy = 1.0f;
-    err = m_devFuncs->vkCreateSampler(dev, &samplerInfo, nullptr, &m_sampler);
-    if (err != VK_SUCCESS)
-        qFatal("Failed to create sampler: %d", err);
-
-    if (m_project.sprites.empty() ||
-        m_project.sprites.front().pixmaps.empty() ||
-        m_project.sprites.front().pixmaps.front().isNull())
-        qFatal("no sprites in game project!");
-
-    // Texture.
-    //if (!createTextureFromFile(QStringLiteral(":/qtgameengine/qt256.png")))
-    //    qFatal("Failed to create texture");
-    if (!createTexture(m_project.sprites.front().pixmaps.front().toImage()))
-        qFatal("Failed to create texture");
-
-    // Set up descriptor set and its layout.
-    VkDescriptorPoolSize descPoolSizes[2] = {
-        { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, uint32_t(concurrentFrameCount) },
-        { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, uint32_t(concurrentFrameCount) }
-    };
-    VkDescriptorPoolCreateInfo descPoolInfo;
-    memset(&descPoolInfo, 0, sizeof(descPoolInfo));
-    descPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-    descPoolInfo.maxSets = concurrentFrameCount;
-    descPoolInfo.poolSizeCount = 2;
-    descPoolInfo.pPoolSizes = descPoolSizes;
-    err = m_devFuncs->vkCreateDescriptorPool(dev, &descPoolInfo, nullptr, &m_descPool);
-    if (err != VK_SUCCESS)
-        qFatal("Failed to create descriptor pool: %d", err);
-
-    VkDescriptorSetLayoutBinding layoutBinding[2] {
-        {
-            0, // binding
-            VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-            1, // descriptorCount
-            VK_SHADER_STAGE_VERTEX_BIT,
-            nullptr
-        },
-        {
-            1, // binding
-            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-            1, // descriptorCount
-            VK_SHADER_STAGE_FRAGMENT_BIT,
-            nullptr
-        }
-    };
-    VkDescriptorSetLayoutCreateInfo descLayoutInfo {
-        VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
-        nullptr,
-        0,
-        2, // bindingCount
-        layoutBinding
-    };
-    err = m_devFuncs->vkCreateDescriptorSetLayout(dev, &descLayoutInfo, nullptr, &m_descSetLayout);
-    if (err != VK_SUCCESS)
-        qFatal("Failed to create descriptor set layout: %d", err);
-
-    for (int i = 0; i < concurrentFrameCount; ++i)
-    {
-        VkDescriptorSetAllocateInfo descSetAllocInfo {
-            VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
-            nullptr,
-            m_descPool,
-            1,
-            &m_descSetLayout
-        };
-        err = m_devFuncs->vkAllocateDescriptorSets(dev, &descSetAllocInfo, &m_descSet[i]);
-        if (err != VK_SUCCESS)
-            qFatal("Failed to allocate descriptor set: %d", err);
-
-        VkWriteDescriptorSet descWrite[2];
-        memset(descWrite, 0, sizeof(descWrite));
-        descWrite[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descWrite[0].dstSet = m_descSet[i];
-        descWrite[0].dstBinding = 0;
-        descWrite[0].descriptorCount = 1;
-        descWrite[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        descWrite[0].pBufferInfo = &m_uniformBufInfo[i];
-
-        VkDescriptorImageInfo descImageInfo {
-            m_sampler,
-            m_texView,
-            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
-        };
-
-        descWrite[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descWrite[1].dstSet = m_descSet[i];
-        descWrite[1].dstBinding = 1;
-        descWrite[1].descriptorCount = 1;
-        descWrite[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        descWrite[1].pImageInfo = &descImageInfo;
-
-        m_devFuncs->vkUpdateDescriptorSets(dev, 2, descWrite, 0, nullptr);
+        VkDescriptorImageInfo imageInfo{m_sampler, texture.view, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL};
+        VkWriteDescriptorSet write{};
+        write.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        write.dstSet = texture.descriptorSet;
+        write.dstBinding = 0;
+        write.descriptorCount = 1;
+        write.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        write.pImageInfo = &imageInfo;
+        m_devFuncs->vkUpdateDescriptorSets(device, 1, &write, 0, nullptr);
     }
 
-    // Pipeline cache
-    VkPipelineCacheCreateInfo pipelineCacheInfo;
-    memset(&pipelineCacheInfo, 0, sizeof(pipelineCacheInfo));
-    pipelineCacheInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
-    err = m_devFuncs->vkCreatePipelineCache(dev, &pipelineCacheInfo, nullptr, &m_pipelineCache);
-    if (err != VK_SUCCESS)
-        qFatal("Failed to create pipeline cache: %d", err);
+    VkPipelineCacheCreateInfo cache{};
+    cache.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
+    if (m_devFuncs->vkCreatePipelineCache(device, &cache, nullptr, &m_pipelineCache) != VK_SUCCESS)
+        qFatal("Failed to create Vulkan pipeline cache");
 
-    // Pipeline layout
-    VkPipelineLayoutCreateInfo pipelineLayoutInfo;
-    memset(&pipelineLayoutInfo, 0, sizeof(pipelineLayoutInfo));
-    pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    pipelineLayoutInfo.setLayoutCount = 1;
-    pipelineLayoutInfo.pSetLayouts = &m_descSetLayout;
-    err = m_devFuncs->vkCreatePipelineLayout(dev, &pipelineLayoutInfo, nullptr, &m_pipelineLayout);
-    if (err != VK_SUCCESS)
-        qFatal("Failed to create pipeline layout: %d", err);
+    VkPushConstantRange push{};
+    push.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    push.offset = 0;
+    push.size = 16 * sizeof(float);
+    VkPipelineLayoutCreateInfo pipelineLayout{};
+    pipelineLayout.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipelineLayout.setLayoutCount = 1;
+    pipelineLayout.pSetLayouts = &m_descSetLayout;
+    pipelineLayout.pushConstantRangeCount = 1;
+    pipelineLayout.pPushConstantRanges = &push;
+    if (m_devFuncs->vkCreatePipelineLayout(device, &pipelineLayout, nullptr, &m_pipelineLayout) != VK_SUCCESS)
+        qFatal("Failed to create Vulkan pipeline layout");
 
-    // Shaders
-    VkShaderModule vertShaderModule = createShader(QStringLiteral(":/qtgameengine/vulkan_shader_modules/texture_vert.spv"));
-    VkShaderModule fragShaderModule = createShader(QStringLiteral(":/qtgameengine/vulkan_shader_modules/texture_frag.spv"));
+    const VkShaderModule vertexShader = createShader(QStringLiteral(":/qtgameengine/vulkan_shader_modules/texture_vert.spv"));
+    const VkShaderModule fragmentShader = createShader(QStringLiteral(":/qtgameengine/vulkan_shader_modules/texture_frag.spv"));
+    if (!vertexShader || !fragmentShader)
+        qFatal("Failed to load Vulkan sprite shaders");
 
-    // Graphics pipeline
-    VkGraphicsPipelineCreateInfo pipelineInfo;
-    memset(&pipelineInfo, 0, sizeof(pipelineInfo));
-    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    VkPipelineShaderStageCreateInfo stages[2]{};
+    stages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    stages[0].stage = VK_SHADER_STAGE_VERTEX_BIT;
+    stages[0].module = vertexShader;
+    stages[0].pName = "main";
+    stages[1].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    stages[1].stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    stages[1].module = fragmentShader;
+    stages[1].pName = "main";
 
-    VkPipelineShaderStageCreateInfo shaderStages[2] {
-        {
-            VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
-            nullptr,
-            0,
-            VK_SHADER_STAGE_VERTEX_BIT,
-            vertShaderModule,
-            "main",
-            nullptr
-        },
-        {
-            VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
-            nullptr,
-            0,
-            VK_SHADER_STAGE_FRAGMENT_BIT,
-            fragShaderModule,
-            "main",
-            nullptr
-        }
+    VkVertexInputBindingDescription vertexBinding{0, sizeof(Vertex), VK_VERTEX_INPUT_RATE_VERTEX};
+    VkVertexInputAttributeDescription attributes[2]{
+        {0, 0, VK_FORMAT_R32G32B32_SFLOAT, 0},
+        {1, 0, VK_FORMAT_R32G32_SFLOAT, 3 * sizeof(float)}
     };
-    pipelineInfo.stageCount = 2;
-    pipelineInfo.pStages = shaderStages;
+    VkPipelineVertexInputStateCreateInfo vertexInput{};
+    vertexInput.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    vertexInput.vertexBindingDescriptionCount = 1;
+    vertexInput.pVertexBindingDescriptions = &vertexBinding;
+    vertexInput.vertexAttributeDescriptionCount = 2;
+    vertexInput.pVertexAttributeDescriptions = attributes;
 
-    pipelineInfo.pVertexInputState = &vertexInputInfo;
+    VkPipelineInputAssemblyStateCreateInfo assembly{};
+    assembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    assembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
 
-    VkPipelineInputAssemblyStateCreateInfo ia;
-    memset(&ia, 0, sizeof(ia));
-    ia.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-    ia.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
-    pipelineInfo.pInputAssemblyState = &ia;
+    VkPipelineViewportStateCreateInfo viewport{};
+    viewport.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewport.viewportCount = 1;
+    viewport.scissorCount = 1;
 
-    // The viewport and scissor will be set dynamically via vkCmdSetViewport/Scissor.
-    // This way the pipeline does not need to be touched when resizing the window.
-    VkPipelineViewportStateCreateInfo vp;
-    memset(&vp, 0, sizeof(vp));
-    vp.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-    vp.viewportCount = 1;
-    vp.scissorCount = 1;
-    pipelineInfo.pViewportState = &vp;
+    VkPipelineRasterizationStateCreateInfo raster{};
+    raster.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    raster.polygonMode = VK_POLYGON_MODE_FILL;
+    raster.cullMode = VK_CULL_MODE_NONE;
+    raster.frontFace = VK_FRONT_FACE_CLOCKWISE;
+    raster.lineWidth = 1.f;
 
-    VkPipelineRasterizationStateCreateInfo rs;
-    memset(&rs, 0, sizeof(rs));
-    rs.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
-    rs.polygonMode = VK_POLYGON_MODE_FILL;
-    rs.cullMode = VK_CULL_MODE_BACK_BIT;
-    rs.frontFace = VK_FRONT_FACE_CLOCKWISE;
-    rs.lineWidth = 1.0f;
-    pipelineInfo.pRasterizationState = &rs;
+    VkPipelineMultisampleStateCreateInfo multisample{};
+    multisample.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    multisample.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
 
-    VkPipelineMultisampleStateCreateInfo ms;
-    memset(&ms, 0, sizeof(ms));
-    ms.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-    ms.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
-    pipelineInfo.pMultisampleState = &ms;
+    VkPipelineDepthStencilStateCreateInfo depth{};
+    depth.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+    depth.depthTestEnable = VK_FALSE;
+    depth.depthWriteEnable = VK_FALSE;
 
-    VkPipelineDepthStencilStateCreateInfo ds;
-    memset(&ds, 0, sizeof(ds));
-    ds.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
-    ds.depthTestEnable = VK_TRUE;
-    ds.depthWriteEnable = VK_TRUE;
-    ds.depthCompareOp = VK_COMPARE_OP_LESS_OR_EQUAL;
-    pipelineInfo.pDepthStencilState = &ds;
+    VkPipelineColorBlendAttachmentState attachment{};
+    attachment.blendEnable = VK_TRUE;
+    attachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
+    attachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    attachment.colorBlendOp = VK_BLEND_OP_ADD;
+    attachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+    attachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    attachment.alphaBlendOp = VK_BLEND_OP_ADD;
+    attachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
+                                VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    VkPipelineColorBlendStateCreateInfo blend{};
+    blend.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    blend.attachmentCount = 1;
+    blend.pAttachments = &attachment;
 
-    VkPipelineColorBlendStateCreateInfo cb;
-    memset(&cb, 0, sizeof(cb));
-    cb.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
-    // assume pre-multiplied alpha, blend, write out all of rgba
-    VkPipelineColorBlendAttachmentState att;
-    memset(&att, 0, sizeof(att));
-    att.colorWriteMask = 0xF;
-    att.blendEnable = VK_TRUE;
-    att.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
-    att.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
-    att.colorBlendOp = VK_BLEND_OP_ADD;
-    att.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-    att.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
-    att.alphaBlendOp = VK_BLEND_OP_ADD;
-    cb.attachmentCount = 1;
-    cb.pAttachments = &att;
-    pipelineInfo.pColorBlendState = &cb;
+    VkDynamicState dynamicStates[]{VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR};
+    VkPipelineDynamicStateCreateInfo dynamic{};
+    dynamic.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+    dynamic.dynamicStateCount = 2;
+    dynamic.pDynamicStates = dynamicStates;
 
-    VkDynamicState dynEnable[] = { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR };
-    VkPipelineDynamicStateCreateInfo dyn;
-    memset(&dyn, 0, sizeof(dyn));
-    dyn.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-    dyn.dynamicStateCount = sizeof(dynEnable) / sizeof(VkDynamicState);
-    dyn.pDynamicStates = dynEnable;
-    pipelineInfo.pDynamicState = &dyn;
+    VkGraphicsPipelineCreateInfo pipeline{};
+    pipeline.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipeline.stageCount = 2;
+    pipeline.pStages = stages;
+    pipeline.pVertexInputState = &vertexInput;
+    pipeline.pInputAssemblyState = &assembly;
+    pipeline.pViewportState = &viewport;
+    pipeline.pRasterizationState = &raster;
+    pipeline.pMultisampleState = &multisample;
+    pipeline.pDepthStencilState = &depth;
+    pipeline.pColorBlendState = &blend;
+    pipeline.pDynamicState = &dynamic;
+    pipeline.layout = m_pipelineLayout;
+    pipeline.renderPass = m_window->defaultRenderPass();
+    if (m_devFuncs->vkCreateGraphicsPipelines(device, m_pipelineCache, 1, &pipeline, nullptr, &m_pipeline) != VK_SUCCESS)
+        qFatal("Failed to create Vulkan sprite pipeline");
 
-    pipelineInfo.layout = m_pipelineLayout;
-    pipelineInfo.renderPass = m_window->defaultRenderPass();
-
-    err = m_devFuncs->vkCreateGraphicsPipelines(dev, m_pipelineCache, 1, &pipelineInfo, nullptr, &m_pipeline);
-    if (err != VK_SUCCESS)
-        qFatal("Failed to create graphics pipeline: %d", err);
-
-    if (vertShaderModule)
-        m_devFuncs->vkDestroyShaderModule(dev, vertShaderModule, nullptr);
-    if (fragShaderModule)
-        m_devFuncs->vkDestroyShaderModule(dev, fragShaderModule, nullptr);
+    m_devFuncs->vkDestroyShaderModule(device, vertexShader, nullptr);
+    m_devFuncs->vkDestroyShaderModule(device, fragmentShader, nullptr);
 }
 
 void VulkanGameRenderer::initSwapChainResources()
 {
-    qDebug("initSwapChainResources");
-
-    // Projection matrix
-    m_proj = m_window->clipCorrectionMatrix(); // adjust for Vulkan-OpenGL clip space differences
-    const QSize sz = m_window->swapChainImageSize();
-    m_proj.perspective(45.0f, sz.width() / (float) sz.height(), 0.01f, 100.0f);
-    m_proj.translate(0, 0, -4);
+    m_projection = m_window->clipCorrectionMatrix();
+    m_projection.ortho(0.f, float(m_scene.roomSize.width()),
+                       float(m_scene.roomSize.height()), 0.f, -1.f, 1.f);
 }
 
 void VulkanGameRenderer::releaseSwapChainResources()
 {
-    qDebug("releaseSwapChainResources");
 }
 
 void VulkanGameRenderer::releaseResources()
 {
-    qDebug("releaseResources");
-
-    VkDevice dev = m_window->device();
-
-    if (m_sampler)
-    {
-        m_devFuncs->vkDestroySampler(dev, m_sampler, nullptr);
-        m_sampler = VK_NULL_HANDLE;
-    }
-
-    if (m_texStaging)
-    {
-        m_devFuncs->vkDestroyImage(dev, m_texStaging, nullptr);
-        m_texStaging = VK_NULL_HANDLE;
-    }
-
-    if (m_texStagingMem)
-    {
-        m_devFuncs->vkFreeMemory(dev, m_texStagingMem, nullptr);
-        m_texStagingMem = VK_NULL_HANDLE;
-    }
-
-    if (m_texView)
-    {
-        m_devFuncs->vkDestroyImageView(dev, m_texView, nullptr);
-        m_texView = VK_NULL_HANDLE;
-    }
-
-    if (m_texImage)
-    {
-        m_devFuncs->vkDestroyImage(dev, m_texImage, nullptr);
-        m_texImage = VK_NULL_HANDLE;
-    }
-
-    if (m_texMem)
-    {
-        m_devFuncs->vkFreeMemory(dev, m_texMem, nullptr);
-        m_texMem = VK_NULL_HANDLE;
-    }
+    if (!m_devFuncs)
+        return;
+    const VkDevice device = m_window->device();
 
     if (m_pipeline)
-    {
-        m_devFuncs->vkDestroyPipeline(dev, m_pipeline, nullptr);
-        m_pipeline = VK_NULL_HANDLE;
-    }
-
+        m_devFuncs->vkDestroyPipeline(device, m_pipeline, nullptr);
     if (m_pipelineLayout)
-    {
-        m_devFuncs->vkDestroyPipelineLayout(dev, m_pipelineLayout, nullptr);
-        m_pipelineLayout = VK_NULL_HANDLE;
-    }
-
+        m_devFuncs->vkDestroyPipelineLayout(device, m_pipelineLayout, nullptr);
     if (m_pipelineCache)
-    {
-        m_devFuncs->vkDestroyPipelineCache(dev, m_pipelineCache, nullptr);
-        m_pipelineCache = VK_NULL_HANDLE;
-    }
-
-    if (m_descSetLayout)
-    {
-        m_devFuncs->vkDestroyDescriptorSetLayout(dev, m_descSetLayout, nullptr);
-        m_descSetLayout = VK_NULL_HANDLE;
-    }
-
+        m_devFuncs->vkDestroyPipelineCache(device, m_pipelineCache, nullptr);
     if (m_descPool)
-    {
-        m_devFuncs->vkDestroyDescriptorPool(dev, m_descPool, nullptr);
-        m_descPool = VK_NULL_HANDLE;
-    }
+        m_devFuncs->vkDestroyDescriptorPool(device, m_descPool, nullptr);
+    if (m_descSetLayout)
+        m_devFuncs->vkDestroyDescriptorSetLayout(device, m_descSetLayout, nullptr);
+    if (m_sampler)
+        m_devFuncs->vkDestroySampler(device, m_sampler, nullptr);
+    m_pipeline = VK_NULL_HANDLE;
+    m_pipelineLayout = VK_NULL_HANDLE;
+    m_pipelineCache = VK_NULL_HANDLE;
+    m_descPool = VK_NULL_HANDLE;
+    m_descSetLayout = VK_NULL_HANDLE;
+    m_sampler = VK_NULL_HANDLE;
 
-    if (m_buf)
+    for (Texture &texture : m_textures)
     {
-        m_devFuncs->vkDestroyBuffer(dev, m_buf, nullptr);
-        m_buf = VK_NULL_HANDLE;
+        if (texture.view)
+            m_devFuncs->vkDestroyImageView(device, texture.view, nullptr);
+        if (texture.image)
+            m_devFuncs->vkDestroyImage(device, texture.image, nullptr);
+        if (texture.memory)
+            m_devFuncs->vkFreeMemory(device, texture.memory, nullptr);
+        if (texture.stagingImage)
+            m_devFuncs->vkDestroyImage(device, texture.stagingImage, nullptr);
+        if (texture.stagingMemory)
+            m_devFuncs->vkFreeMemory(device, texture.stagingMemory, nullptr);
     }
+    m_textures.clear();
 
-    if (m_bufMem)
-    {
-        m_devFuncs->vkFreeMemory(dev, m_bufMem, nullptr);
-        m_bufMem = VK_NULL_HANDLE;
-    }
+    if (m_vertexBuffer)
+        m_devFuncs->vkDestroyBuffer(device, m_vertexBuffer, nullptr);
+    if (m_vertexMemory)
+        m_devFuncs->vkFreeMemory(device, m_vertexMemory, nullptr);
+    m_vertexBuffer = VK_NULL_HANDLE;
+    m_vertexMemory = VK_NULL_HANDLE;
 }
 
 void VulkanGameRenderer::startNextFrame()
 {
-    VkDevice dev = m_window->device();
-    VkCommandBuffer cb = m_window->currentCommandBuffer();
-    const QSize sz = m_window->swapChainImageSize();
+    const VkCommandBuffer command = m_window->currentCommandBuffer();
+    const QSize size = m_window->swapChainImageSize();
+    ensureTextures();
 
-    // Add the necessary barriers and do the host-linear -> device-optimal copy, if not yet done.
-    ensureTexture();
+    VkClearValue clearValues[2]{};
+    clearValues[0].color.float32[0] = 1.f;
+    clearValues[0].color.float32[1] = 1.f;
+    clearValues[0].color.float32[2] = 1.f;
+    clearValues[0].color.float32[3] = 1.f;
+    clearValues[1].depthStencil = {1.f, 0};
 
-    VkClearColorValue clearColor = {{ 0, 0, 0, 1 }};
-    VkClearDepthStencilValue clearDS = { 1, 0 };
-    VkClearValue clearValues[2];
-    memset(clearValues, 0, sizeof(clearValues));
-    clearValues[0].color = clearColor;
-    clearValues[1].depthStencil = clearDS;
+    VkRenderPassBeginInfo begin{};
+    begin.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+    begin.renderPass = m_window->defaultRenderPass();
+    begin.framebuffer = m_window->currentFramebuffer();
+    begin.renderArea.extent = {uint32_t(size.width()), uint32_t(size.height())};
+    begin.clearValueCount = 2;
+    begin.pClearValues = clearValues;
+    m_devFuncs->vkCmdBeginRenderPass(command, &begin, VK_SUBPASS_CONTENTS_INLINE);
 
-    VkRenderPassBeginInfo rpBeginInfo;
-    memset(&rpBeginInfo, 0, sizeof(rpBeginInfo));
-    rpBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-    rpBeginInfo.renderPass = m_window->defaultRenderPass();
-    rpBeginInfo.framebuffer = m_window->currentFramebuffer();
-    rpBeginInfo.renderArea.extent.width = sz.width();
-    rpBeginInfo.renderArea.extent.height = sz.height();
-    rpBeginInfo.clearValueCount = 2;
-    rpBeginInfo.pClearValues = clearValues;
-    VkCommandBuffer cmdBuf = m_window->currentCommandBuffer();
-    m_devFuncs->vkCmdBeginRenderPass(cmdBuf, &rpBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+    m_devFuncs->vkCmdBindPipeline(command, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline);
+    const VkDeviceSize vertexOffset = 0;
+    m_devFuncs->vkCmdBindVertexBuffers(command, 0, 1, &m_vertexBuffer, &vertexOffset);
 
-    quint8 *p;
-    VkResult err = m_devFuncs->vkMapMemory(dev, m_bufMem, m_uniformBufInfo[m_window->currentFrame()].offset,
-                                           UNIFORM_DATA_SIZE, 0, reinterpret_cast<void **>(&p));
-    if (err != VK_SUCCESS)
-        qFatal("Failed to map memory: %d", err);
-    QMatrix4x4 m = m_proj;
-    m.rotate(m_rotation, 0, 0, 1);
-    memcpy(p, m.constData(), 16 * sizeof(float));
-    m_devFuncs->vkUnmapMemory(dev, m_bufMem);
+    VkViewport viewport{};
+    viewport.width = float(size.width());
+    viewport.height = float(size.height());
+    viewport.minDepth = 0.f;
+    viewport.maxDepth = 1.f;
+    m_devFuncs->vkCmdSetViewport(command, 0, 1, &viewport);
+    VkRect2D scissor{};
+    scissor.extent = {uint32_t(size.width()), uint32_t(size.height())};
+    m_devFuncs->vkCmdSetScissor(command, 0, 1, &scissor);
 
-    m_devFuncs->vkCmdBindPipeline(cb, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline);
-    m_devFuncs->vkCmdBindDescriptorSets(cb, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1,
-                                        &m_descSet[m_window->currentFrame()], 0, nullptr);
-    VkDeviceSize vbOffset = 0;
-    m_devFuncs->vkCmdBindVertexBuffers(cb, 0, 1, &m_buf, &vbOffset);
+    for (const GameScene::Instance *instance : m_scene.drawOrder())
+    {
+        if (!instance->visible || !instance->spriteIndex)
+            continue;
+        const std::size_t textureIndex = m_scene.textureFor(*instance);
+        const Texture &texture = m_textures.at(textureIndex);
+        const QPoint &origin = m_scene.sprites.at(*instance->spriteIndex).origin;
 
-    VkViewport viewport;
-    viewport.x = viewport.y = 0;
-    viewport.width = sz.width();
-    viewport.height = sz.height();
-    viewport.minDepth = 0;
-    viewport.maxDepth = 1;
-    m_devFuncs->vkCmdSetViewport(cb, 0, 1, &viewport);
+        QMatrix4x4 matrix = m_projection;
+        matrix.translate(float(instance->position.x() - origin.x()),
+                         float(instance->position.y() - origin.y()));
+        matrix.scale(float(texture.size.width()), float(texture.size.height()));
+        m_devFuncs->vkCmdPushConstants(command, m_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT,
+                                       0, 16 * sizeof(float), matrix.constData());
+        m_devFuncs->vkCmdBindDescriptorSets(command, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                            m_pipelineLayout, 0, 1, &texture.descriptorSet, 0, nullptr);
+        m_devFuncs->vkCmdDraw(command, 4, 1, 0, 0);
+    }
 
-    VkRect2D scissor;
-    scissor.offset.x = scissor.offset.y = 0;
-    scissor.extent.width = viewport.width;
-    scissor.extent.height = viewport.height;
-    m_devFuncs->vkCmdSetScissor(cb, 0, 1, &scissor);
-
-    m_devFuncs->vkCmdDraw(cb, 4, 1, 0, 0);
-
-    m_devFuncs->vkCmdEndRenderPass(cmdBuf);
-
+    m_devFuncs->vkCmdEndRenderPass(command);
     m_window->frameReady();
-    m_window->requestUpdate(); // render continuously, throttled by the presentation rate
 }

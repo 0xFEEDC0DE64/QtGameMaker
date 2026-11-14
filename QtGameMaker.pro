@@ -54,6 +54,7 @@ HEADERS += \
     src/editor/widgets/zoomablescrollarea.h \
     src/engine/gameengine.h \
     src/engine/glgamewindow.h \
+    src/engine/gamescene.h \
     src/engine/vulkangamerenderer.h \
     src/engine/vulkangamewindow.h \
     src/futurecpp.h \
@@ -132,6 +133,7 @@ SOURCES += \
     src/editor/widgets/zoomablescrollarea.cpp \
     src/engine/gameengine.cpp \
     src/engine/glgamewindow.cpp \
+    src/engine/gamescene.cpp \
     src/engine/vulkangamerenderer.cpp \
     src/engine/vulkangamewindow.cpp \
     src/main.cpp \
