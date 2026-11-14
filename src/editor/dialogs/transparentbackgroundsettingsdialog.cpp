@@ -2,6 +2,7 @@
 #include "ui_transparentbackgroundsettingsdialog.h"
 
 #include <QMessageBox>
+#include <QDebug>
 
 #include "editorguiutils.h"
 #include "editorsettings.h"

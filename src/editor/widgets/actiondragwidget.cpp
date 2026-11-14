@@ -3,6 +3,8 @@
 #include <QMouseEvent>
 #include <QApplication>
 #include <QDrag>
+#include <QDebug>
+#include <QIODevice>
 #include <QMimeData>
 
 #include "projectserialization.h"

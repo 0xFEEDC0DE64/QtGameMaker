@@ -5,6 +5,7 @@
 #include <memory>
 
 namespace Ui { class ObjectSelectorWidget; }
+class QMenu;
 class ProjectTreeModel;
 
 class ObjectSelectorWidget : public QWidget

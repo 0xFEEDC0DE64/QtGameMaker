@@ -6,6 +6,7 @@
 #include <QPen>
 #include <QColor>
 #include <QDialogButtonBox>
+#include <QDebug>
 #include <QPushButton>
 
 QBrush makeGridBrush(int snapX, int snapY, const QPen &gridPen, const QColor &backgroundColor)
