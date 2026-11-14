@@ -820,6 +820,13 @@ void MainWindow::showIncludedFiles()
 
 void MainWindow::runGame()
 {
+    if (m_project.rooms.empty())
+    {
+        QMessageBox::information(this, tr("No room to play"),
+                                 tr("Create a room before running the game."));
+        return;
+    }
+
     GameEngine engine{m_project};
 
     setEnabled(false);
