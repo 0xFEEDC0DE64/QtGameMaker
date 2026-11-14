@@ -39,10 +39,12 @@ public:
 
     void appendAction(Action &&action);
     void appendAction(const Action &action);
+    void insertAction(int row, Action action);
 
 signals:
     void changed();
     void actionsContainerMissing();
+    void newActionDropped(Action action, int row);
 
 private:
     ActionsContainer *m_actionsContainer{};

@@ -31,10 +31,13 @@ signals:
 
 private slots:
     void actionDoubleClicked(const QModelIndex &index);
+    void newActionDropped(Action action, int row);
     void actionsContextMenuRequested(const QPoint &pos);
     void actionsContainerMissing();
 
 private:
+    bool editAction(Action &action);
+    void deleteAction(const QModelIndex &index);
     template<typename T>
     void createNewAction();
 

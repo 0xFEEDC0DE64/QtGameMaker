@@ -4,6 +4,7 @@
 
 #include <QEventLoop>
 #include <QEnterEvent>
+#include <QKeyEvent>
 #include <QMouseEvent>
 #include <QWheelEvent>
 
@@ -59,6 +60,14 @@ bool GameEngine::eventFilter(QObject *watched, QEvent *event)
 
     switch (event->type())
     {
+    case QEvent::KeyPress:
+        if (static_cast<QKeyEvent *>(event)->key() == Qt::Key_Escape &&
+            m_project.globalGameSettings.letEscEndGame)
+        {
+            window->close();
+            return true;
+        }
+        break;
     case QEvent::FocusIn:
         if (m_mouseSource != window)
         {

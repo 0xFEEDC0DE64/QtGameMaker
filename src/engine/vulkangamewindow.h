@@ -13,10 +13,6 @@ public:
 
     QVulkanWindowRenderer *createRenderer() override;
 
-protected:
-    void keyPressEvent(QKeyEvent *event) override;
-    void keyReleaseEvent(QKeyEvent *event) override;
-
 private:
     const ProjectContainer &m_project;
     const GameScene &m_scene;

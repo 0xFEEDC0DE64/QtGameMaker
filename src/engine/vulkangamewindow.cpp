@@ -1,7 +1,5 @@
 #include "vulkangamewindow.h"
 
-#include <QKeyEvent>
-
 #include "projectcontainer.h"
 #include "gamescene.h"
 #include "vulkangamerenderer.h"
@@ -27,17 +25,4 @@ VulkanGameWindow::VulkanGameWindow(const ProjectContainer &project, const GameSc
 QVulkanWindowRenderer *VulkanGameWindow::createRenderer()
 {
     return new VulkanGameRenderer{m_scene, this};
-}
-
-void VulkanGameWindow::keyPressEvent(QKeyEvent *event)
-{
-    QVulkanWindow::keyPressEvent(event);
-
-    if (event->key() == Qt::Key_Escape && m_project.globalGameSettings.letEscEndGame)
-        close();
-}
-
-void VulkanGameWindow::keyReleaseEvent(QKeyEvent *event)
-{
-    QVulkanWindow::keyReleaseEvent(event);
 }

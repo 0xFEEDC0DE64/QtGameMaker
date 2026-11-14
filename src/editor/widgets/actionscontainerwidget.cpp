@@ -5,6 +5,9 @@
 #include <QMessageBox>
 #include <QMenu>
 #include <QKeySequence>
+#include <QShortcut>
+
+#include <type_traits>
 
 #include "models/actionscontainermodel.h"
 #include "dialogs/actions/movefixeddialog.h"
@@ -42,11 +45,20 @@ ActionsContainerWidget::ActionsContainerWidget(QWidget *parent) :
     connect(m_actionsModel.get(), &ActionsContainerModel::actionsContainerMissing,
             this, &ActionsContainerWidget::actionsContainerMissing);
 
+    connect(m_actionsModel.get(), &ActionsContainerModel::newActionDropped,
+            this, &ActionsContainerWidget::newActionDropped);
+
     connect(m_ui->listViewActions, &QListView::customContextMenuRequested,
             this, &ActionsContainerWidget::actionsContextMenuRequested);
 
     connect(m_ui->listViewActions, &QListView::doubleClicked,
             this, &ActionsContainerWidget::actionDoubleClicked);
+
+    auto *deleteShortcut = new QShortcut{QKeySequence::Delete, m_ui->listViewActions};
+    deleteShortcut->setContext(Qt::WidgetWithChildrenShortcut);
+    connect(deleteShortcut, &QShortcut::activated, this, [this]() {
+        deleteAction(m_ui->listViewActions->currentIndex());
+    });
 
     connect(m_actionsModel.get(), &QAbstractItemModel::modelAboutToBeReset,
             m_ui->listViewActions, [listView=m_ui->listViewActions](){
@@ -103,75 +115,61 @@ void ActionsContainerWidget::actionDoubleClicked(const QModelIndex &index)
     if (!action)
         return;
 
-    if (auto ptr = std::get_if<MoveFixedAction>(action))
+    if (editAction(*action))
+        emit changed();
+}
+
+bool ActionsContainerWidget::editAction(Action &action)
+{
+    return std::visit([this](auto &value) {
+        using T = std::decay_t<decltype(value)>;
+        ActionDialogFor<T> dialog{value, m_projectModel, this};
+        return dialog.exec() == QDialog::Accepted;
+    }, action);
+}
+
+void ActionsContainerWidget::newActionDropped(Action action, int row)
+{
+    if (!m_actionsModel->actionsContainer())
     {
-        MoveFixedDialog dialog{*ptr, m_projectModel, this};
-        if (dialog.exec() == QDialog::Accepted)
-            emit changed();
+        actionsContainerMissing();
+        return;
     }
-    else if (auto ptr = std::get_if<MoveFreeAction>(action))
-    {
-        MoveFreeDialog dialog{*ptr, m_projectModel, this};
-        if (dialog.exec() == QDialog::Accepted)
-            emit changed();
-    }
-    else if (auto ptr = std::get_if<MoveTowardsAction>(action))
-    {
-        MoveTowardsDialog dialog{*ptr, m_projectModel, this};
-        if (dialog.exec() == QDialog::Accepted)
-            emit changed();
-    }
-    else if (auto ptr = std::get_if<SpeedHorizontalAction>(action))
-    {
-        SpeedHorizontalDialog dialog{*ptr, m_projectModel, this};
-        if (dialog.exec() == QDialog::Accepted)
-            emit changed();
-    }
-    else if (auto ptr = std::get_if<SpeedVerticalAction>(action))
-    {
-        SpeedVerticalDialog dialog{*ptr, m_projectModel, this};
-        if (dialog.exec() == QDialog::Accepted)
-            emit changed();
-    }
-    else if (auto ptr = std::get_if<SetGravityAction>(action))
-    {
-        SetGravityDialog dialog{*ptr, m_projectModel, this};
-        if (dialog.exec() == QDialog::Accepted)
-            emit changed();
-    }
-    else if (auto ptr = std::get_if<ExecuteCodeAction>(action))
-    {
-        ExecuteCodeDialog dialog{*ptr, m_projectModel, this};
-        if (dialog.exec() == QDialog::Accepted)
-            emit changed();
-    }
-    else
-        QMessageBox::information(this, tr("Not implemented!"), tr("Not implemented!"));
+    if (editAction(action))
+        m_actionsModel->insertAction(row, std::move(action));
+}
+
+void ActionsContainerWidget::deleteAction(const QModelIndex &index)
+{
+    if (!index.isValid() || !m_actionsModel->actionsContainer())
+        return;
+    if (!m_actionsModel->removeRow(index.row()))
+        QMessageBox::warning(this, tr("Could not remove action!"), tr("Could not remove action!"));
 }
 
 void ActionsContainerWidget::actionsContextMenuRequested(const QPoint &pos)
 {
     const auto index = m_ui->listViewActions->indexAt(pos);
-    auto action = index.isValid() ? m_actionsModel->getAction(index) : nullptr;
+    auto *selectedAction = index.isValid() ? m_actionsModel->getAction(index) : nullptr;
 
     QMenu menu{this};
     if (auto action = menu.addAction(tr("&Edit Values"), this, [this,index](){
         actionDoubleClicked(index);
     }))
-        action->setEnabled(action);
+        action->setEnabled(selectedAction != nullptr);
     menu.addSeparator();
     if (auto action = menu.addAction(tr("C&ut"), this, [this](){
         QMessageBox::information(this, tr("Not implemented!"), tr("Not implemented!"));
     }))
     {
-        action->setEnabled(action);
+        action->setEnabled(selectedAction != nullptr);
         action->setShortcut(QKeySequence::Cut);
     }
     if (auto action = menu.addAction(tr("&Copy"), this, [this](){
         QMessageBox::information(this, tr("Not implemented!"), tr("Not implemented!"));
     }))
     {
-        action->setEnabled(action);
+        action->setEnabled(selectedAction != nullptr);
         action->setShortcut(QKeySequence::Copy);
     }
     if (auto action = menu.addAction(tr("&Paste"), this, [this](){
@@ -183,11 +181,10 @@ void ActionsContainerWidget::actionsContextMenuRequested(const QPoint &pos)
     }
     menu.addSeparator();
     if (auto action = menu.addAction(tr("&Delete"), this, [this,index](){
-        if (!m_actionsModel->removeRow(index.row()))
-            QMessageBox::warning(this, tr("Could not remove action!"), tr("Could not remove action!"));
+        deleteAction(index);
     }))
     {
-        action->setEnabled(action);
+        action->setEnabled(selectedAction != nullptr);
         action->setShortcut(QKeySequence::Delete);
     }
     menu.addSeparator();
@@ -220,8 +217,7 @@ void ActionsContainerWidget::createNewAction()
     if (!m_actionsModel->actionsContainer())
         return;
 
-    T action;
-    ActionDialogFor<T> dialog{action, m_projectModel, this};
-    if (dialog.exec() == QDialog::Accepted)
+    Action action = T{};
+    if (editAction(action))
         m_actionsModel->appendAction(std::move(action));
 }

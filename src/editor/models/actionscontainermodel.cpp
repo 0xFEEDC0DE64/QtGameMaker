@@ -1,9 +1,13 @@
 #include "actionscontainermodel.h"
 
+#include <algorithm>
+
 #include <QDebug>
 #include <QIcon>
 #include <QMimeData>
+#include <QTimer>
 
+#include "actionmimetypes.h"
 #include "projectserialization.h"
 #include "stdserialization.h"
 
@@ -211,6 +215,17 @@ bool ActionsContainerModel::dropMimeData(const QMimeData *data, Qt::DropAction a
         return false;
     }
 
+    if (data->hasFormat(newActionMimeType))
+    {
+        if (actions.size() != 1 || action != Qt::CopyAction)
+            return false;
+        Action freshAction = std::move(actions.front());
+        QTimer::singleShot(0, this, [this, freshAction = std::move(freshAction), row]() mutable {
+            emit newActionDropped(std::move(freshAction), row);
+        });
+        return true;
+    }
+
     beginInsertRows({}, row, row + actions.size() - 1);
     auto iter = std::next(std::begin(*m_actionsContainer), row);
     for (auto &action : actions)
@@ -221,6 +236,20 @@ bool ActionsContainerModel::dropMimeData(const QMimeData *data, Qt::DropAction a
         emit changed();
 
     return true;
+}
+
+void ActionsContainerModel::insertAction(int row, Action action)
+{
+    if (!m_actionsContainer)
+    {
+        emit actionsContainerMissing();
+        return;
+    }
+    row = std::clamp(row, 0, int(m_actionsContainer->size()));
+    beginInsertRows({}, row, row);
+    m_actionsContainer->insert(std::next(m_actionsContainer->begin(), row), std::move(action));
+    endInsertRows();
+    emit changed();
 }
 
 bool ActionsContainerModel::removeRows(int row, int count, const QModelIndex &parent)

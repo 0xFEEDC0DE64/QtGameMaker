@@ -6,6 +6,7 @@
 #include <QDebug>
 
 #include "editorguiutils.h"
+#include "projectcontainer.h"
 
 GlobalGameSettingsDialog::GlobalGameSettingsDialog(GlobalGameSettings &globalGameSettings, QWidget *parent) :
     QDialog{parent},
@@ -13,6 +14,7 @@ GlobalGameSettingsDialog::GlobalGameSettingsDialog(GlobalGameSettings &globalGam
     m_globalGameSettings{globalGameSettings}
 {
     m_ui->setupUi(this);
+    m_ui->checkBoxEscEndGame->setChecked(m_globalGameSettings.letEscEndGame);
 
 #ifdef Q_OS_LINUX
     setWindowFlags((windowFlags() & ~Qt::Dialog) | Qt::Window);
@@ -30,6 +32,9 @@ GlobalGameSettingsDialog::GlobalGameSettingsDialog(GlobalGameSettings &globalGam
     }
 
     improveButtonBox(m_ui->buttonBox);
+
+    connect(m_ui->checkBoxEscEndGame, &QCheckBox::toggled,
+            this, &GlobalGameSettingsDialog::changed);
 
     connect(m_ui->checkBoxFullscreen, &QCheckBox::toggled,
             this, &GlobalGameSettingsDialog::changed);
@@ -68,7 +73,7 @@ void GlobalGameSettingsDialog::accept()
         return;
     }
 
-    // TODO
+    m_globalGameSettings.letEscEndGame = m_ui->checkBoxEscEndGame->isChecked();
 
     QDialog::accept();
 }

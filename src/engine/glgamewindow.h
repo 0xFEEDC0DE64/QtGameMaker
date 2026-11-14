@@ -23,7 +23,6 @@ public:
 
 protected:
     bool event(QEvent *event) override;
-    void keyPressEvent(QKeyEvent *event) override;
     void exposeEvent(QExposeEvent *event) override;
 
 private:

@@ -9,6 +9,7 @@
 
 #include "projectserialization.h"
 #include "stdserialization.h"
+#include "actionmimetypes.h"
 
 void ActionDragWidget::mousePressEvent(QMouseEvent *event)
 {
@@ -37,6 +38,7 @@ void ActionDragWidget::mouseMoveEvent(QMouseEvent *event)
     QDataStream stream(&encoded, QIODevice::WriteOnly);
     stream << m_action;
     mimeData->setData("custom", encoded);
+    mimeData->setData(newActionMimeType, {});
     drag->setMimeData(mimeData);
 
     Qt::DropAction dropAction = drag->exec(Qt::CopyAction);

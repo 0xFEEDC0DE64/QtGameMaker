@@ -3,7 +3,6 @@
 #include <array>
 #include <cstddef>
 
-#include <QKeyEvent>
 #include <QMatrix4x4>
 #include <QOpenGLContext>
 #include <QOpenGLShaderProgram>
@@ -215,14 +214,6 @@ bool GlGameWindow::event(QEvent *event)
         return true;
     }
     return QWindow::event(event);
-}
-
-void GlGameWindow::keyPressEvent(QKeyEvent *event)
-{
-    if (event->key() == Qt::Key_Escape && m_project.globalGameSettings.letEscEndGame)
-        close();
-    else
-        QWindow::keyPressEvent(event);
 }
 
 void GlGameWindow::exposeEvent(QExposeEvent *event)
