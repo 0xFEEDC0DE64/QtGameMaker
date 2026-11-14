@@ -3,6 +3,9 @@
 #include <algorithm>
 
 #include <QEventLoop>
+#include <QEnterEvent>
+#include <QMouseEvent>
+#include <QWheelEvent>
 
 #include "closeeventfilter.h"
 #include "projectcontainer.h"
@@ -22,6 +25,8 @@ GameEngine::GameEngine(const ProjectContainer &project, QObject *parent) :
 
     m_glGameWindow.setModality(Qt::WindowModal);
     m_vulkanGameWindow.setModality(Qt::WindowModal);
+    m_glGameWindow.installEventFilter(this);
+    m_vulkanGameWindow.installEventFilter(this);
 
     m_frameTimer.setTimerType(Qt::PreciseTimer);
     m_frameTimer.setSingleShot(true);
@@ -39,6 +44,81 @@ GameEngine::GameEngine(const ProjectContainer &project, QObject *parent) :
         const qint64 remaining = m_nextFrameNanoseconds - m_elapsed.nsecsElapsed();
         m_frameTimer.start(int(std::max<qint64>(1, (remaining + 999999) / 1000000)));
     });
+}
+
+bool GameEngine::eventFilter(QObject *watched, QEvent *event)
+{
+    if (watched != &m_glGameWindow && watched != &m_vulkanGameWindow)
+        return QObject::eventFilter(watched, event);
+
+    auto *window = static_cast<QWindow *>(watched);
+    const auto roomPosition = [this, window](QPointF position) {
+        return QPointF{position.x() * m_scene.roomSize.width() / std::max(1, window->width()),
+                       position.y() * m_scene.roomSize.height() / std::max(1, window->height())};
+    };
+
+    switch (event->type())
+    {
+    case QEvent::FocusIn:
+        if (m_mouseSource != window)
+        {
+            m_scene.resetMouseInput();
+            m_mouseSource = window;
+        }
+        break;
+    case QEvent::FocusOut:
+    case QEvent::Hide:
+        if (m_mouseSource == window)
+        {
+            m_scene.resetMouseInput();
+            m_mouseSource = nullptr;
+        }
+        break;
+    case QEvent::Enter:
+        if (!m_mouseSource)
+            m_mouseSource = window;
+        if (m_mouseSource == window)
+            m_scene.queueMouseMove(roomPosition(static_cast<QEnterEvent *>(event)->position()));
+        break;
+    case QEvent::Leave:
+        if (m_mouseSource == window)
+            m_scene.queueMouseLeave();
+        break;
+    case QEvent::MouseMove:
+    case QEvent::MouseButtonPress:
+    case QEvent::MouseButtonRelease:
+    case QEvent::MouseButtonDblClick:
+    {
+        auto *mouse = static_cast<QMouseEvent *>(event);
+        if (event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseButtonDblClick)
+        {
+            if (m_mouseSource != window)
+            {
+                m_scene.resetMouseInput();
+                m_mouseSource = window;
+            }
+        }
+        if (m_mouseSource != window)
+            break;
+        const QPointF position = roomPosition(mouse->position());
+        if (event->type() == QEvent::MouseMove)
+            m_scene.queueMouseMove(position);
+        else
+            m_scene.queueMouseButton(position, mouse->button(),
+                                     event->type() != QEvent::MouseButtonRelease);
+        break;
+    }
+    case QEvent::Wheel:
+        if (m_mouseSource == window)
+        {
+            auto *wheel = static_cast<QWheelEvent *>(event);
+            m_scene.queueMouseWheel(roomPosition(wheel->position()), wheel->angleDelta().y());
+        }
+        break;
+    default:
+        break;
+    }
+    return QObject::eventFilter(watched, event);
 }
 
 void GameEngine::run()

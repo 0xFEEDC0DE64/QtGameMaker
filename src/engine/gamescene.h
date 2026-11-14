@@ -11,6 +11,7 @@
 #include <QRectF>
 #include <QSize>
 #include <QString>
+#include <Qt>
 
 #include "projectcontainer.h"
 
@@ -39,6 +40,7 @@ struct ObjectInstance
     int depth{};
     bool visible{true};
     bool pendingDestroy{};
+    bool mouseOver{};
     std::array<int, 12> alarms;
 
     void step();
@@ -71,6 +73,11 @@ struct GameScene
     std::vector<const Instance *> drawOrder() const;
     void start(const ActionExecutor &executor);
     void destroyInstance(Instance &instance);
+    void queueMouseMove(QPointF position);
+    void queueMouseButton(QPointF position, Qt::MouseButton button, bool pressed);
+    void queueMouseWheel(QPointF position, int angleDeltaY);
+    void queueMouseLeave();
+    void resetMouseInput();
     void advanceTo(qint64 elapsedMilliseconds);
     void draw();
 
@@ -82,7 +89,23 @@ struct GameScene
     std::vector<Instance> instances;
 
 private:
+    struct MouseInput
+    {
+        enum class Kind { Move, Press, Release, Wheel, Leave, Reset } kind;
+        QPointF position;
+        Qt::MouseButton button{Qt::NoButton};
+        int wheelDelta{};
+    };
+
     qint64 m_stepsDone{};
     ActionExecutor m_executor;
+    std::vector<MouseInput> m_mouseInputs;
+    QPointF m_mousePosition;
+    Qt::MouseButtons m_mouseButtons{Qt::NoButton};
+    bool m_mouseInside{};
+    int m_wheelRemainder{};
     void removeDestroyed();
+    void updateMouseHover();
+    void dispatchMouseEvent(Object::EventType type, QPointF position, bool global);
+    void processMouseInput();
 };

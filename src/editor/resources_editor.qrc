@@ -47,6 +47,7 @@
         <file>icons/event-create.png</file>
         <file>icons/event-destroy.png</file>
         <file>icons/event-draw.png</file>
+        <file>icons/event-mouse.png</file>
         <file>icons/event-step.png</file>
         <file>icons/exit.png</file>
         <file>icons/export-resources.png</file>

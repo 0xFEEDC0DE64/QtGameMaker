@@ -26,6 +26,37 @@ QPointF motion(double degrees, double speed)
     return {speed * std::cos(radians), -speed * std::sin(radians)};
 }
 
+std::optional<Object::EventType> mouseButtonEvent(Qt::MouseButton button, bool pressed, bool global)
+{
+    using Event = Object::EventType;
+    switch (button)
+    {
+    case Qt::LeftButton:
+        return global ? (pressed ? Event::MouseGlobalLeftPressed : Event::MouseGlobalLeftReleased)
+                      : (pressed ? Event::MouseLeftPressed : Event::MouseLeftReleased);
+    case Qt::RightButton:
+        return global ? (pressed ? Event::MouseGlobalRightPressed : Event::MouseGlobalRightReleased)
+                      : (pressed ? Event::MouseRightPressed : Event::MouseRightReleased);
+    case Qt::MiddleButton:
+        return global ? (pressed ? Event::MouseGlobalMiddlePressed : Event::MouseGlobalMiddleReleased)
+                      : (pressed ? Event::MouseMiddlePressed : Event::MouseMiddleReleased);
+    default:
+        return std::nullopt;
+    }
+}
+
+std::optional<Object::EventType> mouseHeldEvent(Qt::MouseButton button, bool global)
+{
+    using Event = Object::EventType;
+    switch (button)
+    {
+    case Qt::LeftButton: return global ? Event::MouseGlobalLeftButton : Event::MouseLeftButton;
+    case Qt::RightButton: return global ? Event::MouseGlobalRightButton : Event::MouseRightButton;
+    case Qt::MiddleButton: return global ? Event::MouseGlobalMiddleButton : Event::MouseMiddleButton;
+    default: return std::nullopt;
+    }
+}
+
 } // namespace
 
 void ObjectInstance::executeActions(const ActionsContainer &actions, GameScene &scene,
@@ -260,6 +291,115 @@ void GameScene::removeDestroyed()
     std::erase_if(instances, [](const Instance &instance) { return instance.pendingDestroy; });
 }
 
+void GameScene::queueMouseMove(QPointF position)
+{
+    m_mouseInputs.push_back({MouseInput::Kind::Move, position});
+}
+
+void GameScene::queueMouseButton(QPointF position, Qt::MouseButton button, bool pressed)
+{
+    m_mouseInputs.push_back({pressed ? MouseInput::Kind::Press : MouseInput::Kind::Release,
+                             position, button});
+}
+
+void GameScene::queueMouseWheel(QPointF position, int angleDeltaY)
+{
+    m_mouseInputs.push_back({MouseInput::Kind::Wheel, position, Qt::NoButton, angleDeltaY});
+}
+
+void GameScene::queueMouseLeave()
+{
+    m_mouseInputs.push_back({MouseInput::Kind::Leave, {}});
+}
+
+void GameScene::resetMouseInput()
+{
+    m_mouseInputs.push_back({MouseInput::Kind::Reset, {}});
+}
+
+void GameScene::dispatchMouseEvent(Object::EventType type, QPointF position, bool global)
+{
+    for (Instance &instance : instances)
+        if (!instance.pendingDestroy &&
+            (global || collisionRect(instance).contains(position)))
+            instance.executeEvent(type, *this, m_executor);
+}
+
+void GameScene::updateMouseHover()
+{
+    for (Instance &instance : instances)
+    {
+        if (instance.pendingDestroy)
+            continue;
+        const bool over = m_mouseInside && collisionRect(instance).contains(m_mousePosition);
+        if (over == instance.mouseOver)
+            continue;
+        instance.mouseOver = over;
+        instance.executeEvent(over ? Object::EventType::MouseEnter : Object::EventType::MouseLeave,
+                              *this, m_executor);
+    }
+}
+
+void GameScene::processMouseInput()
+{
+    const auto inputs = std::exchange(m_mouseInputs, {});
+    const QRectF room{QPointF{}, QSizeF{roomSize}};
+    for (const MouseInput &input : inputs)
+    {
+        if (input.kind == MouseInput::Kind::Leave || input.kind == MouseInput::Kind::Reset)
+        {
+            m_mouseInside = false;
+            if (input.kind == MouseInput::Kind::Reset)
+                m_mouseButtons = Qt::NoButton;
+            updateMouseHover();
+            continue;
+        }
+
+        m_mousePosition = input.position;
+        m_mouseInside = room.contains(input.position);
+        updateMouseHover();
+        if (input.kind == MouseInput::Kind::Press || input.kind == MouseInput::Kind::Release)
+        {
+            const bool pressed = input.kind == MouseInput::Kind::Press;
+            if (pressed)
+                m_mouseButtons |= input.button;
+            else
+                m_mouseButtons &= ~Qt::MouseButtons{input.button};
+            if (const auto local = mouseButtonEvent(input.button, pressed, false); local && m_mouseInside)
+                dispatchMouseEvent(*local, input.position, false);
+            if (const auto global = mouseButtonEvent(input.button, pressed, true); global && m_mouseInside)
+                dispatchMouseEvent(*global, input.position, true);
+        }
+        else if (input.kind == MouseInput::Kind::Wheel && m_mouseInside)
+        {
+            m_wheelRemainder += input.wheelDelta;
+            while (m_wheelRemainder >= 120)
+            {
+                dispatchMouseEvent(Object::EventType::MouseWheelUp, input.position, true);
+                m_wheelRemainder -= 120;
+            }
+            while (m_wheelRemainder <= -120)
+            {
+                dispatchMouseEvent(Object::EventType::MouseWheelDown, input.position, true);
+                m_wheelRemainder += 120;
+            }
+        }
+    }
+
+    updateMouseHover(); // Instances can also move under a stationary cursor.
+    if (!m_mouseInside)
+        return;
+    if (m_mouseButtons == Qt::NoButton)
+        dispatchMouseEvent(Object::EventType::MouseNoButton, m_mousePosition, false);
+    for (Qt::MouseButton button : {Qt::LeftButton, Qt::RightButton, Qt::MiddleButton})
+    {
+        if (!(m_mouseButtons & button))
+            continue;
+        dispatchMouseEvent(*mouseHeldEvent(button, false), m_mousePosition, false);
+        dispatchMouseEvent(*mouseHeldEvent(button, true), m_mousePosition, true);
+    }
+}
+
 void GameScene::advanceTo(qint64 elapsedMilliseconds)
 {
     const qint64 targetStep = elapsedMilliseconds * roomSpeed / 1000;
@@ -284,6 +424,7 @@ void GameScene::advanceTo(qint64 elapsedMilliseconds)
                     break;
             }
         }
+        processMouseInput();
         for (Instance &instance : instances)
             if (!instance.pendingDestroy)
                 instance.executeEvent(Object::EventType::Step, *this, m_executor);
@@ -295,6 +436,7 @@ void GameScene::advanceTo(qint64 elapsedMilliseconds)
         for (Instance &instance : instances)
             if (!instance.pendingDestroy)
                 instance.step();
+        updateMouseHover();
 
         // Detect every pair at its moved position before collision actions can
         // change either instance. A sprite-size rectangle is our first mask.

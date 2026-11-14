@@ -21,6 +21,9 @@ public:
     explicit GameEngine(const ProjectContainer &project, QObject *parent = nullptr);
     void run();
 
+protected:
+    bool eventFilter(QObject *watched, QEvent *event) override;
+
 private:
     const ProjectContainer &m_project;
     GameScene m_scene;
@@ -28,6 +31,7 @@ private:
     GlGameWindow m_glGameWindow;
     VulkanGameWindow m_vulkanGameWindow;
     bool m_vulkanAvailable{};
+    QWindow *m_mouseSource{};
     QTimer m_frameTimer;
     QElapsedTimer m_elapsed;
     qint64 m_nextFrameNanoseconds{};

@@ -38,24 +38,71 @@ QVariant ObjectEventsModel::data(const QModelIndex &index, int role) const
         case Qt::EditRole:
             switch (pair.first)
             {
-            case Object::EventType::Create:    return tr("Create");
-            case Object::EventType::Destroy:   return tr("Destroy");
-            case Object::EventType::Alarm0:    return tr("Alarm 0");
-            case Object::EventType::Alarm1:    return tr("Alarm 1");
-            case Object::EventType::Alarm2:    return tr("Alarm 2");
-            case Object::EventType::Alarm3:    return tr("Alarm 3");
-            case Object::EventType::Alarm4:    return tr("Alarm 4");
-            case Object::EventType::Alarm5:    return tr("Alarm 5");
-            case Object::EventType::Alarm6:    return tr("Alarm 6");
-            case Object::EventType::Alarm7:    return tr("Alarm 7");
-            case Object::EventType::Alarm8:    return tr("Alarm 8");
-            case Object::EventType::Alarm9:    return tr("Alarm 9");
-            case Object::EventType::Alarm10:   return tr("Alarm 10");
-            case Object::EventType::Alarm11:   return tr("Alarm 11");
-            case Object::EventType::Step:      return tr("Step");
-            case Object::EventType::BeginStep: return tr("Begin Step");
-            case Object::EventType::EndStep:   return tr("End Step");
-            case Object::EventType::Draw:      return tr("Draw");
+            case Object::EventType::Create:                    return tr("Create");
+            case Object::EventType::Destroy:                   return tr("Destroy");
+            case Object::EventType::Alarm0:                    return tr("Alarm 0");
+            case Object::EventType::Alarm1:                    return tr("Alarm 1");
+            case Object::EventType::Alarm2:                    return tr("Alarm 2");
+            case Object::EventType::Alarm3:                    return tr("Alarm 3");
+            case Object::EventType::Alarm4:                    return tr("Alarm 4");
+            case Object::EventType::Alarm5:                    return tr("Alarm 5");
+            case Object::EventType::Alarm6:                    return tr("Alarm 6");
+            case Object::EventType::Alarm7:                    return tr("Alarm 7");
+            case Object::EventType::Alarm8:                    return tr("Alarm 8");
+            case Object::EventType::Alarm9:                    return tr("Alarm 9");
+            case Object::EventType::Alarm10:                   return tr("Alarm 10");
+            case Object::EventType::Alarm11:                   return tr("Alarm 11");
+            case Object::EventType::Step:                      return tr("Step");
+            case Object::EventType::BeginStep:                 return tr("Begin Step");
+            case Object::EventType::EndStep:                   return tr("End Step");
+            case Object::EventType::Draw:                      return tr("Draw");
+            case Object::EventType::MouseLeftButton:           return tr("Left button");
+            case Object::EventType::MouseRightButton:          return tr("Right Button");
+            case Object::EventType::MouseMiddleButton:         return tr("Middle Button");
+            case Object::EventType::MouseNoButton:             return tr("No Button");
+            case Object::EventType::MouseLeftPressed:          return tr("Left Pressed");
+            case Object::EventType::MouseRightPressed:         return tr("Right Pressed");
+            case Object::EventType::MouseMiddlePressed:        return tr("Middle Pressed");
+            case Object::EventType::MouseLeftReleased:         return tr("Left Released");
+            case Object::EventType::MouseRightReleased:        return tr("Right Released");
+            case Object::EventType::MouseMiddleReleased:       return tr("Middle Released");
+            case Object::EventType::MouseEnter:                return tr("Enter");
+            case Object::EventType::MouseLeave:                return tr("Leave");
+            case Object::EventType::MouseWheelUp:              return tr("Wheel Up");
+            case Object::EventType::MouseWheelDown:            return tr("Wheel Down");
+            case Object::EventType::MouseGlobalLeftButton:     return tr("Global Left Button");
+            case Object::EventType::MouseGlobalRightButton:    return tr("Global Right Button");
+            case Object::EventType::MouseGlobalMiddleButton:   return tr("Global Middle Button");
+            case Object::EventType::MouseGlobalLeftPressed:    return tr("Global Left Pressed");
+            case Object::EventType::MouseGlobalRightPressed:   return tr("Global Right Pressed");
+            case Object::EventType::MouseGlobalMiddlePressed:  return tr("Global Middle Pressed");
+            case Object::EventType::MouseGlobalLeftReleased:   return tr("Global Left Released");
+            case Object::EventType::MouseGlobalRightReleased:  return tr("Global Right Released");
+            case Object::EventType::MouseGlobalMiddleReleased: return tr("Global Middle Released");
+            case Object::EventType::MouseJoystick1Left:        return tr("Joystick 1 Left");
+            case Object::EventType::MouseJoystick1Right:       return tr("Joystick 1 Right");
+            case Object::EventType::MouseJoystick1Up:          return tr("Joystick 1 Up");
+            case Object::EventType::MouseJoystick1Down:        return tr("Joystick 1 Down");
+            case Object::EventType::MouseJoystick1Button1:     return tr("Joystick 1 Button 1");
+            case Object::EventType::MouseJoystick1Button2:     return tr("Joystick 1 Button 2");
+            case Object::EventType::MouseJoystick1Button3:     return tr("Joystick 1 Button 3");
+            case Object::EventType::MouseJoystick1Button4:     return tr("Joystick 1 Button 4");
+            case Object::EventType::MouseJoystick1Button5:     return tr("Joystick 1 Button 5");
+            case Object::EventType::MouseJoystick1Button6:     return tr("Joystick 1 Button 6");
+            case Object::EventType::MouseJoystick1Button7:     return tr("Joystick 1 Button 7");
+            case Object::EventType::MouseJoystick1Button8:     return tr("Joystick 1 Button 8");
+            case Object::EventType::MouseJoystick2Left:        return tr("Joystick 2 Left");
+            case Object::EventType::MouseJoystick2Right:       return tr("Joystick 2 Right");
+            case Object::EventType::MouseJoystick2Up:          return tr("Joystick 2 Up");
+            case Object::EventType::MouseJoystick2Down:        return tr("Joystick 2 Down");
+            case Object::EventType::MouseJoystick2Button1:     return tr("Joystick 2 Button 1");
+            case Object::EventType::MouseJoystick2Button2:     return tr("Joystick 2 Button 2");
+            case Object::EventType::MouseJoystick2Button3:     return tr("Joystick 2 Button 3");
+            case Object::EventType::MouseJoystick2Button4:     return tr("Joystick 2 Button 4");
+            case Object::EventType::MouseJoystick2Button5:     return tr("Joystick 2 Button 5");
+            case Object::EventType::MouseJoystick2Button6:     return tr("Joystick 2 Button 6");
+            case Object::EventType::MouseJoystick2Button7:     return tr("Joystick 2 Button 7");
+            case Object::EventType::MouseJoystick2Button8:     return tr("Joystick 2 Button 8");
             }
 
             qWarning() << "unknown event type" << std::to_underlying(pair.first);
@@ -63,8 +110,8 @@ QVariant ObjectEventsModel::data(const QModelIndex &index, int role) const
         case Qt::DecorationRole:
             switch (pair.first)
             {
-            case Object::EventType::Create:    return QIcon{":/qtgameengine/icons/event-create.png"};
-            case Object::EventType::Destroy:   return QIcon{":/qtgameengine/icons/event-destroy.png"};
+            case Object::EventType::Create:                    return QIcon{":/qtgameengine/icons/event-create.png"};
+            case Object::EventType::Destroy:                   return QIcon{":/qtgameengine/icons/event-destroy.png"};
             case Object::EventType::Alarm0:
             case Object::EventType::Alarm1:
             case Object::EventType::Alarm2:
@@ -76,11 +123,58 @@ QVariant ObjectEventsModel::data(const QModelIndex &index, int role) const
             case Object::EventType::Alarm8:
             case Object::EventType::Alarm9:
             case Object::EventType::Alarm10:
-            case Object::EventType::Alarm11:   return QIcon{":/qtgameengine/icons/event-alarm.png"};
+            case Object::EventType::Alarm11:                   return QIcon{":/qtgameengine/icons/event-alarm.png"};
             case Object::EventType::Step:
             case Object::EventType::BeginStep:
-            case Object::EventType::EndStep:   return QIcon{":/qtgameengine/icons/event-step.png"};
-            case Object::EventType::Draw:      return QIcon{":/qtgameengine/icons/event-draw.png"};
+            case Object::EventType::EndStep:                   return QIcon{":/qtgameengine/icons/event-step.png"};
+            case Object::EventType::Draw:                      return QIcon{":/qtgameengine/icons/event-draw.png"};
+            case Object::EventType::MouseLeftButton:
+            case Object::EventType::MouseRightButton:
+            case Object::EventType::MouseMiddleButton:
+            case Object::EventType::MouseNoButton:
+            case Object::EventType::MouseLeftPressed:
+            case Object::EventType::MouseRightPressed:
+            case Object::EventType::MouseMiddlePressed:
+            case Object::EventType::MouseLeftReleased:
+            case Object::EventType::MouseRightReleased:
+            case Object::EventType::MouseMiddleReleased:
+            case Object::EventType::MouseEnter:
+            case Object::EventType::MouseLeave:
+            case Object::EventType::MouseWheelUp:
+            case Object::EventType::MouseWheelDown:
+            case Object::EventType::MouseGlobalLeftButton:
+            case Object::EventType::MouseGlobalRightButton:
+            case Object::EventType::MouseGlobalMiddleButton:
+            case Object::EventType::MouseGlobalLeftPressed:
+            case Object::EventType::MouseGlobalRightPressed:
+            case Object::EventType::MouseGlobalMiddlePressed:
+            case Object::EventType::MouseGlobalLeftReleased:
+            case Object::EventType::MouseGlobalRightReleased:
+            case Object::EventType::MouseGlobalMiddleReleased:
+            case Object::EventType::MouseJoystick1Left:
+            case Object::EventType::MouseJoystick1Right:
+            case Object::EventType::MouseJoystick1Up:
+            case Object::EventType::MouseJoystick1Down:
+            case Object::EventType::MouseJoystick1Button1:
+            case Object::EventType::MouseJoystick1Button2:
+            case Object::EventType::MouseJoystick1Button3:
+            case Object::EventType::MouseJoystick1Button4:
+            case Object::EventType::MouseJoystick1Button5:
+            case Object::EventType::MouseJoystick1Button6:
+            case Object::EventType::MouseJoystick1Button7:
+            case Object::EventType::MouseJoystick1Button8:
+            case Object::EventType::MouseJoystick2Left:
+            case Object::EventType::MouseJoystick2Right:
+            case Object::EventType::MouseJoystick2Up:
+            case Object::EventType::MouseJoystick2Down:
+            case Object::EventType::MouseJoystick2Button1:
+            case Object::EventType::MouseJoystick2Button2:
+            case Object::EventType::MouseJoystick2Button3:
+            case Object::EventType::MouseJoystick2Button4:
+            case Object::EventType::MouseJoystick2Button5:
+            case Object::EventType::MouseJoystick2Button6:
+            case Object::EventType::MouseJoystick2Button7:
+            case Object::EventType::MouseJoystick2Button8:     return QIcon{":/qtgameengine/icons/event-mouse.png"};
             }
 
             qWarning() << "unknown event type" << std::to_underlying(pair.first);
