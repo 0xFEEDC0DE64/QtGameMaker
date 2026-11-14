@@ -15,6 +15,7 @@ class SpeedHorizontalDialog : public QDialog
 public:
     explicit SpeedHorizontalDialog(SpeedHorizontalAction &action, ProjectTreeModel *projectModel, QWidget *parent = nullptr);
     ~SpeedHorizontalDialog() override;
+    void accept() override;
 
 private:
     const std::unique_ptr<Ui::SpeedHorizontalDialog> m_ui;

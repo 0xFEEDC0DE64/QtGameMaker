@@ -15,6 +15,7 @@ class SetGravityDialog : public QDialog
 public:
     explicit SetGravityDialog(SetGravityAction &action, ProjectTreeModel *projectModel, QWidget *parent = nullptr);
     ~SetGravityDialog() override;
+    void accept() override;
 
 private:
     const std::unique_ptr<Ui::SetGravityDialog> m_ui;

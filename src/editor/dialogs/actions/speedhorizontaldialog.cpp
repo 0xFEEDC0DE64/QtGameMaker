@@ -4,6 +4,7 @@
 #include <QPushButton>
 
 #include "editorguiutils.h"
+#include "actiondialogutils.h"
 
 SpeedHorizontalDialog::SpeedHorizontalDialog(SpeedHorizontalAction &action, ProjectTreeModel *projectModel, QWidget *parent) :
     QDialog{parent},
@@ -23,6 +24,18 @@ SpeedHorizontalDialog::SpeedHorizontalDialog(SpeedHorizontalAction &action, Proj
     m_ui->widgetObject->setShowClearObjectAction(false);
 
     improveButtonBox(m_ui->buttonBox);
+    loadActionTarget(*m_ui, m_action.appliesTo);
+    m_ui->spinBoxHorSpeed->setValue(m_action.speed);
+    m_ui->checkBoxRelative->setChecked(m_action.relative);
 }
 
 SpeedHorizontalDialog::~SpeedHorizontalDialog() = default;
+
+void SpeedHorizontalDialog::accept()
+{
+    if (!saveActionTarget(*m_ui, m_action.appliesTo, this))
+        return;
+    m_action.speed = m_ui->spinBoxHorSpeed->value();
+    m_action.relative = m_ui->checkBoxRelative->isChecked();
+    QDialog::accept();
+}

@@ -304,100 +304,108 @@ QDataStream &operator>>(QDataStream &ds, AppliesToObject &action)
     return ds;
 }
 
+QDataStream &operator<<(QDataStream &ds, const ActionBase &action)
+{
+    ds << action.appliesTo;
+    return ds;
+}
+
+QDataStream &operator>>(QDataStream &ds, ActionBase &action)
+{
+    ds >> action.appliesTo;
+    return ds;
+}
+
 QDataStream &operator<<(QDataStream &ds, const MoveFixedAction &action)
 {
-    Q_UNUSED(action);
-    ds << action.appliesTo;
+    ds << static_cast<const ActionBase &>(action)
+       << action.directions << action.speed << action.relative;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, MoveFixedAction &action)
 {
-    Q_UNUSED(action);
-    ds >> action.appliesTo;
+    ds >> static_cast<ActionBase &>(action)
+       >> action.directions >> action.speed >> action.relative;
     return ds;
 }
 
 QDataStream &operator<<(QDataStream &ds, const MoveFreeAction &action)
 {
-    Q_UNUSED(action);
-    ds << action.appliesTo;
+    ds << static_cast<const ActionBase &>(action)
+       << action.direction << action.speed << action.relative;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, MoveFreeAction &action)
 {
-    Q_UNUSED(action);
-    ds >> action.appliesTo;
+    ds >> static_cast<ActionBase &>(action)
+       >> action.direction >> action.speed >> action.relative;
     return ds;
 }
 
 QDataStream &operator<<(QDataStream &ds, const MoveTowardsAction &action)
 {
-    Q_UNUSED(action);
-    ds << action.appliesTo;
+    ds << static_cast<const ActionBase &>(action)
+       << action.x << action.y << action.speed << action.relative;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, MoveTowardsAction &action)
 {
-    Q_UNUSED(action);
-    ds >> action.appliesTo;
+    ds >> static_cast<ActionBase &>(action)
+       >> action.x >> action.y >> action.speed >> action.relative;
     return ds;
 }
 
 QDataStream &operator<<(QDataStream &ds, const SpeedHorizontalAction &action)
 {
-    Q_UNUSED(action);
-    ds << action.appliesTo;
+    ds << static_cast<const ActionBase &>(action) << action.speed << action.relative;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, SpeedHorizontalAction &action)
 {
-    Q_UNUSED(action);
-    ds >> action.appliesTo;
+    ds >> static_cast<ActionBase &>(action) >> action.speed >> action.relative;
     return ds;
 }
 
 QDataStream &operator<<(QDataStream &ds, const SpeedVerticalAction &action)
 {
-    Q_UNUSED(action);
-    ds << action.appliesTo;
+    ds << static_cast<const ActionBase &>(action) << action.speed << action.relative;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, SpeedVerticalAction &action)
 {
-    Q_UNUSED(action);
-    ds >> action.appliesTo;
+    ds >> static_cast<ActionBase &>(action) >> action.speed >> action.relative;
     return ds;
 }
 
 QDataStream &operator<<(QDataStream &ds, const SetGravityAction &action)
 {
-    Q_UNUSED(action);
-    ds << action.appliesTo;
+    ds << static_cast<const ActionBase &>(action)
+       << action.direction << action.gravity << action.relative;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, SetGravityAction &action)
 {
-    Q_UNUSED(action);
-    ds >> action.appliesTo;
+    ds >> static_cast<ActionBase &>(action)
+       >> action.direction >> action.gravity >> action.relative;
     return ds;
 }
 
 QDataStream &operator<<(QDataStream &ds, const ExecuteCodeAction &action)
 {
-    ds << action.appliesTo
+    ds << static_cast<const ActionBase &>(action)
        << action.script;
     return ds;
 }
 
 QDataStream &operator>>(QDataStream &ds, ExecuteCodeAction &action)
 {
-    ds >> action.appliesTo
+    ds >> static_cast<ActionBase &>(action)
        >> action.script;
     return ds;
 }

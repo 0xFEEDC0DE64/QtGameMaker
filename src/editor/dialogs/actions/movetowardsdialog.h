@@ -15,6 +15,7 @@ class MoveTowardsDialog : public QDialog
 public:
     explicit MoveTowardsDialog(MoveTowardsAction &action, ProjectTreeModel *projectModel, QWidget *parent = nullptr);
     ~MoveTowardsDialog() override;
+    void accept() override;
 
 private:
     const std::unique_ptr<Ui::MoveTowardsDialog> m_ui;

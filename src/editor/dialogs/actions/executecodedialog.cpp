@@ -1,5 +1,6 @@
 #include "executecodedialog.h"
 
+#include <QAction>
 #include <QRadioButton>
 #include <QLineEdit>
 #include <QLabel>

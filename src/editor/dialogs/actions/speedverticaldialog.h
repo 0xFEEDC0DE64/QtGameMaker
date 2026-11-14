@@ -15,6 +15,7 @@ class SpeedVerticalDialog : public QDialog
 public:
     explicit SpeedVerticalDialog(SpeedVerticalAction &action, ProjectTreeModel *projectModel, QWidget *parent = nullptr);
     ~SpeedVerticalDialog() override;
+    void accept() override;
 
 private:
     const std::unique_ptr<Ui::SpeedVerticalDialog> m_ui;

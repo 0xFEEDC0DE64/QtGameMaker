@@ -32,7 +32,7 @@ void ActionDragWidget::mouseMoveEvent(QMouseEvent *event)
 
     QMimeData *mimeData = new QMimeData;
     QByteArray encoded;
-    QDataStream stream(&encoded, QDataStream::WriteOnly);
+    QDataStream stream(&encoded, QIODevice::WriteOnly);
     stream << m_action;
     mimeData->setData("custom", encoded);
     drag->setMimeData(mimeData);

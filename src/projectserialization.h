@@ -34,6 +34,8 @@ QDataStream &operator<<(QDataStream &ds, const AppliesToOther &action);
 QDataStream &operator>>(QDataStream &ds, AppliesToOther &action);
 QDataStream &operator<<(QDataStream &ds, const AppliesToObject &action);
 QDataStream &operator>>(QDataStream &ds, AppliesToObject &action);
+QDataStream &operator<<(QDataStream &ds, const ActionBase &action);
+QDataStream &operator>>(QDataStream &ds, ActionBase &action);
 QDataStream &operator<<(QDataStream &ds, const MoveFixedAction &action);
 QDataStream &operator>>(QDataStream &ds, MoveFixedAction &action);
 QDataStream &operator<<(QDataStream &ds, const MoveFreeAction &action);

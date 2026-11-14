@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <array>
 #include <list>
 #include <map>
 #include <variant>
@@ -175,32 +176,46 @@ using AppliesTo = std::variant<
     AppliesToObject
 >;
 
-struct MoveFixedAction {
+struct ActionBase {
     AppliesTo appliesTo{AppliesToSelf{}};
 };
 
-struct MoveFreeAction {
-    AppliesTo appliesTo{AppliesToSelf{}};
+struct MoveFixedAction : ActionBase {
+    std::array<bool, 9> directions{};
+    int speed{};
+    bool relative{};
 };
 
-struct MoveTowardsAction {
-    AppliesTo appliesTo{AppliesToSelf{}};
+struct MoveFreeAction : ActionBase {
+    int direction{};
+    int speed{};
+    bool relative{};
 };
 
-struct SpeedHorizontalAction {
-    AppliesTo appliesTo{AppliesToSelf{}};
+struct MoveTowardsAction : ActionBase {
+    int x{};
+    int y{};
+    int speed{};
+    bool relative{};
 };
 
-struct SetGravityAction {
-    AppliesTo appliesTo{AppliesToSelf{}};
+struct SpeedHorizontalAction : ActionBase {
+    int speed{};
+    bool relative{};
 };
 
-struct SpeedVerticalAction {
-    AppliesTo appliesTo{AppliesToSelf{}};
+struct SetGravityAction : ActionBase {
+    int direction{};
+    int gravity{};
+    bool relative{};
 };
 
-struct ExecuteCodeAction {
-    AppliesTo appliesTo{AppliesToSelf{}};
+struct SpeedVerticalAction : ActionBase {
+    int speed{};
+    bool relative{};
+};
+
+struct ExecuteCodeAction : ActionBase {
     QString script;
 };
 

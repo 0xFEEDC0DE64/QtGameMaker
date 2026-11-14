@@ -4,6 +4,7 @@
 #include <QPushButton>
 
 #include "editorguiutils.h"
+#include "actiondialogutils.h"
 
 MoveFreeDialog::MoveFreeDialog(MoveFreeAction &action, ProjectTreeModel *projectModel, QWidget *parent) :
     QDialog{parent},
@@ -23,6 +24,20 @@ MoveFreeDialog::MoveFreeDialog(MoveFreeAction &action, ProjectTreeModel *project
     m_ui->widgetObject->setShowClearObjectAction(false);
 
     improveButtonBox(m_ui->buttonBox);
+    loadActionTarget(*m_ui, m_action.appliesTo);
+    m_ui->spinBoxDirection->setValue(m_action.direction);
+    m_ui->spinBoxSpeed->setValue(m_action.speed);
+    m_ui->checkBoxRelative->setChecked(m_action.relative);
 }
 
 MoveFreeDialog::~MoveFreeDialog() = default;
+
+void MoveFreeDialog::accept()
+{
+    if (!saveActionTarget(*m_ui, m_action.appliesTo, this))
+        return;
+    m_action.direction = m_ui->spinBoxDirection->value();
+    m_action.speed = m_ui->spinBoxSpeed->value();
+    m_action.relative = m_ui->checkBoxRelative->isChecked();
+    QDialog::accept();
+}

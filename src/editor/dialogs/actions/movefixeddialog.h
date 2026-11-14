@@ -15,6 +15,7 @@ class MoveFixedDialog : public QDialog
 public:
     explicit MoveFixedDialog(MoveFixedAction &action, ProjectTreeModel *projectModel, QWidget *parent = nullptr);
     ~MoveFixedDialog() override;
+    void accept() override;
 
 private:
     const std::unique_ptr<Ui::MoveFixedDialog> m_ui;

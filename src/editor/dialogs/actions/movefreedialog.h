@@ -15,6 +15,7 @@ class MoveFreeDialog : public QDialog
 public:
     explicit MoveFreeDialog(MoveFreeAction &action, ProjectTreeModel *projectModel, QWidget *parent = nullptr);
     ~MoveFreeDialog() override;
+    void accept() override;
 
 private:
     const std::unique_ptr<Ui::MoveFreeDialog> m_ui;

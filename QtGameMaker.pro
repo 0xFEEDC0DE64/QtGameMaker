@@ -26,6 +26,7 @@ INCLUDEPATH += \
 
 HEADERS += \
     src/closeeventfilter.h \
+    src/editor/dialogs/actions/actiondialogutils.h \
     src/editor/dialogs/actions/setgravitydialog.h \
     src/editor/dialogs/actions/speedhorizontaldialog.h \
     src/editor/dialogs/actions/movefreedialog.h \
