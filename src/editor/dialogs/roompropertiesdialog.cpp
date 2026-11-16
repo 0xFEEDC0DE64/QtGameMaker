@@ -10,6 +10,7 @@
 
 #include "projectcontainer.h"
 #include "models/projecttreemodel.h"
+#include "widgets/resourcemenuadapter.h"
 #include "roomscene.h"
 #include "editorguiutils.h"
 #include "genericcodeeditordialog.h"
@@ -31,6 +32,8 @@ RoomPropertiesDialog::RoomPropertiesDialog(Room &room, ProjectTreeModel &project
     m_labelY{new QLabel{tr("y: %0").arg(0)}}
 {
     m_ui->setupUi(this);
+    m_ui->splitter->setStretchFactor(0, 0);
+    m_ui->splitter->setStretchFactor(1, 1);
 
     updateTitle();
 
@@ -188,8 +191,11 @@ RoomPropertiesDialog::RoomPropertiesDialog(Room &room, ProjectTreeModel &project
     connect(m_ui->roomEditWidget, &RoomEditWidget::changed,
             this, &RoomPropertiesDialog::changed);
 
-    connect(m_menuObjects, &QMenu::aboutToShow,
-            this, &RoomPropertiesDialog::objectsMenuAboutToShow);
+    m_objectMenuAdapter = std::make_unique<ResourceMenuAdapter>(
+        m_projectModel, m_projectModel.rootFor<Object>(), *m_menuObjects,
+        [this](const QModelIndex &index) {
+            if (const Object *object = m_projectModel.get<Object>(index)) setObject(*object);
+        });
 
     if (!m_projectModel.project()->objects.empty())
         setObject(m_projectModel.project()->objects.back());
@@ -209,12 +215,19 @@ void RoomPropertiesDialog::accept()
         return;
     }
 
+    if (applyChanges()) QDialog::accept();
+}
+
+bool RoomPropertiesDialog::applyChanges()
+{
+    if (!m_unsavedChanges) return true;
+
     if (m_room.name != m_ui->lineEditName->text())
     {
         if (!m_projectModel.rename<Room>(m_room, m_ui->lineEditName->text()))
         {
             QMessageBox::critical(this, tr("Renaming Room failed!"), tr("Renaming Room failed!"));
-            return;
+            return false;
         }
     }
 
@@ -231,7 +244,10 @@ void RoomPropertiesDialog::accept()
 
     m_room.objects = m_objects;
 
-    QDialog::accept();
+    m_unsavedChanges = false;
+    setWindowModified(false);
+    updateTitle();
+    return true;
 }
 
 void RoomPropertiesDialog::reject()
@@ -315,6 +331,7 @@ void RoomPropertiesDialog::changed()
     if (!m_unsavedChanges)
     {
         m_unsavedChanges = true;
+        setWindowModified(true);
         updateTitle();
     }
 }
@@ -399,26 +416,6 @@ void RoomPropertiesDialog::objectSpriteNameChanged(const Object &object)
             pixmap = iter->pixmaps.front();
     }
     m_ui->labelObjectPreview->setPixmap(std::move(pixmap));
-}
-
-void RoomPropertiesDialog::objectsMenuAboutToShow()
-{
-    m_menuObjects->clear();
-    for (const auto &object : m_projectModel.project()->objects)
-    {
-        QIcon icon;
-        if (!object.spriteName.isEmpty())
-        {
-            const auto iter = std::find_if(std::cbegin(m_projectModel.project()->sprites), std::cend(m_projectModel.project()->sprites),
-                                           [&object](const auto &sprite){ return object.spriteName == sprite.name; });
-            if (iter == std::cend(m_projectModel.project()->sprites))
-                qWarning() << "invalid sprite" << object.spriteName;
-            else if (!iter->pixmaps.empty() && !iter->pixmaps.front().isNull())
-                icon = iter->pixmaps.front();
-        }
-        m_menuObjects->addAction(icon, object.name, this,
-                                 [&object,this](){ setObject(object); });
-    }
 }
 
 void RoomPropertiesDialog::cursorMoved(const QPoint &point)

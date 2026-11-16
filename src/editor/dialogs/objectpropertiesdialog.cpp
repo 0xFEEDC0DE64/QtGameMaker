@@ -13,6 +13,7 @@
 #include "addeventdialog.h"
 #include "editorguiutils.h"
 #include "editorsettings.h"
+#include "widgets/resourcemenuadapter.h"
 
 ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel &projectModel, MainWindow &mainWindow) :
     QDialog{&mainWindow},
@@ -105,10 +106,18 @@ ObjectPropertiesDialog::ObjectPropertiesDialog(Object &object, ProjectTreeModel 
     connect(m_ui->checkBoxPersistent, &QCheckBox::toggled,
             this, &ObjectPropertiesDialog::changed);
 
-    connect(m_menuSprites, &QMenu::aboutToShow,
-            this, &ObjectPropertiesDialog::spritesMenuAboutToShow);
-    connect(m_menuMaskSprites, &QMenu::aboutToShow,
-            this, &ObjectPropertiesDialog::maskSpritesMenuAboutToShow);
+    m_spriteMenuAdapter = std::make_unique<ResourceMenuAdapter>(
+        m_projectModel, m_projectModel.rootFor<Sprite>(), *m_menuSprites,
+        [this](const QModelIndex &index) {
+            if (const Sprite *sprite = m_projectModel.get<Sprite>(index)) setSprite(*sprite);
+        },
+        [this](QMenu &menu) { menu.addAction(tr("<no sprite>"), this, &ObjectPropertiesDialog::clearSprite); });
+    m_maskMenuAdapter = std::make_unique<ResourceMenuAdapter>(
+        m_projectModel, m_projectModel.rootFor<Sprite>(), *m_menuMaskSprites,
+        [this](const QModelIndex &index) {
+            if (const Sprite *sprite = m_projectModel.get<Sprite>(index)) setMaskSprite(*sprite);
+        },
+        [this](QMenu &menu) { menu.addAction(tr("<same as sprite>"), this, &ObjectPropertiesDialog::clearMaskSprite); });
 
     connect(m_ui->widgetParent, &ObjectSelectorWidget::changed,
             this, &ObjectPropertiesDialog::changed);
@@ -137,19 +146,26 @@ void ObjectPropertiesDialog::accept()
         return;
     }
 
+    if (applyChanges()) QDialog::accept();
+}
+
+bool ObjectPropertiesDialog::applyChanges()
+{
+    if (!m_unsavedChanges) return true;
+
     if (m_object.name != m_ui->lineEditName->text())
     {
         if (!m_projectModel.rename<Object>(m_object, m_ui->lineEditName->text()))
         {
             QMessageBox::critical(this, tr("Renaming Object failed!"), tr("Renaming Object failed!"));
-            return;
+            return false;
         }
     }
 
-    if (!m_projectModel.setObjectSpriteName(m_object, std::move(m_spriteName)))
+    if (!m_projectModel.setObjectSpriteName(m_object, QString{m_spriteName}))
     {
         QMessageBox::critical(this, tr("Setting Object Sprite failed!"), tr("Setting Object Sprite failed!"));
-        return;
+        return false;
     }
 
     m_object.visible = m_ui->checkBoxVisible->isChecked();
@@ -158,10 +174,13 @@ void ObjectPropertiesDialog::accept()
     m_object.persistent = m_ui->checkBoxPersistent->isChecked();
     m_object.parentName = m_ui->widgetParent->objectName();
     m_object.maskSpriteName = m_maskSpriteName;
-    m_object.events = std::move(m_events);
-    m_object.collisionEvents = std::move(m_collisionEvents);
+    m_object.events = m_events;
+    m_object.collisionEvents = m_collisionEvents;
 
-    QDialog::accept();
+    m_unsavedChanges = false;
+    setWindowModified(false);
+    updateTitle();
+    return true;
 }
 
 void ObjectPropertiesDialog::reject()
@@ -275,12 +294,29 @@ void ObjectPropertiesDialog::changed()
     if (!m_unsavedChanges)
     {
         m_unsavedChanges = true;
+        setWindowModified(true);
         updateTitle();
     }
 }
 
 void ObjectPropertiesDialog::objectNameChanged(const Object &object, const QString &oldName)
 {
+    const auto renameTargets = [&object, &oldName](ActionsContainer &actions) {
+        for (Action &action : actions)
+            std::visit([&](auto &value) {
+                if (auto *target = std::get_if<AppliesToObject>(&value.appliesTo);
+                    target && target->objectName == oldName)
+                    target->objectName = object.name;
+            }, action);
+    };
+    for (auto &[event, actions] : m_events) renameTargets(actions);
+    for (auto &[event, actions] : m_collisionEvents) renameTargets(actions);
+    if (m_collisionEvents.contains(oldName))
+    {
+        m_ui->actionsWidget->setActionsContainer(nullptr);
+        m_eventsModel->changeEvent(oldName, object.name);
+    }
+
     if (&object == &m_object)
     {
         {
@@ -323,6 +359,24 @@ void ObjectPropertiesDialog::objectAboutToBeRemoved(const Object &object)
     if (QSignalBlocker blocker{m_ui->widgetParent};
         !m_ui->widgetParent->objectName().isEmpty() && m_ui->widgetParent->objectName() == object.name)
         m_ui->widgetParent->clearObject();
+
+    const auto clearTargets = [&object](ActionsContainer &actions) {
+        for (Action &action : actions)
+            std::visit([&object](auto &value) {
+                if (auto *target = std::get_if<AppliesToObject>(&value.appliesTo);
+                    target && target->objectName == object.name)
+                    target->objectName.clear();
+            }, action);
+    };
+    for (auto &[event, actions] : m_events)
+        clearTargets(actions);
+    for (auto &[event, actions] : m_collisionEvents)
+        clearTargets(actions);
+    if (m_collisionEvents.contains(object.name))
+    {
+        m_ui->actionsWidget->setActionsContainer(nullptr);
+        m_eventsModel->removeEvent(object.name);
+    }
 }
 
 void ObjectPropertiesDialog::spriteAboutToBeRemoved(const Sprite &sprite)
@@ -356,28 +410,6 @@ void ObjectPropertiesDialog::spritePixmapsChanged(const Sprite &sprite)
         return;
 
     updateSpritePreview(sprite.pixmaps);
-}
-
-void ObjectPropertiesDialog::spritesMenuAboutToShow()
-{
-    m_menuSprites->clear();
-    m_menuSprites->addAction(tr("<no sprite>"), this, &ObjectPropertiesDialog::clearSprite);
-    for (const auto &sprite : m_projectModel.project()->sprites)
-        m_menuSprites->addAction(sprite.pixmaps.empty() ? QPixmap{} : sprite.pixmaps.front(),
-                                 sprite.name,
-                                 this,
-                                 [&sprite,this](){ setSprite(sprite); });
-}
-
-void ObjectPropertiesDialog::maskSpritesMenuAboutToShow()
-{
-    m_menuMaskSprites->clear();
-    m_menuMaskSprites->addAction(tr("<same as sprite>"), this, &ObjectPropertiesDialog::clearMaskSprite);
-    for (const auto &sprite : m_projectModel.project()->sprites)
-        m_menuMaskSprites->addAction(sprite.pixmaps.empty() ? QPixmap{} : sprite.pixmaps.front(),
-                                     sprite.name,
-                                     this,
-                                     [&sprite,this](){ setMaskSprite(sprite); });
 }
 
 void ObjectPropertiesDialog::currentEventChanged(const QModelIndex &index)
@@ -424,6 +456,9 @@ void ObjectPropertiesDialog::clearSprite()
 
 void ObjectPropertiesDialog::setSprite(const Sprite &sprite)
 {
+    if (m_spriteName == sprite.name)
+        return;
+
     m_spriteName = sprite.name;
     updateSpritePreview(sprite.pixmaps);
     m_ui->lineEditSprite->setText(sprite.name);
@@ -479,5 +514,5 @@ void ObjectPropertiesDialog::updateSpritePreview()
 
 void ObjectPropertiesDialog::updateSpritePreview(const std::vector<QPixmap> &pixmaps)
 {
-    m_ui->labelSpritePreview->setPixmap(pixmaps.empty() ? QPixmap{} : pixmaps.front().scaled(32, m_ui->labelSpritePreview->height(), Qt::KeepAspectRatio));
+    m_ui->labelSpritePreview->setPixmap(pixmaps.empty() ? QPixmap{} : pixmaps.front().scaled(32, 32, Qt::KeepAspectRatio));
 }

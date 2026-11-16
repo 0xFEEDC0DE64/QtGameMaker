@@ -34,6 +34,10 @@ TimeLinePropertiesDialog::TimeLinePropertiesDialog(TimeLine &timeLine, ProjectTr
 
     connect(&m_projectModel, &ProjectTreeModel::timeLineNameChanged,
             this, &TimeLinePropertiesDialog::timeLineNameChanged);
+    connect(&m_projectModel, &ProjectTreeModel::objectAboutToBeRemoved,
+            this, &TimeLinePropertiesDialog::objectAboutToBeRemoved);
+    connect(&m_projectModel, &ProjectTreeModel::objectNameChanged,
+            this, &TimeLinePropertiesDialog::objectNameChanged);
 
     connect(m_momentsModel.get(), &QAbstractItemModel::modelReset,
             this, &TimeLinePropertiesDialog::changed);
@@ -81,6 +85,28 @@ TimeLinePropertiesDialog::TimeLinePropertiesDialog(TimeLine &timeLine, ProjectTr
 
 TimeLinePropertiesDialog::~TimeLinePropertiesDialog() = default;
 
+void TimeLinePropertiesDialog::objectAboutToBeRemoved(const Object &object)
+{
+    for (auto &[moment, actions] : m_moments)
+        for (Action &action : actions)
+            std::visit([&object](auto &value) {
+                if (auto *target = std::get_if<AppliesToObject>(&value.appliesTo);
+                    target && target->objectName == object.name)
+                    target->objectName.clear();
+            }, action);
+}
+
+void TimeLinePropertiesDialog::objectNameChanged(const Object &object, const QString &oldName)
+{
+    for (auto &[moment, actions] : m_moments)
+        for (Action &action : actions)
+            std::visit([&](auto &value) {
+                if (auto *target = std::get_if<AppliesToObject>(&value.appliesTo);
+                    target && target->objectName == oldName)
+                    target->objectName = object.name;
+            }, action);
+}
+
 void TimeLinePropertiesDialog::accept()
 {
     if (!m_unsavedChanges)
@@ -89,18 +115,28 @@ void TimeLinePropertiesDialog::accept()
         return;
     }
 
+    if (applyChanges()) QDialog::accept();
+}
+
+bool TimeLinePropertiesDialog::applyChanges()
+{
+    if (!m_unsavedChanges) return true;
+
     if (m_timeLine.name != m_ui->lineEditName->text())
     {
         if (!m_projectModel.rename<TimeLine>(m_timeLine, m_ui->lineEditName->text()))
         {
             QMessageBox::critical(this, tr("Renaming Time Line failed!"), tr("Renaming Time Line failed!"));
-            return;
+            return false;
         }
     }
 
     m_timeLine.moments = m_moments;
 
-    QDialog::accept();
+    m_unsavedChanges = false;
+    setWindowModified(false);
+    updateTitle();
+    return true;
 }
 
 void TimeLinePropertiesDialog::reject()
@@ -138,6 +174,7 @@ void TimeLinePropertiesDialog::changed()
     if (!m_unsavedChanges)
     {
         m_unsavedChanges = true;
+        setWindowModified(true);
         updateTitle();
     }
 }
@@ -252,8 +289,6 @@ void TimeLinePropertiesDialog::showInformation()
 
 void TimeLinePropertiesDialog::currentMomentChanged(const QModelIndex &index)
 {
-    qDebug() << index.isValid() << index.row();
-
     if (index.isValid())
     {
         if (auto moment = m_momentsModel->getMoment(index))

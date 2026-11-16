@@ -52,6 +52,7 @@ HEADERS += \
     src/editor/widgets/qlineeditwithmenu.h \
     src/editor/widgets/qscrollareawithmenu.h \
     src/editor/widgets/roomeditwidget.h \
+    src/editor/widgets/resourcemenuadapter.h \
     src/editor/widgets/zoomablescrollarea.h \
     src/engine/gameengine.h \
     src/engine/glgamewindow.h \
@@ -60,12 +61,14 @@ HEADERS += \
     src/engine/vulkangamewindow.h \
     src/futurecpp.h \
     src/projectcontainer.h \
+    src/resourcefolder.h \
     src/editor/imagehelpers.h \
     src/editor/jshighlighter.h \
     src/editor/mainwindow.h \
     src/editor/dialogs/addeventdialog.h \
     src/editor/dialogs/backgroundpropertiesdialog.h \
     src/editor/dialogs/codeeditordialog.h \
+    src/editor/dialogs/projectchangesapplier.h \
     src/editor/dialogs/createspritedialog.h \
     src/editor/dialogs/deletemomentsdialog.h \
     src/editor/dialogs/editspritedialog.h \
@@ -131,6 +134,7 @@ SOURCES += \
     src/editor/widgets/qlineeditwithmenu.cpp \
     src/editor/widgets/qscrollareawithmenu.cpp \
     src/editor/widgets/roomeditwidget.cpp \
+    src/editor/widgets/resourcemenuadapter.cpp \
     src/editor/widgets/zoomablescrollarea.cpp \
     src/engine/gameengine.cpp \
     src/engine/glgamewindow.cpp \

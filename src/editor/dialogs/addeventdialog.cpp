@@ -5,6 +5,7 @@
 #include <QMenu>
 
 #include "models/projecttreemodel.h"
+#include "widgets/resourcemenuadapter.h"
 #include "mainwindow.h"
 #include "editorguiutils.h"
 #include "editorsettings.h"
@@ -58,27 +59,14 @@ AddEventDialog::AddEventDialog(ProjectTreeModel &projectModel, MainWindow &mainW
 
     {
         auto menu = new QMenu;
-        connect(menu, &QMenu::aboutToShow, menu, [this,menu](){
-            menu->clear();
-            for (const Object &object : m_projectModel.project()->objects)
-            {
-                QIcon icon;
-                if (!object.spriteName.isEmpty())
-                {
-                    const auto &sprites = m_projectModel.project()->sprites;
-                    const auto iter = std::find_if(std::cbegin(sprites), std::cend(sprites),
-                                                   [&](const Sprite &sprite){ return sprite.name == object.spriteName; });
-                    if (iter != std::cend(sprites))
-                    {
-                        if (!iter->pixmaps.empty())
-                            icon = iter->pixmaps.front();
-                    }
+        m_collisionMenuAdapter = std::make_unique<ResourceMenuAdapter>(
+            m_projectModel, m_projectModel.rootFor<Object>(), *menu,
+            [this](const QModelIndex &index) {
+                if (const Object *object = m_projectModel.get<Object>(index)) {
+                    m_eventType = object->name;
+                    accept();
                 }
-                menu->addAction(icon, object.name, this, [this,&object](){
-                    m_eventType = object.name; accept();
-                });
-            }
-        });
+            });
         m_ui->pushButtonCollision->setMenu(menu);
     }
 

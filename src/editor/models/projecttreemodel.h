@@ -14,6 +14,9 @@ struct Font;
 struct TimeLine;
 struct Object;
 struct Room;
+template<typename T> struct ResourceFolder;
+template<typename T> struct ResourceNode;
+template<typename T> class ResourceCollection;
 
 class ProjectTreeModel : public QAbstractItemModel
 {
@@ -31,18 +34,22 @@ public:
         TimeLine,
         Object,
         Room,
+        Folder,
     };
 
     explicit ProjectTreeModel(QObject *parent = nullptr);
     explicit ProjectTreeModel(ProjectContainer &project, QObject *parent = nullptr);
 
 private:
+    template<typename T> ResourceFolder<T> *folderFor(const QModelIndex &index) const;
+    template<typename T> std::pair<ResourceFolder<T> *, ResourceNode<T> *> locationFor(const QModelIndex &index) const;
+    template<typename T> QModelIndex indexForResource(const T &resource) const;
     template<typename T> QVariant dataFor(const QModelIndex &index, int role) const;
     template<typename T> QVariant iconFor(const T &entry) const;
     template<typename T> bool setDataFor(const QModelIndex &index, const QVariant &value, int role);
     template<typename T> std::optional<bool> insertRowsFor(int row, int count, const QModelIndex &parent);
     template<typename T> std::optional<bool> removeRowsFor(int row, int count, const QModelIndex &parent);
-    template<typename T> static QString getFreeNameFor(const std::list<T> &container);
+    template<typename T> QString getFreeNameFor(const ResourceFolder<T> &folder) const;
 
     template<typename T> void emitCreated(const T &entry);
     template<typename T> void onBeforeRemove(const T &entry);
@@ -60,6 +67,12 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
     Qt::ItemFlags flags(const QModelIndex &index) const override;
     Qt::DropActions supportedDropActions() const override;
+    QStringList mimeTypes() const override;
+    QMimeData *mimeData(const QModelIndexList &indexes) const override;
+    bool canDropMimeData(const QMimeData *data, Qt::DropAction action, int row,
+                         int column, const QModelIndex &parent) const override;
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row,
+                      int column, const QModelIndex &parent) override;
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     bool insertRows(int row, int count, const QModelIndex &parent) override;
     bool moveRows(const QModelIndex &sourceParent, int sourceRow, int count, const QModelIndex &destinationParent, int destinationChild) override;
@@ -81,6 +94,8 @@ public:
     template<typename T> const T *get(const QModelIndex &index) const;
 
     template<typename T> T *create();
+
+    QModelIndex createFolder(const QModelIndex &parent, const QString &name, int row = -1);
 
     template<typename T> bool remove(const T &entry);
 

@@ -6,6 +6,7 @@
 #include <optional>
 
 #include "projectcontainer.h"
+#include "projectchangesapplier.h"
 
 class QSpinBox;
 class QLabel;
@@ -14,8 +15,9 @@ namespace Ui { class PathPropertiesDialog; }
 class ProjectTreeModel;
 class PathPointsModel;
 class MainWindow;
+class ResourceMenuAdapter;
 
-class PathPropertiesDialog : public QDialog
+class PathPropertiesDialog : public QDialog, public ProjectChangesApplier
 {
     Q_OBJECT
 
@@ -24,6 +26,7 @@ public:
     ~PathPropertiesDialog();
 
     void accept() override;
+    bool applyChanges() override;
     void reject() override;
 
 private slots:
@@ -55,7 +58,6 @@ private slots:
 
     void pathNameChanged(const Path &path);
 
-    void roomsMenuAboutToShow();
 
 private:
     void updateTitle();
@@ -78,6 +80,7 @@ private:
     QSpinBox * const m_spinBoxSnapY;
 
     QMenu * const m_menuRooms;
+    std::unique_ptr<ResourceMenuAdapter> m_roomMenuAdapter;
 
     QLabel * const m_labelX;
     QLabel * const m_labelY;

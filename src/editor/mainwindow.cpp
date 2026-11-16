@@ -10,6 +10,11 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QDebug>
+#include <QPersistentModelIndex>
+#include <QPointer>
+
+#include <algorithm>
+#include <vector>
 
 #include "editorsettings.h"
 #include "projectserialization.h"
@@ -24,6 +29,7 @@
 #include "dialogs/timelinepropertiesdialog.h"
 #include "dialogs/objectpropertiesdialog.h"
 #include "dialogs/roompropertiesdialog.h"
+#include "dialogs/projectchangesapplier.h"
 #include "dialogs/objectinformationdialog.h"
 #include "dialogs/transparentbackgroundsettingsdialog.h"
 #include "dialogs/gameinformationdialog.h"
@@ -56,16 +62,21 @@ MainWindow::MainWindow(const QString &filePath, EditorSettings &settings, QWidge
 {
     m_ui->setupUi(this);
 
-    m_ui->splitter->setSizes({
-        m_ui->splitter->width() / 2,
-        m_ui->splitter->width() / 2
-    });
+    //m_ui->splitter->setSizes({
+    //    m_ui->splitter->width() / 2,
+    //    m_ui->splitter->width() / 2
+    //});
+    m_ui->splitter->setStretchFactor(0, 0);
+    m_ui->splitter->setStretchFactor(1, 1);
 
     m_ui->actionNew->setShortcut(QKeySequence::New);
     m_ui->actionOpen->setShortcut(QKeySequence::Open);
     m_ui->actionSave->setShortcut(QKeySequence::Save);
     m_ui->actionSaveAs->setShortcut(QKeySequence::SaveAs);
     m_ui->actionExit->setShortcut(QKeySequence::Quit);
+    m_ui->actionDelete->setShortcut(QKeySequence::Delete);
+    m_ui->actionDelete->setShortcutContext(Qt::WidgetShortcut);
+    m_ui->treeView->addAction(m_ui->actionDelete);
     m_ui->actionFindResource->setShortcut(QKeySequence::Find);
     m_ui->actionPrevious->setShortcut(QKeySequence::PreviousChild);
     m_ui->actionNext->setShortcut(QKeySequence::NextChild);
@@ -157,6 +168,8 @@ MainWindow::MainWindow(const QString &filePath, EditorSettings &settings, QWidge
     connect(m_projectTreeModel.get(), &ProjectTreeModel::rowsAboutToBeRemoved,
             this, &MainWindow::rowsAboutToBeRemoved);
     connect(m_projectTreeModel.get(), &QAbstractTableModel::rowsRemoved,
+            this, &MainWindow::changed);
+    connect(m_projectTreeModel.get(), &QAbstractItemModel::rowsMoved,
             this, &MainWindow::changed);
     connect(m_projectTreeModel.get(), &ProjectTreeModel::modelAboutToBeReset,
             this, &MainWindow::modelAboutToBeReset);
@@ -327,6 +340,8 @@ MainWindow::~MainWindow() = default;
 
 void MainWindow::contextMenuRequested(const QPoint &pos)
 {
+    if (const QModelIndex clicked = m_ui->treeView->indexAt(pos); clicked.isValid())
+        m_ui->treeView->setCurrentIndex(clicked);
     QMenu menu{this};
     menu.addAction(m_ui->actionCreate);
     menu.addAction(m_ui->actionDuplicate);
@@ -370,6 +385,16 @@ void MainWindow::selectionChanged(const QModelIndex &index)
 {
     switch (const auto nodeType = m_projectTreeModel->nodeType(index))
     {
+    case ProjectTreeModel::NodeType::Folder:
+        m_ui->actionCreate->setEnabled(true);
+        m_ui->actionCreate->setText(tr("&Create Resource"));
+        m_ui->actionCreateGroup->setEnabled(true);
+        m_ui->actionSortByName->setEnabled(true);
+        m_ui->actionDuplicate->setEnabled(false);
+        m_ui->actionDelete->setEnabled(true);
+        m_ui->actionRename->setEnabled(true);
+        m_ui->actionProperties->setEnabled(false);
+        break;
     case ProjectTreeModel::NodeType::Root:
         if (index == m_projectTreeModel->rootFor<Sprite>() ||
             index == m_projectTreeModel->rootFor<Sound>() ||
@@ -663,6 +688,10 @@ void MainWindow::create()
         using NodeType = ProjectTreeModel::NodeType;
         case NodeType::Root:
             break;
+        case NodeType::Folder:
+            if (!m_projectTreeModel->insertRows(m_projectTreeModel->rowCount(index), 1, index))
+                QMessageBox::warning(this, tr("Creating failed!"), tr("Creating failed!"));
+            break;
         case NodeType::Sprite:
         case NodeType::Sound:
         case NodeType::Background:
@@ -686,12 +715,39 @@ void MainWindow::duplicate()
 
 void MainWindow::createGroup()
 {
-    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+    auto parent = m_ui->treeView->currentIndex();
+    if (!parent.isValid()) return;
+    int row = -1;
+    if (m_projectTreeModel->nodeType(parent) != ProjectTreeModel::NodeType::Folder &&
+        m_projectTreeModel->nodeType(parent) != ProjectTreeModel::NodeType::Root)
+    {
+        row = parent.row();
+        parent = parent.parent();
+    }
+    const auto folder = m_projectTreeModel->createFolder(parent, {}, row);
+    if (!folder.isValid())
+        QMessageBox::warning(this, tr("Creating failed!"), tr("Could not create a group here."));
+    else
+        m_ui->treeView->edit(folder);
 }
 
 void MainWindow::sortByName()
 {
-    QMessageBox::warning(this, tr("Not yet implemented"), tr("Not yet implemented"));
+    const QModelIndex parent = m_ui->treeView->currentIndex();
+    if (!parent.isValid()) return;
+    if (m_projectTreeModel->nodeType(parent) != ProjectTreeModel::NodeType::Root &&
+        m_projectTreeModel->nodeType(parent) != ProjectTreeModel::NodeType::Folder)
+        return;
+    std::vector<QPersistentModelIndex> order;
+    for (int row = 0; row < m_projectTreeModel->rowCount(parent); ++row)
+        order.emplace_back(m_projectTreeModel->index(row, 0, parent));
+    std::stable_sort(order.begin(), order.end(), [this](const auto &a, const auto &b) {
+        return QString::localeAwareCompare(m_projectTreeModel->data(a, Qt::DisplayRole).toString(),
+                                           m_projectTreeModel->data(b, Qt::DisplayRole).toString()) < 0;
+    });
+    for (int row = 0; row < int(order.size()); ++row)
+        if (order[row].row() != row)
+            m_projectTreeModel->moveRows(parent, order[row].row(), 1, parent, row);
 }
 
 void MainWindow::delete_()
@@ -705,6 +761,7 @@ void MainWindow::delete_()
     using NodeType = ProjectTreeModel::NodeType;
     case NodeType::Root:
         return;
+    case NodeType::Folder:
     case NodeType::Sprite:
     case NodeType::Sound:
     case NodeType::Background:
@@ -769,7 +826,15 @@ void MainWindow::transparentBackgroundSettings()
 template<typename T>
 void MainWindow::createFor()
 {
-    if (!m_projectTreeModel->insertRows(m_project.containerFor<T>().size(), 1, m_projectTreeModel->rootFor<T>()))
+    QModelIndex parent = m_projectTreeModel->rootFor<T>();
+    const auto current = m_ui->treeView->currentIndex();
+    if (current.isValid() && m_projectTreeModel->nodeType(current) == ProjectTreeModel::NodeType::Folder)
+    {
+        auto category = current;
+        while (category.parent().isValid()) category = category.parent();
+        if (category == parent) parent = current;
+    }
+    if (!m_projectTreeModel->insertRows(m_projectTreeModel->rowCount(parent), 1, parent))
         QMessageBox::warning(this, tr("Creating failed!"), tr("Creating failed!"));
 }
 
@@ -820,6 +885,9 @@ void MainWindow::showIncludedFiles()
 
 void MainWindow::runGame()
 {
+    if (!applyOpenPropertyWindows())
+        return;
+
     if (m_project.rooms.empty())
     {
         QMessageBox::information(this, tr("No room to play"),
@@ -832,6 +900,41 @@ void MainWindow::runGame()
     setEnabled(false);
     engine.run();
     setEnabled(true);
+}
+
+bool MainWindow::applyOpenPropertyWindows()
+{
+    std::vector<QPointer<QMdiSubWindow>> windows;
+    const auto collect = [&windows](const auto &propertyWindows) {
+        for (const auto &entry : propertyWindows)
+            windows.emplace_back(entry.second);
+    };
+    collect(m_spritePropertiesWindows);
+    collect(m_soundPropertiesWindows);
+    collect(m_backgroundPropertiesWindows);
+    collect(m_pathPropertiesWindows);
+    collect(m_scriptPropertiesWindows);
+    collect(m_fontPropertiesWindows);
+    collect(m_timeLinePropertiesWindows);
+    collect(m_objectPropertiesWindows);
+    collect(m_roomPropertiesWindows);
+
+    for (const auto &window : windows)
+    {
+        if (!window) continue;
+        QPointer<QDialog> dialog = qobject_cast<QDialog *>(window->widget());
+        if (!dialog) continue;
+        auto *applier = dynamic_cast<ProjectChangesApplier *>(dialog.data());
+        Q_ASSERT(applier);
+        const bool hadChanges = dialog->isWindowModified();
+        if (!applier->applyChanges())
+        {
+            m_ui->mdiArea->setActiveSubWindow(window);
+            return false;
+        }
+        if (hadChanges) changed();
+    }
+    return true;
 }
 
 void MainWindow::debugGame()
@@ -857,15 +960,15 @@ void MainWindow::rowsInserted(const QModelIndex &parent, int first, int last)
 
 void MainWindow::rowsAboutToBeRemoved(const QModelIndex &parent, int first, int last)
 {
-    if (rowsAboutToBeRemovedFor<Sprite>(parent, first, last)) return;
-    if (rowsAboutToBeRemovedFor<Sound>(parent, first, last)) return;
-    if (rowsAboutToBeRemovedFor<Background>(parent, first, last)) return;
-    if (rowsAboutToBeRemovedFor<Path>(parent, first, last)) return;
-    if (rowsAboutToBeRemovedFor<Script>(parent, first, last)) return;
-    if (rowsAboutToBeRemovedFor<Font>(parent, first, last)) return;
-    if (rowsAboutToBeRemovedFor<TimeLine>(parent, first, last)) return;
-    if (rowsAboutToBeRemovedFor<Object>(parent, first, last)) return;
-    if (rowsAboutToBeRemovedFor<Room>(parent, first, last)) return;
+    rowsAboutToBeRemovedFor<Sprite>(parent, first, last);
+    rowsAboutToBeRemovedFor<Sound>(parent, first, last);
+    rowsAboutToBeRemovedFor<Background>(parent, first, last);
+    rowsAboutToBeRemovedFor<Path>(parent, first, last);
+    rowsAboutToBeRemovedFor<Script>(parent, first, last);
+    rowsAboutToBeRemovedFor<Font>(parent, first, last);
+    rowsAboutToBeRemovedFor<TimeLine>(parent, first, last);
+    rowsAboutToBeRemovedFor<Object>(parent, first, last);
+    rowsAboutToBeRemovedFor<Room>(parent, first, last);
 }
 
 void MainWindow::modelAboutToBeReset()
@@ -884,7 +987,6 @@ void MainWindow::modelAboutToBeReset()
 void MainWindow::setupStylesMenu()
 {
     auto currentStyle = QApplication::style();
-    qDebug() << currentStyle;
 
     m_actionGroupStyles = new QActionGroup{this};
     m_actionGroupStyles->setExclusive(true);
@@ -946,6 +1048,12 @@ void MainWindow::loadFile(const QString &path)
 
         QDataStream dataStream{&file};
         dataStream >> project;
+        if (dataStream.status() != QDataStream::Ok)
+        {
+            QMessageBox::warning(this, tr("Could not load game!"),
+                                 tr("This project has an unsupported or damaged format."));
+            return;
+        }
     }
 
     m_ui->mdiArea->closeAllSubWindows();
@@ -1088,25 +1196,26 @@ bool MainWindow::activatedFor(const QModelIndex &index)
 }
 
 template<typename T>
-bool MainWindow::rowsAboutToBeRemovedFor(const QModelIndex &parent, int first, int last)
+void MainWindow::rowsAboutToBeRemovedFor(const QModelIndex &parent, int first, int last)
 {
-    if (parent != m_projectTreeModel->rootFor<T>())
-        return false;
-
-    for (int row = first; row <= last; row++)
-    {
-        if (const auto entry = m_projectTreeModel->get<T>(m_projectTreeModel->index(row, 0, parent)))
+    const auto closeDescendants = [this](const auto &self, const QModelIndex &item) -> void {
+        if (m_projectTreeModel->nodeType(item) == ProjectTreeModel::nodeTypeFor<T>())
         {
-            auto &propertyWindows = propertyWindowsFor<T>();
-            if (const auto iter = propertyWindows.find(entry); iter != std::end(propertyWindows))
+            if (auto *entry = m_projectTreeModel->get<T>(item))
             {
-                delete iter->second;
-                propertyWindows.erase(iter);
+                auto &windows = propertyWindowsFor<T>();
+                if (auto it = windows.find(entry); it != windows.end())
+                {
+                    delete it->second;
+                    windows.erase(it);
+                }
             }
         }
-    }
-
-    return true;
+        for (int row = 0; row < m_projectTreeModel->rowCount(item); ++row)
+            self(self, m_projectTreeModel->index(row, 0, item));
+    };
+    for (int row = first; row <= last; ++row)
+        closeDescendants(closeDescendants, m_projectTreeModel->index(row, 0, parent));
 }
 
 template<typename T>

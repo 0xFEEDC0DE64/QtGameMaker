@@ -101,16 +101,21 @@ void SoundPropertiesDialog::accept()
         return;
     }
 
+    if (applyChanges()) QDialog::accept();
+}
+
+bool SoundPropertiesDialog::applyChanges()
+{
+    if (!m_unsavedChanges) return true;
+
     if (m_sound.name != m_ui->lineEditName->text())
     {
         if (!m_projectModel.rename<Sound>(m_sound, m_ui->lineEditName->text()))
         {
             QMessageBox::critical(this, tr("Renaming Sound failed!"), tr("Renaming Sound failed!"));
-            return;
+            return false;
         }
     }
-
-    m_sound.path = std::move(m_path);
 
     if (m_ui->radioButtonNormal->isChecked())
         m_sound.type = Sound::Type::Sound;
@@ -120,14 +125,15 @@ void SoundPropertiesDialog::accept()
              m_ui->radioButtonMultimedia->isChecked())
     {
         QMessageBox::critical(this, tr("Not implemented"), tr("This kind of sound is not yet supported!"));
-        return;
+        return false;
     }
     else
     {
         QMessageBox::critical(this, tr("No kind selected!"), tr("No kind selected!"));
-        return;
+        return false;
     }
 
+    m_sound.path = m_path;
     m_sound.effects.chorus = m_ui->checkBoxChorus->isChecked();
     m_sound.effects.flanger = m_ui->checkBoxFlanger->isChecked();
     m_sound.effects.gargle = m_ui->checkBoxGargle->isChecked();
@@ -136,7 +142,10 @@ void SoundPropertiesDialog::accept()
     m_sound.volume = m_ui->horizontalSliderVolume->value();
     m_sound.pan = m_ui->horizontalSliderPan->value();
 
-    QDialog::accept();
+    m_unsavedChanges = false;
+    setWindowModified(false);
+    updateTitle();
+    return true;
 }
 
 void SoundPropertiesDialog::reject()
@@ -226,6 +235,7 @@ void SoundPropertiesDialog::changed()
     if (!m_unsavedChanges)
     {
         m_unsavedChanges = true;
+        setWindowModified(true);
         updateTitle();
     }
 }

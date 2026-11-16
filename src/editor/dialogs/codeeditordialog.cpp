@@ -111,8 +111,16 @@ void CodeEditorDialog::changed()
     if (!m_unsavedChanges)
     {
         m_unsavedChanges = true;
+        setWindowModified(true);
         updateTitle();
     }
+}
+
+void CodeEditorDialog::markChangesApplied()
+{
+    m_unsavedChanges = false;
+    setWindowModified(false);
+    updateTitle();
 }
 
 QAction *CodeEditorDialog::addToolbarWidget(QWidget *widget)

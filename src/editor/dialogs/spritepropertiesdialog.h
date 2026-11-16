@@ -4,13 +4,14 @@
 #include <QString>
 
 #include <memory>
+#include "projectchangesapplier.h"
 
 namespace Ui { class SpritePropertiesDialog; }
 struct Sprite;
 class ProjectTreeModel;
 class MainWindow;
 
-class SpritePropertiesDialog : public QDialog
+class SpritePropertiesDialog : public QDialog, public ProjectChangesApplier
 {
     Q_OBJECT
 
@@ -19,6 +20,7 @@ public:
     ~SpritePropertiesDialog();
 
     void accept() override;
+    bool applyChanges() override;
     void reject() override;
 
 private slots:

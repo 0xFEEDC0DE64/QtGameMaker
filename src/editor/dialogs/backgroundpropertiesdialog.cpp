@@ -61,24 +61,34 @@ void BackgroundPropertiesDialog::accept()
         return;
     }
 
+    if (applyChanges()) QDialog::accept();
+}
+
+bool BackgroundPropertiesDialog::applyChanges()
+{
+    if (!m_unsavedChanges) return true;
+
     if (m_background.name != m_ui->lineEditName->text())
     {
         if (!m_projectModel.rename<Background>(m_background, m_ui->lineEditName->text()))
         {
             QMessageBox::critical(this, tr("Renaming Background failed!"), tr("Renaming Background failed!"));
-            return;
+            return false;
         }
     }
 
-    if (!m_projectModel.setBackgroundPixmap(m_background, std::move(m_pixmap)))
+    if (!m_projectModel.setBackgroundPixmap(m_background, QPixmap{m_pixmap}))
     {
         QMessageBox::critical(this, tr("Setting Background pixmap failed!"), tr("Setting Background pixmap failed!"));
-        return;
+        return false;
     }
 
     m_background.tileset = m_ui->checkBoxTileset->isChecked();
 
-    QDialog::accept();
+    m_unsavedChanges = false;
+    setWindowModified(false);
+    updateTitle();
+    return true;
 }
 
 void BackgroundPropertiesDialog::reject()
@@ -154,6 +164,7 @@ void BackgroundPropertiesDialog::changed()
     if (!m_unsavedChanges)
     {
         m_unsavedChanges = true;
+        setWindowModified(true);
         updateTitle();
     }
 }

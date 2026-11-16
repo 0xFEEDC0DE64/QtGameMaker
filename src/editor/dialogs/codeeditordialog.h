@@ -29,6 +29,7 @@ protected slots:
 
 protected:
     bool m_unsavedChanges{};
+    void markChangesApplied();
 
     QAction *addToolbarWidget(QWidget *widget);
 

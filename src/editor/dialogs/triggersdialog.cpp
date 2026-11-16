@@ -1,7 +1,6 @@
 #include "triggersdialog.h"
 #include "ui_triggersdialog.h"
 
-#include <QDebug>
 #include <QMessageBox>
 
 #include "projectcontainer.h"

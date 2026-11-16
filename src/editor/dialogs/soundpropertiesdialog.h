@@ -5,13 +5,14 @@
 #include <QSoundEffect>
 
 #include <memory>
+#include "projectchangesapplier.h"
 
 namespace Ui { class SoundPropertiesDialog; }
 struct Sound;
 class ProjectTreeModel;
 class MainWindow;
 
-class SoundPropertiesDialog : public QDialog
+class SoundPropertiesDialog : public QDialog, public ProjectChangesApplier
 {
     Q_OBJECT
 
@@ -20,6 +21,7 @@ public:
     ~SoundPropertiesDialog();
 
     void accept() override;
+    bool applyChanges() override;
     void reject() override;
 
 private slots:

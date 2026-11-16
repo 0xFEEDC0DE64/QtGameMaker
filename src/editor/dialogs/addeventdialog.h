@@ -11,6 +11,7 @@ namespace Ui { class AddEventDialog; }
 
 class ProjectTreeModel;
 class MainWindow;
+class ResourceMenuAdapter;
 
 class AddEventDialog : public QDialog
 {
@@ -35,4 +36,5 @@ private:
     const std::unique_ptr<Ui::AddEventDialog> m_ui;
 
     std::optional<std::variant<Object::EventType, QString>> m_eventType;
+    std::unique_ptr<ResourceMenuAdapter> m_collisionMenuAdapter;
 };

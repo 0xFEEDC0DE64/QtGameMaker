@@ -6,14 +6,16 @@
 #include <map>
 
 #include "projectcontainer.h"
+#include "projectchangesapplier.h"
 
 class QMenu;
 namespace Ui { class ObjectPropertiesDialog; }
 class ProjectTreeModel;
 class ObjectEventsModel;
 class MainWindow;
+class ResourceMenuAdapter;
 
-class ObjectPropertiesDialog : public QDialog
+class ObjectPropertiesDialog : public QDialog, public ProjectChangesApplier
 {
     Q_OBJECT
 
@@ -22,6 +24,7 @@ public:
     ~ObjectPropertiesDialog();
 
     void accept() override;
+    bool applyChanges() override;
     void reject() override;
 
 private slots:
@@ -41,8 +44,6 @@ private slots:
     void spriteAboutToBeRemoved(const Sprite &sprite);
     void spritePixmapsChanged(const Sprite &sprite);
 
-    void spritesMenuAboutToShow();
-    void maskSpritesMenuAboutToShow();
     void currentEventChanged(const QModelIndex &index);
     void eventsContextMenuRequested(const QPoint &pos);
     void rowsInserted(const QModelIndex &parent, int first);
@@ -73,6 +74,8 @@ private:
 
     QMenu * const m_menuSprites;
     QMenu * const m_menuMaskSprites;
+    std::unique_ptr<ResourceMenuAdapter> m_spriteMenuAdapter;
+    std::unique_ptr<ResourceMenuAdapter> m_maskMenuAdapter;
 
     QString m_spriteName;
     QString m_maskSpriteName;

@@ -88,6 +88,7 @@ private:
     void updateTitle();
     void updateVisibilities();
     void updateRecentFiles();
+    bool applyOpenPropertyWindows();
 
     QMdiSubWindow *addSubWindow(QDialog *dialog);
 
@@ -98,7 +99,7 @@ private:
     bool activatedFor(const QModelIndex &index);
 
     template<typename T>
-    bool rowsAboutToBeRemovedFor(const QModelIndex &parent, int first, int last);
+    void rowsAboutToBeRemovedFor(const QModelIndex &parent, int first, int last);
 
     template<typename T>
     void modelAboutToBeResetFor();

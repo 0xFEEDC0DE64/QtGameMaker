@@ -11,6 +11,7 @@
 
 #include "projectcontainer.h"
 #include "models/projecttreemodel.h"
+#include "widgets/resourcemenuadapter.h"
 #include "models/pathpointsmodel.h"
 #include "mainwindow.h"
 
@@ -71,8 +72,10 @@ PathPropertiesDialog::PathPropertiesDialog(Path &path, ProjectTreeModel &project
         m_ui->toolBar->addWidget(toolButton);
     }
 
-    connect(m_menuRooms, &QMenu::aboutToShow,
-            this, &PathPropertiesDialog::roomsMenuAboutToShow);
+    m_roomMenuAdapter = std::make_unique<ResourceMenuAdapter>(
+        m_projectModel, m_projectModel.rootFor<Room>(), *m_menuRooms,
+        [](const QModelIndex &) {},
+        [this](QMenu &menu) { menu.addAction(tr("No Room")); });
 
     m_ui->treeView->setModel(m_pointsModel.get());
 
@@ -218,16 +221,21 @@ void PathPropertiesDialog::accept()
         return;
     }
 
+    if (applyChanges()) QDialog::accept();
+}
+
+bool PathPropertiesDialog::applyChanges()
+{
+    if (!m_unsavedChanges) return true;
+
     if (m_path.name != m_ui->lineEditName->text())
     {
         if (!m_projectModel.rename<Path>(m_path, m_ui->lineEditName->text()))
         {
             QMessageBox::critical(this, tr("Renaming Path failed!"), tr("Renaming Path failed!"));
-            return;
+            return false;
         }
     }
-
-    m_path.points = m_points;
 
     if (m_ui->radioButtonStraight->isChecked())
         m_path.type = Path::Type::Straight;
@@ -236,16 +244,20 @@ void PathPropertiesDialog::accept()
     else
     {
         QMessageBox::critical(this, tr("No kind selected!"), tr("No kind selected!"));
-        return;
+        return false;
     }
 
+    m_path.points = m_points;
     m_path.closed = m_ui->checkBoxClosed->isChecked();
     m_path.precision = m_ui->spinBoxPrecision->value();
     m_path.snapX = m_spinBoxSnapX->value();
     m_path.snapY = m_spinBoxSnapY->value();
     m_path.gridEnabled = m_ui->actionGridEnabled->isChecked();
 
-    QDialog::accept();
+    m_unsavedChanges = false;
+    setWindowModified(false);
+    updateTitle();
+    return true;
 }
 
 void PathPropertiesDialog::reject()
@@ -428,6 +440,7 @@ void PathPropertiesDialog::changed()
     if (!m_unsavedChanges)
     {
         m_unsavedChanges = true;
+        setWindowModified(true);
         updateTitle();
     }
 }
@@ -443,18 +456,6 @@ void PathPropertiesDialog::pathNameChanged(const Path &path)
     }
 
     updateTitle();
-}
-
-void PathPropertiesDialog::roomsMenuAboutToShow()
-{
-    m_menuRooms->clear();
-    qDebug() << "called" << tr("No Room");
-    m_menuRooms->addAction(tr("No Room"));
-    for (const auto &room : m_projectModel.project()->rooms)
-    {
-        qDebug() << "called" << room.name;
-        m_menuRooms->addAction(room.name);
-    }
 }
 
 void PathPropertiesDialog::updateTitle()

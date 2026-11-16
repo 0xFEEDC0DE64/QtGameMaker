@@ -1,7 +1,6 @@
 #include "userdefinedconstantsdialog.h"
 #include "ui_userdefinedconstantsdialog.h"
 
-#include <QDebug>
 #include <QMessageBox>
 
 #include "projectcontainer.h"

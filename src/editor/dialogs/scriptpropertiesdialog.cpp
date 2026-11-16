@@ -4,7 +4,6 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
-#include <QDebug>
 
 #include "projectcontainer.h"
 #include "models/projecttreemodel.h"
@@ -43,18 +42,26 @@ void ScriptPropertiesDialog::accept()
         return;
     }
 
+    if (applyChanges()) QDialog::accept();
+}
+
+bool ScriptPropertiesDialog::applyChanges()
+{
+    if (!m_unsavedChanges) return true;
+
     if (m_script.name != m_lineEditName->text())
     {
         if (!m_projectModel.rename<Script>(m_script, m_lineEditName->text()))
         {
             QMessageBox::critical(this, tr("Renaming Script failed!"), tr("Renaming Script failed!"));
-            return;
+            return false;
         }
     }
 
     m_script.script = script();
 
-    CodeEditorDialog::accept();
+    markChangesApplied();
+    return true;
 }
 
 void ScriptPropertiesDialog::scriptNameChanged(const Script &script)

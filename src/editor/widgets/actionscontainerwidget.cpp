@@ -1,7 +1,6 @@
 #include "actionscontainerwidget.h"
 #include "ui_actionscontainerwidget.h"
 
-#include <QDebug>
 #include <QMessageBox>
 #include <QMenu>
 #include <QKeySequence>

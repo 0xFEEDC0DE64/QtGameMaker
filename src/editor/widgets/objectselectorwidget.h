@@ -7,6 +7,7 @@
 namespace Ui { class ObjectSelectorWidget; }
 class QMenu;
 class ProjectTreeModel;
+class ResourceMenuAdapter;
 
 class ObjectSelectorWidget : public QWidget
 {
@@ -20,7 +21,7 @@ public:
 
     ProjectTreeModel *projectModel() { return m_projectModel; }
     const ProjectTreeModel *projectModel() const { return m_projectModel; }
-    void setProjectModel(ProjectTreeModel *projectModel) { m_projectModel = projectModel; }
+    void setProjectModel(ProjectTreeModel *projectModel);
 
     QString objectName() const { return m_objectName; }
     virtual void setObject(const QString &objectName);
@@ -35,9 +36,6 @@ public:
 signals:
     void changed();
 
-private slots:
-    void menuAboutToShow();
-
 private:
     const std::unique_ptr<Ui::ObjectSelectorWidget> m_ui;
 
@@ -49,4 +47,5 @@ private:
     bool m_showClearObjectAction;
 
     QMenu * const m_menuObjects;
+    std::unique_ptr<ResourceMenuAdapter> m_menuAdapter;
 };

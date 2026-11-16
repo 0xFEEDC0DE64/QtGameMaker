@@ -31,7 +31,7 @@
         <bool>true</bool>
        </property>
        <property name="dragDropMode">
-        <enum>QAbstractItemView::DragDrop</enum>
+        <enum>QAbstractItemView::InternalMove</enum>
        </property>
        <property name="iconSize">
         <size>

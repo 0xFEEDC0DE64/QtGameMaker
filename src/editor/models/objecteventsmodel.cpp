@@ -239,10 +239,6 @@ bool ObjectEventsModel::removeRows(int row, int count, const QModelIndex &parent
     }
     else if (std::size_t(row) < m_events.size() + m_collisionEvents.size())
     {
-        qDebug() << row - m_events.size();
-        qDebug() << count;
-        qDebug() << m_collisionEvents.size();
-
         const auto begin = std::next(std::begin(m_collisionEvents), row - m_events.size());
         const auto end = std::next(begin, count);
         m_collisionEvents.erase(begin, end);
@@ -515,9 +511,14 @@ bool ObjectEventsModel::removeEvent(Object::EventType eventType)
 
 bool ObjectEventsModel::removeEvent(const QString &object)
 {
-    Q_UNUSED(object);
-    qCritical() << "not implemented";
-    return false;
+    const auto iter = m_collisionEvents.find(object);
+    if (iter == m_collisionEvents.end())
+        return false;
+    const int row = int(m_events.size() + std::distance(m_collisionEvents.begin(), iter));
+    beginRemoveRows({}, row, row);
+    m_collisionEvents.erase(iter);
+    endRemoveRows();
+    return true;
 }
 
 auto ObjectEventsModel::getEvent(const QModelIndex &index) -> get_event_result_t

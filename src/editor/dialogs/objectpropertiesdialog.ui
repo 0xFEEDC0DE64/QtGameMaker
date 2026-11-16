@@ -34,12 +34,6 @@
        </item>
        <item row="0" column="1">
         <widget class="QLineEdit" name="lineEditName">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="toolTip">
           <string>The name of the object</string>
          </property>
@@ -58,13 +52,13 @@
           <property name="minimumSize">
            <size>
             <width>32</width>
-            <height>0</height>
+            <height>32</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
             <width>32</width>
-            <height>16777215</height>
+            <height>32</height>
            </size>
           </property>
           <property name="alignment">

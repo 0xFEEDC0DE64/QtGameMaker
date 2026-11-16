@@ -3,7 +3,6 @@
 #include <QMouseEvent>
 #include <QApplication>
 #include <QDrag>
-#include <QDebug>
 #include <QIODevice>
 #include <QMimeData>
 
@@ -42,5 +41,5 @@ void ActionDragWidget::mouseMoveEvent(QMouseEvent *event)
     drag->setMimeData(mimeData);
 
     Qt::DropAction dropAction = drag->exec(Qt::CopyAction);
-    qDebug() << dropAction;
+    Q_UNUSED(dropAction)
 }

@@ -1,20 +1,27 @@
 #include "projectcontainer.h"
 
-template<> std::list<Sprite> &ProjectContainer::containerFor() { return sprites; }
-template<> const std::list<Sprite> &ProjectContainer::containerFor() const { return sprites; }
-template<> std::list<Sound> &ProjectContainer::containerFor() { return sounds; }
-template<> const std::list<Sound> &ProjectContainer::containerFor() const { return sounds; }
-template<> std::list<Background> &ProjectContainer::containerFor() { return backgrounds; }
-template<> const std::list<Background> &ProjectContainer::containerFor() const { return backgrounds; }
-template<> std::list<Path> &ProjectContainer::containerFor() { return paths; }
-template<> const std::list<Path> &ProjectContainer::containerFor() const { return paths; }
-template<> std::list<Script> &ProjectContainer::containerFor() { return scripts; }
-template<> const std::list<Script> &ProjectContainer::containerFor() const { return scripts; }
-template<> std::list<Font> &ProjectContainer::containerFor() { return fonts; }
-template<> const std::list<Font> &ProjectContainer::containerFor() const { return fonts; }
-template<> std::list<TimeLine> &ProjectContainer::containerFor() { return timeLines; }
-template<> const std::list<TimeLine> &ProjectContainer::containerFor() const { return timeLines; }
-template<> std::list<Object> &ProjectContainer::containerFor() { return objects; }
-template<> const std::list<Object> &ProjectContainer::containerFor() const { return objects; }
-template<> std::list<Room> &ProjectContainer::containerFor() { return rooms; }
-template<> const std::list<Room> &ProjectContainer::containerFor() const { return rooms; }
+template<> ResourceCollection<Sprite> &ProjectContainer::containerFor() { return sprites; }
+template<> const ResourceCollection<Sprite> &ProjectContainer::containerFor() const { return sprites; }
+template<> ResourceCollection<Sound> &ProjectContainer::containerFor() { return sounds; }
+template<> const ResourceCollection<Sound> &ProjectContainer::containerFor() const { return sounds; }
+template<> ResourceCollection<Background> &ProjectContainer::containerFor() { return backgrounds; }
+template<> const ResourceCollection<Background> &ProjectContainer::containerFor() const { return backgrounds; }
+template<> ResourceCollection<Path> &ProjectContainer::containerFor() { return paths; }
+template<> const ResourceCollection<Path> &ProjectContainer::containerFor() const { return paths; }
+template<> ResourceCollection<Script> &ProjectContainer::containerFor() { return scripts; }
+template<> const ResourceCollection<Script> &ProjectContainer::containerFor() const { return scripts; }
+template<> ResourceCollection<Font> &ProjectContainer::containerFor() { return fonts; }
+template<> const ResourceCollection<Font> &ProjectContainer::containerFor() const { return fonts; }
+template<> ResourceCollection<TimeLine> &ProjectContainer::containerFor() { return timeLines; }
+template<> const ResourceCollection<TimeLine> &ProjectContainer::containerFor() const { return timeLines; }
+template<> ResourceCollection<Object> &ProjectContainer::containerFor() { return objects; }
+template<> const ResourceCollection<Object> &ProjectContainer::containerFor() const { return objects; }
+template<> ResourceCollection<Room> &ProjectContainer::containerFor() { return rooms; }
+template<> const ResourceCollection<Room> &ProjectContainer::containerFor() const { return rooms; }
+
+bool ProjectContainer::hasResourceName(const QString &name) const
+{
+    return sprites.find(name) || sounds.find(name) || backgrounds.find(name) ||
+           paths.find(name) || scripts.find(name) || fonts.find(name) ||
+           timeLines.find(name) || objects.find(name) || rooms.find(name);
+}

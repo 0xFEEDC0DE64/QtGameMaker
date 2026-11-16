@@ -2,10 +2,10 @@
 #include "ui_objectselectorwidget.h"
 
 #include <QMenu>
-#include <QDebug>
 
 #include "models/projecttreemodel.h"
 #include "projectcontainer.h"
+#include "widgets/resourcemenuadapter.h"
 
 ObjectSelectorWidget::ObjectSelectorWidget(QWidget *parent) :
     QWidget{parent},
@@ -17,14 +17,51 @@ ObjectSelectorWidget::ObjectSelectorWidget(QWidget *parent) :
     m_ui->lineEdit->setMenu(m_menuObjects);
     m_ui->toolButton->setMenu(m_menuObjects);
 
-    connect(m_menuObjects, &QMenu::aboutToShow,
-            this, &ObjectSelectorWidget::menuAboutToShow);
 }
 
 ObjectSelectorWidget::~ObjectSelectorWidget() = default;
 
+void ObjectSelectorWidget::setProjectModel(ProjectTreeModel *projectModel)
+{
+    m_menuAdapter.reset();
+    if (m_projectModel)
+        disconnect(m_projectModel, nullptr, this, nullptr);
+    m_projectModel = projectModel;
+    if (!m_projectModel)
+    {
+        clearObject();
+        return;
+    }
+    connect(m_projectModel, &ProjectTreeModel::objectAboutToBeRemoved, this,
+            [this](const Object &object) {
+        if (m_objectName == object.name)
+            clearObject();
+    });
+    connect(m_projectModel, &ProjectTreeModel::objectNameChanged, this,
+            [this](const Object &object, const QString &oldName) {
+        if (m_objectName == oldName)
+            setObject(object.name);
+    });
+    connect(m_projectModel, &QAbstractItemModel::modelAboutToBeReset,
+            this, &ObjectSelectorWidget::clearObject);
+    m_menuAdapter = std::make_unique<ResourceMenuAdapter>(
+        *m_projectModel, m_projectModel->rootFor<Object>(), *m_menuObjects,
+        [this](const QModelIndex &index) {
+            if (const Object *object = m_projectModel->get<Object>(index)) setObject(object->name);
+        },
+        [this](QMenu &menu) {
+            if (m_showClearObjectAction)
+                menu.addAction(m_emptySelectionText, this, &ObjectSelectorWidget::clearObject);
+        });
+}
+
 void ObjectSelectorWidget::setObject(const QString &objectName)
 {
+    if (objectName.isEmpty())
+    {
+        clearObject();
+        return;
+    }
     if (m_objectName == objectName)
         return;
 
@@ -48,36 +85,4 @@ void ObjectSelectorWidget::setEmptySelectionText(const QString &emptySelectionTe
     m_emptySelectionText = emptySelectionText;
     if (m_objectName.isEmpty())
         m_ui->lineEdit->setText(m_emptySelectionText);
-}
-
-void ObjectSelectorWidget::menuAboutToShow()
-{
-    if (!m_projectModel)
-    {
-        qCritical() << "no project model!";
-        return;
-    }
-
-    m_menuObjects->clear();
-
-    if (m_showClearObjectAction)
-        m_menuObjects->addAction(m_emptySelectionText, this, &ObjectSelectorWidget::clearObject);
-
-    for (const Object &object : m_projectModel->project()->objects)
-    {
-        QIcon icon;
-        if (!object.spriteName.isEmpty())
-        {
-            const auto &sprites = m_projectModel->project()->sprites;
-            const auto iter = std::find_if(std::cbegin(sprites), std::cend(sprites),
-                                           [&](const Sprite &sprite){ return sprite.name == object.spriteName; });
-            if (iter != std::cend(sprites))
-            {
-                if (!iter->pixmaps.empty())
-                    icon = iter->pixmaps.front();
-            }
-        }
-        m_menuObjects->addAction(icon, object.name, this,
-                                 [&object,this](){ setObject(object.name); });
-    }
 }

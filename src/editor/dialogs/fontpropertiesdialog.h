@@ -3,13 +3,14 @@
 #include <QDialog>
 
 #include <memory>
+#include "projectchangesapplier.h"
 
 namespace Ui { class FontPropertiesDialog; }
 struct Font;
 class ProjectTreeModel;
 class MainWindow;
 
-class FontPropertiesDialog : public QDialog
+class FontPropertiesDialog : public QDialog, public ProjectChangesApplier
 {
     Q_OBJECT
 
@@ -18,6 +19,7 @@ public:
     ~FontPropertiesDialog();
 
     void accept() override;
+    bool applyChanges() override;
     void reject() override;
 
 private slots:

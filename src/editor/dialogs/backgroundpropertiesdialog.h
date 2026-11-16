@@ -4,13 +4,14 @@
 #include <QString>
 
 #include <memory>
+#include "projectchangesapplier.h"
 
 namespace Ui { class BackgroundPropertiesDialog; }
 struct Background;
 class ProjectTreeModel;
 class MainWindow;
 
-class BackgroundPropertiesDialog : public QDialog
+class BackgroundPropertiesDialog : public QDialog, public ProjectChangesApplier
 {
     Q_OBJECT
 
@@ -19,6 +20,7 @@ public:
     ~BackgroundPropertiesDialog();
 
     void accept() override;
+    bool applyChanges() override;
     void reject() override;
 
 private slots:

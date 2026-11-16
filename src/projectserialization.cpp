@@ -2,6 +2,8 @@
 
 #include "stdserialization.h"
 
+#include <QSet>
+
 QDataStream &operator<<(QDataStream &ds, const GlobalGameSettings &globalGameSettings)
 {
     ds << globalGameSettings.startInFullscreenMode
@@ -516,9 +518,78 @@ QDataStream &operator>>(QDataStream &ds, IncludedFile &includedFile)
     return ds;
 }
 
+template<typename T>
+QDataStream &writeFolder(QDataStream &ds, const ResourceFolder<T> &folder)
+{
+    ds << quint32(folder.children.size());
+    for (const auto &node : folder.children.template get<0>())
+    {
+        ds << node->isFolder();
+        if (const auto *nested = node->folder())
+        {
+            ds << nested->name;
+            writeFolder(ds, *nested);
+        }
+        else
+            ds << *node->resource();
+    }
+    return ds;
+}
+
+template<typename T>
+QDataStream &readFolder(QDataStream &ds, ResourceFolder<T> &folder)
+{
+    quint32 count{};
+    ds >> count;
+    if (count > 1000000) {
+        ds.setStatus(QDataStream::ReadCorruptData);
+        return ds;
+    }
+    for (quint32 i = 0; i < count && ds.status() == QDataStream::Ok; ++i)
+    {
+        bool isFolder{};
+        ds >> isFolder;
+        if (isFolder)
+        {
+            QString name;
+            ds >> name;
+            auto nested = std::make_unique<ResourceFolder<T>>(name);
+            readFolder(ds, *nested);
+            if (!folder.children.template get<0>().push_back(
+                    std::make_unique<ResourceNode<T>>(std::move(nested))).second)
+                ds.setStatus(QDataStream::ReadCorruptData);
+        }
+        else
+        {
+            T resource;
+            ds >> resource;
+            if (!folder.children.template get<0>().push_back(
+                    std::make_unique<ResourceNode<T>>(std::move(resource))).second)
+                ds.setStatus(QDataStream::ReadCorruptData);
+        }
+    }
+    return ds;
+}
+
+template<typename T>
+QDataStream &operator<<(QDataStream &ds, const ResourceCollection<T> &resources)
+{
+    return writeFolder(ds, resources.root);
+}
+
+template<typename T>
+QDataStream &operator>>(QDataStream &ds, ResourceCollection<T> &resources)
+{
+    resources.clear();
+    readFolder(ds, resources.root);
+    resources.invalidate();
+    return ds;
+}
+
 QDataStream &operator<<(QDataStream &ds, const ProjectContainer &project)
 {
-    ds << project.globalGameSettings
+    ds << quint32{0x5154474d} << quint32{2}
+       << project.globalGameSettings
        << project.sprites
        << project.sounds
        << project.backgrounds
@@ -534,6 +605,13 @@ QDataStream &operator<<(QDataStream &ds, const ProjectContainer &project)
 
 QDataStream &operator>>(QDataStream &ds, ProjectContainer &project)
 {
+    quint32 magic{}, version{};
+    ds >> magic >> version;
+    if (ds.status() != QDataStream::Ok || magic != 0x5154474d || version != 2)
+    {
+        ds.setStatus(QDataStream::ReadCorruptData);
+        return ds;
+    }
     ds >> project.globalGameSettings
        >> project.sprites
        >> project.sounds
@@ -545,5 +623,20 @@ QDataStream &operator>>(QDataStream &ds, ProjectContainer &project)
        >> project.objects
        >> project.rooms
        >> project.includedFiles;
+    if (ds.status() != QDataStream::Ok) return ds;
+    QSet<QString> names;
+    const auto checkNames = [&names](const auto &resources) {
+        for (const auto &resource : resources) {
+            if (resource.name.isEmpty() || names.contains(resource.name)) return false;
+            names.insert(resource.name);
+        }
+        return true;
+    };
+    if (!checkNames(project.sprites) || !checkNames(project.sounds) ||
+        !checkNames(project.backgrounds) || !checkNames(project.paths) ||
+        !checkNames(project.scripts) || !checkNames(project.fonts) ||
+        !checkNames(project.timeLines) || !checkNames(project.objects) ||
+        !checkNames(project.rooms))
+        ds.setStatus(QDataStream::ReadCorruptData);
     return ds;
 }

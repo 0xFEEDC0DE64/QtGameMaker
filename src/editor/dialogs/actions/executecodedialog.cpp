@@ -73,7 +73,7 @@ void ExecuteCodeDialog::accept()
         m_action.appliesTo = AppliesToSelf{};
     else if (m_radioButtonOther->isChecked())
         m_action.appliesTo = AppliesToOther{};
-    else if (m_radioButtonObject->isChecked())
+    else if (m_radioButtonObject->isChecked() && !m_objectSelector->objectName().isEmpty())
         m_action.appliesTo = AppliesToObject{ .objectName = m_objectSelector->objectName() };
     else
     {

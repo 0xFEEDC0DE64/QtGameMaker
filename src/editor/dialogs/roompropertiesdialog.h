@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "projectcontainer.h"
+#include "projectchangesapplier.h"
 
 class QSpinBox;
 class QLabel;
@@ -16,8 +17,9 @@ struct Object;
 class ProjectTreeModel;
 class RoomScene;
 class MainWindow;
+class ResourceMenuAdapter;
 
-class RoomPropertiesDialog : public QDialog
+class RoomPropertiesDialog : public QDialog, public ProjectChangesApplier
 {
     Q_OBJECT
 
@@ -26,6 +28,7 @@ public:
     ~RoomPropertiesDialog();
 
     void accept() override;
+    bool applyChanges() override;
     void reject() override;
 
 private slots:
@@ -46,7 +49,6 @@ private slots:
     void objectAboutToBeRemoved(const Object &object);
     void objectSpriteNameChanged(const Object &object);
 
-    void objectsMenuAboutToShow();
 
     void cursorMoved(const QPoint &point);
 
@@ -73,6 +75,7 @@ private:
     QSpinBox * const m_spinBoxSnapY;
 
     QMenu * const m_menuObjects;
+    std::unique_ptr<ResourceMenuAdapter> m_objectMenuAdapter;
 
     QLabel * const m_labelX;
     QLabel * const m_labelY;

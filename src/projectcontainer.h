@@ -11,6 +11,8 @@
 #include <QFont>
 #include <QPoint>
 
+#include "resourcefolder.h"
+
 struct GlobalGameSettings
 {
     // Graphics settings
@@ -356,18 +358,19 @@ struct ProjectContainer
 {
     GlobalGameSettings globalGameSettings;
 
-    std::list<Sprite> sprites;
-    std::list<Sound> sounds;
-    std::list<Background> backgrounds;
-    std::list<Path> paths;
-    std::list<Script> scripts;
-    std::list<Font> fonts;
-    std::list<TimeLine> timeLines;
-    std::list<Object> objects;
-    std::list<Room> rooms;
+    ResourceCollection<Sprite> sprites;
+    ResourceCollection<Sound> sounds;
+    ResourceCollection<Background> backgrounds;
+    ResourceCollection<Path> paths;
+    ResourceCollection<Script> scripts;
+    ResourceCollection<Font> fonts;
+    ResourceCollection<TimeLine> timeLines;
+    ResourceCollection<Object> objects;
+    ResourceCollection<Room> rooms;
 
     std::list<IncludedFile> includedFiles;
 
-    template<typename T> std::list<T> &containerFor();
-    template<typename T> const std::list<T> &containerFor() const;
+    template<typename T> ResourceCollection<T> &containerFor();
+    template<typename T> const ResourceCollection<T> &containerFor() const;
+    bool hasResourceName(const QString &name) const;
 };

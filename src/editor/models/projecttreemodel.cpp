@@ -3,6 +3,8 @@
 #include <QDebug>
 #include <QPixmap>
 #include <QIcon>
+#include <QMimeData>
+#include <QPersistentModelIndex>
 
 #include <utility>
 #include <algorithm>
@@ -11,6 +13,17 @@
 #include "projectcontainer.h"
 
 namespace {
+constexpr auto ResourceMimeType = "application/x-qtgamemaker-resource-node";
+
+class ResourceMimeData : public QMimeData
+{
+public:
+    explicit ResourceMimeData(const QModelIndex &index) : source{index} {
+        setData(ResourceMimeType, QByteArray{1, 'x'});
+    }
+    QPersistentModelIndex source;
+};
+
 enum {
     RowSprites,
     RowSounds,
@@ -26,6 +39,95 @@ enum {
     RowExtensionPackages,
     NumberOfRows
 };
+
+template<typename Callback>
+void visitActions(ActionsContainer &actions, Callback &&callback)
+{
+    for (Action &action : actions)
+        std::visit([&](auto &value) { callback(value.appliesTo); }, action);
+}
+
+template<typename Callback>
+void visitProjectActions(ProjectContainer &project, Callback &&callback)
+{
+    for (Object &object : project.objects)
+    {
+        for (auto &[event, actions] : object.events)
+            visitActions(actions, callback);
+        for (auto &[event, actions] : object.collisionEvents)
+            visitActions(actions, callback);
+    }
+    for (TimeLine &timeline : project.timeLines)
+        for (auto &[moment, actions] : timeline.moments)
+            visitActions(actions, callback);
+}
+
+template<typename T>
+bool findNode(ResourceFolder<T> &folder, const void *pointer,
+              ResourceFolder<T> *&owner, ResourceNode<T> *&node)
+{
+    for (const auto &child : folder.children.template get<0>())
+    {
+        if (child.get() == pointer)
+        {
+            owner = &folder;
+            node = child.get();
+            return true;
+        }
+        if (auto *nested = child->folder(); nested && findNode(*nested, pointer, owner, node))
+            return true;
+    }
+    return false;
+}
+
+template<typename T>
+bool findFolderNode(ResourceFolder<T> &folder, const ResourceFolder<T> *target,
+                    ResourceFolder<T> *&owner, ResourceNode<T> *&node)
+{
+    for (const auto &child : folder.children.template get<0>())
+    {
+        if (child->folder() == target)
+        {
+            owner = &folder;
+            node = child.get();
+            return true;
+        }
+        if (auto *nested = child->folder(); nested && findFolderNode(*nested, target, owner, node))
+            return true;
+    }
+    return false;
+}
+}
+
+template<typename T>
+std::pair<ResourceFolder<T> *, ResourceNode<T> *>
+ProjectTreeModel::locationFor(const QModelIndex &index) const
+{
+    if (!m_project || !index.isValid() || index.internalId() == std::to_underlying(NodeType::Root))
+        return {nullptr, nullptr};
+    ResourceFolder<T> *owner{};
+    ResourceNode<T> *node{};
+    findNode(const_cast<ResourceFolder<T> &>(m_project->containerFor<T>().root),
+             index.internalPointer(), owner, node);
+    return {owner, node};
+}
+
+template<typename T>
+ResourceFolder<T> *ProjectTreeModel::folderFor(const QModelIndex &index) const
+{
+    if (!m_project) return nullptr;
+    if (index == rootFor<T>())
+        return &const_cast<ResourceFolder<T> &>(m_project->containerFor<T>().root);
+    auto [owner, node] = locationFor<T>(index);
+    return node ? node->folder() : nullptr;
+}
+
+template<typename T>
+QModelIndex ProjectTreeModel::indexForResource(const T &resource) const
+{
+    if (!m_project) return {};
+    auto [owner, node] = const_cast<ResourceCollection<T> &>(m_project->containerFor<T>()).findNode(&resource);
+    return owner && node ? createIndex(owner->rowOf(node), 0, node) : QModelIndex{};
 }
 
 ProjectTreeModel::ProjectTreeModel(QObject *parent) :
@@ -48,22 +150,17 @@ QVariant ProjectTreeModel::dataFor(const QModelIndex &index, int role) const
         return {};
     }
 
-    const auto &container = m_project->containerFor<T>();
-    if (std::size_t(index.row()) >= container.size())
-    {
-        qWarning() << "index out of bounds" << index.row();
-        return {};
-    }
-
-    auto iter = std::next(std::cbegin(container), index.row());
+    auto [owner, node] = locationFor<T>(index);
+    if (!owner || !node || !node->resource()) return {};
+    const T &resource = *node->resource();
 
     switch (role)
     {
     case Qt::DisplayRole:
     case Qt::EditRole:
-        return iter->name;
+        return resource.name;
     case Qt::DecorationRole:
-        return iconFor<T>(*iter);
+        return iconFor<T>(resource);
 
     default:
         return {};
@@ -171,34 +268,13 @@ bool ProjectTreeModel::setDataFor(const QModelIndex &index, const QVariant &valu
         return {};
     }
 
-    auto &container = m_project->containerFor<T>();
-    if (index.row() < 0 || std::size_t(index.row()) >= container.size())
-    {
-        qWarning() << "unexpected row" << index.row();
-        return false;
-    }
-    auto iter = std::next(std::begin(container), index.row());
+    auto [owner, node] = locationFor<T>(index);
+    if (!owner || !node || !node->resource()) return false;
     switch (role)
     {
     case Qt::DisplayRole:
     case Qt::EditRole:
-        if (auto name = value.toString(); name != iter->name)
-        {
-            if (std::any_of(std::cbegin(container), std::cend(container),
-                            [&name](const auto &entry){ return entry.name == name; }))
-            {
-                qWarning() << "duplicate name" << name;
-                emit errorOccured(tr("A Sprite with the name \"%0\" is already existing").arg(name));
-                return false;
-            }
-            onBeforeRename<T>(*iter, name);
-            auto oldName = std::move(iter->name);
-            iter->name = std::move(name);
-            emitNameChanged<T>(*iter, oldName);
-            emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
-            onAfterRename<T>(*iter, std::move(oldName));
-        }
-        return true;
+        return rename<T>(*node->resource(), value.toString());
     default:
         qWarning() << "unexpected role" << role;
         return false;
@@ -208,7 +284,8 @@ bool ProjectTreeModel::setDataFor(const QModelIndex &index, const QVariant &valu
 template<typename T>
 std::optional<bool> ProjectTreeModel::insertRowsFor(int row, int count, const QModelIndex &parent)
 {
-    if (parent != rootFor<T>())
+    auto *folder = folderFor<T>(parent);
+    if (!folder)
         return std::nullopt;
 
     if (!m_project)
@@ -218,15 +295,20 @@ std::optional<bool> ProjectTreeModel::insertRowsFor(int row, int count, const QM
     }
 
     auto &container = m_project->containerFor<T>();
-    if (row < 0 || std::size_t(row) > container.size())
+    if (row < 0 || std::size_t(row) > folder->children.size() || count <= 0)
     {
         qWarning() << "unexpected row" << row;
         return false;
     }
 
     beginInsertRows(parent, row, row + count - 1);
-    for (size_t i = 0; i < std::size_t(count); i++)
-        container.emplace(std::next(std::begin(container), row + i), T { .name = getFreeNameFor<T>(container) });
+    auto &sequence = folder->children.template get<0>();
+    for (int i = 0; i < count; i++)
+    {
+        sequence.insert(std::next(sequence.begin(), row + i),
+                        std::make_unique<ResourceNode<T>>(T{.name = getFreeNameFor<T>(*folder)}));
+        container.invalidate();
+    }
     endInsertRows();
 
     return true;
@@ -235,7 +317,8 @@ std::optional<bool> ProjectTreeModel::insertRowsFor(int row, int count, const QM
 template<typename T>
 std::optional<bool> ProjectTreeModel::removeRowsFor(int row, int count, const QModelIndex &parent)
 {
-    if (parent != rootFor<T>())
+    auto *folder = folderFor<T>(parent);
+    if (!folder)
         return std::nullopt;
 
     if (!m_project)
@@ -246,29 +329,38 @@ std::optional<bool> ProjectTreeModel::removeRowsFor(int row, int count, const QM
 
     auto &container = m_project->containerFor<T>();
 
-    if (row < 0 || std::size_t(row) >= container.size())
+    if (row < 0 || std::size_t(row) >= folder->children.size())
     {
         qWarning() << "unexpected row" << row;
         return false;
     }
 
-    if (count < 0 || std::size_t(count) > container.size() - row)
+    if (count <= 0 || std::size_t(count) > folder->children.size() - row)
     {
         qWarning() << "unexpected row+count" << count << row;
         return false;
     }
 
-    auto begin = std::next(std::begin(container), row);
+    auto &sequence = folder->children.template get<0>();
+    auto begin = std::next(sequence.begin(), row);
     auto end = std::next(begin, count);
 
-    for (auto iter = begin; iter != end; iter++)
-        onBeforeRemove<T>(*iter);
-
-    for (auto iter = begin; iter != end; iter++)
-        emitAboutToBeRemoved(*iter);
+    const auto notifyDescendants = [this](const auto &self, ResourceNode<T> &node) -> void {
+        if (T *resource = node.resource())
+        {
+            onBeforeRemove<T>(*resource);
+            emitAboutToBeRemoved(*resource);
+        }
+        else if (auto *nested = node.folder())
+            for (const auto &child : nested->children.template get<0>())
+                self(self, *child);
+    };
+    for (auto iter = begin; iter != end; ++iter)
+        notifyDescendants(notifyDescendants, **iter);
 
     beginRemoveRows(parent, row, row + count - 1);
-    container.erase(begin, end);
+    sequence.erase(begin, end);
+    container.invalidate();
     endRemoveRows();
 
     return true;
@@ -288,7 +380,7 @@ template<> void ProjectTreeModel::onBeforeRemove<Sprite>(const Sprite &sprite)
             auto oldSpriteName = std::move(iter->spriteName);
             iter->spriteName.clear();
 
-            const auto index = this->index(std::distance(std::begin(m_project->objects), iter), 0, rootFor<Object>());
+            const auto index = indexForResource(*iter);
             emit dataChanged(index, index, {Qt::DecorationRole});
 
             emit objectSpriteNameChanged(*iter, std::move(oldSpriteName));
@@ -303,6 +395,12 @@ template<> void ProjectTreeModel::onBeforeRemove<Sprite>(const Sprite &sprite)
 
 template<> void ProjectTreeModel::onBeforeRemove<Object>(const Object &object)
 {
+    visitProjectActions(*m_project, [&object](AppliesTo &appliesTo) {
+        if (auto *target = std::get_if<AppliesToObject>(&appliesTo);
+            target && target->objectName == object.name)
+            target->objectName.clear();
+    });
+
     for (Object &obj : m_project->objects)
     {
         if (!obj.parentName.isEmpty() && obj.parentName == object.name)
@@ -341,8 +439,8 @@ template<> void ProjectTreeModel::onAfterRename<Sprite>(const Sprite &sprite, co
 
             object.spriteName = sprite.name;
 
-//            const auto index = this->index(std::distance(std::begin(m_project->objects), iter), 0, rootFor<Object>());
-//            emit dataChanged(index, index, {Qt::DecorationRole});
+            const auto index = indexForResource(object);
+            emit dataChanged(index, index, {Qt::DecorationRole});
 
             emit objectSpriteNameChanged(object, std::move(oldSpriteName));
         }
@@ -356,6 +454,12 @@ template<> void ProjectTreeModel::onAfterRename<Sprite>(const Sprite &sprite, co
 
 template<> void ProjectTreeModel::onBeforeRename<Object>(const Object &object, const QString &newName)
 {
+    visitProjectActions(*m_project, [&object, &newName](AppliesTo &appliesTo) {
+        if (auto *target = std::get_if<AppliesToObject>(&appliesTo);
+            target && target->objectName == object.name)
+            target->objectName = newName;
+    });
+
     for (Object &obj : m_project->objects)
     {
         if (!obj.parentName.isEmpty() && obj.parentName == object.name)
@@ -376,20 +480,20 @@ template<> void ProjectTreeModel::onBeforeRename<Object>(const Object &object, c
             if (obj.objectName != object.name)
                 continue;
 
-            obj.objectName = object.name;
+            obj.objectName = newName;
         }
     }
 }
 
 template<typename T>
-QString ProjectTreeModel::getFreeNameFor(const std::list<T> &container)
+QString ProjectTreeModel::getFreeNameFor(const ResourceFolder<T> &folder) const
 {
     QString name;
     for (int i = 0; ; i++)
     {
         name = nameTempateFor<T>().arg(i);
-        if (std::none_of(std::cbegin(container), std::cend(container),
-                         [&name](const T &entry){ return entry.name == name; }))
+        if (!m_project->hasResourceName(name) &&
+            folder.children.template get<1>().find(name) == folder.children.template get<1>().end())
             break;
     }
     return name;
@@ -434,58 +538,47 @@ template<> QString ProjectTreeModel::nameTempateFor<Room>() { return QStringLite
 
 QModelIndex ProjectTreeModel::index(int row, int column, const QModelIndex &parent) const
 {
+    if (row < 0 || column != 0 || !m_project) return {};
     if (!parent.isValid())
-        return createIndex(row, column, std::to_underlying(NodeType::Root));
-    else if (!parent.parent().isValid())
-    {
-        switch (nodeType(parent))
-        {
-        case NodeType::Root:
-            switch (parent.row())
-            {
-            case RowSprites:     return createIndex(row, column, std::to_underlying(NodeType::Sprite));
-            case RowSounds:      return createIndex(row, column, std::to_underlying(NodeType::Sound));
-            case RowBackgrounds: return createIndex(row, column, std::to_underlying(NodeType::Background));
-            case RowPaths:       return createIndex(row, column, std::to_underlying(NodeType::Path));
-            case RowScripts:     return createIndex(row, column, std::to_underlying(NodeType::Script));
-            case RowFonts:       return createIndex(row, column, std::to_underlying(NodeType::Font));
-            case RowTimeLines:   return createIndex(row, column, std::to_underlying(NodeType::TimeLine));
-            case RowObjects:     return createIndex(row, column, std::to_underlying(NodeType::Object));
-            case RowRooms:       return createIndex(row, column, std::to_underlying(NodeType::Room));
-            default:
-                qWarning() << "unexpected parent row" << parent.row();
-                return {};
-            }
-        default:
-            qWarning() << "unexpected parent type" << parent.internalId();
-            return {};
-        }
-    }
-    else
-    {
-        qWarning() << "unexpected parent";
-        return {};
-    }
+        return row < NumberOfRows ? createIndex(row, column, std::to_underlying(NodeType::Root)) : QModelIndex{};
+#define RESOURCE_INDEX(T) if (auto *folder = folderFor<T>(parent)) { \
+        auto *node = folder->at(row); return node ? createIndex(row, column, node) : QModelIndex{}; }
+    RESOURCE_INDEX(Sprite)
+    RESOURCE_INDEX(Sound)
+    RESOURCE_INDEX(Background)
+    RESOURCE_INDEX(Path)
+    RESOURCE_INDEX(Script)
+    RESOURCE_INDEX(Font)
+    RESOURCE_INDEX(TimeLine)
+    RESOURCE_INDEX(Object)
+    RESOURCE_INDEX(Room)
+#undef RESOURCE_INDEX
+    return {};
 }
 
 QModelIndex ProjectTreeModel::parent(const QModelIndex &child) const
 {
-    switch (nodeType(child))
-    {
-    case NodeType::Root:       return {};
-    case NodeType::Sprite:     return rootFor<Sprite>();
-    case NodeType::Sound:      return rootFor<Sound>();
-    case NodeType::Background: return rootFor<Background>();
-    case NodeType::Path:       return rootFor<Path>();
-    case NodeType::Script:     return rootFor<Script>();
-    case NodeType::Font:       return rootFor<Font>();
-    case NodeType::TimeLine:   return rootFor<TimeLine>();
-    case NodeType::Object:     return rootFor<Object>();
-    case NodeType::Room:       return rootFor<Room>();
-    default:
-        qWarning() << "unexpected child type" << child.internalId();
-        return {};
-    }
+    if (!child.isValid() || child.internalId() == std::to_underlying(NodeType::Root)) return {};
+#define RESOURCE_PARENT(T) { \
+        auto [owner, node] = locationFor<T>(child); \
+        if (owner && node) { \
+            auto &root = const_cast<ResourceFolder<T> &>(m_project->containerFor<T>().root); \
+            if (owner == &root) return rootFor<T>(); \
+            ResourceFolder<T> *grandOwner{}; ResourceNode<T> *folderNode{}; \
+            findFolderNode(root, owner, grandOwner, folderNode); \
+            return grandOwner && folderNode ? createIndex(grandOwner->rowOf(folderNode), 0, folderNode) : QModelIndex{}; \
+        } }
+    RESOURCE_PARENT(Sprite)
+    RESOURCE_PARENT(Sound)
+    RESOURCE_PARENT(Background)
+    RESOURCE_PARENT(Path)
+    RESOURCE_PARENT(Script)
+    RESOURCE_PARENT(Font)
+    RESOURCE_PARENT(TimeLine)
+    RESOURCE_PARENT(Object)
+    RESOURCE_PARENT(Room)
+#undef RESOURCE_PARENT
+    return {};
 }
 
 int ProjectTreeModel::rowCount(const QModelIndex &parent) const
@@ -498,15 +591,15 @@ int ProjectTreeModel::rowCount(const QModelIndex &parent) const
     case NodeType::Root:
         switch (parent.row())
         {
-        case RowSprites:     return m_project ? m_project->containerFor<Sprite>().size() : 0;
-        case RowSounds:      return m_project ? m_project->containerFor<Sound>().size() : 0;
-        case RowBackgrounds: return m_project ? m_project->containerFor<Background>().size() : 0;
-        case RowPaths:       return m_project ? m_project->containerFor<Path>().size() : 0;
-        case RowScripts:     return m_project ? m_project->containerFor<Script>().size() : 0;
-        case RowFonts:       return m_project ? m_project->containerFor<Font>().size() : 0;
-        case RowTimeLines:   return m_project ? m_project->containerFor<TimeLine>().size() : 0;
-        case RowObjects:     return m_project ? m_project->containerFor<Object>().size() : 0;
-        case RowRooms:       return m_project ? m_project->containerFor<Room>().size() : 0;
+        case RowSprites:     return m_project ? m_project->containerFor<Sprite>().root.children.size() : 0;
+        case RowSounds:      return m_project ? m_project->containerFor<Sound>().root.children.size() : 0;
+        case RowBackgrounds: return m_project ? m_project->containerFor<Background>().root.children.size() : 0;
+        case RowPaths:       return m_project ? m_project->containerFor<Path>().root.children.size() : 0;
+        case RowScripts:     return m_project ? m_project->containerFor<Script>().root.children.size() : 0;
+        case RowFonts:       return m_project ? m_project->containerFor<Font>().root.children.size() : 0;
+        case RowTimeLines:   return m_project ? m_project->containerFor<TimeLine>().root.children.size() : 0;
+        case RowObjects:     return m_project ? m_project->containerFor<Object>().root.children.size() : 0;
+        case RowRooms:       return m_project ? m_project->containerFor<Room>().root.children.size() : 0;
         case RowGameInformation:
         case RowGlobalGameSettings:
         case RowExtensionPackages:
@@ -517,6 +610,19 @@ int ProjectTreeModel::rowCount(const QModelIndex &parent) const
         }
 
         return {};
+    case NodeType::Folder:
+#define FOLDER_ROWS(T) if (auto *folder = folderFor<T>(parent)) return int(folder->children.size());
+        FOLDER_ROWS(Sprite)
+        FOLDER_ROWS(Sound)
+        FOLDER_ROWS(Background)
+        FOLDER_ROWS(Path)
+        FOLDER_ROWS(Script)
+        FOLDER_ROWS(Font)
+        FOLDER_ROWS(TimeLine)
+        FOLDER_ROWS(Object)
+        FOLDER_ROWS(Room)
+#undef FOLDER_ROWS
+        return 0;
     case NodeType::Sprite:
     case NodeType::Sound:
     case NodeType::Background:
@@ -562,6 +668,7 @@ int ProjectTreeModel::columnCount(const QModelIndex &parent) const
         }
 
         return {};
+    case NodeType::Folder:
     case NodeType::Sprite:
     case NodeType::Sound:
     case NodeType::Background:
@@ -588,6 +695,26 @@ QVariant ProjectTreeModel::data(const QModelIndex &index, int role) const
 
     switch (nodeType(index))
     {
+    case NodeType::Folder:
+    {
+#define FOLDER_DATA(T) { auto [owner, node] = locationFor<T>(index); \
+        if (owner && node && node->folder()) { \
+            if (role == Qt::DisplayRole || role == Qt::EditRole) return node->name(); \
+            if (role == Qt::DecorationRole) return QIcon{":/qtgameengine/icons/folder.png"}; \
+            return {}; \
+        } }
+        FOLDER_DATA(Sprite)
+        FOLDER_DATA(Sound)
+        FOLDER_DATA(Background)
+        FOLDER_DATA(Path)
+        FOLDER_DATA(Script)
+        FOLDER_DATA(Font)
+        FOLDER_DATA(TimeLine)
+        FOLDER_DATA(Object)
+        FOLDER_DATA(Room)
+#undef FOLDER_DATA
+        return {};
+    }
     case NodeType::Root:
         switch (role)
         {
@@ -651,11 +778,17 @@ QVariant ProjectTreeModel::data(const QModelIndex &index, int role) const
 
 Qt::ItemFlags ProjectTreeModel::flags(const QModelIndex &index) const
 {
+    if (!index.isValid()) return Qt::NoItemFlags;
     auto flags = QAbstractItemModel::flags(index);
 
     switch (nodeType(index))
     {
     case NodeType::Root:
+        if (index.row() <= RowRooms)
+            flags |= Qt::ItemIsDropEnabled;
+        break;
+    case NodeType::Folder:
+        flags |= Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
         break;
     case NodeType::Sprite:
     case NodeType::Sound:
@@ -666,7 +799,7 @@ Qt::ItemFlags ProjectTreeModel::flags(const QModelIndex &index) const
     case NodeType::TimeLine:
     case NodeType::Object:
     case NodeType::Room:
-        flags |= Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+        flags |= Qt::ItemIsEditable | Qt::ItemIsDragEnabled;
     }
 
     return flags;
@@ -674,13 +807,95 @@ Qt::ItemFlags ProjectTreeModel::flags(const QModelIndex &index) const
 
 Qt::DropActions ProjectTreeModel::supportedDropActions() const
 {
-    return QAbstractItemModel::supportedDropActions() | Qt::MoveAction;
+    return Qt::MoveAction;
+}
+
+QStringList ProjectTreeModel::mimeTypes() const
+{
+    return {QString::fromLatin1(ResourceMimeType)};
+}
+
+QMimeData *ProjectTreeModel::mimeData(const QModelIndexList &indexes) const
+{
+    for (const QModelIndex &index : indexes)
+        if (index.isValid() && nodeType(index) != NodeType::Root)
+            return new ResourceMimeData(index);
+    return nullptr;
+}
+
+bool ProjectTreeModel::canDropMimeData(const QMimeData *data, Qt::DropAction action,
+                                       int row, int column, const QModelIndex &parent) const
+{
+    if (action != Qt::MoveAction || column > 0 || !data) return false;
+    const auto *resourceData = dynamic_cast<const ResourceMimeData *>(data);
+    if (!resourceData || !resourceData->source.isValid() || resourceData->source.model() != this) return false;
+    if (nodeType(parent) != NodeType::Root && nodeType(parent) != NodeType::Folder) return false;
+    const QModelIndex source = resourceData->source;
+    const auto categoryRoot = [](QModelIndex index) {
+        while (index.isValid() && index.parent().isValid())
+            index = index.parent();
+        return index;
+    };
+    if (!parent.isValid() || categoryRoot(source) != categoryRoot(parent)) return false;
+    if (row < -1 || row > rowCount(parent)) return false;
+    for (QModelIndex ancestor = parent; ancestor.isValid(); ancestor = ancestor.parent())
+        if (ancestor == source) return false;
+    const int destinationRow = row < 0 ? rowCount(parent) : row;
+    if (source.parent() == parent &&
+        (destinationRow == source.row() || destinationRow == source.row() + 1)) return false;
+    if (source.parent() != parent)
+    {
+        const QString sourceName = source.data(Qt::DisplayRole).toString();
+        for (int child = 0; child < rowCount(parent); ++child)
+            if (this->data(index(child, 0, parent), Qt::DisplayRole).toString() == sourceName)
+                return false;
+    }
+    return true;
+}
+
+bool ProjectTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+                                    int row, int column, const QModelIndex &parent)
+{
+    if (!canDropMimeData(data, action, row, column, parent)) return false;
+    const auto *resourceData = static_cast<const ResourceMimeData *>(data);
+    const QModelIndex source = resourceData->source;
+    return moveRows(source.parent(), source.row(), 1, parent,
+                    row < 0 ? rowCount(parent) : row);
 }
 
 bool ProjectTreeModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     switch (const auto nodeType = this->nodeType(index))
     {
+    case NodeType::Folder:
+    {
+        if (role != Qt::EditRole && role != Qt::DisplayRole) return false;
+        const QString name = value.toString().trimmed();
+        if (name.isEmpty()) return false;
+#define RENAME_FOLDER(T) { auto [owner, node] = locationFor<T>(index); \
+            if (owner && node && node->folder()) { \
+                if (node->name() == name) return true; \
+                auto &hashed = owner->children.template get<1>(); \
+                if (hashed.find(name) != hashed.end()) return false; \
+                auto &sequence = owner->children.template get<0>(); \
+                auto it = std::find_if(sequence.begin(), sequence.end(), \
+                    [node](const auto &child) { return child.get() == node; }); \
+                const bool okay = sequence.modify(it, [&name](auto &child) { child->folder()->name = name; }); \
+                if (okay) emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole}); \
+                return okay; \
+            } }
+        RENAME_FOLDER(Sprite)
+        RENAME_FOLDER(Sound)
+        RENAME_FOLDER(Background)
+        RENAME_FOLDER(Path)
+        RENAME_FOLDER(Script)
+        RENAME_FOLDER(Font)
+        RENAME_FOLDER(TimeLine)
+        RENAME_FOLDER(Object)
+        RENAME_FOLDER(Room)
+#undef RENAME_FOLDER
+        return false;
+    }
     case NodeType::Sprite:     return setDataFor<Sprite>(index, value, role);
     case NodeType::Sound:      return setDataFor<Sound>(index, value, role);
     case NodeType::Background: return setDataFor<Background>(index, value, role);
@@ -714,8 +929,81 @@ bool ProjectTreeModel::insertRows(int row, int count, const QModelIndex &parent)
 
 bool ProjectTreeModel::moveRows(const QModelIndex &sourceParent, int sourceRow, int count, const QModelIndex &destinationParent, int destinationChild)
 {
-    qDebug() << "called" << sourceParent << sourceRow << count << destinationParent << destinationChild;
+    if (count <= 0 || sourceRow < 0 || destinationChild < 0) return false;
+#define MOVE_RESOURCES(T) { \
+        auto *source = folderFor<T>(sourceParent); \
+        auto *destination = folderFor<T>(destinationParent); \
+        if (source && destination) { \
+            auto &from = source->children.template get<0>(); \
+            auto &to = destination->children.template get<0>(); \
+            if (std::size_t(sourceRow + count) > from.size() || std::size_t(destinationChild) > to.size()) return false; \
+            if (source == destination && destinationChild >= sourceRow && destinationChild <= sourceRow + count) return false; \
+            for (int i = 0; i < count; ++i) { \
+                auto *moving = source->at(sourceRow + i); \
+                if (source != destination && destination->children.template get<1>().find(moving->name()) != destination->children.template get<1>().end()) return false; \
+                if (auto *nested = moving->folder()) { \
+                    const auto contains = [&](const auto &self, const ResourceFolder<T> *folder) -> bool { \
+                        if (folder == destination) return true; \
+                        for (const auto &child : folder->children.template get<0>()) \
+                            if (const auto *childFolder = child->folder(); childFolder && self(self, childFolder)) return true; \
+                        return false; \
+                    }; \
+                    if (contains(contains, nested)) return false; \
+                } \
+            } \
+            if (!beginMoveRows(sourceParent, sourceRow, sourceRow + count - 1, destinationParent, destinationChild)) return false; \
+            auto first = std::next(from.begin(), sourceRow); \
+            auto last = std::next(first, count); \
+            to.splice(std::next(to.begin(), destinationChild), from, first, last); \
+            m_project->containerFor<T>().invalidate(); \
+            endMoveRows(); \
+            return true; \
+        } }
+    MOVE_RESOURCES(Sprite)
+    MOVE_RESOURCES(Sound)
+    MOVE_RESOURCES(Background)
+    MOVE_RESOURCES(Path)
+    MOVE_RESOURCES(Script)
+    MOVE_RESOURCES(Font)
+    MOVE_RESOURCES(TimeLine)
+    MOVE_RESOURCES(Object)
+    MOVE_RESOURCES(Room)
+#undef MOVE_RESOURCES
     return false;
+}
+
+QModelIndex ProjectTreeModel::createFolder(const QModelIndex &parent, const QString &requestedName, int requestedRow)
+{
+    QString name = requestedName.trimmed();
+#define CREATE_FOLDER(T) if (auto *folder = folderFor<T>(parent)) { \
+        auto &sequence = folder->children.template get<0>(); \
+        if (name.isEmpty()) { \
+            for (int i = 0;; ++i) { \
+                name = tr("group%1").arg(i); \
+                if (folder->children.template get<1>().find(name) == folder->children.template get<1>().end()) break; \
+            } \
+        } \
+        if (folder->children.template get<1>().find(name) != folder->children.template get<1>().end()) return {}; \
+        const int row = requestedRow < 0 ? int(sequence.size()) : requestedRow; \
+        if (row < 0 || std::size_t(row) > sequence.size()) return {}; \
+        beginInsertRows(parent, row, row); \
+        auto node = std::make_unique<ResourceNode<T>>(std::make_unique<ResourceFolder<T>>(name)); \
+        auto *pointer = node.get(); \
+        sequence.insert(std::next(sequence.begin(), row), std::move(node)); \
+        endInsertRows(); \
+        return createIndex(row, 0, pointer); \
+    }
+    CREATE_FOLDER(Sprite)
+    CREATE_FOLDER(Sound)
+    CREATE_FOLDER(Background)
+    CREATE_FOLDER(Path)
+    CREATE_FOLDER(Script)
+    CREATE_FOLDER(Font)
+    CREATE_FOLDER(TimeLine)
+    CREATE_FOLDER(Object)
+    CREATE_FOLDER(Room)
+#undef CREATE_FOLDER
+    return {};
 }
 
 bool ProjectTreeModel::removeRows(int row, int count, const QModelIndex &parent)
@@ -743,10 +1031,22 @@ void ProjectTreeModel::setProject(ProjectContainer *project)
 
 ProjectTreeModel::NodeType ProjectTreeModel::nodeType(const QModelIndex &index) const
 {
-    if (!index.isValid())
-        qWarning() << "invalid index";
-
-    return NodeType(index.internalId());
+    if (!index.isValid()) return NodeType::Root;
+    if (index.internalId() == std::to_underlying(NodeType::Root)) return NodeType::Root;
+#define RESOURCE_TYPE(T) { auto [owner, node] = locationFor<T>(index); \
+        if (owner && node) return node->isFolder() ? NodeType::Folder : nodeTypeFor<T>(); }
+    RESOURCE_TYPE(Sprite)
+    RESOURCE_TYPE(Sound)
+    RESOURCE_TYPE(Background)
+    RESOURCE_TYPE(Path)
+    RESOURCE_TYPE(Script)
+    RESOURCE_TYPE(Font)
+    RESOURCE_TYPE(TimeLine)
+    RESOURCE_TYPE(Object)
+    RESOURCE_TYPE(Room)
+#undef RESOURCE_TYPE
+    qWarning() << "index is not in this project" << index;
+    return NodeType::Root;
 }
 
 template<> QModelIndex ProjectTreeModel::rootFor<Sprite>() const
@@ -824,14 +1124,8 @@ T *ProjectTreeModel::get(const QModelIndex &index)
         return nullptr;
     }
 
-    auto &container = m_project->containerFor<T>();
-    if (index.row() < 0 || std::size_t(index.row()) >= container.size())
-    {
-        qWarning() << "invalid row" << index.row();
-        return nullptr;
-    }
-
-    return &*std::next(std::begin(container), index.row());
+    auto [owner, node] = locationFor<T>(index);
+    return owner && node ? node->resource() : nullptr;
 }
 
 template<typename T>
@@ -849,14 +1143,8 @@ const T *ProjectTreeModel::get(const QModelIndex &index) const
         return nullptr;
     }
 
-    const auto &container = m_project->containerFor<T>();
-    if (index.row() < 0 || std::size_t(index.row()) >= container.size())
-    {
-        qWarning() << "invalid row" << index.row();
-        return nullptr;
-    }
-
-    return &*std::next(std::cbegin(container), index.row());
+    auto [owner, node] = locationFor<T>(index);
+    return owner && node ? node->resource() : nullptr;
 }
 
 template Sprite *ProjectTreeModel::get<Sprite>(const QModelIndex &index);
@@ -889,11 +1177,9 @@ T *ProjectTreeModel::create()
 
     auto &container = m_project->containerFor<T>();
 
-    beginInsertRows(rootFor<T>(), container.size(), container.size());
-    container.emplace_back(T { .name = getFreeNameFor<T>(container) });
-    endInsertRows();
-
-    return &container.back();
+    const QModelIndex root = rootFor<T>();
+    if (!insertRows(int(container.root.children.size()), 1, root)) return nullptr;
+    return get<T>(index(int(container.root.children.size()) - 1, 0, root));
 }
 
 template Sprite *ProjectTreeModel::create<Sprite>();
@@ -916,25 +1202,14 @@ bool ProjectTreeModel::remove(const T &entry)
     }
 
     auto &container = m_project->containerFor<T>();
-    const auto iter = std::find_if(std::begin(container), std::end(container),
-                                   [&entry](const auto &otherEntry){ return &entry == &otherEntry; });
-    if (iter == std::cend(container))
+    auto [owner, node] = container.findNode(&entry);
+    if (!owner || !node)
     {
         qWarning() << "entry not from this project!";
         return false;
     }
 
-    const auto row = std::distance(std::begin(container), iter);
-
-    onBeforeRemove<T>(*iter);
-
-    emitAboutToBeRemoved<T>(*iter);
-
-    beginRemoveRows(rootFor<T>(), row, row);
-    container.erase(iter);
-    endRemoveRows();
-
-    return true;
+    return removeRows(owner->rowOf(node), 1, indexForResource(entry).parent());
 }
 
 template bool ProjectTreeModel::remove<Sprite>(const Sprite &entry);
@@ -957,34 +1232,39 @@ bool ProjectTreeModel::rename(const T &entry, const QString &newName)
     }
 
     auto &container = m_project->containerFor<T>();
-    const auto iter = std::find_if(std::begin(container), std::end(container),
-                                   [&entry](const auto &otherEntry){ return &entry == &otherEntry; });
-    if (iter == std::cend(container))
+    auto [owner, node] = container.findNode(&entry);
+    if (!owner || !node || !node->resource())
     {
         qWarning() << "entry not from this project!";
         return false;
     }
 
-    if (iter->name == newName)
+    if (node->resource()->name == newName)
         return true;
 
-    if (std::any_of(std::cbegin(container), std::cend(container),
-                    [&newName](const auto &entry){ return entry.name == newName; }))
+    if (newName.trimmed().isEmpty()) return false;
+
+    if (m_project->hasResourceName(newName) ||
+        owner->children.template get<1>().find(newName) != owner->children.template get<1>().end())
     {
         qWarning() << "duplicate name" << newName;
         return false;
     }
 
-    onBeforeRename<T>(*iter, newName);
+    onBeforeRename<T>(*node->resource(), newName);
 
-    auto oldName = std::move(iter->name);
-    iter->name = std::move(newName);
+    const QString oldName = node->resource()->name;
+    auto &sequence = owner->children.template get<0>();
+    auto nodeIter = std::find_if(sequence.begin(), sequence.end(),
+        [node](const auto &child) { return child.get() == node; });
+    if (!sequence.modify(nodeIter, [&newName](auto &child) { child->resource()->name = newName; }))
+        return false;
+    container.invalidate();
 
-    emitNameChanged<T>(*iter, oldName);
-    const auto index = this->index(std::distance(std::begin(container), iter), 0, rootFor<T>());
+    emitNameChanged<T>(*node->resource(), oldName);
+    const auto index = indexForResource(*node->resource());
     emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
-
-    onAfterRename<T>(*iter, std::move(oldName));
+    onAfterRename<T>(*node->resource(), oldName);
 
     return true;
 }
@@ -1019,7 +1299,7 @@ bool ProjectTreeModel::setSpritePixmaps(const Sprite &sprite, std::vector<QPixma
 
         iter->pixmaps = std::move(pixmaps);
 
-        const auto index = this->index(std::distance(std::begin(container), iter), 0, rootFor<Sprite>());
+        const auto index = indexForResource(*iter);
         emit dataChanged(index, index, { Qt::DecorationRole });
 
         emit spritePixmapsChanged(*iter);
@@ -1030,7 +1310,7 @@ bool ProjectTreeModel::setSpritePixmaps(const Sprite &sprite, std::vector<QPixma
         if (iter->spriteName != sprite.name)
             continue;
 
-        const auto index = this->index(std::distance(std::cbegin(m_project->objects), iter), 0, rootFor<Object>());
+        const auto index = indexForResource(*iter);
         emit dataChanged(index, index, {Qt::DecorationRole});
     }
 
@@ -1056,7 +1336,7 @@ bool ProjectTreeModel::setBackgroundPixmap(const Background &background, QPixmap
 
     iter->pixmap = std::move(pixmap);
 
-    const auto index = this->index(std::distance(std::begin(container), iter), 0, rootFor<Background>());
+    const auto index = indexForResource(*iter);
     emit dataChanged(index, index, { Qt::DecorationRole });
 
     emit backgroundPixmapChanged(*iter);
@@ -1087,7 +1367,7 @@ bool ProjectTreeModel::setObjectSpriteName(const Object &object, QString &&sprit
     auto oldSpriteName = std::move(iter->spriteName);
     iter->spriteName = std::move(spriteName);
 
-    const auto index = this->index(std::distance(std::begin(container), iter), 0, rootFor<Object>());
+    const auto index = indexForResource(*iter);
     emit dataChanged(index, index, { Qt::DecorationRole });
 
     emit objectSpriteNameChanged(object, std::move(oldSpriteName));

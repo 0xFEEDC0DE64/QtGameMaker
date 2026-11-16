@@ -4,7 +4,6 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <QQueue>
-#include <QDebug>
 
 DrawingCanvasWidget::DrawingCanvasWidget(QWidget *parent) :
     QWidget{parent}
@@ -14,7 +13,6 @@ DrawingCanvasWidget::DrawingCanvasWidget(QWidget *parent) :
 
 void DrawingCanvasWidget::setMode(Mode mode)
 {
-    qDebug() << mode;
     if (m_mode != mode)
         emit modeChanged(m_mode = mode);
     // TODO cursor

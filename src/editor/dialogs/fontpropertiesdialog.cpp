@@ -69,12 +69,19 @@ void FontPropertiesDialog::accept()
         return;
     }
 
+    if (applyChanges()) QDialog::accept();
+}
+
+bool FontPropertiesDialog::applyChanges()
+{
+    if (!m_unsavedChanges) return true;
+
     if (m_font.name != m_ui->lineEditName->text())
     {
         if (!m_projectModel.rename<Font>(m_font, m_ui->lineEditName->text()))
         {
             QMessageBox::critical(this, tr("Renaming Font failed!"), tr("Renaming Font failed!"));
-            return;
+            return false;
         }
     }
 
@@ -84,7 +91,10 @@ void FontPropertiesDialog::accept()
         .to =   m_ui->spinBoxCharRangeTo->value(),
     };
 
-    QDialog::accept();
+    m_unsavedChanges = false;
+    setWindowModified(false);
+    updateTitle();
+    return true;
 }
 
 void FontPropertiesDialog::reject()
@@ -147,6 +157,7 @@ void FontPropertiesDialog::changed()
     if (!m_unsavedChanges)
     {
         m_unsavedChanges = true;
+        setWindowModified(true);
         updateTitle();
     }
 }

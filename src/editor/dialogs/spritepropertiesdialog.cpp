@@ -76,19 +76,26 @@ void SpritePropertiesDialog::accept()
         return;
     }
 
+    if (applyChanges()) QDialog::accept();
+}
+
+bool SpritePropertiesDialog::applyChanges()
+{
+    if (!m_unsavedChanges) return true;
+
     if (m_sprite.name != m_ui->lineEditName->text())
     {
         if (!m_projectModel.rename<Sprite>(m_sprite, m_ui->lineEditName->text()))
         {
             QMessageBox::critical(this, tr("Renaming Sprite failed!"), tr("Renaming Sprite failed!"));
-            return;
+            return false;
         }
     }
 
-    if (!m_projectModel.setSpritePixmaps(m_sprite, std::move(m_pixmaps)))
+    if (!m_projectModel.setSpritePixmaps(m_sprite, std::vector<QPixmap>{m_pixmaps}))
     {
         QMessageBox::critical(this, tr("Setting Sprite pixmaps failed!"), tr("Setting Sprite pixmaps failed!"));
-        return;
+        return false;
     }
 
     m_sprite.origin.x = m_ui->spinBoxOriginX->value();
@@ -96,7 +103,10 @@ void SpritePropertiesDialog::accept()
     m_sprite.preciseCollisionChecking = m_ui->checkBoxPreciseCollisionChecking->isChecked();
     m_sprite.separateCollisionMasks = m_ui->checkBoxSeparateCollisionMasks->isChecked();
 
-    QDialog::accept();
+    m_unsavedChanges = false;
+    setWindowModified(false);
+    updateTitle();
+    return true;
 }
 
 void SpritePropertiesDialog::reject()
@@ -170,9 +180,7 @@ void SpritePropertiesDialog::editSprite()
 void SpritePropertiesDialog::centerOrigin()
 {
     QPoint center;
-    if (m_pixmaps.empty() || m_pixmaps.front().isNull())
-        qDebug() << "unexpected empty pixmaps";
-    else
+    if (!m_pixmaps.empty() && !m_pixmaps.front().isNull())
         center = {
             m_pixmaps.front().width() / 2,
             m_pixmaps.front().height() / 2
@@ -193,6 +201,7 @@ void SpritePropertiesDialog::changed()
     if (!m_unsavedChanges)
     {
         m_unsavedChanges = true;
+        setWindowModified(true);
         updateTitle();
     }
 }
