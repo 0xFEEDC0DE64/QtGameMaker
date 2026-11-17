@@ -4,6 +4,7 @@
 #include <QMenu>
 #include <QDebug>
 #include <QMessageBox>
+#include <QScopedValueRollback>
 
 #include <algorithm>
 
@@ -291,6 +292,8 @@ void ObjectPropertiesDialog::duplicateEvent()
 
 void ObjectPropertiesDialog::changed()
 {
+    if (m_updatingExternalReferences) return;
+
     if (!m_unsavedChanges)
     {
         m_unsavedChanges = true;
@@ -301,6 +304,8 @@ void ObjectPropertiesDialog::changed()
 
 void ObjectPropertiesDialog::objectNameChanged(const Object &object, const QString &oldName)
 {
+    QScopedValueRollback updatingReferences{m_updatingExternalReferences, true};
+
     const auto renameTargets = [&object, &oldName](ActionsContainer &actions) {
         for (Action &action : actions)
             std::visit([&](auto &value) {
@@ -313,8 +318,39 @@ void ObjectPropertiesDialog::objectNameChanged(const Object &object, const QStri
     for (auto &[event, actions] : m_collisionEvents) renameTargets(actions);
     if (m_collisionEvents.contains(oldName))
     {
+        auto *selection = m_ui->listViewEvents->selectionModel();
+        auto selectedEvent = selection->currentIndex().isValid()
+            ? m_eventsModel->getEvent(selection->currentIndex())
+            : ObjectEventsModel::get_event_result_t{};
+        auto selectedType = selectedEvent
+            ? std::optional{selectedEvent->first}
+            : std::optional<std::variant<Object::EventType, QString>>{};
+        if (selectedType)
+            if (auto *target = std::get_if<QString>(&*selectedType);
+                target && *target == oldName)
+                *target = object.name;
+
         m_ui->actionsWidget->setActionsContainer(nullptr);
         m_eventsModel->changeEvent(oldName, object.name);
+
+        QModelIndex restoredIndex;
+        if (selectedType)
+            for (int row = 0; row < m_eventsModel->rowCount({}); ++row)
+                if (const auto event = m_eventsModel->getEvent(row);
+                    event && event->first == *selectedType)
+                {
+                    restoredIndex = m_eventsModel->index(row, 0);
+                    break;
+                }
+
+        if (restoredIndex.isValid())
+            selection->setCurrentIndex(restoredIndex, QItemSelectionModel::ClearAndSelect);
+        else
+        {
+            selection->clearSelection();
+            selection->clearCurrentIndex();
+        }
+        currentEventChanged(restoredIndex);
     }
 
     if (&object == &m_object)
@@ -356,6 +392,8 @@ void ObjectPropertiesDialog::spriteNameChanged(const Sprite &sprite, const QStri
 
 void ObjectPropertiesDialog::objectAboutToBeRemoved(const Object &object)
 {
+    QScopedValueRollback updatingReferences{m_updatingExternalReferences, true};
+
     if (QSignalBlocker blocker{m_ui->widgetParent};
         !m_ui->widgetParent->objectName().isEmpty() && m_ui->widgetParent->objectName() == object.name)
         m_ui->widgetParent->clearObject();
@@ -443,6 +481,7 @@ void ObjectPropertiesDialog::eventsContextMenuRequested(const QPoint &pos)
 
 void ObjectPropertiesDialog::rowsInserted(const QModelIndex &parent, int first)
 {
+    if (m_updatingExternalReferences) return;
     m_ui->listViewEvents->setCurrentIndex(m_eventsModel->index(first, 0, parent));
 }
 

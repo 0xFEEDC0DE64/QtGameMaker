@@ -81,4 +81,5 @@ private:
     QString m_maskSpriteName;
 
     bool m_unsavedChanges{};
+    bool m_updatingExternalReferences{};
 };

@@ -378,6 +378,8 @@ void RoomPropertiesDialog::objectNameChanged(const Object &object, const QString
 
         obj.objectName = object.name;
     }
+
+    m_ui->roomEditWidget->update();
 }
 
 void RoomPropertiesDialog::objectAboutToBeRemoved(const Object &object)
